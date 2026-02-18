@@ -1,0 +1,92 @@
+{
+  "orders": [
+    {
+      "orderNumber": "FC-2025-0001",
+      "status": "gestartet",
+      "remarks": "Deine Bestellung wird heute bearbeitet. Bei Fragen melde dich gern.",
+      "createdAt": "2025-02-15T10:00:00.000Z",
+      "updatedAt": "2025-02-15T12:30:00.000Z"
+    },
+    {
+      "orderNumber": "FC-2026-0001",
+      "status": "pending_payment",
+      "createdAt": "2026-02-17T17:34:50.019Z",
+      "paypalOrderId": "0MY432804F511660K",
+      "items": [
+        {
+          "productSlug": "instagram-follower-kaufen",
+          "productName": "Instagram Follower",
+          "quantity": 100,
+          "priceCents": 100,
+          "target": "ewr"
+        },
+        {
+          "productSlug": "instagram-follower-kaufen",
+          "productName": "Instagram Follower",
+          "quantity": 100,
+          "priceCents": 100,
+          "target": "ifctz6"
+        },
+        {
+          "productSlug": "instagram-follower-kaufen",
+          "productName": "Instagram Follower",
+          "quantity": 100,
+          "priceCents": 100,
+          "target": "ifctz6"
+        }
+      ]
+    },
+    {
+      "orderNumber": "FC-2026-0002",
+      "status": "abgeschlossen",
+      "createdAt": "2026-02-17T17:46:58.202Z",
+      "updatedAt": "2026-02-17T18:30:58.411Z",
+      "items": [
+        {
+          "productSlug": "instagram-follower-kaufen",
+          "productName": "Instagram Follower",
+          "quantity": 100,
+          "priceCents": 100,
+          "target": "ewr"
+        },
+        {
+          "productSlug": "instagram-follower-kaufen",
+          "productName": "Instagram Follower",
+          "quantity": 100,
+          "priceCents": 100,
+          "target": "ifctz6"
+        },
+        {
+          "productSlug": "instagram-follower-kaufen",
+          "productName": "Instagram Follower",
+          "quantity": 100,
+          "priceCents": 100,
+          "target": "ifctz6"
+        }
+      ]
+    },
+    {
+      "orderNumber": "FC-2026-0003",
+      "status": "pending_payment",
+      "paymentMethod": "ueberweisung",
+      "items": [
+        {
+          "productSlug": "instagram-follower-kaufen",
+          "productName": "Instagram Follower",
+          "quantity": 100,
+          "priceCents": 100,
+          "target": "awde"
+        }
+      ],
+      "totalCents": 100,
+      "createdAt": "2026-02-18T18:15:54.016Z",
+      "updatedAt": "2026-02-18T18:15:54.016Z",
+      "customerEmail": "kevinringsdorf1",
+      "customerName": "Kevin Ringsdorf",
+      "customerAddressLine1": "Ulmenweg 15",
+      "customerCity": "Engelskirchen",
+      "customerPostalCode": "51766",
+      "customerCountry": "Deutschland"
+    }
+  ]
+}

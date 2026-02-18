@@ -1,0 +1,27 @@
+============================================
+  Icons für die Startseite (Schnellzugriff)
+============================================
+
+Mach genau das:
+
+1. Öffne DIESEN Ordner in deinem Projekt:
+   Followercloud.V1\public\icons\
+
+2. Lege hier 2 Bilddateien ab:
+
+   • Instagram-Icon  →  Name:  instagram.png
+   • TikTok-Icon     →  Name:  tiktok.png
+
+   (Einfach deine PNG-Dateien hier reinkopieren
+    und so umbenennen.)
+
+3. Fertig. Beim nächsten Laden der Startseite
+   werden die Icons in den 4 Schnellzugriff-
+   Karten angezeigt.
+
+============================================
+Hinweis: Neue Bilder für die Webseite immer
+unter "public" ablegen, z.B.:
+  public/icons/     → Icons, Logos
+  public/images/     → Fotos, Grafiken
+============================================
