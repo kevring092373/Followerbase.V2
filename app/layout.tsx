@@ -5,6 +5,7 @@ import { CartProvider } from "@/context/CartContext";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { CartDrawer } from "@/components/CartDrawer";
+import { CookieBanner } from "@/components/CookieBanner";
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -31,6 +32,7 @@ export default function RootLayout({
             <Footer />
           </div>
           <CartDrawer />
+          <CookieBanner />
         </CartProvider>
       </body>
     </html>

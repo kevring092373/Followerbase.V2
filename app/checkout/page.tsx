@@ -23,8 +23,6 @@ function CheckoutContent() {
   const [agbAccepted, setAgbAccepted] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<"paypal" | "ueberweisung">("paypal");
   const [ueberweisungLoading, setUeberweisungLoading] = useState(false);
-  const [saveCustomerStatus, setSaveCustomerStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
-  const [saveCustomerMessage, setSaveCustomerMessage] = useState<string | null>(null);
 
   const totalCents = useMemo(() => items.reduce((sum, i) => sum + i.priceCents, 0), [items]);
 
@@ -95,37 +93,6 @@ function CheckoutContent() {
       throw e;
     }
   }, [email, agbAccepted, totalCents, orderItems, sellerNote, customerPayload]);
-
-  const saveCustomerToSupabase = useCallback(async () => {
-    if (!customerPayload) {
-      setSaveCustomerStatus("error");
-      setSaveCustomerMessage("Bitte zuerst E-Mail eintragen.");
-      return;
-    }
-    if (!customerPayload.email.includes("@")) {
-      setSaveCustomerStatus("error");
-      setSaveCustomerMessage("Die E-Mail-Adresse muss ein @ enthalten.");
-      return;
-    }
-    setSaveCustomerStatus("loading");
-    setSaveCustomerMessage(null);
-    try {
-      const res = await fetch("/api/checkout/save-customer", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(customerPayload),
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) {
-        throw new Error(data.error || "Speichern fehlgeschlagen.");
-      }
-      setSaveCustomerStatus("success");
-      setSaveCustomerMessage("Daten wurden in Supabase gespeichert.");
-    } catch (e) {
-      setSaveCustomerStatus("error");
-      setSaveCustomerMessage(e instanceof Error ? e.message : "Unbekannter Fehler");
-    }
-  }, [customerPayload]);
 
   const onApprove = useCallback(
     async (data: { orderID: string }) => {
@@ -337,26 +304,6 @@ function CheckoutContent() {
                 gelesen und akzeptiert. *
               </span>
             </label>
-          </div>
-          <div className="checkout-save-customer">
-            <button
-              type="button"
-              onClick={saveCustomerToSupabase}
-              disabled={saveCustomerStatus === "loading"}
-              className="btn checkout-save-customer-btn"
-            >
-              {saveCustomerStatus === "loading" ? "Speichern …" : "Daten einmal in Supabase speichern (Test)"}
-            </button>
-            {saveCustomerStatus === "success" && saveCustomerMessage && (
-              <p className="checkout-save-customer-msg checkout-save-customer-msg--success" role="status">
-                {saveCustomerMessage}
-              </p>
-            )}
-            {saveCustomerStatus === "error" && saveCustomerMessage && (
-              <p className="checkout-save-customer-msg checkout-save-customer-msg--error" role="alert">
-                {saveCustomerMessage}
-              </p>
-            )}
           </div>
         </section>
 
