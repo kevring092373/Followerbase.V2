@@ -110,7 +110,7 @@ async function readOrders(): Promise<Order[]> {
     const raw = await fs.readFile(ORDERS_FILE, "utf-8");
     const data = JSON.parse(raw);
     const list = Array.isArray(data.orders) ? data.orders : [];
-    return list.map((o) => normalizeOrder(o as Record<string, unknown>));
+    return list.map((o: Record<string, unknown>) => normalizeOrder(o));
   } catch {
     return [];
   }
@@ -219,7 +219,7 @@ function normalizePendingCheckout(p: unknown): PendingCheckout {
   const paypalOrderId = typeof r.paypalOrderId === "string" ? r.paypalOrderId : "";
   const totalCents = typeof r.totalCents === "number" && r.totalCents >= 0 ? r.totalCents : 0;
   const items: OrderItem[] = Array.isArray(r.items)
-    ? (r.items as unknown[]).map((i) => normalizeItem(i)).filter((x): x is OrderItem => x !== null)
+    ? (r.items as unknown[]).map((i: unknown) => normalizeItem(i)).filter((x): x is OrderItem => x !== null)
     : [];
   const sellerNote = typeof r.sellerNote === "string" ? r.sellerNote : undefined;
   const customer = normalizePendingCheckoutCustomer(r.customer);

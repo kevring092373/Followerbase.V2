@@ -24,7 +24,7 @@ async function readPosts(): Promise<BlogPost[]> {
     const raw = await fs.readFile(BLOG_FILE, "utf-8");
     const data = JSON.parse(raw);
     const list = Array.isArray(data.posts) ? data.posts : [];
-    return list.map((p) => normalizePost(p as Record<string, unknown>));
+    return list.map((p: Record<string, unknown>) => normalizePost(p));
   } catch {
     return [];
   }

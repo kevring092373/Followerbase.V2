@@ -66,7 +66,7 @@ export async function getCustomers(): Promise<Customer[]> {
     console.error("Supabase getCustomers:", error.message);
     return [];
   }
-  return (data ?? []).map((r) => rowToCustomer(r as Record<string, unknown>));
+  return (data ?? []).map((r: Record<string, unknown>) => rowToCustomer(r));
 }
 
 /** Kunde anhand E-Mail (case-insensitive). */

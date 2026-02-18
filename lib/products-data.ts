@@ -50,7 +50,7 @@ async function readProducts(): Promise<Product[]> {
     const raw = await fs.readFile(PRODUCTS_FILE, "utf-8");
     const data = JSON.parse(raw);
     const list = Array.isArray(data.products) ? data.products : seedFromCategories();
-    return list.map((p) => normalizeProduct(p as Record<string, unknown>));
+    return list.map((p: Record<string, unknown>) => normalizeProduct(p));
   } catch {
     return seedFromCategories();
   }

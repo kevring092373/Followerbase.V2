@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { lookupOrder } from "./actions";
 import {
@@ -47,7 +47,7 @@ function TrackingTimeline({ order }: { order: Order }) {
   );
 }
 
-export default function BestellungVerfolgenPage() {
+function TrackingContent() {
   const searchParams = useSearchParams();
   const [orderNumber, setOrderNumber] = useState("");
   const [loading, setLoading] = useState(false);
@@ -122,5 +122,18 @@ export default function BestellungVerfolgenPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function BestellungVerfolgenPage() {
+  return (
+    <Suspense fallback={
+      <div className="tracking-page">
+        <h1 className="tracking-title">Bestellung verfolgen</h1>
+        <p className="tracking-intro">Laden …</p>
+      </div>
+    }>
+      <TrackingContent />
+    </Suspense>
   );
 }

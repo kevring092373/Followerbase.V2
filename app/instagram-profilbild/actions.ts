@@ -87,7 +87,7 @@ async function fetchWithBrowser(username: string): Promise<FetchProfilePicResult
       // Fallback: erstes großes Profilbild im Dokument (img mit crossorigin oder in header)
       if (!result.imageUrl) {
         const imgs = document.querySelectorAll('img[src*="cdninstagram"], img[src*="fbcdn.net"]');
-        for (const img of imgs) {
+        for (const img of Array.from(imgs)) {
           const src = img.getAttribute("src");
           if (src && (src.includes("s150") || src.includes("s320") || src.includes("profile"))) {
             result.imageUrl = src.replace(/\/s\d+x\d+/, "/s640x640");
