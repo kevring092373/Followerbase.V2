@@ -92,7 +92,7 @@ Falls Git noch nicht installiert ist: [git-scm.com/download/win](https://git-scm
 
 Auf **Deploy** klicken – der erste Build startet. Du kannst sofort mit Schritt 5 weitermachen.
 
-### 5. Umgebungsvariablen eintragen (wichtig)
+### 5. Umgebungsvariablen eintgen (wichtig)
 
 Ohne diese Variablen funktionieren PayPal und Supabase auf der Live-Seite nicht.
 
@@ -106,6 +106,7 @@ Ohne diese Variablen funktionieren PayPal und Supabase auf der Live-Seite nicht.
    | `PAYPAL_SANDBOX` | aus `.env.local` (z. B. `true` für Test) |
    | `NEXT_PUBLIC_SUPABASE_URL` | aus `.env.local` |
    | `SUPABASE_SERVICE_ROLE_KEY` | aus `.env.local` |
+   | `ADMIN_PASSWORD` | aus `.env.local` (mind. 8 Zeichen – schützt `/admin`) |
 
    Optional (Überweisung): `BANK_RECIPIENT`, `BANK_IBAN`, `BANK_BIC`, `BANK_NAME`.
 
