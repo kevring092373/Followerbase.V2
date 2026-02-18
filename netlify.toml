@@ -7,9 +7,9 @@
 
 [build.environment]
   NODE_VERSION = "20"
+  NODE_OPTIONS = "--max-old-space-size=4096"
 
-# Optional: Redirects für SPA/Next (falls nötig)
-# [[redirects]]
-#   from = "/*"
-#   to = "/index.html"
-#   status = 200
+# Damit API-Routes/Server-Funktionen die content/*.json lesen können
+[functions]
+  included_files = ["content/**"]
+  node_bundler = "esbuild"

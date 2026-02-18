@@ -4,6 +4,42 @@ Alles im Projekt ist vorbereitet (`netlify.toml`, Build). Du musst nur noch **Gi
 
 ---
 
+## ⚠️ Fehler: „No url found for submodule path 'followerbase'“
+
+Wenn Netlify beim **Preparing repo** abbricht mit *fatal: No url found for submodule path 'followerbase'*, liegt ein **Submodule** „followerbase“ im Repo ohne gültige URL. Das musst du einmalig entfernen:
+
+**Im Projektordner (Followercloud.V1) in Git Bash oder PowerShell:**
+
+```bash
+# Submodule aus der Konfiguration und aus dem Index entfernen
+git submodule deinit -f followerbase
+git rm -f followerbase
+```
+
+Falls eine Datei **.gitmodules** existiert, prüfen: Enthält sie nur den Eintrag für followerbase? Dann die Datei löschen und mit committen:
+
+```bash
+git rm .gitmodules
+```
+
+Falls unter **.git/modules** ein Ordner **followerbase** existiert, ihn löschen (Windows PowerShell):
+
+```powershell
+Remove-Item -Recurse -Force .git\modules\followerbase -ErrorAction SilentlyContinue
+```
+
+Dann committen und pushen:
+
+```bash
+git add -A
+git commit -m "Submodule followerbase entfernt (Netlify Build)"
+git push
+```
+
+Danach bei Netlify **Trigger deploy** → **Clear cache and deploy site** ausführen. Der Ordner **followerbase** bleibt bei dir lokal erhalten, ist aber nicht mehr Teil des Repos. Wenn du seinen Inhalt später wieder brauchst, kannst du ihn als ganz normale Ordner (ohne eigenes .git) ins Projekt legen und erneut committen.
+
+---
+
 ## Teil 1: Code auf GitHub
 
 ### 1. Neues Repository auf GitHub anlegen
@@ -77,3 +113,28 @@ Ohne diese Variablen funktionieren PayPal und Supabase auf der Live-Seite nicht.
 - Bei jedem **Push auf `main`** baut Netlify automatisch neu und veröffentlicht.
 
 Eigene Domain einrichten: **Domain settings** → **Add custom domain**.
+
+---
+
+## Wenn der Build fehlschlägt
+
+1. **Build-Log in Netlify prüfen**  
+   Unter **Deploys** → fehlgeschlagener Deploy → **Deploy log** öffnen. Die letzte rote Zeile verrät oft den Fehler.
+
+2. **Branch „main“ eintragen**  
+   Wenn unter „Branch to deploy“ keine Auswahl erscheint: **main** (oder dein Standard-Branch) von Hand eintragen und speichern.
+
+3. **„Essential Next.js“-Plugin**  
+   Unter **Site configuration** → **Build & deploy** → **Build plugins** prüfen, ob **Essential Next.js** (oder „Next.js“) aktiv ist. Falls nicht: **Add plugin** → „Essential Next.js“ suchen und hinzufügen.
+
+4. **Ordner `content/` muss im Repo sein**  
+   Die Dateien unter `content/` (z. B. `products.json`, `orders.json`) müssen mit ins GitHub-Repo committed sein. Prüfen mit:
+   ```bash
+   git add content/
+   git status
+   git commit -m "content für Build hinzugefügt"
+   git push
+   ```
+
+5. **Umgebungsvariablen**  
+   Fehlen sie, bricht der Build manchmal nicht ab, die Seite funktioniert aber nicht. Alle Werte aus `.env.local` unter **Environment variables** eintragen und **Clear cache and deploy** ausführen.
