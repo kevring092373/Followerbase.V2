@@ -1,0 +1,15 @@
+# Netlify Build-Konfiguration für Next.js (Followercloud)
+# Siehe auch: https://docs.netlify.com/build/frameworks/framework-setup-guides/nextjs/
+
+[build]
+  command = "npm run build"
+  # Next.js wird automatisch erkannt; Publish-Verzeichnis setzt Netlify per Plugin.
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# Optional: Redirects für SPA/Next (falls nötig)
+# [[redirects]]
+#   from = "/*"
+#   to = "/index.html"
+#   status = 200
