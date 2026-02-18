@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createHash } from "crypto";
+import { createPendingToken, getPendingCookieName } from "@/lib/admin-auth";
 
 const ADMIN_COOKIE = "admin_session";
 const ADMIN_SALT = "followerbase-admin-v1";
@@ -27,9 +28,24 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Falsches Passwort." }, { status: 401 });
   }
 
-  const token = tokenForPassword(password);
   const from = typeof body.from === "string" ? body.from : "/admin";
   const url = from.startsWith("/admin") ? from : "/admin";
+  const totpSecret = process.env.ADMIN_TOTP_SECRET?.trim();
+
+  if (totpSecret) {
+    const pendingToken = createPendingToken(url, password);
+    const res = NextResponse.json({ need2fa: true, from: url });
+    res.cookies.set(getPendingCookieName(), pendingToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: 60 * 5,
+    });
+    return res;
+  }
+
+  const token = tokenForPassword(password);
   const res = NextResponse.json({ ok: true, redirect: url });
   res.cookies.set(ADMIN_COOKIE, token, {
     httpOnly: true,
