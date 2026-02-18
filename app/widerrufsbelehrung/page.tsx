@@ -1,5 +1,5 @@
 export const metadata = {
-  title: "Widerrufsbelehrung – Followercloud",
+  title: "Widerrufsbelehrung – Followerbase",
   description: "Informationen zu deinem Widerrufsrecht.",
 };
 

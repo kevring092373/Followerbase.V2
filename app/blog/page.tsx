@@ -6,7 +6,7 @@ import Image from "next/image";
 import { getAllPosts } from "@/lib/blog-data";
 
 export const metadata = {
-  title: "Blog – Followercloud",
+  title: "Blog – Followerbase",
   description: "Blog und Beiträge.",
 };
 

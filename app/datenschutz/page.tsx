@@ -1,5 +1,5 @@
 export const metadata = {
-  title: "Datenschutz – Followercloud",
+  title: "Datenschutz – Followerbase",
   description: "Datenschutzerklärung und Informationen zur Verarbeitung personenbezogener Daten.",
 };
 

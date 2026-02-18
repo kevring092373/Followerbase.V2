@@ -73,7 +73,7 @@ export function ReviewCarousel() {
         Was Kunden sagen
       </h2>
       <p className="review-carousel-intro">
-        Verifizierte Käufe und Bewertungen von Nutzer:innen – ehrliche Meinungen zu Followercloud.
+        Verifizierte Käufe und Bewertungen von Nutzer:innen – ehrliche Meinungen zu Followerbase.
       </p>
 
       <div className="review-carousel-wrap">

@@ -1,4 +1,4 @@
-# Projektstruktur Followercloud
+# Projektstruktur Followerbase
 
 ## Übersicht
 

@@ -9,7 +9,7 @@ import {
   type ReactNode,
 } from "react";
 
-const CART_STORAGE_KEY = "followercloud-cart";
+const CART_STORAGE_KEY = "followerbase-cart";
 
 export interface CartItem {
   id: string;

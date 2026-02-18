@@ -11,10 +11,10 @@ type Props = { params: { categorySlug: string } };
 
 export function generateMetadata({ params }: Props) {
   const category = categories.find((c) => c.slug === params.categorySlug);
-  if (!category) return { title: "Kategorie – Followercloud" };
+  if (!category) return { title: "Kategorie – Followerbase" };
   return {
-    title: `${category.name} – Followercloud`,
-    description: `${category.name} – Produkte im Followercloud Shop.`,
+    title: `${category.name} – Followerbase`,
+    description: `${category.name} – Produkte im Followerbase Shop.`,
   };
 }
 

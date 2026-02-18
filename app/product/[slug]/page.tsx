@@ -13,11 +13,11 @@ const defaultBullets = ["Schnelle Lieferung", "Sichere Zahlung", "Qualitätsgara
 
 export async function generateMetadata({ params }: Props) {
   const product = await getProductBySlug(params.slug);
-  if (!product) return { title: "Produkt – Followercloud" };
+  if (!product) return { title: "Produkt – Followerbase" };
   const title = product.metaTitle ?? product.name;
   const description = product.metaDescription ?? undefined;
   return {
-    title: `${title} – Followercloud`,
+    title: `${title} – Followerbase`,
     description,
   };
 }

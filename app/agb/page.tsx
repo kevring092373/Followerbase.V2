@@ -1,5 +1,5 @@
 export const metadata = {
-  title: "AGB – Followercloud",
+  title: "AGB – Followerbase",
   description: "Allgemeine Geschäftsbedingungen des Shops.",
 };
 
@@ -12,7 +12,7 @@ export default function AGBPage() {
       </p>
       <div className="legal-content">
         <h2>§ 1 Geltungsbereich</h2>
-        <p>Diese AGB gelten für alle Bestellungen über den Online-Shop Followercloud. Abweichende Bedingungen des Kunden werden nicht anerkannt.</p>
+        <p>Diese AGB gelten für alle Bestellungen über den Online-Shop Followerbase. Abweichende Bedingungen des Kunden werden nicht anerkannt.</p>
 
         <h2>§ 2 Vertragspartner, Vertragsschluss</h2>
         <p>Der Kaufvertrag kommt zustande, wenn du eine Bestellung absendest und wir sie durch Auftragsbestätigung bzw. Lieferung annehmen. Die Darstellung der Produkte im Shop ist kein rechtlich bindendes Angebot.</p>

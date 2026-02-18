@@ -207,7 +207,7 @@ export default async function HomePage() {
               Start schneller sichtbar werden – und deine Inhalte kommen bei den Menschen an, die du erreichen willst.
             </p>
             <p>
-              Bei Followercloud findest du Follower, Likes, Views und weitere Leistungen für alle großen Plattformen:
+              Bei Followerbase findest du Follower, Likes, Views und weitere Leistungen für alle großen Plattformen:
               Instagram, TikTok, YouTube, Snapchat, Reddit, Telegram, Facebook und Threads. Du wählst deine
               Plattform, die gewünschte Menge und den passenden Preis – ohne Abo, ohne versteckte Kosten. Die
               Bestellung wird zeitnah bearbeitet, und du kannst den Fortschritt jederzeit über unsere
@@ -223,7 +223,7 @@ export default async function HomePage() {
             </p>
             <p>
               Egal ob du gerade erst anfängst oder deinen bestehenden Account weiter ausbauen möchtest: Mit
-              Followercloud hast du einen Partner, der Reichweite und Engagement unkompliziert und zuverlässig
+              Followerbase hast du einen Partner, der Reichweite und Engagement unkompliziert und zuverlässig
               liefert. Stöbere in unseren Kategorien, wähle dein Produkt und freue dich auf mehr Sichtbarkeit –
               fair, schnell und auf deine Plattform zugeschnitten.
             </p>

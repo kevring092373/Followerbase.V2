@@ -5,7 +5,7 @@
 Mach genau das:
 
 1. Öffne DIESEN Ordner in deinem Projekt:
-   Followercloud.V1\public\icons\
+   Followerbase\public\icons\
 
 2. Lege hier 2 Bilddateien ab:
 

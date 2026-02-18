@@ -8,7 +8,7 @@ type Props = {
 /** SVG-Logo: Wolke (Cloud) + optionaler Text. Farben aus CSS-Variablen. */
 export function Logo({ className = "", showText = true }: Props) {
   return (
-    <Link href="/" className={`logo-link ${className}`} aria-label="Followercloud Startseite">
+    <Link href="/" className={`logo-link ${className}`} aria-label="Followerbase Startseite">
       <span className="logo-icon" aria-hidden>
         <svg
           width="32"
@@ -23,7 +23,7 @@ export function Logo({ className = "", showText = true }: Props) {
           />
         </svg>
       </span>
-      {showText && <span className="logo-text">Followercloud</span>}
+      {showText && <span className="logo-text">Followerbase</span>}
     </Link>
   );
 }

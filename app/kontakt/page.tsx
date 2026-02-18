@@ -1,5 +1,5 @@
 export const metadata = {
-  title: "Kontakt – Followercloud",
+  title: "Kontakt – Followerbase",
   description: "So erreichst du uns.",
 };
 

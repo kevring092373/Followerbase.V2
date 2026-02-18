@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Bestellung verfolgen – Followercloud",
+  title: "Bestellung verfolgen – Followerbase",
   description: "Prüfe den Status deiner Bestellung mit deiner Bestellnummer.",
 };
 

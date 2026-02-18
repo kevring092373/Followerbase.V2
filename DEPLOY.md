@@ -1,4 +1,4 @@
-# Followercloud auf Netlify veröffentlichen (via GitHub)
+# Followerbase auf Netlify veröffentlichen (via GitHub)
 
 ## Voraussetzungen
 
@@ -13,13 +13,13 @@
 Falls noch nicht geschehen:
 
 ```bash
-# Im Projektordner (Followercloud.V1)
+# Im Projektordner (Followerbase / dein Repo-Name)
 git init
 git add .
 git commit -m "Initial commit"
 ```
 
-Auf GitHub ein neues Repository anlegen (z. B. `Followercloud`), **ohne** README/ .gitignore (weil schon vorhanden). Dann:
+Auf GitHub ein neues Repository anlegen (z. B. `Followerbase`), **ohne** README/ .gitignore (weil schon vorhanden). Dann:
 
 ```bash
 git remote add origin https://github.com/DEIN-USERNAME/DEIN-REPO-NAME.git
@@ -35,7 +35,7 @@ git push -u origin main
 2. **„Add new site“** → **„Import an existing project“**.
 3. **„Connect to Git provider“** → **GitHub** wählen.
 4. Netlify fragt nach Zugriff auf dein GitHub-Konto – **Authorize** bestätigen.
-5. **Repository auswählen**: dein Followercloud-Repo aus der Liste wählen.
+5. **Repository auswählen**: dein Followerbase-Repo aus der Liste wählen.
 
 ---
 
@@ -95,4 +95,4 @@ Sobald die Verbindung zu GitHub steht, baut Netlify bei jedem **Push auf den ein
 - [ ] Alle nötigen **Environment variables** in Netlify gesetzt
 - [ ] Ersten Deploy durchgeführt und URL getestet (Checkout, Bestellung verfolgen, etc.)
 
-Wenn du willst, können wir als Nächstes eine eigene Domain oder Subdomain (z. B. `shop.followercloud.de`) einrichten.
+Wenn du willst, können wir als Nächstes eine eigene Domain oder Subdomain (z. B. `followerbase.de`) einrichten.

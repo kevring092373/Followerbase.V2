@@ -37,7 +37,7 @@ export function Footer() {
           ))}
         </nav>
         <p className="footer-copy">
-          © {new Date().getFullYear()} Followercloud
+          © {new Date().getFullYear()} Followerbase
         </p>
       </div>
     </footer>

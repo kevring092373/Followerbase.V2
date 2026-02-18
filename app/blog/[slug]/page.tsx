@@ -9,11 +9,11 @@ type Props = { params: { slug: string } };
 
 export async function generateMetadata({ params }: Props) {
   const post = await getPostBySlug(params.slug);
-  if (!post) return { title: "Beitrag – Followercloud" };
+  if (!post) return { title: "Beitrag – Followerbase" };
   const title = post.metaTitle ?? post.title;
   const description = post.metaDescription ?? undefined;
   return {
-    title: `${title} – Followercloud`,
+    title: `${title} – Followerbase`,
     description,
   };
 }

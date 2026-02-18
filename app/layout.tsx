@@ -12,7 +12,7 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Followercloud – Follower, Likes & mehr",
+  title: "Followerbase – Follower, Likes & mehr",
   description: "Shop für Follower, Likes und Views für Instagram, TikTok und mehr.",
 };
 

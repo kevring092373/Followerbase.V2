@@ -12,7 +12,7 @@ export interface BankDetails {
 }
 
 const EXAMPLE: BankDetails = {
-  recipient: "Followercloud GmbH",
+  recipient: "Followerbase GmbH",
   iban: "DE89 3704 0044 0532 0130 00",
   bic: "COBADEFFXXX",
   bankName: "Commerzbank",

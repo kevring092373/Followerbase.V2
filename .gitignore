@@ -34,3 +34,6 @@ Thumbs.db
 # data (falls du lokale JSON/SQLite nutzt)
 *.sqlite
 data/*.json
+
+# alter Submodule-Ordner (nicht mit ins Repo)
+followerbase/

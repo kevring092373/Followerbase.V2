@@ -1,4 +1,4 @@
-# Followercloud auf Netlify bringen – genau diese Schritte
+# Followerbase auf Netlify bringen – genau diese Schritte
 
 Alles im Projekt ist vorbereitet (`netlify.toml`, Build). Du musst nur noch **GitHub** und **Netlify** verbinden.
 
@@ -8,7 +8,7 @@ Alles im Projekt ist vorbereitet (`netlify.toml`, Build). Du musst nur noch **Gi
 
 Wenn Netlify beim **Preparing repo** abbricht mit *fatal: No url found for submodule path 'followerbase'*, liegt ein **Submodule** „followerbase“ im Repo ohne gültige URL. Das musst du einmalig entfernen:
 
-**Im Projektordner (Followercloud.V1) in Git Bash oder PowerShell:**
+**Im Projektordner (Followerbase / dein Repo) in Git Bash oder PowerShell:**
 
 ```bash
 # Submodule aus der Konfiguration und aus dem Index entfernen
@@ -45,25 +45,32 @@ Danach bei Netlify **Trigger deploy** → **Clear cache and deploy site** ausfü
 ### 1. Neues Repository auf GitHub anlegen
 
 1. Gehe zu [github.com/new](https://github.com/new).
-2. **Repository name:** z. B. `Followercloud` oder `followercloud-shop`.
+2. **Repository name:** z. B. `Followerbase` oder `followerbase-shop`.
 3. **Public** wählen.
 4. **Nicht** „Add a README“ oder „Add .gitignore“ anhaken (Projekt hat schon welche).
 5. Auf **Create repository** klicken.
 
 ### 2. Projekt mit Git hochladen
 
-Im Projektordner **Followercloud.V1** in der **Eingabeaufforderung** oder **PowerShell** (oder Git Bash) ausführen:
+**Falls du den alten Remote bereits entfernt hast** (z. B. `git remote remove origin`): Kein `git init` nötig. Im Projektordner nur noch:
+
+```bash
+git remote add origin https://github.com/kevring092373/Followerbase.git
+git push -u origin main
+```
+
+(Ersetze `kevring092373` und `Followerbase` durch deinen GitHub-Benutzernamen und den exakten Repo-Namen.)
+
+**Falls du komplett neu startest** (noch kein Git im Ordner):
 
 ```bash
 git init
 git add .
-git commit -m "Initial commit – Followercloud Shop"
+git commit -m "Initial commit – Followerbase Shop"
 git branch -M main
 git remote add origin https://github.com/DEIN-BENUTZERNAME/DEIN-REPO-NAME.git
 git push -u origin main
 ```
-
-**Ersetze** `DEIN-BENUTZERNAME` und `DEIN-REPO-NAME` durch deinen GitHub-Namen und den Repo-Namen (z. B. `KevinRingsdorf` und `Followercloud`).
 
 Falls Git noch nicht installiert ist: [git-scm.com/download/win](https://git-scm.com/download/win) – danach **neues** Terminal öffnen.
 
@@ -76,7 +83,7 @@ Falls Git noch nicht installiert ist: [git-scm.com/download/win](https://git-scm
 1. Gehe zu [app.netlify.com](https://app.netlify.com) und melde dich an (oder registriere dich mit GitHub).
 2. **Add new site** → **Import an existing project**.
 3. **Connect to Git provider** → **GitHub**.
-4. Zugriff erlauben, dann dein **Followercloud-Repository** auswählen.
+4. Zugriff erlauben, dann dein **Followerbase-Repository** auswählen.
 
 ### 4. Build-Einstellungen
 

@@ -1,5 +1,5 @@
 export const metadata = {
-  title: "Impressum – Followercloud",
+  title: "Impressum – Followerbase",
   description: "Impressum und Angaben gemäß § 5 TMG.",
 };
 
@@ -11,7 +11,7 @@ export default function ImpressumPage() {
         Angaben gemäß § 5 TMG
       </p>
       <div className="legal-content">
-        <p><strong>Followercloud</strong></p>
+        <p><strong>Followerbase</strong></p>
         <p> [Firmenname / Inhaber]</p>
         <p>[Straße und Hausnummer]</p>
         <p>[PLZ und Ort]</p>
