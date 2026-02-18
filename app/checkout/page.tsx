@@ -459,6 +459,7 @@ export default function CheckoutPage() {
         clientId: clientId || "sb",
         currency: "EUR",
         intent: "capture",
+        "disable-funding": "sepa",
       }}
       deferLoading={!clientId}
     >
