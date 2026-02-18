@@ -123,6 +123,38 @@ Eigene Domain einrichten: **Domain settings** → **Add custom domain**.
 
 ---
 
+## Build failed: „Exposed secrets“ (NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_PAYPAL_CLIENT_ID)
+
+Netlify scannt den Build-Output und meldet die Werte dieser Variablen. In Next.js sind `NEXT_PUBLIC_*`-Variablen **bewusst** im Client – keine Server-Geheimnisse.
+
+**Im Projekt:** In der **`netlify.toml`** ist `SECRETS_SCAN_OMIT_KEYS = "NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_PAYPAL_CLIENT_ID"` gesetzt. Netlify ignoriert diese Keys beim Scan. Nach Push und Deploy sollte der Fehler weg sein.
+
+**Falls du die Variablen in Netlify als „Contains secret values“ markiert hast:** Für `NEXT_PUBLIC_SUPABASE_URL` und `NEXT_PUBLIC_PAYPAL_CLIENT_ID` die Markierung entfernen (Options → Edit) – diese Werte sind für den Browser gedacht.
+
+**Falls der Fehler bleibt**, in Netlify unter **Environment variables** setzen:
+- **Key:** `SECRETS_SCAN_OMIT_KEYS`
+- **Value:** `NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_PAYPAL_CLIENT_ID`
+
+**Option A – Safelist (alternative)**  
+In Netlify: **Site configuration** → **Environment variables** → **Add a variable** / **Add a single variable**.
+
+- **Key:** `SECRETS_SCAN_SMART_DETECTION_OMIT_VALUES`
+- **Value:** Die **konkreten Werte**, die Netlify meldet, kommagetrennt, z. B.  
+  `https://dein-projekt.supabase.co, dein-paypal-client-id-string`  
+  (Supabase-URL und PayPal Client ID aus deiner `.env.local` eintragen, durch Komma getrennt.)
+
+Speichern, dann **Deploys** → **Trigger deploy** → **Clear cache and deploy site**.
+
+**Option B – Smart Detection ausschalten**  
+Falls du die Werte nicht in eine weitere Variable eintragen willst:
+
+- **Key:** `SECRETS_SCAN_SMART_DETECTION_ENABLED`
+- **Value:** `false`
+
+Damit wird nur die automatische „Smart Detection“ deaktiviert; normale Secret-Scans für als Secret markierte Variablen laufen weiter.
+
+---
+
 ## Wenn der Build fehlschlägt
 
 1. **Build-Log in Netlify prüfen**  
