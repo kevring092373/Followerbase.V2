@@ -124,6 +124,29 @@ Eigene Domain einrichten: **Domain settings** → **Add custom domain**.
 
 ---
 
+## Deploy-Befehl (nach Änderungen)
+
+Zum Veröffentlichen deiner Änderungen im Projektordner (PowerShell oder Git Bash):
+
+```bash
+git add -A
+git status
+git commit -m "Deploy: Beschreibung deiner Änderung"
+git push
+```
+
+Netlify startet danach automatisch einen neuen Build und veröffentlicht die Seite. Build-Status siehst du unter **Deploys** in der Netlify-Übersicht.
+
+**Optional – vor dem Push lokal testen:**
+
+```bash
+npm run build
+```
+
+Wenn der Build ohne Fehler durchläuft, kannst du wie oben committen und pushen.
+
+---
+
 ## Build failed: „Exposed secrets“ (NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_PAYPAL_CLIENT_ID)
 
 Netlify scannt den Build-Output und meldet die Werte dieser Variablen. In Next.js sind `NEXT_PUBLIC_*`-Variablen **bewusst** im Client – keine Server-Geheimnisse.
