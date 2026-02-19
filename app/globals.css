@@ -1673,6 +1673,123 @@ button.nav-link {
   line-height: 1.4;
 }
 
+/* ===== Bestellübersicht / Danke nach Zahlung ===== */
+.danke-page {
+  max-width: 28rem;
+  margin: 0 auto;
+  padding-bottom: 2rem;
+}
+
+.danke-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 0.5rem;
+}
+
+.danke-intro {
+  font-size: 0.9375rem;
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+  line-height: 1.45;
+}
+
+.danke-card {
+  padding: 1.5rem 1.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.danke-heading {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 0.75rem;
+  color: var(--text-primary);
+}
+
+.danke-order-number {
+  font-size: 0.9375rem;
+  margin: 0 0 0.25rem;
+  color: var(--text-primary);
+}
+
+.danke-meta {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin: 0 0 1rem;
+}
+
+.danke-items-heading {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin: 1rem 0 0.5rem 0;
+}
+
+.danke-items-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border-top: 1px solid var(--border);
+}
+
+.danke-item {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.25rem 0.75rem;
+  padding: 0.6rem 0 0.6rem;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.9375rem;
+}
+
+.danke-item:last-child {
+  border-bottom: none;
+}
+
+.danke-item-name {
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.danke-item-meta {
+  color: var(--text-secondary);
+}
+
+.danke-total {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 1rem 0 0;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border);
+  color: var(--text-primary);
+}
+
+.danke-note {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin: 1rem 0 0;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border);
+  line-height: 1.4;
+}
+
+.danke-note-label {
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.danke-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.danke-actions .btn {
+  display: inline-block;
+  text-align: center;
+  text-decoration: none;
+}
+
 .admin-order-detail-form-section {
   padding-top: 1.25rem;
   border-top: 1px solid var(--border);

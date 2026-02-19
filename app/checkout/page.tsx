@@ -107,7 +107,7 @@ function CheckoutContent() {
       }
       const result = await res.json();
       clearCart();
-      router.push(`/bestellung-verfolgen?success=${encodeURIComponent(result.orderNumber)}`);
+      router.push(`/bestellung/danke?order=${encodeURIComponent(result.orderNumber)}`);
     },
     [clearCart, router]
   );
@@ -146,7 +146,7 @@ function CheckoutContent() {
       const orderNumber = data.orderNumber;
       if (!orderNumber) throw new Error("Keine Bestellnummer erhalten.");
       clearCart();
-      router.push(`/kasse/ueberweisung?order=${encodeURIComponent(orderNumber)}`);
+      router.push(`/bestellung/danke?order=${encodeURIComponent(orderNumber)}`);
     } catch (e) {
       setPaypalError(e instanceof Error ? e.message : "Unbekannter Fehler");
     } finally {
