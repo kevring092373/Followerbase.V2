@@ -33,7 +33,7 @@ export default async function AdminOrdersPage() {
       </Link>
       <h1 className="heading-hero">Bestellungen</h1>
       <p className="subtitle" style={{ marginBottom: "1.5rem" }}>
-        Bestellungen nach Status filtern; Löschen nur mit doppelter Bestätigung. Unten: Vorgänge mit Fehler.
+        Bestellungen nach Status filtern. Unten: Vorgänge mit Fehler.
       </p>
 
       <OrdersList orders={orders} />

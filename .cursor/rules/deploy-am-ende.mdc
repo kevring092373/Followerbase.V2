@@ -1,0 +1,24 @@
+---
+description: Nach Änderungen am Projekt immer die Deploy-Befehle fürs Terminal mitgeben
+alwaysApply: true
+---
+
+# Deploy-Befehle am Ende
+
+Wenn du Änderungen am Code vornimmst (Features, Fixes, Refactor), **füge am Ende deiner Antwort immer die Deploy-Befehle fürs Terminal hinzu** – so kann der Nutzer direkt deployen (z. B. zu Netlify über GitHub).
+
+Verwende diese Befehle (Windows PowerShell, Projekt Followercloud.V1):
+
+```powershell
+cd "c:\Users\Kevin Ringsdorf\.cursor\projects\Followercloud.V1"
+git add .
+git status
+git commit -m "Deploy: kurze Beschreibung der Änderung"
+git push origin main
+```
+
+- **git status** kann weggelassen werden, wenn die Antwort schon sehr lang ist.
+- **Commit-Message** anpassen an die tatsächliche Änderung (z. B. "Admin: Löschen entfernt, Status-Form mit Fehleranzeige").
+- Wenn der Standard-Branch **master** heißt: `git push origin master` statt `main`.
+
+Die Befehle in einem eigenen Abschnitt „**Deploy**“ oder „**Zum Deployen**“ ausgeben.

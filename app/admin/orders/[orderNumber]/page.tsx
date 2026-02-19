@@ -4,9 +4,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getOrderByNumber } from "@/lib/orders-data";
-import { getStatusLabel, ORDER_STATUSES, getOrderTotalCents, getPaymentMethodLabel } from "@/lib/orders";
-import { updateOrderStatusAction } from "../actions";
-import { DeleteOrderButton } from "../DeleteOrderButton";
+import { getStatusLabel, getOrderTotalCents, getPaymentMethodLabel } from "@/lib/orders";
+import { OrderStatusForm } from "../OrderStatusForm";
 
 type Props = { params: { orderNumber: string } };
 
@@ -175,46 +174,11 @@ export default async function AdminOrderDetailPage({ params }: Props) {
         {/* Status & Bemerkungen bearbeiten */}
         <section className="admin-order-detail-section admin-order-detail-form-section">
           <h2 className="admin-order-detail-heading">Status & Bemerkungen bearbeiten</h2>
-          <form action={updateOrderStatusAction} className="admin-order-form">
-            <input type="hidden" name="orderNumber" value={order.orderNumber} />
-            <div className="admin-order-form-row">
-              <label htmlFor="order-status">Status</label>
-              <select
-                id="order-status"
-                name="status"
-                defaultValue={order.status}
-                className="admin-order-select"
-              >
-                {ORDER_STATUSES.map((s) => (
-                  <option key={s} value={s}>
-                    {getStatusLabel(s)}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="admin-order-form-row">
-              <label htmlFor="order-remarks">Bemerkungen</label>
-              <textarea
-                id="order-remarks"
-                name="remarks"
-                defaultValue={order.remarks ?? ""}
-                rows={3}
-                className="admin-order-textarea"
-                placeholder="Interne Notizen (optional)"
-              />
-            </div>
-            <button type="submit" className="btn btn-primary">
-              Speichern
-            </button>
-          </form>
-        </section>
-
-        <section className="admin-order-detail-section admin-order-detail-delete-section">
-          <h2 className="admin-order-detail-heading">Bestellung löschen</h2>
-          <p className="admin-order-delete-hint">
-            Die Bestellung wird unwiderruflich gelöscht. Es erscheinen zwei Bestätigungsschritte.
-          </p>
-          <DeleteOrderButton orderNumber={order.orderNumber} redirectToOrders={true} />
+          <OrderStatusForm
+            orderNumber={order.orderNumber}
+            currentStatus={order.status}
+            currentRemarks={order.remarks ?? ""}
+          />
         </section>
       </div>
     </>

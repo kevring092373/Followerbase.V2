@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { getStatusLabel, type Order, type OrderStatus } from "@/lib/orders";
-import { DeleteOrderButton } from "./DeleteOrderButton";
 
 const ORDER_STATUSES: OrderStatus[] = [
   "pending_payment",
@@ -82,21 +81,18 @@ export function OrdersList({ orders }: Props) {
         <ul className="admin-orders-compact-list">
           {filteredOrders.map((order) => (
             <li key={order.orderNumber}>
-              <div className="admin-order-row card">
-                <Link
-                  href={`/admin/orders/${encodeURIComponent(order.orderNumber)}`}
-                  className="admin-order-row-link"
+              <Link
+                href={`/admin/orders/${encodeURIComponent(order.orderNumber)}`}
+                className="admin-order-row card"
+              >
+                <span className="admin-order-row-number">{order.orderNumber}</span>
+                <span className="admin-order-row-date">{formatDateShort(order.createdAt)}</span>
+                <span
+                  className={`admin-order-status-badge admin-order-status-badge--compact ${statusColorClass(order.status)}`}
                 >
-                  <span className="admin-order-row-number">{order.orderNumber}</span>
-                  <span className="admin-order-row-date">{formatDateShort(order.createdAt)}</span>
-                  <span
-                    className={`admin-order-status-badge admin-order-status-badge--compact ${statusColorClass(order.status)}`}
-                  >
-                    {getStatusLabel(order.status)}
-                  </span>
-                </Link>
-                <DeleteOrderButton orderNumber={order.orderNumber} redirectToOrders={true} />
-              </div>
+                  {getStatusLabel(order.status)}
+                </span>
+              </Link>
             </li>
           ))}
         </ul>
