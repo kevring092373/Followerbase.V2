@@ -29,40 +29,125 @@ export type InstagramStats = {
 };
 
 export type FetchProfilePicResult =
-  | { ok: true; url: string; username: string; stats?: InstagramStats; fullName?: string }
+  | {
+      ok: true;
+      url: string;
+      /** Data-URL (base64) zum direkten Anzeigen im img – umgeht Instagram-Blockierung */
+      imageDataUrl?: string;
+      username: string;
+      stats?: InstagramStats;
+      fullName?: string;
+    }
   | { ok: false; error: string };
+
+/** Bild von URL abrufen und als Data-URL (base64) zurückgeben. */
+async function fetchImageAsDataUrl(imageUrl: string): Promise<string | null> {
+  try {
+    const res = await fetch(imageUrl, {
+      headers: { "User-Agent": BROWSER_UA },
+      cache: "no-store",
+    });
+    if (!res.ok) return null;
+    const blob = await res.blob();
+    const buf = await blob.arrayBuffer();
+    const base64 = Buffer.from(buf).toString("base64");
+    const mime = res.headers.get("content-type")?.split(";")[0] || "image/jpeg";
+    return `data:${mime};base64,${base64}`;
+  } catch {
+    return null;
+  }
+}
 
 const BROWSER_UA =
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
 
+const GOOGLEBOT_UA =
+  "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)";
+
+function parseProfilePicFromHtml(html: string): string | null {
+  // 1. og:image (doppelte oder einfache Anführungszeichen)
+  const ogMatch = html.match(/<meta\s+property="og:image"\s+content=["']([^"']+)["']/i);
+  if (ogMatch?.[1]?.startsWith("http")) return ogMatch[1];
+  // 2. Embedded JSON: profile_pic_url_hd oder profile_pic_url (escaped oder unescaped)
+  const hdMatch = html.match(/"profile_pic_url_hd"\s*:\s*"((?:[^"\\]|\\.)*)"/);
+  if (hdMatch?.[1]) return hdMatch[1].replace(/\\u0026/g, "&").replace(/\\\//g, "/");
+  const picMatch = html.match(/"profile_pic_url"\s*:\s*"((?:[^"\\]|\\.)*)"/);
+  if (picMatch?.[1]) return picMatch[1].replace(/\\u0026/g, "&").replace(/\\\//g, "/");
+  // 3. Erstes CDN-Bild das nach Profilbild aussieht (s150x150, s320x320)
+  const cdnMatch = html.match(/"(https:\/\/[^"]*cdninstagram[^"]*(?:s150|s320|s640)[^"]*\.(?:jpg|jpeg|webp)[^"]*)"/);
+  if (cdnMatch?.[1]) return cdnMatch[1].replace(/\\u0026/g, "&").replace(/\\\//g, "/");
+  return null;
+}
+
+function parseFullNameFromHtml(html: string): string | undefined {
+  const ogTitle = html.match(/<meta\s+property="og:title"\s+content="([^"]+)"/i);
+  const title = ogTitle?.[1] || "";
+  if (!title) return undefined;
+  return title.replace(/\s*\(@[\w.]+\)\s*$/, "").trim() || undefined;
+}
+
 /**
- * Profilseite per fetch laden und og:image aus dem HTML lesen. Funktioniert in Serverless (Netlify etc.).
+ * Profilseite per fetch laden und Bild-URL aus HTML/JSON lesen. Funktioniert in Serverless.
  */
-async function fetchWithHttpGet(username: string): Promise<FetchProfilePicResult | null> {
+async function fetchWithHttpGet(
+  username: string,
+  userAgent: string = BROWSER_UA
+): Promise<FetchProfilePicResult | null> {
   const profileUrl = `https://www.instagram.com/${encodeURIComponent(username)}/`;
   try {
     const res = await fetch(profileUrl, {
       headers: {
-        "User-Agent": BROWSER_UA,
+        "User-Agent": userAgent,
         Accept:
           "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
         "Accept-Language": "de-DE,de;q=0.9,en;q=0.8",
       },
-      next: { revalidate: 0 },
+      cache: "no-store",
     });
     if (!res.ok) return null;
     const html = await res.text();
-    const ogImageMatch = html.match(/<meta\s+property="og:image"\s+content="([^"]+)"/i);
-    const imageUrl = ogImageMatch?.[1];
+    const imageUrl = parseProfilePicFromHtml(html);
     if (!imageUrl || !imageUrl.startsWith("http")) return null;
-    const fullNameMatch = html.match(/<meta\s+property="og:title"\s+content="([^"]+)"/i);
-    const title = fullNameMatch?.[1] || "";
-    const fullName = title ? title.replace(/\s*\(@[\w.]+\)\s*$/, "").trim() : undefined;
+    const fullName = parseFullNameFromHtml(html);
     return {
       ok: true,
       url: imageUrl,
       username,
-      fullName: fullName || undefined,
+      fullName,
+      stats: undefined,
+    };
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Alten JSON-Endpunkt probieren (?__a=1) – liefert manchmal noch Profildaten.
+ */
+async function fetchWithJsonEndpoint(username: string): Promise<FetchProfilePicResult | null> {
+  const url = `https://www.instagram.com/${encodeURIComponent(username)}/?__a=1&__d=dis`;
+  try {
+    const res = await fetch(url, {
+      headers: {
+        "User-Agent": BROWSER_UA,
+        Accept: "application/json",
+        "Accept-Language": "de-DE,de;q=0.9,en;q=0.8",
+        "X-Requested-With": "XMLHttpRequest",
+        Referer: "https://www.instagram.com/",
+      },
+      cache: "no-store",
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    const user = data?.graphql?.user ?? data?.user;
+    const picUrl = user?.profile_pic_url_hd ?? user?.profile_pic_url;
+    if (!picUrl || typeof picUrl !== "string" || !picUrl.startsWith("http")) return null;
+    const fullName = user?.full_name;
+    return {
+      ok: true,
+      url: picUrl,
+      username,
+      fullName: typeof fullName === "string" ? fullName : undefined,
       stats: undefined,
     };
   } catch {
@@ -159,9 +244,30 @@ async function fetchWithBrowser(username: string): Promise<FetchProfilePicResult
       return result;
     });
 
-    await browser.close();
+    if (!data.imageUrl) {
+      await browser.close();
+      return null;
+    }
 
-    if (!data.imageUrl) return null;
+    // Bild mit derselben Seite laden (gleiche Cookies/Session) → Response-Body als Base64
+    let imageDataUrl: string | null = null;
+    try {
+      const imgResponse = await page.goto(data.imageUrl, {
+        waitUntil: "commit",
+        timeout: 15000,
+      });
+      if (imgResponse && imgResponse.status() === 200) {
+        const body = await imgResponse.body();
+        const contentType =
+          imgResponse.headers()["content-type"]?.split(";")[0] || "image/jpeg";
+        const base64 = Buffer.from(body).toString("base64");
+        imageDataUrl = `data:${contentType};base64,${base64}`;
+      }
+    } catch {
+      // Bild-Laden fehlgeschlagen, Ergebnis trotzdem mit URL zurückgeben
+    }
+
+    await browser.close();
 
     const stats: InstagramStats = {};
     if (data.posts != null) stats.posts = data.posts;
@@ -174,6 +280,7 @@ async function fetchWithBrowser(username: string): Promise<FetchProfilePicResult
       username,
       fullName: data.fullName || undefined,
       stats: Object.keys(stats).length ? stats : undefined,
+      imageDataUrl: imageDataUrl || undefined,
     };
   } catch {
     try {
@@ -200,13 +307,28 @@ export async function fetchInstagramProfilePic(
     };
   }
 
-  // Zuerst einfachen HTTP-Abruf (og:image) – funktioniert auf Netlify/Serverless
-  const httpResult = await fetchWithHttpGet(username);
-  if (httpResult) return httpResult;
+  // 1. Mit Googlebot-User-Agent (Instagram liefert an Crawler oft volles HTML inkl. og:image)
+  let result: FetchProfilePicResult | null = await fetchWithHttpGet(username, GOOGLEBOT_UA);
+  if (!result) {
+    const httpResult = await fetchWithHttpGet(username, BROWSER_UA);
+    if (httpResult) result = httpResult;
+  }
+  if (!result) {
+    const jsonResult = await fetchWithJsonEndpoint(username);
+    if (jsonResult) result = jsonResult;
+  }
+  if (!result) {
+    const browserResult = await fetchWithBrowser(username);
+    if (browserResult) result = browserResult;
+  }
 
-  // Fallback: Playwright (nur wo Chromium verfügbar ist, z. B. lokal)
-  const browserResult = await fetchWithBrowser(username);
-  if (browserResult) return browserResult;
+  if (result && result.ok) {
+    const dataUrl = await fetchImageAsDataUrl(result.url);
+    if (dataUrl) {
+      return { ...result, imageDataUrl: dataUrl };
+    }
+    return result;
+  }
 
   return {
     ok: false,

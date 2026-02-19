@@ -17,6 +17,12 @@ export const metadata: Metadata = {
   description: "Shop für Follower, Likes und Views für Instagram, TikTok und mehr.",
 };
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+};
+
 export default function RootLayout({
   children,
 }: {

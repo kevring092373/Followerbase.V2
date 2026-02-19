@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { fetchInstagramProfilePic, type InstagramStats } from "./actions";
 
@@ -41,6 +41,55 @@ export default function InstagramProfilbildPage() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<Awaited<ReturnType<typeof fetchInstagramProfilePic>> | null>(null);
+  const [fallbackImageUrl, setFallbackImageUrl] = useState<string | null>(null);
+  const [fallbackDone, setFallbackDone] = useState(false);
+  const blobUrlRef = useRef<string | null>(null);
+
+  // Fallback: Wenn Server nur URL liefert (kein imageDataUrl), Bild über API laden
+  useEffect(() => {
+    if (!result?.ok || !result.url || result.imageDataUrl) {
+      if (blobUrlRef.current) {
+        URL.revokeObjectURL(blobUrlRef.current);
+        blobUrlRef.current = null;
+      }
+      setFallbackImageUrl(null);
+      setFallbackDone(false);
+      return;
+    }
+    setFallbackDone(false);
+    let cancelled = false;
+    fetch("/api/instagram-download", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ url: result.url }),
+    })
+      .then((res) => (res.ok ? res.blob() : null))
+      .then((blob) => {
+        if (cancelled) return;
+        if (blob) {
+          if (blobUrlRef.current) URL.revokeObjectURL(blobUrlRef.current);
+          const url = URL.createObjectURL(blob);
+          blobUrlRef.current = url;
+          setFallbackImageUrl(url);
+        }
+        setFallbackDone(true);
+      })
+      .catch(() => {
+        if (!cancelled) setFallbackDone(true);
+      });
+    return () => {
+      cancelled = true;
+      if (blobUrlRef.current) {
+        URL.revokeObjectURL(blobUrlRef.current);
+        blobUrlRef.current = null;
+      }
+      setFallbackImageUrl(null);
+    };
+  }, [result]);
+
+  const displayImageUrl = result?.ok ? (result.imageDataUrl ?? fallbackImageUrl) : null;
+  const showPlaceholder = result?.ok && !displayImageUrl;
+  const placeholderText = showPlaceholder && !fallbackDone ? "Bild wird geladen…" : "Bild konnte nicht geladen werden.";
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -107,26 +156,43 @@ export default function InstagramProfilbildPage() {
               </h2>
               {result.stats && <StatsBlock stats={result.stats} />}
               <div className="instagram-profilbild-result-image-wrap">
-                <img
-                  src={`/api/instagram-download?url=${encodeURIComponent(result.url)}&filename=instagram-${result.username}.jpg&inline=1`}
-                  alt={`Profilbild von ${result.username}`}
-                  className="instagram-profilbild-result-image"
-                />
+                {displayImageUrl ? (
+                  <img
+                    src={displayImageUrl}
+                    alt={`Profilbild von ${result.username}`}
+                    className="instagram-profilbild-result-image"
+                  />
+                ) : (
+                  <div className="instagram-profilbild-result-image-placeholder">
+                    {placeholderText}
+                  </div>
+                )}
               </div>
               <div className="instagram-profilbild-result-actions">
-                <a
-                  href={`/api/instagram-download?url=${encodeURIComponent(result.url)}&filename=instagram-${result.username}.jpg`}
-                  download
-                  className="btn btn-primary instagram-profilbild-download-btn"
-                >
-                  Profilbild herunterladen
-                </a>
+                {displayImageUrl && (
+                  <a
+                    href={displayImageUrl}
+                    download={`instagram-${result.username}.jpg`}
+                    className="btn btn-primary instagram-profilbild-download-btn"
+                  >
+                    Profilbild herunterladen
+                  </a>
+                )}
               </div>
               <p className="instagram-profilbild-result-meta">
-                <a href={`/api/instagram-download?url=${encodeURIComponent(result.url)}&filename=instagram-${result.username}.jpg`} target="_blank" rel="noopener noreferrer" className="instagram-profilbild-result-link">
-                  Bild in neuem Tab öffnen
-                </a>
-                {" · "}
+                {displayImageUrl && (
+                  <>
+                    <a
+                      href={displayImageUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="instagram-profilbild-result-link"
+                    >
+                      Bild in neuem Tab öffnen
+                    </a>
+                    {" · "}
+                  </>
+                )}
                 <a
                   href={`https://www.instagram.com/${result.username}/`}
                   target="_blank"

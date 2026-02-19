@@ -78,7 +78,6 @@ export const categories: Category[] = [
     slug: "reddit",
     products: [
       prod("reddit-follower-kaufen", "Reddit Follower"),
-      prod("reddit-upvotes-kaufen", "Reddit Upvotes"),
     ],
   },
   {
