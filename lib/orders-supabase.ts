@@ -151,34 +151,36 @@ export async function updateOrderStatusSupabase(
   remarks?: string
 ): Promise<Order | null> {
   if (!isSupabaseConfigured()) return null;
-  const normalized = normalizeOrderNumber(orderNumber);
-  if (!normalized) return null;
+  const trimmed = orderNumber.trim();
+  if (!trimmed) return null;
 
-  const { data: rows, error: findError } = await supabaseServer
+  const { data: row, error: findError } = await supabaseServer
     .from("orders")
     .select("id, order_number")
-    .limit(500);
+    .eq("order_number", trimmed)
+    .maybeSingle();
 
-  if (findError || !rows?.length) return null;
-  const row = (rows as { id: string; order_number: string }[]).find(
-    (r) => normalizeOrderNumber(r.order_number) === normalized
-  );
+  if (findError) {
+    console.error("Supabase updateOrderStatus find:", findError.message);
+    return null;
+  }
   if (!row) return null;
 
+  const id = (row as { id: string; order_number: string }).id;
   const updatePayload: Record<string, unknown> = { status };
   if (remarks !== undefined) updatePayload.remarks = remarks || null;
 
   const { error: updateError } = await supabaseServer
     .from("orders")
     .update(updatePayload)
-    .eq("id", row.id);
+    .eq("id", id);
 
   if (updateError) {
-    console.error("Supabase updateOrderStatus:", updateError.message);
+    console.error("Supabase updateOrderStatus update:", updateError.message);
     return null;
   }
 
-  return getOrderByNumberSupabase(row.order_number);
+  return getOrderByNumberDirectSupabase(trimmed);
 }
 
 export async function getOrderByPaypalOrderIdSupabase(paypalOrderId: string): Promise<Order | null> {

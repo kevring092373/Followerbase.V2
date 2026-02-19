@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useFormState } from "react-dom";
 import { getStatusLabel, ORDER_STATUSES, type OrderStatus } from "@/lib/orders";
 import { updateOrderStatusAction, type UpdateOrderStatusResult } from "./actions";
@@ -11,10 +13,17 @@ type Props = {
 };
 
 export function OrderStatusForm({ orderNumber, currentStatus, currentRemarks }: Props) {
+  const router = useRouter();
   const [state, formAction] = useFormState<UpdateOrderStatusResult | null, FormData>(
     updateOrderStatusAction,
     null
   );
+
+  useEffect(() => {
+    if (state && !state.error) {
+      router.refresh();
+    }
+  }, [state, router]);
 
   return (
     <form action={formAction} className="admin-order-form">
@@ -48,6 +57,11 @@ export function OrderStatusForm({ orderNumber, currentStatus, currentRemarks }: 
       {state?.error && (
         <p className="admin-form-error" role="alert">
           {state.error}
+        </p>
+      )}
+      {state && !state.error && (
+        <p className="admin-form-success" role="status">
+          Gespeichert.
         </p>
       )}
       <button type="submit" className="btn btn-primary">
