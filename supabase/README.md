@@ -12,7 +12,9 @@ Damit werden angelegt:
 - **orders** – Bestellungen (inkl. Zahlungsart und Kundendaten für die Live-Seite)
 - **order_items** – Bestellpositionen
 
-**Falls du `schema.sql` schon früher ausgeführt hast:** Zusätzlich die Migration ausführen, damit die Tabelle `orders` die Spalten für Zahlungsart und Kundendaten erhält. Im SQL Editor den Inhalt von `migrations/001_orders_payment_and_customer.sql` einfügen und **Run** ausführen.
+**Falls du `schema.sql` schon früher ausgeführt hast:** Zusätzlich die Migrationen ausführen:
+- `migrations/001_orders_payment_and_customer.sql` – Spalten für Zahlungsart und Kundendaten in `orders`
+- `migrations/002_pending_checkouts.sql` – Tabelle `pending_checkouts` (unbezahlte PayPal-Vorgänge), damit der Checkout auf Netlify funktioniert (read-only Dateisystem)
 
 ## 2. API-Keys in .env.local
 

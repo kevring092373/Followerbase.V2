@@ -12,6 +12,12 @@ import {
   getOrderByPaypalOrderIdSupabase,
   createOrderAndGetSupabase,
 } from "./orders-supabase";
+import {
+  addPendingCheckoutSupabase,
+  getPendingByPaypalOrderIdSupabase,
+  removePendingByPaypalOrderIdSupabase,
+  getPendingCheckoutsSupabase,
+} from "./pending-checkouts-supabase";
 import type { Order, OrderItem, OrderStatus, PaymentMethod } from "./orders";
 import { ORDER_STATUSES } from "./orders";
 
@@ -258,6 +264,10 @@ export async function addPendingCheckout(
   sellerNote?: string,
   customer?: PendingCheckoutCustomer
 ): Promise<void> {
+  if (isSupabaseConfigured()) {
+    await addPendingCheckoutSupabase(paypalOrderId, items, totalCents, sellerNote, customer);
+    return;
+  }
   const list = await readPendingCheckouts();
   list.push({
     paypalOrderId,
@@ -272,6 +282,7 @@ export async function addPendingCheckout(
 
 /** Alle unbezahlten Vorgänge (für Admin-Spalte). */
 export async function getPendingCheckouts(): Promise<PendingCheckout[]> {
+  if (isSupabaseConfigured()) return getPendingCheckoutsSupabase();
   const list = await readPendingCheckouts();
   return [...list].sort((a, b) => (b.createdAt ?? "").localeCompare(a.createdAt ?? ""));
 }
@@ -280,6 +291,7 @@ export async function getPendingCheckouts(): Promise<PendingCheckout[]> {
 export async function getPendingByPaypalOrderId(
   paypalOrderId: string
 ): Promise<PendingCheckout | null> {
+  if (isSupabaseConfigured()) return getPendingByPaypalOrderIdSupabase(paypalOrderId);
   const list = await readPendingCheckouts();
   return list.find((p) => p.paypalOrderId === paypalOrderId) ?? null;
 }
@@ -339,8 +351,12 @@ export async function createOrderFromPendingAndRemovePending(
     await writeOrders(orders);
   }
 
-  const remaining = (await readPendingCheckouts()).filter((p) => p.paypalOrderId !== paypalOrderId);
-  await writePendingCheckouts(remaining);
+  if (isSupabaseConfigured()) {
+    await removePendingByPaypalOrderIdSupabase(paypalOrderId);
+  } else {
+    const remaining = (await readPendingCheckouts()).filter((p) => p.paypalOrderId !== paypalOrderId);
+    await writePendingCheckouts(remaining);
+  }
 
   return order;
 }
