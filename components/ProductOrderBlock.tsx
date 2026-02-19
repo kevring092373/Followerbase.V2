@@ -2,9 +2,10 @@
 
 import { useState, useCallback } from "react";
 import { useCart } from "@/context/CartContext";
+import type { ProductTier } from "@/lib/products-data";
 
 const INDIVIDUAL_MIN = 100;
-const INDIVIDUAL_MAX = 1000;
+const INDIVIDUAL_MAX_DEFAULT = 1000;
 const INDIVIDUAL_STEP = 50;
 
 type ProductOrderBlockProps = {
@@ -14,20 +15,22 @@ type ProductOrderBlockProps = {
   productName: string;
   /** Kurzbeschreibung (Bulletpoints), wird oben im Block angezeigt */
   bullets?: string[];
+  /** Optionale Stufen (z. B. Normal / Premium) – Auswahl + eigene Mengen/Preise/Slider-Max */
+  tiers?: ProductTier[];
 };
 
-/** Individuelle Menge: Slider-Wert (0–100) in Menge (50er-Schritte) umrechnen */
-function sliderToQuantity(sliderValue: number): number {
-  const range = INDIVIDUAL_MAX - INDIVIDUAL_MIN;
-  const raw = INDIVIDUAL_MIN + (sliderValue / 100) * range;
+/** Individuelle Menge: Slider-Wert (0–100) in Menge umrechnen (Schritt 50, min/max aus Parametern) */
+function sliderToQuantity(sliderValue: number, min: number, max: number): number {
+  const range = max - min;
+  const raw = min + (sliderValue / 100) * range;
   const qty = Math.round(raw / INDIVIDUAL_STEP) * INDIVIDUAL_STEP;
-  return Math.min(INDIVIDUAL_MAX, Math.max(INDIVIDUAL_MIN, qty));
+  return Math.min(max, Math.max(min, qty));
 }
 
 /** Menge in Slider-Wert (0–100) umrechnen */
-function quantityToSlider(quantity: number): number {
-  const range = INDIVIDUAL_MAX - INDIVIDUAL_MIN;
-  return ((quantity - INDIVIDUAL_MIN) / range) * 100;
+function quantityToSlider(quantity: number, min: number, max: number): number {
+  const range = max - min;
+  return ((quantity - min) / range) * 100;
 }
 
 /** Preis für individuelle Menge (linear zwischen erster und letzter Standard-Preisstufe) */
@@ -49,34 +52,63 @@ export function ProductOrderBlock({
   pricesCents,
   productName,
   bullets,
+  tiers,
 }: ProductOrderBlockProps) {
   const { addItem } = useCart();
+
+  const [tierIndex, setTierIndex] = useState(0);
   const [useIndividual, setUseIndividual] = useState(false);
   const [standardIndex, setStandardIndex] = useState(0);
-  const [sliderValue, setSliderValue] = useState(quantityToSlider(quantities[0] ?? 100));
+  const [sliderValue, setSliderValue] = useState(0);
   const [targetInput, setTargetInput] = useState("");
   const [targetError, setTargetError] = useState<string | null>(null);
   const [added, setAdded] = useState(false);
 
-  const standardQuantity = quantities[standardIndex] ?? 100;
-  const standardPriceCents = pricesCents[standardIndex] ?? 100;
+  const currentTier = tiers && tiers.length > 0 ? tiers[tierIndex]! : null;
+  const q = currentTier ? currentTier.quantities : quantities;
+  const p = currentTier ? currentTier.pricesCents : pricesCents;
+  const maxForSlider = currentTier?.sliderMax ?? Math.max(INDIVIDUAL_MAX_DEFAULT, ...q);
 
-  const individualQuantity = sliderToQuantity(sliderValue);
-  const individualPriceCents = getIndividualPriceCents(individualQuantity, quantities, pricesCents);
+  const standardQuantity = q[standardIndex] ?? 100;
+  const standardPriceCents = p[standardIndex] ?? 100;
+
+  const individualQuantity = sliderToQuantity(sliderValue, INDIVIDUAL_MIN, maxForSlider);
+  const individualPriceCents = getIndividualPriceCents(individualQuantity, q, p);
 
   const quantity = useIndividual ? individualQuantity : standardQuantity;
   const priceCents = useIndividual ? individualPriceCents : standardPriceCents;
 
-  const handleSliderChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setSliderValue(Number(e.target.value));
-    setUseIndividual(true);
-  }, []);
+  const displayName = currentTier ? `${productName} (${currentTier.name})` : productName;
 
-  const handleStandardSelect = useCallback((index: number) => {
-    setStandardIndex(index);
-    setUseIndividual(false);
-    setSliderValue(quantityToSlider(quantities[index] ?? 100));
-  }, [quantities]);
+  const handleTierChange = useCallback(
+    (index: number) => {
+      if (!tiers || index === tierIndex) return;
+      setTierIndex(index);
+      setStandardIndex(0);
+      setUseIndividual(false);
+      const newQ = tiers[index]!.quantities;
+      const newMax = tiers[index]!.sliderMax ?? Math.max(...newQ);
+      setSliderValue(quantityToSlider(newQ[0] ?? 100, INDIVIDUAL_MIN, newMax));
+    },
+    [tiers, tierIndex]
+  );
+
+  const handleSliderChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setSliderValue(Number(e.target.value));
+      setUseIndividual(true);
+    },
+    []
+  );
+
+  const handleStandardSelect = useCallback(
+    (index: number) => {
+      setStandardIndex(index);
+      setUseIndividual(false);
+      setSliderValue(quantityToSlider(q[index] ?? 100, INDIVIDUAL_MIN, maxForSlider));
+    },
+    [q, maxForSlider]
+  );
 
   const handleAddToCart = useCallback(() => {
     const value = targetInput.trim();
@@ -87,14 +119,16 @@ export function ProductOrderBlock({
     setTargetError(null);
     addItem({
       productSlug,
-      productName,
+      productName: displayName,
       quantity,
       priceCents,
       target: value,
     });
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
-  }, [targetInput, addItem, productSlug, productName, quantity, priceCents]);
+  }, [targetInput, addItem, productSlug, displayName, quantity, priceCents]);
+
+  const effectiveSliderValue = useIndividual ? sliderValue : quantityToSlider(standardQuantity, INDIVIDUAL_MIN, maxForSlider);
 
   return (
     <div className="product-order-block">
@@ -107,11 +141,32 @@ export function ProductOrderBlock({
           </ul>
         </div>
       )}
+      {/* Stufen (Normal / Premium) */}
+      {tiers && tiers.length > 1 && (
+        <div className="product-order-row product-tier-row">
+          <span className="product-order-label">Variante</span>
+          <div className="product-tier-options" role="group" aria-label="Variante wählen">
+            {tiers.map((tier, i) => (
+              <label key={tier.id} className="product-tier-option">
+                <input
+                  type="radio"
+                  name="product-tier"
+                  value={tier.id}
+                  checked={tierIndex === i}
+                  onChange={() => handleTierChange(i)}
+                  className="product-tier-radio"
+                />
+                <span className="product-tier-label">{tier.name}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+      )}
       {/* Bereich 1: Standardmengen */}
       <div className="product-order-row">
         <span className="product-order-label">Standardmengen</span>
         <div className="product-quantity-options" role="group" aria-label="Standardmenge wählen">
-          {quantities.map((qty, i) => (
+          {q.map((qty, i) => (
             <label key={qty} className="product-quantity-option">
               <input
                 type="radio"
@@ -127,7 +182,7 @@ export function ProductOrderBlock({
         </div>
       </div>
 
-      {/* Bereich 2: Individuelle Menge (Slider, 50er-Schritte, flüssig) */}
+      {/* Bereich 2: Individuelle Menge (Slider) */}
       <div className="product-order-row product-order-row-individual">
         <label className="product-order-label">
           Individuelle Menge <span className="product-quantity-value">{quantity}</span>
@@ -137,11 +192,11 @@ export function ProductOrderBlock({
           min={0}
           max={100}
           step={0.1}
-          value={useIndividual ? sliderValue : quantityToSlider(standardQuantity)}
+          value={effectiveSliderValue}
           onChange={handleSliderChange}
           onPointerDown={() => setUseIndividual(true)}
           className="product-quantity-slider"
-          aria-label={`Menge zwischen ${INDIVIDUAL_MIN} und ${INDIVIDUAL_MAX} in 50er-Schritten`}
+          aria-label={`Menge zwischen ${INDIVIDUAL_MIN} und ${maxForSlider} in 50er-Schritten`}
         />
       </div>
 

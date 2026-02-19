@@ -74,6 +74,7 @@ export default async function ProductPage({ params }: Props) {
             pricesCents={product.pricesCents}
             productName={product.name}
             bullets={bullets}
+            tiers={product.tiers}
           />
         </div>
       </div>

@@ -2110,6 +2110,46 @@ button.nav-link {
   margin-bottom: 1rem;
 }
 
+.product-tier-row {
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.product-tier-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.product-tier-option {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.product-tier-radio {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.product-tier-label {
+  display: inline-block;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.9375rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-page);
+  color: var(--text-primary);
+  transition: border-color var(--transition-fast), background var(--transition-fast);
+}
+
+.product-tier-option input:checked + .product-tier-label {
+  border-color: var(--brand-primary);
+  background: rgba(99, 102, 241, 0.08);
+  color: var(--text-primary);
+}
+
 .product-order-row-individual {
   padding-top: 1rem;
   border-top: 1px solid var(--border);

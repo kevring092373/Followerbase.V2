@@ -1,7 +1,6 @@
 {
   "products": [
-    {"slug":"instagram-follower-kaufen","name":"Instagram Follower (Normal)","categoryId":"instagram","quantities":[100,250,500,1000,2500,5000,10000,25000],"pricesCents":[99,290,549,1090,2390,4250,7990,17900],"articleNumber":"FC-001","image":"/uploads/products/1771263263985-wkdanxr.png"},
-    {"slug":"instagram-follower-premium-kaufen","name":"Instagram Follower (Premium)","categoryId":"instagram","quantities":[100,250,500,1000,2500,5000,10000],"pricesCents":[195,450,849,1590,3690,6800,12490],"articleNumber":"FC-001-P"},
+    {"slug":"instagram-follower-kaufen","name":"Instagram Follower","categoryId":"instagram","quantities":[100,250,500,1000,2500,5000,10000,25000],"pricesCents":[99,290,549,1090,2390,4250,7990,17900],"articleNumber":"FC-001","image":"/uploads/products/1771263263985-wkdanxr.png","tiers":[{"id":"normal","name":"Normal","quantities":[100,250,500,1000,2500,5000,10000,25000],"pricesCents":[99,290,549,1090,2390,4250,7990,17900],"sliderMax":25000},{"id":"premium","name":"Premium","quantities":[100,250,500,1000,2500,5000,10000],"pricesCents":[195,450,849,1590,3690,6800,12490],"sliderMax":10000}]},
     {"slug":"instagram-follower-tuerkisch-kaufen","name":"Instagram Follower Türkisch","categoryId":"instagram","quantities":[100,200,500],"pricesCents":[100,200,500],"articleNumber":"FC-002"},
     {"slug":"instagram-follower-deutsch-kaufen","name":"Instagram Follower Deutsch","categoryId":"instagram","quantities":[100,200,500],"pricesCents":[100,200,500],"articleNumber":"FC-003"},
     {"slug":"instagram-follower-blauer-haken-kaufen","name":"Instagram Follower Blauer Haken","categoryId":"instagram","quantities":[100,200,500],"pricesCents":[100,200,500],"articleNumber":"FC-004"},

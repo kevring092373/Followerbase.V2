@@ -7,12 +7,24 @@ import path from "path";
 import { categories } from "./categories";
 import type { Category } from "./categories";
 
+/** Optionale Stufe/Variante eines Produkts (z. B. Normal / Premium) mit eigener Preisliste. */
+export interface ProductTier {
+  id: string;
+  name: string;
+  quantities: number[];
+  pricesCents: number[];
+  /** Max. Menge für Slider (individuelle Menge); sonst letzte Standardmenge. */
+  sliderMax?: number;
+}
+
 export interface Product {
   slug: string;
   name: string;
   categoryId: string;
   quantities: number[];
   pricesCents: number[];
+  /** Optionale Stufen (z. B. Normal / Premium) – dann erscheint eine Auswahl, Mengen/Preise pro Stufe. */
+  tiers?: ProductTier[];
   /** Artikelnummer (z. B. FC-001) */
   articleNumber?: string;
   /** Kurzbeschreibung als Bulletpoints (für Produktseite) */
@@ -87,19 +99,33 @@ export async function getCategoryByProductSlug(slug: string): Promise<Category |
   return categories.find((c) => c.id === product.categoryId);
 }
 
+function normalizeTier(t: unknown): ProductTier | null {
+  if (!t || typeof t !== "object") return null;
+  const r = t as Record<string, unknown>;
+  const id = typeof r.id === "string" ? r.id : "";
+  const name = typeof r.name === "string" ? r.name : "";
+  const quantities = Array.isArray(r.quantities) ? (r.quantities as number[]) : [];
+  const pricesCents = Array.isArray(r.pricesCents) ? (r.pricesCents as number[]) : [];
+  if (!id || !name || quantities.length === 0 || pricesCents.length !== quantities.length) return null;
+  const sliderMax = typeof r.sliderMax === "number" ? r.sliderMax : undefined;
+  return { id, name, quantities, pricesCents, sliderMax };
+}
+
 function normalizeProduct(p: Record<string, unknown>): Product {
   const slug = typeof p.slug === "string" ? p.slug : "";
   const name = typeof p.name === "string" ? p.name : "";
   const categoryId = typeof p.categoryId === "string" ? p.categoryId : "";
   const quantities = Array.isArray(p.quantities) ? (p.quantities as number[]) : [];
   const pricesCents = Array.isArray(p.pricesCents) ? (p.pricesCents as number[]) : [];
+  const tiersRaw = Array.isArray(p.tiers) ? (p.tiers as unknown[]).map(normalizeTier).filter((x): x is ProductTier => x !== null) : undefined;
+  const tiers = tiersRaw && tiersRaw.length > 0 ? tiersRaw : undefined;
   const articleNumber = typeof p.articleNumber === "string" ? p.articleNumber.trim() || undefined : undefined;
   const bullets = Array.isArray(p.bullets) ? (p.bullets as string[]) : undefined;
   const description = typeof p.description === "string" ? p.description : undefined;
   const image = typeof p.image === "string" ? p.image : undefined;
   const metaTitle = typeof p.metaTitle === "string" ? p.metaTitle : undefined;
   const metaDescription = typeof p.metaDescription === "string" ? p.metaDescription : undefined;
-  return { slug, name, categoryId, quantities, pricesCents, articleNumber, bullets, description, image, metaTitle, metaDescription };
+  return { slug, name, categoryId, quantities, pricesCents, tiers, articleNumber, bullets, description, image, metaTitle, metaDescription };
 }
 
 export async function updateProduct(slug: string, data: Partial<Product>): Promise<Product> {
