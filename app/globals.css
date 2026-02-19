@@ -1274,6 +1274,131 @@ button.nav-link {
   background: var(--bg-muted);
 }
 
+.admin-order-row-link {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  text-decoration: none;
+  color: inherit;
+  min-width: 0;
+}
+
+.admin-order-row-link:hover {
+  text-decoration: none;
+  color: inherit;
+}
+
+.admin-order-delete-btn {
+  flex-shrink: 0;
+  font-size: 0.875rem;
+}
+
+.admin-orders-list-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.admin-orders-list-header .admin-orders-col-heading {
+  margin: 0;
+}
+
+.admin-orders-filter-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.admin-orders-filter-select {
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  background: var(--bg-page);
+  color: var(--text-primary);
+}
+
+.admin-orders-filter-select:focus {
+  outline: none;
+  border-color: var(--brand-primary);
+}
+
+/* Löschen-Modal (doppelte Prüfung) */
+.admin-order-delete-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.admin-order-delete-modal {
+  max-width: 24rem;
+  width: 100%;
+  padding: 1.5rem;
+}
+
+.admin-order-delete-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  margin: 0 0 1rem;
+  color: var(--text-primary);
+}
+
+.admin-order-delete-text {
+  font-size: 0.9375rem;
+  color: var(--text-secondary);
+  margin: 0 0 1rem;
+}
+
+.admin-order-delete-input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  font-size: 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  margin-bottom: 1rem;
+  background: var(--bg-page);
+  color: var(--text-primary);
+}
+
+.admin-order-delete-input:focus {
+  outline: none;
+  border-color: var(--brand-primary);
+}
+
+.admin-order-delete-error {
+  font-size: 0.875rem;
+  color: #b91c1c;
+  margin: -0.5rem 0 0.75rem;
+}
+
+.admin-order-delete-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.admin-order-detail-delete-section {
+  border-top: 1px solid var(--border);
+  padding-top: 1.5rem;
+}
+
+.admin-order-delete-hint {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin: 0 0 0.75rem;
+}
+
 .admin-order-row-number {
   font-weight: 600;
   font-size: 0.9375rem;

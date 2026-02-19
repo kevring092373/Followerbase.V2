@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import { getOrderByNumber } from "@/lib/orders-data";
 import { getStatusLabel, ORDER_STATUSES, getOrderTotalCents, getPaymentMethodLabel } from "@/lib/orders";
 import { updateOrderStatusAction } from "../actions";
+import { DeleteOrderButton } from "../DeleteOrderButton";
 
 type Props = { params: { orderNumber: string } };
 
@@ -206,6 +207,14 @@ export default async function AdminOrderDetailPage({ params }: Props) {
               Speichern
             </button>
           </form>
+        </section>
+
+        <section className="admin-order-detail-section admin-order-detail-delete-section">
+          <h2 className="admin-order-detail-heading">Bestellung löschen</h2>
+          <p className="admin-order-delete-hint">
+            Die Bestellung wird unwiderruflich gelöscht. Es erscheinen zwei Bestätigungsschritte.
+          </p>
+          <DeleteOrderButton orderNumber={order.orderNumber} redirectToOrders={true} />
         </section>
       </div>
     </>

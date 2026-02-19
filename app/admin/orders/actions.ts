@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { updateOrderStatus } from "@/lib/orders-data";
+import { updateOrderStatus, deleteOrder } from "@/lib/orders-data";
 import type { OrderStatus } from "@/lib/orders";
 
 export async function updateOrderStatusAction(formData: FormData): Promise<void> {
@@ -30,4 +30,15 @@ export async function updateOrderStatusAction(formData: FormData): Promise<void>
   if (!updated) return;
 
   revalidatePath("/admin/orders", "layout");
+}
+
+export async function deleteOrderAction(orderNumber: string): Promise<{ error?: string }> {
+  if (!orderNumber || typeof orderNumber !== "string") {
+    return { error: "Bestellnummer fehlt." };
+  }
+  const deleted = await deleteOrder(orderNumber.trim());
+  if (!deleted) return { error: "Bestellung nicht gefunden oder bereits gelöscht." };
+  revalidatePath("/admin/orders", "layout");
+  revalidatePath(`/admin/orders/${encodeURIComponent(orderNumber.trim())}`);
+  return {};
 }

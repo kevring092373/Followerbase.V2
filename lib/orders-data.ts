@@ -142,6 +142,18 @@ export async function getAllOrders(): Promise<Order[]> {
   return [...orders].sort((a, b) => (b.createdAt ?? "").localeCompare(a.createdAt ?? ""));
 }
 
+/** Bestellung löschen (für Admin). Gibt true zurück, wenn gelöscht. */
+export async function deleteOrder(orderNumber: string): Promise<boolean> {
+  const orders = await readOrders();
+  const normalized = orderNumber.replace(/\s/g, "").toUpperCase();
+  const filtered = orders.filter(
+    (o) => o.orderNumber.replace(/\s/g, "").toUpperCase() !== normalized
+  );
+  if (filtered.length === orders.length) return false;
+  await writeOrders(filtered);
+  return true;
+}
+
 /** Status einer Bestellung aktualisieren (für Admin). */
 export async function updateOrderStatus(
   orderNumber: string,
