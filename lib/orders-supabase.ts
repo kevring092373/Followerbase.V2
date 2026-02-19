@@ -81,10 +81,37 @@ function normalizeOrderNumber(s: string): string {
   return s.replace(/\s/g, "").toUpperCase();
 }
 
+/** Einzelne Bestellung per Bestellnummer (direkt per DB-Abfrage). */
+async function getOrderByNumberDirectSupabase(orderNumber: string): Promise<Order | null> {
+  const trimmed = orderNumber?.trim();
+  if (!trimmed) return null;
+
+  const { data: orderRow, error: orderError } = await supabaseServer
+    .from("orders")
+    .select("*")
+    .eq("order_number", trimmed)
+    .limit(1)
+    .maybeSingle();
+
+  if (orderError || !orderRow) return null;
+
+  const r = orderRow as OrderRow;
+  const { data: itemRows } = await supabaseServer
+    .from("order_items")
+    .select("*")
+    .eq("order_id", r.id)
+    .order("created_at", { ascending: true });
+  const items: OrderItem[] = (itemRows ?? []).map((i) => itemRowToItem(i as OrderItemRow));
+  return rowToOrder(r, items);
+}
+
 export async function getOrderByNumberSupabase(orderNumber: string): Promise<Order | null> {
   if (!isSupabaseConfigured()) return null;
   const normalized = normalizeOrderNumber(orderNumber);
   if (!normalized) return null;
+
+  const byExact = await getOrderByNumberDirectSupabase(orderNumber);
+  if (byExact && normalizeOrderNumber(byExact.orderNumber) === normalized) return byExact;
 
   const all = await getAllOrdersSupabase();
   const order = all.find((o) => normalizeOrderNumber(o.orderNumber) === normalized);

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { lookupOrder } from "./actions";
 import {
@@ -54,11 +54,29 @@ function TrackingContent() {
   const [result, setResult] = useState<
     { ok: true; order: Order } | { ok: false; error: string } | null
   >(null);
+  const loadedForSuccess = useRef<string | null>(null);
 
   useEffect(() => {
     const success = searchParams.get("success");
     if (success) setOrderNumber(success);
   }, [searchParams]);
+
+  useEffect(() => {
+    const success = searchParams.get("success")?.trim();
+    if (!success || loadedForSuccess.current === success) return;
+    loadedForSuccess.current = success;
+    let cancelled = false;
+    setLoading(true);
+    setResult(null);
+    lookupOrder(success).then((res) => {
+      if (!cancelled) {
+        setResult(res);
+        setOrderNumber(success);
+      }
+      setLoading(false);
+    });
+    return () => { cancelled = true; };
+  }, [searchParams.get("success")]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
