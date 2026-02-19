@@ -11,7 +11,7 @@ function tokenForPassword(password: string): string {
 }
 
 export async function POST(request: NextRequest) {
-  const password = process.env.ADMIN_PASSWORD;
+  const password = process.env.ADMIN_PASSWORD?.trim();
   const totpSecret = process.env.ADMIN_TOTP_SECRET?.trim();
 
   if (!password || password.length < 8) {
@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
     path: "/",
-    maxAge: 60 * 60 * 24 * 7,
+    maxAge: 60 * 60 * 24 * 30, // 30 Tage – bleibt bis Abmeldung oder Schließen
   });
   return res;
 }

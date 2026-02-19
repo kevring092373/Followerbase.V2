@@ -22,6 +22,7 @@ function AdminLoginForm() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ password, from }),
+        credentials: "include",
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
@@ -32,8 +33,8 @@ function AdminLoginForm() {
         setStep("2fa");
         setCode("");
       } else {
-        router.push(data.redirect || "/admin");
-        router.refresh();
+        window.location.href = data.redirect || "/admin";
+        return;
       }
     } catch {
       setError("Netzwerkfehler.");
@@ -58,8 +59,8 @@ function AdminLoginForm() {
         setError(data.error || "Code ungültig.");
         return;
       }
-      router.push(data.redirect || "/admin");
-      router.refresh();
+      window.location.href = data.redirect || "/admin";
+      return;
     } catch {
       setError("Netzwerkfehler.");
     } finally {
