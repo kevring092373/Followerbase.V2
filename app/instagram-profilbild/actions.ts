@@ -32,6 +32,44 @@ export type FetchProfilePicResult =
   | { ok: true; url: string; username: string; stats?: InstagramStats; fullName?: string }
   | { ok: false; error: string };
 
+const BROWSER_UA =
+  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
+
+/**
+ * Profilseite per fetch laden und og:image aus dem HTML lesen. Funktioniert in Serverless (Netlify etc.).
+ */
+async function fetchWithHttpGet(username: string): Promise<FetchProfilePicResult | null> {
+  const profileUrl = `https://www.instagram.com/${encodeURIComponent(username)}/`;
+  try {
+    const res = await fetch(profileUrl, {
+      headers: {
+        "User-Agent": BROWSER_UA,
+        Accept:
+          "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+        "Accept-Language": "de-DE,de;q=0.9,en;q=0.8",
+      },
+      next: { revalidate: 0 },
+    });
+    if (!res.ok) return null;
+    const html = await res.text();
+    const ogImageMatch = html.match(/<meta\s+property="og:image"\s+content="([^"]+)"/i);
+    const imageUrl = ogImageMatch?.[1];
+    if (!imageUrl || !imageUrl.startsWith("http")) return null;
+    const fullNameMatch = html.match(/<meta\s+property="og:title"\s+content="([^"]+)"/i);
+    const title = fullNameMatch?.[1] || "";
+    const fullName = title ? title.replace(/\s*\(@[\w.]+\)\s*$/, "").trim() : undefined;
+    return {
+      ok: true,
+      url: imageUrl,
+      username,
+      fullName: fullName || undefined,
+      stats: undefined,
+    };
+  } catch {
+    return null;
+  }
+}
+
 /**
  * Seite mit Playwright (echter Browser) aufrufen und Bild + Stats aus dem geladenen DOM auslesen.
  */
@@ -162,12 +200,17 @@ export async function fetchInstagramProfilePic(
     };
   }
 
-  const result = await fetchWithBrowser(username);
-  if (result) return result;
+  // Zuerst einfachen HTTP-Abruf (og:image) – funktioniert auf Netlify/Serverless
+  const httpResult = await fetchWithHttpGet(username);
+  if (httpResult) return httpResult;
+
+  // Fallback: Playwright (nur wo Chromium verfügbar ist, z. B. lokal)
+  const browserResult = await fetchWithBrowser(username);
+  if (browserResult) return browserResult;
 
   return {
     ok: false,
     error:
-      "Profil konnte nicht geladen werden. Bitte prüfe den Nutzernamen (öffentliches Profil). Wenn Instagram eine Anmeldung anzeigt, blockiert Instagram den Zugriff von Servern.",
+      "Profil konnte nicht geladen werden. Bitte prüfe den Nutzernamen (öffentliches Profil). Instagram blockiert oft Zugriffe von Servern – dann später erneut versuchen.",
   };
 }

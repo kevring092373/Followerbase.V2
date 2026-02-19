@@ -108,7 +108,7 @@ export default function InstagramProfilbildPage() {
               {result.stats && <StatsBlock stats={result.stats} />}
               <div className="instagram-profilbild-result-image-wrap">
                 <img
-                  src={result.url}
+                  src={`/api/instagram-download?url=${encodeURIComponent(result.url)}&filename=instagram-${result.username}.jpg&inline=1`}
                   alt={`Profilbild von ${result.username}`}
                   className="instagram-profilbild-result-image"
                 />
@@ -123,7 +123,7 @@ export default function InstagramProfilbildPage() {
                 </a>
               </div>
               <p className="instagram-profilbild-result-meta">
-                <a href={result.url} target="_blank" rel="noopener noreferrer" className="instagram-profilbild-result-link">
+                <a href={`/api/instagram-download?url=${encodeURIComponent(result.url)}&filename=instagram-${result.username}.jpg`} target="_blank" rel="noopener noreferrer" className="instagram-profilbild-result-link">
                   Bild in neuem Tab öffnen
                 </a>
                 {" · "}

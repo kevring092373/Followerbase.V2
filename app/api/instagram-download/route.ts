@@ -7,6 +7,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(request: NextRequest) {
   const url = request.nextUrl.searchParams.get("url");
   const filename = request.nextUrl.searchParams.get("filename") || "instagram-profilbild.jpg";
+  const inline = request.nextUrl.searchParams.get("inline") === "1";
 
   if (!url || !url.startsWith("http")) {
     return NextResponse.json({ error: "Ungültige URL" }, { status: 400 });
@@ -26,12 +27,16 @@ export async function GET(request: NextRequest) {
     const contentType = res.headers.get("content-type") || "image/jpeg";
     const safeName = filename.replace(/[^a-zA-Z0-9._-]/g, "_").slice(0, 80) || "profilbild.jpg";
 
+    const headers: Record<string, string> = {
+      "Content-Type": contentType,
+    };
+    if (!inline) {
+      headers["Content-Disposition"] = `attachment; filename="${safeName}"`;
+    }
+
     return new NextResponse(blob, {
       status: 200,
-      headers: {
-        "Content-Type": contentType,
-        "Content-Disposition": `attachment; filename="${safeName}"`,
-      },
+      headers,
     });
   } catch {
     return NextResponse.json({ error: "Fehler beim Abrufen des Bildes" }, { status: 502 });
