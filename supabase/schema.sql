@@ -19,16 +19,25 @@ CREATE TABLE IF NOT EXISTS customers (
 CREATE UNIQUE INDEX IF NOT EXISTS customers_email_key ON customers (lower(email));
 COMMENT ON TABLE customers IS 'Kundendaten für Bestellungen';
 
--- Bestellungen (Verknüpfung mit Kunden möglich)
+-- Bestellungen (Verknüpfung mit Kunden optional; Kundendaten zusätzlich denormalisiert)
 CREATE TABLE IF NOT EXISTS orders (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   order_number TEXT NOT NULL UNIQUE,
   status TEXT NOT NULL DEFAULT 'eingegangen',
   remarks TEXT,
+  payment_method TEXT,
   paypal_order_id TEXT,
   seller_note TEXT,
   total_cents INT,
   customer_id UUID REFERENCES customers(id) ON DELETE SET NULL,
+  customer_email TEXT,
+  customer_name TEXT,
+  customer_phone TEXT,
+  customer_address_line1 TEXT,
+  customer_address_line2 TEXT,
+  customer_city TEXT,
+  customer_postal_code TEXT,
+  customer_country TEXT,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );

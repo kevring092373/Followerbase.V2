@@ -49,7 +49,7 @@ export async function updateOrderStatusAction(
   } catch (err) {
     console.error("updateOrderStatus failed:", err);
     return {
-      error: "Status konnte nicht gespeichert werden. (Auf Netlify sind Änderungen an Bestellungen nicht möglich – nur lokal oder mit Datenbank.)",
+      error: "Status konnte nicht gespeichert werden. Bitte Supabase-Verbindung prüfen.",
     };
   }
 }

@@ -1,9 +1,17 @@
 /**
- * Bestellungen: Lesen/Schreiben aus content/orders.json.
+ * Bestellungen: Supabase (wenn konfiguriert) oder content/orders.json.
  * Unbezahlte Vorgänge (Warenkorb/Kasse) in content/pending-checkouts.json ohne Bestellnummer.
  */
 import { promises as fs } from "fs";
 import path from "path";
+import { isSupabaseConfigured } from "@/lib/supabase/server";
+import {
+  getOrderByNumberSupabase,
+  getAllOrdersSupabase,
+  updateOrderStatusSupabase,
+  getOrderByPaypalOrderIdSupabase,
+  createOrderAndGetSupabase,
+} from "./orders-supabase";
 import type { Order, OrderItem, OrderStatus, PaymentMethod } from "./orders";
 import { ORDER_STATUSES } from "./orders";
 
@@ -128,6 +136,7 @@ async function writeOrders(orders: Order[]): Promise<void> {
 
 /** Bestellung anhand der Bestellnummer suchen (case-insensitive, Leerzeichen ignoriert). */
 export async function getOrderByNumber(orderNumber: string): Promise<Order | null> {
+  if (isSupabaseConfigured()) return getOrderByNumberSupabase(orderNumber);
   const normalized = orderNumber.replace(/\s/g, "").toUpperCase();
   if (!normalized) return null;
   const orders = await readOrders();
@@ -138,6 +147,7 @@ export async function getOrderByNumber(orderNumber: string): Promise<Order | nul
 }
 
 export async function getAllOrders(): Promise<Order[]> {
+  if (isSupabaseConfigured()) return getAllOrdersSupabase();
   const orders = await readOrders();
   return [...orders].sort((a, b) => (b.createdAt ?? "").localeCompare(a.createdAt ?? ""));
 }
@@ -148,6 +158,7 @@ export async function updateOrderStatus(
   status: OrderStatus,
   remarks?: string
 ): Promise<Order | null> {
+  if (isSupabaseConfigured()) return updateOrderStatusSupabase(orderNumber, status, remarks);
   const orders = await readOrders();
   const normalized = orderNumber.replace(/\s/g, "").toUpperCase();
   const index = orders.findIndex(
@@ -180,6 +191,7 @@ function nextOrderNumber(orders: Order[]): string {
 
 /** Bestellung anhand PayPal-Order-ID finden (nur bezahlte Bestellungen). */
 export async function getOrderByPaypalOrderId(paypalOrderId: string): Promise<Order | null> {
+  if (isSupabaseConfigured()) return getOrderByPaypalOrderIdSupabase(paypalOrderId);
   const orders = await readOrders();
   return orders.find((o) => o.paypalOrderId === paypalOrderId) ?? null;
 }
@@ -293,12 +305,9 @@ export async function createOrderFromPendingAndRemovePending(
     });
   }
 
-  const orders = await readOrders();
-  const orderNumber = nextOrderNumber(orders);
   const now = new Date().toISOString();
   const c = pending.customer;
-  const order: Order = {
-    orderNumber,
+  const orderPayload: Omit<Order, "orderNumber"> = {
     status: "eingegangen",
     paymentMethod: "paypal",
     paypalOrderId,
@@ -316,8 +325,19 @@ export async function createOrderFromPendingAndRemovePending(
     customerPostalCode: c?.postalCode ?? undefined,
     customerCountry: c?.country ?? undefined,
   };
-  orders.push(order);
-  await writeOrders(orders);
+
+  let order: Order;
+  if (isSupabaseConfigured()) {
+    const created = await createOrderAndGetSupabase({ ...orderPayload, orderNumber: "" });
+    if (!created) return null;
+    order = created;
+  } else {
+    const orders = await readOrders();
+    const orderNumber = nextOrderNumber(orders);
+    order = { ...orderPayload, orderNumber };
+    orders.push(order);
+    await writeOrders(orders);
+  }
 
   const remaining = (await readPendingCheckouts()).filter((p) => p.paypalOrderId !== paypalOrderId);
   await writePendingCheckouts(remaining);
@@ -346,11 +366,8 @@ export async function createOrderForUeberweisung(
     });
   }
 
-  const orders = await readOrders();
-  const orderNumber = nextOrderNumber(orders);
   const now = new Date().toISOString();
-  const order: Order = {
-    orderNumber,
+  const orderPayload: Omit<Order, "orderNumber"> = {
     status: "pending_payment",
     paymentMethod: "ueberweisung",
     items: items.length ? items : undefined,
@@ -367,6 +384,16 @@ export async function createOrderForUeberweisung(
     customerPostalCode: customer.postalCode ?? undefined,
     customerCountry: customer.country ?? undefined,
   };
+
+  if (isSupabaseConfigured()) {
+    const created = await createOrderAndGetSupabase(orderPayload);
+    if (!created) throw new Error("Bestellung konnte nicht in Supabase angelegt werden.");
+    return created;
+  }
+
+  const orders = await readOrders();
+  const orderNumber = nextOrderNumber(orders);
+  const order: Order = { ...orderPayload, orderNumber };
   orders.push(order);
   await writeOrders(orders);
   return order;

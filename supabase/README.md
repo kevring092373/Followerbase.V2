@@ -9,8 +9,10 @@
 Damit werden angelegt:
 
 - **customers** – Kundendaten (E-Mail, Name, Telefon, Adresse)
-- **orders** – Bestellungen (mit optionalem Verweis auf `customers`)
+- **orders** – Bestellungen (inkl. Zahlungsart und Kundendaten für die Live-Seite)
 - **order_items** – Bestellpositionen
+
+**Falls du `schema.sql` schon früher ausgeführt hast:** Zusätzlich die Migration ausführen, damit die Tabelle `orders` die Spalten für Zahlungsart und Kundendaten erhält. Im SQL Editor den Inhalt von `migrations/001_orders_payment_and_customer.sql` einfügen und **Run** ausführen.
 
 ## 2. API-Keys in .env.local
 
@@ -36,4 +38,5 @@ Falls noch nicht geschehen:
 npm install
 ```
 
-Die Kundendaten werden im Code über `lib/customers-data.ts` und den Server-Client `lib/supabase/server.ts` genutzt.
+- **Kundendaten** werden über `lib/customers-data.ts` genutzt.
+- **Bestellungen** werden über `lib/orders-data.ts` und `lib/orders-supabase.ts` genutzt. Wenn Supabase konfiguriert ist (URL + Service-Role-Key), speichert die App alle neuen Bestellungen in Supabase und du kannst Status und Bemerkungen auch auf der **Live-Seite (Netlify)** bearbeiten.
