@@ -37,8 +37,8 @@ export async function POST(request: NextRequest) {
 
   let valid: boolean;
   try {
-    const result = await verify({ token: code, secret: totpSecret });
-    valid = result === true || (typeof result === "object" && result !== null && "valid" in result && !!result.valid);
+    const result = (await verify({ token: code, secret: totpSecret })) as unknown;
+    valid = result === true || (typeof result === "object" && result !== null && "valid" in result && !!(result as { valid?: boolean }).valid);
   } catch {
     valid = false;
   }
