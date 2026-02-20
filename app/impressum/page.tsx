@@ -26,6 +26,9 @@ export default function ImpressumPage() {
         <p>Umsatzsteuer-Identifikationsnummer gemäß § 27a UStG: DE361898179</p>
         <p style={{ marginTop: "1rem" }}><strong>Verantwortlich für den Inhalt</strong></p>
         <p>Kevin Ringsdorf, Ulmenweg 15, 51766 Engelskirchen</p>
+        <p style={{ marginTop: "1.5rem", fontSize: "0.9375rem", color: "var(--text-secondary)" }}>
+          Stand 20.02.2026
+        </p>
       </div>
     </article>
   );

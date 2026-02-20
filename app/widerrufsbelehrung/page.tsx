@@ -22,10 +22,10 @@ export default function WiderrufsbelehrungPage() {
         <p>Wenn du diesen Vertrag widerrufst, haben wir dir alle Zahlungen, die wir von dir erhalten haben, unverzüglich und spätestens binnen vierzehn Tagen zurückzuzahlen. Für die Rückzahlung verwenden wir dasselbe Zahlungsmittel, das du bei der ursprünglichen Transaktion eingesetzt hast.</p>
 
         <h2>Besonderheiten bei digitalen Leistungen</h2>
-        <p>Wenn du die Ausführung der Dienstleistung (z. B. Lieferung von Followern/Likes) vor Ende der Widerrufsfrist ausdrücklich verlangst oder mit der Ausführung vor Ablauf der Frist beginnst, erlöscht dein Widerrufsrecht mit der vollständigen Erbringung der Leistung. Bei digitalen Inhalten, die nicht auf einem körperlichen Datenträger geliefert werden, erlischt das Widerrufsrecht, sobald wir mit der Ausführung begonnen haben, nachdem du ausdrücklich zugestimmt hast.</p>
+        <p>Wenn du die Ausführung der Dienstleistung (z. B. Lieferung von Followern, Likes oder Views) vor Ende der Widerrufsfrist ausdrücklich verlangst oder mit der Ausführung vor Ablauf der Frist beginnst, erlöscht dein Widerrufsrecht mit der vollständigen Erbringung der Leistung. Bei digitalen Inhalten, die nicht auf einem körperlichen Datenträger geliefert werden, erlischt das Widerrufsrecht, sobald wir mit der Ausführung begonnen haben, nachdem du ausdrücklich zugestimmt hast.</p>
 
         <p style={{ marginTop: "1.5rem", fontSize: "0.9375rem", color: "var(--text-secondary)" }}>
-          Diese Widerrufsbelehrung ist ein Muster. Passe sie an dein Geschäftsmodell an und lasse sie ggf. rechtlich prüfen.
+          Stand 20.02.2026
         </p>
       </div>
     </article>
