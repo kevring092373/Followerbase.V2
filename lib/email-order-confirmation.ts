@@ -68,11 +68,16 @@ function escapeHtml(s: string): string {
  */
 export async function sendOrderConfirmationEmail(order: Order): Promise<boolean> {
   const email = order.customerEmail?.trim();
-  if (!email || !email.includes("@")) return false;
+  if (!email || !email.includes("@")) {
+    console.warn("[email] Keine gültige Kunden-E-Mail in Bestellung", order.orderNumber);
+    return false;
+  }
 
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
-    console.warn("[email] RESEND_API_KEY nicht gesetzt – Bestellbestätigung nicht gesendet.");
+    console.warn(
+      "[email] RESEND_API_KEY fehlt – in .env.local (lokal) bzw. Netlify Environment variables (Live) eintragen."
+    );
     return false;
   }
 
@@ -80,7 +85,7 @@ export async function sendOrderConfirmationEmail(order: Order): Promise<boolean>
     const { Resend } = await import("resend");
     const resend = new Resend(apiKey);
 
-    const { error } = await resend.emails.send({
+    const { data, error } = await resend.emails.send({
       from: FROM_EMAIL,
       to: email,
       subject: `Bestellbestätigung ${order.orderNumber} – ${SITE_NAME}`,
@@ -88,9 +93,10 @@ export async function sendOrderConfirmationEmail(order: Order): Promise<boolean>
     });
 
     if (error) {
-      console.error("[email] Resend Fehler:", error);
+      console.error("[email] Resend API Fehler:", JSON.stringify(error));
       return false;
     }
+    console.info("[email] Bestellbestätigung gesendet:", order.orderNumber, "an", email, "id:", data?.id);
     return true;
   } catch (e) {
     console.error("[email] Bestellbestätigung senden:", e);
