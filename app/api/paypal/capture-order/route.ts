@@ -5,6 +5,7 @@ import {
   createOrderFromPendingAndRemovePending,
   addOrderError,
 } from "@/lib/orders-data";
+import { sendOrderConfirmationEmail } from "@/lib/email-order-confirmation";
 
 export async function POST(request: NextRequest) {
   let paypalOrderId: string | null = null;
@@ -36,6 +37,9 @@ export async function POST(request: NextRequest) {
       });
       return NextResponse.json({ error: "Bestellung konnte nicht angelegt werden" }, { status: 500 });
     }
+
+    // Bestellbestätigung per E-Mail an den Kunden (blockiert nicht die Antwort)
+    sendOrderConfirmationEmail(order).catch(() => {});
 
     return NextResponse.json({ orderNumber: order.orderNumber });
   } catch (e) {

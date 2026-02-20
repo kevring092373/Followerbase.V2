@@ -107,7 +107,9 @@ Ohne diese Variablen funktionieren PayPal und Supabase auf der Live-Seite nicht.
    | `NEXT_PUBLIC_SUPABASE_URL` | aus `.env.local` |
    | `SUPABASE_SERVICE_ROLE_KEY` | aus `.env.local` |
    | `ADMIN_PASSWORD` | aus `.env.local` (mind. 8 Zeichen – schützt `/admin`) |
+   | `RESEND_API_KEY` | API-Key von [resend.com](https://resend.com) – für Bestellbestätigungs-E-Mails |
 
+   Optional: `EMAIL_FROM` (Absender für E-Mails, z. B. `Followerbase <bestellung@deinedomain.de>`; sonst Resend-Test-Absender).  
    Optional (Überweisung): `BANK_RECIPIENT`, `BANK_IBAN`, `BANK_BIC`, `BANK_NAME`.
 
 3. **Save** / **Add**.
