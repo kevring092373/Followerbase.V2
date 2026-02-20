@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { categories } from "@/lib/categories";
-import { getProductsByCategoryId } from "@/lib/products-data";
+import { getProductsByCategoryId, getProductImageAlt } from "@/lib/products-data";
 
 type Props = { params: { categorySlug: string } };
 
@@ -57,11 +57,11 @@ export default async function CategoryPage({ params }: Props) {
                 {product.image ? (
                   product.image.startsWith("/") ? (
                     <div className="category-card-thumb category-card-thumb-img">
-                      <Image src={product.image} alt="" width={120} height={120} className="category-card-thumb-img-inner" />
+                      <Image src={product.image} alt={getProductImageAlt(product.image, product.name)} width={120} height={120} className="category-card-thumb-img-inner" />
                     </div>
                   ) : (
                     <div className="category-card-thumb category-card-thumb-img">
-                      <img src={product.image} alt="" className="category-card-thumb-img-inner" />
+                      <img src={product.image} alt={getProductImageAlt(product.image, product.name)} className="category-card-thumb-img-inner" />
                     </div>
                   )
                 ) : (

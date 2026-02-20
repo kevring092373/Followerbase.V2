@@ -106,7 +106,6 @@ export const categories: Category[] = [
       prod("youtube-follower-kaufen", "YouTube Follower"),
       prod("youtube-likes-kaufen", "YouTube Likes"),
       prod("youtube-views-kaufen", "YouTube Views"),
-      prod("youtube-kommentare-kaufen", "YouTube Kommentare"),
       prod("youtube-watchtime-kaufen", "YouTube Watchtime"),
     ],
   },

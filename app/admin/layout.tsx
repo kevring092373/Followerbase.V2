@@ -1,6 +1,6 @@
-import { redirect } from "next/navigation";
 import { cookies, headers } from "next/headers";
 import { createHash } from "crypto";
+import { AdminAuthRedirect } from "./AdminAuthRedirect";
 
 const ADMIN_COOKIE = "admin_session";
 const ADMIN_SALT = "followerbase-admin-v1";
@@ -21,7 +21,7 @@ export default async function AdminLayout({
 
   const password = process.env.ADMIN_PASSWORD?.trim();
   if (!password || password.length < 8) {
-    redirect("/admin/login");
+    return <AdminAuthRedirect loginUrl="/admin/login" />;
   }
 
   const cookieStore = await cookies();
@@ -29,7 +29,7 @@ export default async function AdminLayout({
   const expected = tokenForPassword(password);
   if (cookie !== expected) {
     const loginUrl = `/admin/login?from=${encodeURIComponent(pathname || "/admin")}`;
-    redirect(loginUrl);
+    return <AdminAuthRedirect loginUrl={loginUrl} />;
   }
 
   return <>{children}</>;

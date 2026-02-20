@@ -99,6 +99,14 @@ export async function getCategoryByProductSlug(slug: string): Promise<Category |
   return categories.find((c) => c.id === product.categoryId);
 }
 
+/** Alt-Text aus Bildpfad: Dateiname ohne Endung (wie Bildername). */
+export function getProductImageAlt(imagePath: string | undefined, fallback: string): string {
+  if (!imagePath) return fallback;
+  const filename = imagePath.split("/").pop() ?? "";
+  const withoutExt = filename.replace(/\.[^.]+$/, "");
+  return withoutExt || fallback;
+}
+
 function normalizeTier(t: unknown): ProductTier | null {
   if (!t || typeof t !== "object") return null;
   const r = t as Record<string, unknown>;

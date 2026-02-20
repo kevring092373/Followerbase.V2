@@ -4,7 +4,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { getProductBySlug } from "@/lib/products-data";
+import { getProductBySlug, getProductImageAlt } from "@/lib/products-data";
 import { ProductOrderBlock } from "@/components/ProductOrderBlock";
 
 type Props = { params: { slug: string } };
@@ -52,13 +52,13 @@ export default async function ProductPage({ params }: Props) {
             product.image.startsWith("/") ? (
               <Image
                 src={product.image}
-                alt=""
+                alt={getProductImageAlt(product.image, product.name)}
                 width={400}
                 height={400}
                 className="product-image-img"
               />
             ) : (
-              <img src={product.image} alt="" className="product-image-img" />
+              <img src={product.image} alt={getProductImageAlt(product.image, product.name)} className="product-image-img" />
             )
           ) : (
             <div className="product-image-placeholder" aria-hidden>
