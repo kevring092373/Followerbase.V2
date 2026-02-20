@@ -6,7 +6,8 @@
     "dev": "next dev -p 3000",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "deploy": "netlify deploy --prod"
   },
   "dependencies": {
     "@paypal/react-paypal-js": "^8.9.2",
