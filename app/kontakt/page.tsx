@@ -1,23 +1,19 @@
+import { ContactForm } from "@/components/ContactForm";
+
 export const metadata = {
   title: "Kontakt – Followerbase",
-  description: "So erreichst du uns.",
+  description: "So erreichst du uns. Kontaktformular für Anfragen.",
 };
 
 export default function KontaktPage() {
   return (
-    <article className="legal-page">
+    <article className="legal-page kontakt-page">
       <h1 className="heading-hero">Kontakt</h1>
       <p className="subtitle" style={{ marginBottom: "1.5rem" }}>
-        Du hast Fragen? Schreib uns.
+        Du hast Fragen? Schreib uns über das Formular – wir antworten innerhalb von 1–2 Werktagen.
       </p>
       <div className="legal-content">
-        <p><strong>E-Mail</strong></p>
-        <p>[deine-kontakt@beispiel.de]</p>
-        <p style={{ marginTop: "1rem" }}><strong>Antwortzeit</strong></p>
-        <p>Wir bemühen uns, Anfragen innerhalb von 1–2 Werktagen zu beantworten.</p>
-        <p style={{ marginTop: "1.5rem", fontSize: "0.9375rem", color: "var(--text-secondary)" }}>
-          Bitte ersetze die Platzhalter durch deine echten Kontaktdaten.
-        </p>
+        <ContactForm />
       </div>
     </article>
   );

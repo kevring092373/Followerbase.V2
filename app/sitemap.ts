@@ -25,6 +25,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: url("/agb"), lastModified: new Date(), changeFrequency: "monthly", priority: 0.3 },
     { url: url("/kontakt"), lastModified: new Date(), changeFrequency: "monthly", priority: 0.5 },
     { url: url("/widerrufsbelehrung"), lastModified: new Date(), changeFrequency: "monthly", priority: 0.3 },
+    { url: url("/seiten"), lastModified: new Date(), changeFrequency: "monthly", priority: 0.4 },
   ];
 
   const categoryPages: MetadataRoute.Sitemap = categories.map((cat) => ({
