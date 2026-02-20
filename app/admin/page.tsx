@@ -37,6 +37,13 @@ export default function AdminPage() {
           Blog-Beiträge
         </Link>
         <Link
+          href="/admin/pages"
+          className="card"
+          style={{ display: "block", padding: "1rem 1.25rem", color: "var(--text-primary)" }}
+        >
+          Seiten verwalten
+        </Link>
+        <Link
           href="/admin/orders"
           className="card"
           style={{ display: "block", padding: "1rem 1.25rem", color: "var(--text-primary)" }}

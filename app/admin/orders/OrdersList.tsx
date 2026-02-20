@@ -87,6 +87,11 @@ export function OrdersList({ orders }: Props) {
               >
                 <span className="admin-order-row-number">{order.orderNumber}</span>
                 <span className="admin-order-row-date">{formatDateShort(order.createdAt)}</span>
+                {order.customerEmail && (
+                  <span className="admin-order-row-email" title={order.customerEmail}>
+                    {order.customerEmail}
+                  </span>
+                )}
                 <span
                   className={`admin-order-status-badge admin-order-status-badge--compact ${statusColorClass(order.status)}`}
                 >

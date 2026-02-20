@@ -6,6 +6,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getProductBySlug, getProductImageAlt } from "@/lib/products-data";
 import { ProductOrderBlock } from "@/components/ProductOrderBlock";
+import { absoluteUrl, truncateDescription } from "@/lib/seo";
 
 type Props = { params: { slug: string } };
 
@@ -13,12 +14,24 @@ const defaultBullets = ["Schnelle Lieferung", "Sichere Zahlung", "Qualitätsgara
 
 export async function generateMetadata({ params }: Props) {
   const product = await getProductBySlug(params.slug);
-  if (!product) return { title: "Produkt – Followerbase" };
+  if (!product) return { title: "Produkt" };
   const title = product.metaTitle ?? product.name;
-  const description = product.metaDescription ?? undefined;
+  const rawDesc = product.metaDescription ?? `${product.name} bei Followerbase – faire Preise, schnelle Lieferung.`;
+  const description = truncateDescription(rawDesc);
+  const url = absoluteUrl(`/product/${product.slug}`);
+  const image = product.image?.startsWith("/") ? absoluteUrl(product.image) : undefined;
   return {
-    title: `${title} – Followerbase`,
+    title,
     description,
+    openGraph: {
+      title: `${title} – Followerbase`,
+      description,
+      url,
+      type: "website",
+      images: image ? [{ url: image, width: 400, height: 400, alt: product.name }] : undefined,
+    },
+    twitter: { card: "summary", title: `${title} – Followerbase`, description },
+    alternates: { canonical: url },
   };
 }
 

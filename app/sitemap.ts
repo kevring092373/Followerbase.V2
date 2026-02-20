@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { getAllProducts } from "@/lib/products-data";
 import { categories } from "@/lib/categories";
 import { getAllPosts } from "@/lib/blog-data";
+import { getAllPages } from "@/lib/pages-data";
 
 const BASE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ||
@@ -51,5 +52,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.6,
   }));
 
-  return [...staticPages, ...categoryPages, ...productPages, ...blogPages];
+  const pages = await getAllPages();
+  const cmsPages: MetadataRoute.Sitemap = pages.map((p) => ({
+    url: url(`/p/${p.slug}`),
+    lastModified: new Date(),
+    changeFrequency: "monthly" as const,
+    priority: 0.5,
+  }));
+
+  return [...staticPages, ...categoryPages, ...productPages, ...blogPages, ...cmsPages];
 }

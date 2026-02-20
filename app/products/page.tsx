@@ -6,6 +6,26 @@ import Link from "next/link";
 import { categories } from "@/lib/categories";
 import { getProductsByCategoryId } from "@/lib/products-data";
 import { CategoryIcon } from "@/components/CategoryIcon";
+import { absoluteUrl } from "@/lib/seo";
+
+export const metadata = {
+  title: "Produkte",
+  description:
+    "Follower, Likes und Views für Instagram, TikTok, YouTube, Snapchat, Telegram & mehr. Nach Plattform wählen – faire Preise, schnelle Lieferung.",
+  openGraph: {
+    title: "Produkte – Followerbase",
+    description:
+      "Follower, Likes und Views für Instagram, TikTok, YouTube und mehr. Nach Plattform wählen.",
+    url: absoluteUrl("/products"),
+    type: "website" as const,
+  },
+  twitter: {
+    card: "summary" as const,
+    title: "Produkte – Followerbase",
+    description: "Follower, Likes und Views für alle großen Plattformen – Followerbase Shop.",
+  },
+  alternates: { canonical: absoluteUrl("/products") },
+};
 
 /** Kategorie-ID → Dateiname in public/icons/ (wie abgelegt). */
 const CATEGORY_ICONS: Record<string, string> = {

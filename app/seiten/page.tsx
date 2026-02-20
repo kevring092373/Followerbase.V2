@@ -3,9 +3,14 @@ import { getAllProducts } from "@/lib/products-data";
 import { categories } from "@/lib/categories";
 import { getAllPosts } from "@/lib/blog-data";
 
+import { absoluteUrl } from "@/lib/seo";
+
 export const metadata = {
-  title: "Sitemap – Alle Seiten | Followerbase",
-  description: "Übersicht aller Seiten: Shop, Produkte, Blog und Rechtliches.",
+  title: "Sitemap",
+  description:
+    "Übersicht aller Seiten von Followerbase: Produkte, Kategorien, Blog und rechtliche Seiten.",
+  openGraph: { title: "Sitemap – Followerbase", url: absoluteUrl("/seiten"), type: "website" as const },
+  alternates: { canonical: absoluteUrl("/seiten") },
 };
 
 const staticMain = [

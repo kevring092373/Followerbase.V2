@@ -6,15 +6,24 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { categories } from "@/lib/categories";
 import { getProductsByCategoryId, getProductImageAlt } from "@/lib/products-data";
+import { absoluteUrl, truncateDescription } from "@/lib/seo";
 
 type Props = { params: { categorySlug: string } };
 
 export function generateMetadata({ params }: Props) {
   const category = categories.find((c) => c.slug === params.categorySlug);
-  if (!category) return { title: "Kategorie – Followerbase" };
+  if (!category) return { title: "Kategorie" };
+  const title = category.name;
+  const description = truncateDescription(
+    `${category.name} – Follower, Likes und Views kaufen. Faire Preise, schnelle Lieferung bei Followerbase.`
+  );
+  const url = absoluteUrl(`/products/${category.slug}`);
   return {
-    title: `${category.name} – Followerbase`,
-    description: `${category.name} – Produkte im Followerbase Shop.`,
+    title,
+    description,
+    openGraph: { title: `${title} – Followerbase`, description, url, type: "website" as const },
+    twitter: { card: "summary" as const, title: `${title} – Followerbase`, description },
+    alternates: { canonical: url },
   };
 }
 

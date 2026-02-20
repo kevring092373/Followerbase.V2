@@ -8,6 +8,32 @@ const INDIVIDUAL_MIN = 100;
 const INDIVIDUAL_MAX_DEFAULT = 1000;
 const INDIVIDUAL_STEP = 50;
 
+/** Follower/Profil-Produkte: Profillink oder Nutzername. Sonst (Likes, Views, …): Beitragslink. */
+function isFollowerProduct(slug: string): boolean {
+  const s = slug.toLowerCase();
+  return s.includes("follower") || s.includes("gruppenmitglieder");
+}
+
+function getTargetLabel(slug: string): string {
+  return isFollowerProduct(slug) ? "Profillink oder Nutzername" : "Beitragslink";
+}
+
+function getTargetPlaceholder(slug: string): string {
+  return isFollowerProduct(slug) ? "z. B. @username oder Profil-Link" : "z. B. Link zum Beitrag/Post";
+}
+
+function getTargetHint(slug: string): string {
+  return isFollowerProduct(slug)
+    ? "Gib hier den Nutzernamen oder den Link zu deinem Profil ein. (Pflichtfeld)"
+    : "Gib hier den Link zum Beitrag (Post, Reel, Video etc.) ein. (Pflichtfeld)";
+}
+
+function getTargetError(slug: string): string {
+  return isFollowerProduct(slug)
+    ? "Bitte Profillink oder Nutzername eingeben."
+    : "Bitte Beitragslink eingeben.";
+}
+
 type ProductOrderBlockProps = {
   productSlug: string;
   quantities: number[];
@@ -207,12 +233,12 @@ export function ProductOrderBlock({
 
       <div className="product-order-row">
         <label htmlFor="product-target" className="product-order-label">
-          Link / Nutzername <span className="product-input-required" aria-hidden>*</span>
+          {getTargetLabel(productSlug)} <span className="product-input-required" aria-hidden>*</span>
         </label>
         <input
           id="product-target"
           type="text"
-          placeholder="z. B. @username oder Profil-Link"
+          placeholder={getTargetPlaceholder(productSlug)}
           value={targetInput}
           onChange={(e) => {
             setTargetInput(e.target.value);
@@ -229,7 +255,7 @@ export function ProductOrderBlock({
           </span>
         )}
         <span id="product-target-hint" className="product-input-hint">
-          Gib hier den Nutzernamen oder den Link zu deinem Profil ein. (Pflichtfeld)
+          {getTargetHint(productSlug)}
         </span>
       </div>
       <button

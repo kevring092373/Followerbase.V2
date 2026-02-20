@@ -5,9 +5,20 @@ import Link from "next/link";
 import Image from "next/image";
 import { getAllPosts } from "@/lib/blog-data";
 
+import { absoluteUrl } from "@/lib/seo";
+
 export const metadata = {
-  title: "Blog – Followerbase",
-  description: "Blog und Beiträge.",
+  title: "Blog",
+  description:
+    "Tipps, Anleitungen und News zu Followern, Likes und Reichweite für Instagram, TikTok & mehr.",
+  openGraph: {
+    title: "Blog – Followerbase",
+    description: "Tipps und Anleitungen zu Reichweite und Social Media.",
+    url: absoluteUrl("/blog"),
+    type: "website" as const,
+  },
+  twitter: { card: "summary" as const, title: "Blog – Followerbase", description: "Tipps zu Followern und Reichweite." },
+  alternates: { canonical: absoluteUrl("/blog") },
 };
 
 export default async function BlogPage() {

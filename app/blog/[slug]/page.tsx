@@ -4,17 +4,28 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getPostBySlug, getAllPosts } from "@/lib/blog-data";
+import { absoluteUrl, truncateDescription } from "@/lib/seo";
 
 type Props = { params: { slug: string } };
 
 export async function generateMetadata({ params }: Props) {
   const post = await getPostBySlug(params.slug);
-  if (!post) return { title: "Beitrag – Followerbase" };
-  const title = post.metaTitle ?? post.title;
-  const description = post.metaDescription ?? undefined;
+  if (!post) return { title: "Beitrag" };
+  const title = post.metaTitle ?? post.title ?? post.slug;
+  const rawDesc = post.metaDescription ?? post.excerpt ?? post.content?.replace(/<[^>]+>/g, "").slice(0, 200) ?? "";
+  const description = truncateDescription(rawDesc);
+  const url = absoluteUrl(`/blog/${post.slug}`);
   return {
-    title: `${title} – Followerbase`,
-    description,
+    title,
+    description: description || undefined,
+    openGraph: {
+      title: `${title} – Followerbase`,
+      description: description || undefined,
+      url,
+      type: "article",
+    },
+    twitter: { card: "summary", title: `${title} – Followerbase`, description: description || undefined },
+    alternates: { canonical: url },
   };
 }
 

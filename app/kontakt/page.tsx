@@ -1,8 +1,13 @@
 import { ContactForm } from "@/components/ContactForm";
 
+import { absoluteUrl } from "@/lib/seo";
+
 export const metadata = {
-  title: "Kontakt – Followerbase",
-  description: "So erreichst du uns. Kontaktformular für Anfragen.",
+  title: "Kontakt",
+  description:
+    "Fragen zu Bestellungen oder Produkten? Schreib uns per Kontaktformular – wir antworten innerhalb von 1–2 Werktagen.",
+  openGraph: { title: "Kontakt – Followerbase", description: "Kontaktformular für Anfragen.", url: absoluteUrl("/kontakt"), type: "website" as const },
+  alternates: { canonical: absoluteUrl("/kontakt") },
 };
 
 export default function KontaktPage() {

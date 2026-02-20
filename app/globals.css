@@ -1609,6 +1609,15 @@ button.nav-link {
   color: var(--text-secondary);
 }
 
+.admin-order-row-email {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  max-width: 12rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .admin-order-status-badge {
   font-size: 0.8125rem;
   padding: 0.25rem 0.5rem;
