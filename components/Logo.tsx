@@ -5,7 +5,7 @@ type Props = {
   showText?: boolean;
 };
 
-/** Logo: Followerbase-Symbol (F) + optionaler Text. Farben aus CSS-Variablen. */
+/** Logo: Symbol (Wolke) + optionaler Text. Farben aus CSS-Variablen. */
 export function Logo({ className = "", showText = true }: Props) {
   return (
     <Link href="/" className={`logo-link ${className}`} aria-label="Followerbase Startseite">
@@ -19,7 +19,7 @@ export function Logo({ className = "", showText = true }: Props) {
           aria-hidden
         >
           <path
-            d="M8 6h12v4h-8v3h6v4h-6v9H8V6z"
+            d="M8 20a6 6 0 0 1 5.5-5.96 6.5 6.5 0 0 1 12.2-1.8A5 5 0 0 1 24 22H8.5a4.5 4.5 0 0 1-.5-2Z"
             fill="currentColor"
           />
         </svg>
