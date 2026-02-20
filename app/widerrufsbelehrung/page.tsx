@@ -1,6 +1,7 @@
 export const metadata = {
   title: "Widerrufsbelehrung – Followerbase",
   description: "Informationen zu deinem Widerrufsrecht.",
+  robots: { index: false, follow: true },
 };
 
 export default function WiderrufsbelehrungPage() {
@@ -15,7 +16,7 @@ export default function WiderrufsbelehrungPage() {
         <p>Du hast das Recht, binnen vierzehn Tagen ohne Angabe von Gründen diesen Vertrag zu widerrufen. Die Widerrufsfrist beträgt vierzehn Tage ab dem Tag des Vertragsschlusses.</p>
 
         <h2>Ausübung des Widerrufs</h2>
-        <p>Um dein Widerrufsrecht auszuüben, musst du uns ([Name], [Anschrift], [E-Mail]) mittels einer eindeutigen Erklärung (z. B. ein mit der Post versandter Brief oder E-Mail) über deinen Entschluss, diesen Vertrag zu widerrufen, informieren.</p>
+        <p>Um dein Widerrufsrecht auszuüben, musst du uns (Venus Management GbR, Kevin Ringsdorf, Ulmenweg 15, 51766 Engelskirchen, info@followerbase.de) mittels einer eindeutigen Erklärung (z. B. ein mit der Post versandter Brief oder E-Mail) über deinen Entschluss, diesen Vertrag zu widerrufen, informieren.</p>
 
         <h2>Folgen des Widerrufs</h2>
         <p>Wenn du diesen Vertrag widerrufst, haben wir dir alle Zahlungen, die wir von dir erhalten haben, unverzüglich und spätestens binnen vierzehn Tagen zurückzuzahlen. Für die Rückzahlung verwenden wir dasselbe Zahlungsmittel, das du bei der ursprünglichen Transaktion eingesetzt hast.</p>

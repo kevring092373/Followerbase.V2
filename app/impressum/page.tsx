@@ -1,6 +1,7 @@
 export const metadata = {
   title: "Impressum – Followerbase",
   description: "Impressum und Angaben gemäß § 5 TMG.",
+  robots: { index: false, follow: true },
 };
 
 export default function ImpressumPage() {
@@ -11,19 +12,20 @@ export default function ImpressumPage() {
         Angaben gemäß § 5 TMG
       </p>
       <div className="legal-content">
-        <p><strong>Followerbase</strong></p>
-        <p> [Firmenname / Inhaber]</p>
-        <p>[Straße und Hausnummer]</p>
-        <p>[PLZ und Ort]</p>
+        <p><strong>Venus Management GbR</strong></p>
+        <p>Ulmenweg 15</p>
+        <p>51766 Engelskirchen</p>
+        <p style={{ marginTop: "1rem" }}><strong>Vertreten durch</strong></p>
+        <p>Kevin Ringsdorf</p>
         <p style={{ marginTop: "1rem" }}><strong>Kontakt</strong></p>
-        <p>E-Mail: [E-Mail-Adresse]</p>
+        <p>E-Mail: info@followerbase.de</p>
+        <p>Telefon: 01786 718703</p>
+        <p style={{ marginTop: "1rem" }}><strong>Steuernummer</strong></p>
+        <p>21257672584</p>
         <p style={{ marginTop: "1rem" }}><strong>Umsatzsteuer-ID</strong></p>
-        <p>Umsatzsteuer-Identifikationsnummer gemäß § 27a UStG: [falls zutreffend]</p>
+        <p>Umsatzsteuer-Identifikationsnummer gemäß § 27a UStG: DE361898179</p>
         <p style={{ marginTop: "1rem" }}><strong>Verantwortlich für den Inhalt</strong></p>
-        <p>[Name und Anschrift]</p>
-        <p style={{ marginTop: "1.5rem", fontSize: "0.9375rem", color: "var(--text-secondary)" }}>
-          Bitte ersetze die Platzhalter durch deine tatsächlichen Angaben.
-        </p>
+        <p>Kevin Ringsdorf, Ulmenweg 15, 51766 Engelskirchen</p>
       </div>
     </article>
   );
