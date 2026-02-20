@@ -49,23 +49,30 @@ export async function createPayPalOrder(
   const currency = "EUR";
 
   // priceCents = Positionsbetrag (Gesamtbetrag der Zeile), nicht Preis pro Einheit
-  const itemTotal =
-    items.length > 0
-      ? (items.reduce((sum, i) => sum + i.priceCents, 0) / 100).toFixed(2)
-      : amountEur;
-
+  // item_total muss exakt = Summe(unit_amount * quantity) sein (PayPal-Validierung)
   const paypalItems =
     items.length > 0
-      ? items.map((item) => ({
-          name: item.name.slice(0, 127),
-          quantity: String(item.quantity),
-          unit_amount: {
-            currency_code: currency,
-            value: (item.quantity > 0 ? item.priceCents / 100 / item.quantity : 0).toFixed(2),
-          },
-          ...(item.sku ? { sku: item.sku.slice(0, 127) } : {}),
-        }))
+      ? items.map((item) => {
+          const unitValue =
+            item.quantity > 0 ? (item.priceCents / 100 / item.quantity).toFixed(2) : "0.00";
+          return {
+            name: item.name.slice(0, 127),
+            quantity: String(item.quantity),
+            unit_amount: { currency_code: currency, value: unitValue },
+            ...(item.sku ? { sku: item.sku.slice(0, 127) } : {}),
+          };
+        })
       : [];
+
+  const itemTotal =
+    paypalItems.length > 0
+      ? paypalItems
+          .reduce(
+            (sum, i) => sum + parseFloat(i.unit_amount.value) * parseInt(i.quantity, 10),
+            0
+          )
+          .toFixed(2)
+      : amountEur;
 
   const body: Record<string, unknown> = {
     intent: "CAPTURE",
@@ -73,7 +80,7 @@ export async function createPayPalOrder(
       {
         amount: {
           currency_code: currency,
-          value: items.length > 0 ? itemTotal : amountEur,
+          value: itemTotal,
           ...(paypalItems.length > 0
             ? {
                 breakdown: {

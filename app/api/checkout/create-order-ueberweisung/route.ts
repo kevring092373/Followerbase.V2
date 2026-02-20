@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createOrderForUeberweisung } from "@/lib/orders-data";
 import type { OrderItem } from "@/lib/orders";
 import type { PendingCheckoutCustomer } from "@/lib/orders-data";
+import { sendOrderConfirmationEmail } from "@/lib/email-order-confirmation";
 
 /**
  * Bestellung per Überweisung anlegen. Gibt Bestellnummer zurück.
@@ -48,6 +49,8 @@ export async function POST(request: NextRequest) {
       totalCents,
       sellerNote
     );
+
+    sendOrderConfirmationEmail(order).catch(() => {});
 
     return NextResponse.json({ orderNumber: order.orderNumber });
   } catch (e) {

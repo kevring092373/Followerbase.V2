@@ -50,7 +50,7 @@ export function OrdersList({ orders }: Props) {
   return (
     <section className="admin-orders-section">
       <div className="admin-orders-list-header">
-        <h2 className="admin-orders-col-heading">Bezahlte Bestellungen</h2>
+        <h2 className="admin-orders-col-heading">Bestellungen</h2>
         <label className="admin-orders-filter-label">
           <span>Status:</span>
           <select

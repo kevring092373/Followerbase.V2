@@ -1,9 +1,10 @@
 /**
- * Bestellbestätigung per E-Mail an den Kunden (z. B. nach PayPal-Zahlung).
+ * Bestellbestätigung per E-Mail an den Kunden (bei jeder Zahlungsart).
  * Nutzt Resend (https://resend.com). Umgebungsvariable: RESEND_API_KEY, optional EMAIL_FROM.
  */
 
 import type { Order } from "./orders";
+import { getPaymentMethodLabel } from "./orders";
 
 const FROM_EMAIL = process.env.EMAIL_FROM || "Followerbase <onboarding@resend.dev>";
 const SITE_NAME = process.env.NEXT_PUBLIC_SITE_NAME || "Followerbase";
@@ -17,6 +18,7 @@ function formatCents(cents: number): string {
 
 function buildOrderConfirmationHtml(order: Order): string {
   const total = order.totalCents ?? 0;
+  const paymentLabel = getPaymentMethodLabel(order);
   const items =
     order.items
       ?.map(
@@ -30,11 +32,11 @@ function buildOrderConfirmationHtml(order: Order): string {
 <html>
 <head><meta charset="utf-8"><title>Bestellbestätigung</title></head>
 <body style="font-family: system-ui, sans-serif; line-height: 1.5; color: #1e293b; max-width: 560px; margin: 0 auto; padding: 24px;">
-  <h1 style="font-size: 1.5rem; margin-bottom: 8px;">Bestellung bestätigt</h1>
+  <h1 style="font-size: 1.5rem; margin-bottom: 8px;">Danke für deinen Einkauf</h1>
   <p>Hallo${order.customerName ? ` ${escapeHtml(order.customerName)}` : ""},</p>
-  <p>vielen Dank für deine Bestellung. Wir haben sie unter folgender Bestellnummer erfasst:</p>
-  <p style="font-size: 1.25rem; font-weight: 700; color: #6366f1;">${escapeHtml(order.orderNumber)}</p>
-  <p>Bezahlt per PayPal.</p>
+  <p>vielen Dank für deine Bestellung. Hier ist deine Bestellübersicht:</p>
+  <p style="font-size: 1.25rem; font-weight: 700; color: #6366f1;">Bestellnummer: ${escapeHtml(order.orderNumber)}</p>
+  <p style="font-size: 0.9375rem; color: #64748b;">Zahlungsart: ${escapeHtml(paymentLabel)}</p>
   <table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
     <thead>
       <tr style="border-bottom: 2px solid #e2e8f0;">
