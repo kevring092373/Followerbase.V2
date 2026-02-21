@@ -236,17 +236,31 @@ export default async function HomePage() {
         <section className="home-trust">
           <div className="home-trust-grid">
             <div className="home-trust-item">
-              <span className="home-trust-icon" aria-hidden>⚡</span>
+              <span className="home-trust-icon" aria-hidden>
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+                </svg>
+              </span>
               <h3 className="home-trust-title">Schnelle Lieferung</h3>
               <p className="home-trust-text">Deine Bestellung startet zeitnah – ohne Wartezeit.</p>
             </div>
             <div className="home-trust-item">
-              <span className="home-trust-icon" aria-hidden>🔒</span>
+              <span className="home-trust-icon" aria-hidden>
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                </svg>
+              </span>
               <h3 className="home-trust-title">Sichere Zahlung</h3>
               <p className="home-trust-text">Bezahle sicher über unseren Checkout – deine Daten sind geschützt.</p>
             </div>
             <div className="home-trust-item">
-              <span className="home-trust-icon" aria-hidden>✓</span>
+              <span className="home-trust-icon" aria-hidden>
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M9 12l2 2 4-4" />
+                </svg>
+              </span>
               <h3 className="home-trust-title">Transparente Preise</h3>
               <p className="home-trust-text">Kein Abo, keine versteckten Kosten – du siehst sofort, was es kostet.</p>
             </div>
