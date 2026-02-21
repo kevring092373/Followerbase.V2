@@ -3,7 +3,6 @@ import Link from "next/link";
 const mainLinks = [
   { href: "/blog", label: "Blog" },
   { href: "/instagram-profilbild", label: "Instagram-Profilbild" },
-  { href: "/seiten", label: "Sitemap" },
 ] as const;
 
 const legalLinks = [
