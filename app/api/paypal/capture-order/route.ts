@@ -5,7 +5,7 @@ import {
   createOrderFromPendingAndRemovePending,
   addOrderError,
 } from "@/lib/orders-data";
-import { sendOrderConfirmationEmail } from "@/lib/email-order-confirmation";
+import { sendOrderConfirmationEmail, sendOrderNotificationToOwner } from "@/lib/email-order-confirmation";
 
 export async function POST(request: NextRequest) {
   let paypalOrderId: string | null = null;
@@ -38,8 +38,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Bestellung konnte nicht angelegt werden" }, { status: 500 });
     }
 
-    // Bestellbestätigung per E-Mail an den Kunden (blockiert nicht die Antwort)
+    // Bestellbestätigung per E-Mail an den Kunden; Benachrichtigung an info@followerbase.de
     sendOrderConfirmationEmail(order).catch(() => {});
+    sendOrderNotificationToOwner(order).catch(() => {});
 
     return NextResponse.json({ orderNumber: order.orderNumber });
   } catch (e) {

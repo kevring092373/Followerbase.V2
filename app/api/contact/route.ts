@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-const CONTACT_TO = "venusmanagerde@gmail.com";
+const CONTACT_TO = "info@followerbase.de";
 const FROM_EMAIL = process.env.EMAIL_FROM || "Followerbase <onboarding@resend.dev>";
 
 function escapeHtml(s: string): string {
