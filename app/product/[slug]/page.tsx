@@ -78,6 +78,16 @@ export default async function ProductPage({ params }: Props) {
       )}
 
       <div className="product-order-section">
+        <div className="product-order-section-form">
+          <ProductOrderBlock
+            productSlug={product.slug}
+            quantities={product.quantities}
+            pricesCents={product.pricesCents}
+            productName={product.name}
+            bullets={bullets}
+            tiers={product.tiers}
+          />
+        </div>
         <div className="product-order-section-image">
           {product.image ? (
             product.image.startsWith("/") ? (
@@ -96,16 +106,6 @@ export default async function ProductPage({ params }: Props) {
               <span className="product-image-placeholder-text">Bild</span>
             </div>
           )}
-        </div>
-        <div className="product-order-section-form">
-          <ProductOrderBlock
-            productSlug={product.slug}
-            quantities={product.quantities}
-            pricesCents={product.pricesCents}
-            productName={product.name}
-            bullets={bullets}
-            tiers={product.tiers}
-          />
         </div>
       </div>
 

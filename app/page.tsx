@@ -6,6 +6,7 @@ import { HomeMarquee } from "@/components/HomeMarquee";
 import { HomeReveal } from "@/components/HomeReveal";
 import { CategoryIcon } from "@/components/CategoryIcon";
 import { ReviewCarousel } from "@/components/ReviewCarousel";
+import { HomeProductCarousel } from "@/components/HomeProductCarousel";
 
 /** Icon für Schnellzugriff-Karten: Instagram und TikTok nutzen eigene Icons, Rest Fallback. */
 function QuickAccessIcon({ productSlug }: { productSlug: string }) {
@@ -139,6 +140,14 @@ export default async function HomePage() {
             </div>
           </div>
         </section>
+      </HomeReveal>
+
+      {/* Produkt-Carousel */}
+      <HomeReveal delay={100}>
+        <HomeProductCarousel
+          products={allProducts.slice(0, 12).map((p) => ({ slug: p.slug, name: p.name, image: p.image, pricesCents: p.pricesCents }))}
+          title="Beliebte Produkte"
+        />
       </HomeReveal>
 
       {/* Textblock */}
