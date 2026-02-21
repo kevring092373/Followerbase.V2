@@ -1,9 +1,16 @@
 /**
- * Produktdaten: Lesen/Schreiben aus content/products.json.
- * Seed aus lib/categories, wenn Datei fehlt.
+ * Produktdaten: Bei Supabase aus DB, sonst aus content/products.json.
+ * Auf Netlify (read-only) wird Supabase verwendet; bei leerer Tabelle wird aus products.json geseeded.
  */
 import { promises as fs } from "fs";
 import path from "path";
+import { isSupabaseConfigured } from "@/lib/supabase/server";
+import {
+  getAllProductsSupabase,
+  getProductBySlugSupabase,
+  upsertProductSupabase,
+  deleteProductSupabase,
+} from "./products-supabase";
 import { categories } from "./categories";
 import type { Category } from "./categories";
 
@@ -79,11 +86,16 @@ async function writeProducts(products: Product[]): Promise<void> {
 }
 
 export async function getAllProducts(): Promise<Product[]> {
+  if (isSupabaseConfigured()) return getAllProductsSupabase();
   const products = await readProducts();
   return products.sort((a, b) => a.name.localeCompare(b.name));
 }
 
 export async function getProductBySlug(slug: string): Promise<Product | undefined> {
+  if (isSupabaseConfigured()) {
+    const p = await getProductBySlugSupabase(slug);
+    return p ?? undefined;
+  }
   const products = await readProducts();
   return products.find((p) => p.slug === slug);
 }
@@ -137,6 +149,14 @@ function normalizeProduct(p: Record<string, unknown>): Product {
 }
 
 export async function updateProduct(slug: string, data: Partial<Product>): Promise<Product> {
+  if (isSupabaseConfigured()) {
+    const existing = await getProductBySlugSupabase(slug);
+    if (!existing) throw new Error("Produkt nicht gefunden.");
+    const updated: Product = { ...existing, ...data };
+    if (updated.slug !== slug) await deleteProductSupabase(slug);
+    await upsertProductSupabase(updated);
+    return updated;
+  }
   const products = await readProducts();
   const index = products.findIndex((p) => p.slug === slug);
   if (index === -1) throw new Error("Produkt nicht gefunden.");
@@ -147,6 +167,12 @@ export async function updateProduct(slug: string, data: Partial<Product>): Promi
 }
 
 export async function deleteProduct(slug: string): Promise<void> {
+  if (isSupabaseConfigured()) {
+    const existing = await getProductBySlugSupabase(slug);
+    if (!existing) throw new Error("Produkt nicht gefunden.");
+    await deleteProductSupabase(slug);
+    return;
+  }
   const products = await readProducts();
   const filtered = products.filter((p) => p.slug !== slug);
   if (filtered.length === products.length) throw new Error("Produkt nicht gefunden.");

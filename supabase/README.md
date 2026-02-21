@@ -16,6 +16,7 @@ Damit werden angelegt:
 - `migrations/001_orders_payment_and_customer.sql` – Spalten für Zahlungsart und Kundendaten in `orders`
 - `migrations/002_pending_checkouts.sql` – Tabelle `pending_checkouts` (unbezahlte PayPal-Vorgänge), damit der Checkout auf Netlify funktioniert (read-only Dateisystem)
 - `migrations/003_viva_pending_checkouts.sql` – Tabelle `viva_pending_checkouts` (unbezahlte Viva-Karten-Zahlungen), ebenfalls für Netlify nötig
+- `migrations/004_products.sql` – Tabelle `products` (Shop-Produkte), damit Produkt-Updates im Admin auf Netlify funktionieren (read-only Dateisystem)
 
 ## 2. API-Keys in .env.local
 
