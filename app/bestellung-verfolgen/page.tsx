@@ -107,7 +107,7 @@ function TrackingContent() {
             type="text"
             value={orderNumber}
             onChange={(e) => setOrderNumber(e.target.value)}
-            placeholder="z. B. FC-2025-0001"
+            placeholder="z. B. FB-2026-3629"
             className="tracking-form-input"
             autoComplete="off"
             disabled={loading}

@@ -21,8 +21,9 @@ function CheckoutContent() {
   const [city, setCity] = useState("");
   const [country, setCountry] = useState("Deutschland");
   const [agbAccepted, setAgbAccepted] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState<"paypal" | "ueberweisung">("paypal");
+  const [paymentMethod, setPaymentMethod] = useState<"paypal" | "ueberweisung" | "viva">("paypal");
   const [ueberweisungLoading, setUeberweisungLoading] = useState(false);
+  const [vivaLoading, setVivaLoading] = useState(false);
 
   const totalCents = useMemo(() => items.reduce((sum, i) => sum + i.priceCents, 0), [items]);
 
@@ -153,6 +154,49 @@ function CheckoutContent() {
       setUeberweisungLoading(false);
     }
   }, [email, agbAccepted, customerPayload, totalCents, orderItems, sellerNote, clearCart, router]);
+
+  const submitViva = useCallback(async () => {
+    setPaypalError(null);
+    if (!email.trim()) {
+      setPaypalError("Bitte gib deine E-Mail-Adresse ein.");
+      return;
+    }
+    if (!email.includes("@")) {
+      setPaypalError("Die E-Mail-Adresse muss ein @ enthalten.");
+      return;
+    }
+    if (!agbAccepted) {
+      setPaypalError("Bitte akzeptiere die AGB (links), um fortzufahren.");
+      return;
+    }
+    if (!customerPayload) return;
+    setVivaLoading(true);
+    try {
+      const res = await fetch("/api/viva/create-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          amountCents: totalCents,
+          items: orderItems,
+          sellerNote: sellerNote || undefined,
+          customer: customerPayload,
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(data.error || "Kartenzahlung konnte nicht gestartet werden.");
+      }
+      const paymentUrl = data.paymentUrl;
+      if (!paymentUrl || typeof paymentUrl !== "string") {
+        throw new Error("Keine Zahlungs-URL erhalten.");
+      }
+      clearCart();
+      window.location.href = paymentUrl;
+    } catch (e) {
+      setPaypalError(e instanceof Error ? e.message : "Unbekannter Fehler");
+      setVivaLoading(false);
+    }
+  }, [email, agbAccepted, customerPayload, totalCents, orderItems, sellerNote, clearCart]);
 
   if (itemCount === 0) {
     return (
@@ -345,6 +389,16 @@ function CheckoutContent() {
                 <input
                   type="radio"
                   name="paymentMethod"
+                  checked={paymentMethod === "viva"}
+                  onChange={() => setPaymentMethod("viva")}
+                  className="checkout-payment-radio"
+                />
+                <span>Kreditkarte (Viva)</span>
+              </label>
+              <label className="checkout-payment-option">
+                <input
+                  type="radio"
+                  name="paymentMethod"
                   checked={paymentMethod === "ueberweisung"}
                   onChange={() => setPaymentMethod("ueberweisung")}
                   className="checkout-payment-radio"
@@ -353,7 +407,22 @@ function CheckoutContent() {
               </label>
             </div>
 
-            {paymentMethod === "ueberweisung" ? (
+            {paymentMethod === "viva" ? (
+              <div className="checkout-ueberweisung-wrap">
+                <p className="checkout-ueberweisung-text">
+                  Du wirst zur sicheren Zahlungsseite von Viva weitergeleitet und kannst dort mit
+                  Kreditkarte bezahlen.
+                </p>
+                <button
+                  type="button"
+                  onClick={submitViva}
+                  disabled={vivaLoading}
+                  className="btn btn-primary"
+                >
+                  {vivaLoading ? "Wird vorbereitet …" : "Zur Kartenzahlung (Viva)"}
+                </button>
+              </div>
+            ) : paymentMethod === "ueberweisung" ? (
               <div className="checkout-ueberweisung-wrap">
                 <p className="checkout-ueberweisung-text">
                   Nach dem Abschluss erhältst du unsere Bankdaten und den Verwendungszweck (deine
@@ -368,7 +437,7 @@ function CheckoutContent() {
                   {ueberweisungLoading ? "Wird erstellt …" : "Bestellung per Überweisung abschließen"}
                 </button>
               </div>
-            ) : PAYPAL_CLIENT_ID ? (
+            ) : paymentMethod === "paypal" && PAYPAL_CLIENT_ID ? (
               <div className="checkout-paypal-wrap">
                 <PayPalButtons
                   style={{ layout: "vertical" }}

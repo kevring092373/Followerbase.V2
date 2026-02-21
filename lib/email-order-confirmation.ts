@@ -23,7 +23,7 @@ function buildOrderConfirmationHtml(order: Order): string {
     order.items
       ?.map(
         (i) =>
-          `<tr><td>${escapeHtml(i.productName)}</td><td>${i.quantity}</td><td>${formatCents(i.priceCents)}</td></tr>`
+          `<tr><td style="padding: 10px 12px 10px 0;">${escapeHtml(i.productName)}</td><td style="text-align: right; padding: 10px 12px; white-space: nowrap;">${i.quantity}</td><td style="text-align: right; padding: 10px 0 10px 12px; white-space: nowrap;">${formatCents(i.priceCents)}</td></tr>`
       )
       .join("") ?? "";
 
@@ -31,25 +31,25 @@ function buildOrderConfirmationHtml(order: Order): string {
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"><title>Bestellbestätigung</title></head>
-<body style="font-family: system-ui, sans-serif; line-height: 1.5; color: #1e293b; max-width: 560px; margin: 0 auto; padding: 24px;">
-  <h1 style="font-size: 1.5rem; margin-bottom: 8px;">Danke für deinen Einkauf</h1>
-  <p>Hallo${order.customerName ? ` ${escapeHtml(order.customerName)}` : ""},</p>
-  <p>vielen Dank für deine Bestellung. Hier ist deine Bestellübersicht:</p>
-  <p style="font-size: 1.25rem; font-weight: 700; color: #6366f1;">Bestellnummer: ${escapeHtml(order.orderNumber)}</p>
-  <p style="font-size: 0.9375rem; color: #64748b;">Zahlungsart: ${escapeHtml(paymentLabel)}</p>
-  <table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+<body style="font-family: system-ui, sans-serif; line-height: 1.6; color: #1e293b; max-width: 560px; margin: 0 auto; padding: 32px;">
+  <h1 style="font-size: 1.5rem; margin: 0 0 24px 0;">Danke für deinen Einkauf</h1>
+  <p style="margin: 0 0 16px 0;">Hallo${order.customerName ? ` ${escapeHtml(order.customerName)}` : ""},</p>
+  <p style="margin: 0 0 24px 0;">vielen Dank für deine Bestellung. Hier ist deine Bestellübersicht:</p>
+  <p style="font-size: 1.25rem; font-weight: 700; color: #6366f1; margin: 0 0 8px 0;">Bestellnummer: ${escapeHtml(order.orderNumber)}</p>
+  <p style="font-size: 0.9375rem; color: #64748b; margin: 0 0 28px 0;">Zahlungsart: ${escapeHtml(paymentLabel)}</p>
+  <table style="width: 100%; border-collapse: collapse; margin: 0 0 24px 0;">
     <thead>
       <tr style="border-bottom: 2px solid #e2e8f0;">
-        <th style="text-align: left; padding: 8px 0;">Produkt</th>
-        <th style="text-align: right; padding: 8px 0;">Menge</th>
-        <th style="text-align: right; padding: 8px 0;">Preis</th>
+        <th style="text-align: left; padding: 10px 12px 10px 0;">Produkt</th>
+        <th style="text-align: right; padding: 10px 12px;">Menge</th>
+        <th style="text-align: right; padding: 10px 0 10px 12px;">Preis</th>
       </tr>
     </thead>
     <tbody>${items}</tbody>
   </table>
-  <p style="font-weight: 700;">Gesamtbetrag: ${formatCents(total)}</p>
-  <p style="margin-top: 24px; font-size: 0.9375rem; color: #64748b;">Du kannst deine Bestellung jederzeit unter der Bestellnummer verfolgen.</p>
-  <p style="margin-top: 24px;">Viele Grüße,<br>${escapeHtml(SITE_NAME)}</p>
+  <p style="font-weight: 700; margin: 0 0 32px 0;">Gesamtbetrag: ${formatCents(total)}</p>
+  <p style="margin: 0 0 24px 0; font-size: 0.9375rem; color: #64748b;">Du kannst deine Bestellung jederzeit unter der Bestellnummer verfolgen.</p>
+  <p style="margin: 0;">Viele Grüße,<br>${escapeHtml(SITE_NAME)}</p>
 </body>
 </html>`;
 }

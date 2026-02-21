@@ -42,7 +42,9 @@ function rowToOrder(row: OrderRow, items: OrderItem[]): Order {
     ? (row.status as OrderStatus)
     : "eingegangen";
   const paymentMethod: PaymentMethod | undefined =
-    row.payment_method === "paypal" || row.payment_method === "ueberweisung"
+    row.payment_method === "paypal" ||
+    row.payment_method === "ueberweisung" ||
+    row.payment_method === "viva"
       ? (row.payment_method as PaymentMethod)
       : undefined;
   return {
@@ -197,10 +199,12 @@ export async function getOrderByPaypalOrderIdSupabase(paypalOrderId: string): Pr
   return getOrderByNumberSupabase((row as OrderRow).order_number);
 }
 
-/** Nächste Bestellnummer FC-YYYY-NNNN. */
+/** Nächste Bestellnummer FB-2026-NNNN (Counter startet bei 3629). */
+const ORDER_NUMBER_YEAR = 2026;
+const ORDER_NUMBER_START = 3629;
+
 async function getNextOrderNumberSupabase(): Promise<string> {
-  const year = new Date().getFullYear();
-  const prefix = `FC-${year}-`;
+  const prefix = `FB-${ORDER_NUMBER_YEAR}-`;
 
   const { data: rows, error } = await supabaseServer
     .from("orders")
@@ -209,11 +213,11 @@ async function getNextOrderNumberSupabase(): Promise<string> {
     .order("order_number", { ascending: false })
     .limit(1);
 
-  if (error || !rows?.length) return `${prefix}0001`;
+  if (error || !rows?.length) return `${prefix}${String(ORDER_NUMBER_START).padStart(4, "0")}`;
 
   const last = (rows[0] as { order_number: string }).order_number;
   const num = parseInt(last.slice(prefix.length), 10);
-  const next = Number.isNaN(num) ? 1 : num + 1;
+  const next = Number.isNaN(num) ? ORDER_NUMBER_START : num + 1;
   return `${prefix}${String(next).padStart(4, "0")}`;
 }
 

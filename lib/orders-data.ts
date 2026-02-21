@@ -79,7 +79,9 @@ function normalizeOrder(o: Record<string, unknown>): Order {
   const createdAt = typeof o.createdAt === "string" ? o.createdAt : new Date().toISOString();
   const updatedAt = typeof o.updatedAt === "string" ? o.updatedAt : undefined;
   const paymentMethod =
-    o.paymentMethod === "paypal" || o.paymentMethod === "ueberweisung"
+    o.paymentMethod === "paypal" ||
+    o.paymentMethod === "ueberweisung" ||
+    o.paymentMethod === "viva"
       ? (o.paymentMethod as PaymentMethod)
       : undefined;
   const paypalOrderId = typeof o.paypalOrderId === "string" ? o.paypalOrderId : undefined;
@@ -182,12 +184,14 @@ export async function updateOrderStatus(
   return orders[index];
 }
 
-/** Nächste Bestellnummer erzeugen (FC-YYYY-NNNN). */
+/** Nächste Bestellnummer erzeugen (FB-2026-NNNN, Counter startet bei 3629). */
+const ORDER_NUMBER_YEAR = 2026;
+const ORDER_NUMBER_START = 3629;
+
 function nextOrderNumber(orders: Order[]): string {
-  const year = new Date().getFullYear();
-  const prefix = `FC-${year}-`;
+  const prefix = `FB-${ORDER_NUMBER_YEAR}-`;
   const sameYear = orders.filter((o) => o.orderNumber.startsWith(prefix));
-  let max = 0;
+  let max = ORDER_NUMBER_START - 1;
   for (const o of sameYear) {
     const num = parseInt(o.orderNumber.slice(prefix.length), 10);
     if (!Number.isNaN(num) && num > max) max = num;
@@ -358,6 +362,68 @@ export async function createOrderFromPendingAndRemovePending(
     await writePendingCheckouts(remaining);
   }
 
+  return order;
+}
+
+/** Nach erfolgreicher Viva-Zahlung: Bestellung aus Viva-Pending anlegen und Pending entfernen. */
+export async function createOrderFromVivaPendingAndRemove(
+  vivaOrderCode: number
+): Promise<Order | null> {
+  const {
+    getVivaPendingByOrderCode,
+    removeVivaPendingByOrderCode,
+  } = await import("@/lib/viva-pending-data");
+  const pending = await getVivaPendingByOrderCode(vivaOrderCode);
+  if (!pending) return null;
+
+  if (pending.customer?.email) {
+    const { createOrGetCustomer } = await import("@/lib/customers-data");
+    await createOrGetCustomer({
+      email: pending.customer.email,
+      name: pending.customer.name ?? null,
+      phone: pending.customer.phone ?? null,
+      addressLine1: pending.customer.addressLine1 ?? null,
+      addressLine2: pending.customer.addressLine2 ?? null,
+      city: pending.customer.city ?? null,
+      postalCode: pending.customer.postalCode ?? null,
+      country: pending.customer.country ?? null,
+    });
+  }
+
+  const now = new Date().toISOString();
+  const c = pending.customer;
+  const orderPayload: Omit<Order, "orderNumber"> = {
+    status: "eingegangen",
+    paymentMethod: "viva",
+    items: pending.items.length ? pending.items : undefined,
+    sellerNote: pending.sellerNote,
+    totalCents: pending.totalCents,
+    createdAt: pending.createdAt,
+    updatedAt: now,
+    customerEmail: c?.email,
+    customerName: c?.name ?? undefined,
+    customerPhone: c?.phone ?? undefined,
+    customerAddressLine1: c?.addressLine1 ?? undefined,
+    customerAddressLine2: c?.addressLine2 ?? undefined,
+    customerCity: c?.city ?? undefined,
+    customerPostalCode: c?.postalCode ?? undefined,
+    customerCountry: c?.country ?? undefined,
+  };
+
+  let order: Order;
+  if (isSupabaseConfigured()) {
+    const created = await createOrderAndGetSupabase({ ...orderPayload, orderNumber: "" });
+    if (!created) return null;
+    order = created;
+  } else {
+    const orders = await readOrders();
+    const orderNumber = nextOrderNumber(orders);
+    order = { ...orderPayload, orderNumber };
+    orders.push(order);
+    await writeOrders(orders);
+  }
+
+  await removeVivaPendingByOrderCode(vivaOrderCode);
   return order;
 }
 

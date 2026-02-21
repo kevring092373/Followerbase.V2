@@ -17,7 +17,7 @@ export interface OrderItem {
   target: string;
 }
 
-export type PaymentMethod = "paypal" | "ueberweisung";
+export type PaymentMethod = "paypal" | "ueberweisung" | "viva";
 
 export interface Order {
   orderNumber: string;
@@ -76,5 +76,6 @@ export function getOrderTotalCents(order: Order): number {
 export function getPaymentMethodLabel(order: Order): string {
   if (order.paymentMethod === "paypal" || order.paypalOrderId) return "PayPal";
   if (order.paymentMethod === "ueberweisung") return "Überweisung";
-  return "Überweisung";
+  if (order.paymentMethod === "viva") return "Kreditkarte (Viva)";
+  return "—";
 }

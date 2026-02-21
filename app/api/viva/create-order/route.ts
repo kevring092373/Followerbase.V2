@@ -1,0 +1,83 @@
+/**
+ * Viva: Payment Order anlegen, Pending speichern, Payment-URL zurückgeben.
+ */
+import { NextRequest, NextResponse } from "next/server";
+import {
+  createVivaOrder,
+  getVivaPaymentPageUrl,
+} from "@/lib/viva-server";
+import { addVivaPending } from "@/lib/viva-pending-data";
+import type { OrderItem } from "@/lib/orders";
+import type { PendingCheckoutCustomer } from "@/lib/orders-data";
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const amountCents = Number(body.amountCents);
+    const items = Array.isArray(body.items) ? (body.items as OrderItem[]) : [];
+    const sellerNote = typeof body.sellerNote === "string" ? body.sellerNote : undefined;
+    const customer = body.customer as PendingCheckoutCustomer | undefined;
+
+    if (!customer?.email?.trim()) {
+      return NextResponse.json(
+        { error: "E-Mail ist erforderlich." },
+        { status: 400 }
+      );
+    }
+    if (!customer.email.trim().includes("@")) {
+      return NextResponse.json(
+        { error: "Die E-Mail-Adresse muss ein @ enthalten." },
+        { status: 400 }
+      );
+    }
+
+    const totalCents =
+      amountCents > 0 && Number.isFinite(amountCents)
+        ? amountCents
+        : items.reduce((sum, i) => sum + i.priceCents, 0);
+    if (totalCents <= 0) {
+      return NextResponse.json(
+        { error: "Ungültiger Betrag." },
+        { status: 400 }
+      );
+    }
+
+    const customerTrns =
+      items.length > 0
+        ? items.map((i) => `${i.productName} × ${i.quantity}`).join(", ")
+        : `Bestellung ${(totalCents / 100).toFixed(2)} €`;
+
+    const orderCode = await createVivaOrder(
+      totalCents,
+      customerTrns,
+      {
+        email: customer.email.trim(),
+        fullName: customer.name?.trim() || undefined,
+        requestLang: "de-DE",
+      }
+    );
+
+    await addVivaPending(
+      orderCode,
+      items,
+      totalCents,
+      sellerNote,
+      {
+        email: customer.email.trim(),
+        name: customer.name ?? undefined,
+        phone: customer.phone ?? undefined,
+        addressLine1: customer.addressLine1 ?? undefined,
+        addressLine2: customer.addressLine2 ?? undefined,
+        city: customer.city ?? undefined,
+        postalCode: customer.postalCode ?? undefined,
+        country: customer.country ?? undefined,
+      }
+    );
+
+    const paymentUrl = getVivaPaymentPageUrl(orderCode);
+    return NextResponse.json({ paymentUrl, orderCode });
+  } catch (e) {
+    const message = e instanceof Error ? e.message : "Unbekannter Fehler";
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
+}
