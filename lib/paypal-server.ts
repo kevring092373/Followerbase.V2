@@ -39,40 +39,15 @@ export interface PayPalOrderItem {
 }
 
 /**
- * PayPal-Checkout-Order mit Artikeln anlegen. Gibt die PayPal-Order-ID zurück.
+ * PayPal-Checkout-Order anlegen. Gesamtbetrag = exakt der Shop-Summe (amountEur).
+ * Ohne Artikelaufteilung, damit keine Rundungsdifferenzen entstehen (PayPal zeigte sonst teils höheren Betrag).
  */
 export async function createPayPalOrder(
   amountEur: string,
-  items: PayPalOrderItem[] = []
+  _items: PayPalOrderItem[] = []
 ): Promise<string> {
   const token = await getAccessToken();
   const currency = "EUR";
-
-  // priceCents = Positionsbetrag (Gesamtbetrag der Zeile), nicht Preis pro Einheit
-  // item_total muss exakt = Summe(unit_amount * quantity) sein (PayPal-Validierung)
-  const paypalItems =
-    items.length > 0
-      ? items.map((item) => {
-          const unitValue =
-            item.quantity > 0 ? (item.priceCents / 100 / item.quantity).toFixed(2) : "0.00";
-          return {
-            name: item.name.slice(0, 127),
-            quantity: String(item.quantity),
-            unit_amount: { currency_code: currency, value: unitValue },
-            ...(item.sku ? { sku: item.sku.slice(0, 127) } : {}),
-          };
-        })
-      : [];
-
-  const itemTotal =
-    paypalItems.length > 0
-      ? paypalItems
-          .reduce(
-            (sum, i) => sum + parseFloat(i.unit_amount.value) * parseInt(i.quantity, 10),
-            0
-          )
-          .toFixed(2)
-      : amountEur;
 
   const body: Record<string, unknown> = {
     intent: "CAPTURE",
@@ -80,19 +55,9 @@ export async function createPayPalOrder(
       {
         amount: {
           currency_code: currency,
-          value: itemTotal,
-          ...(paypalItems.length > 0
-            ? {
-                breakdown: {
-                  item_total: {
-                    currency_code: currency,
-                    value: itemTotal,
-                  },
-                },
-              }
-            : {}),
+          value: amountEur,
         },
-        ...(paypalItems.length > 0 ? { items: paypalItems } : {}),
+        description: "Bestellung Followerbase",
       },
     ],
   };
