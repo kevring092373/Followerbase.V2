@@ -2564,14 +2564,14 @@ button.nav-link {
 .product-order-section-form {
   flex: 1;
   min-width: 0;
-  padding: 0.5rem;
+  padding: 1rem 0.35rem 1rem 1rem;
 }
 
 .product-order-section-image {
   flex-shrink: 0;
   width: 160px;
   min-width: 160px;
-  padding: 0.5rem 0.5rem 0.5rem 0;
+  padding: 0.75rem 0.75rem 0.75rem 0;
   display: flex;
   align-items: flex-start;
   justify-content: flex-end;
@@ -2602,12 +2602,12 @@ button.nav-link {
   .product-order-section-image {
     width: 120px;
     min-width: 120px;
-    padding: 0.5rem 0.5rem 0 0.5rem;
+    padding: 0.75rem 0.75rem 0 0.75rem;
     order: -1;
     justify-content: flex-start;
   }
   .product-order-section-form {
-    padding: 0.5rem 0.75rem 0.75rem;
+    padding: 1rem 1rem 1rem 0.75rem;
   }
 }
 
