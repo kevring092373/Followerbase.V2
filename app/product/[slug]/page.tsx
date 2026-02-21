@@ -94,7 +94,6 @@ export default async function ProductPage({ params }: Props) {
 
       {product.description && (
         <section className="product-description-section">
-          <h2 className="product-description-heading">Produktbeschreibung</h2>
           <div
             className="product-description-html"
             dangerouslySetInnerHTML={{ __html: product.description }}
