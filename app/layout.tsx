@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { DM_Sans } from "next/font/google";
+import { DM_Sans, Outfit } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/context/CartContext";
 import { Header } from "@/components/Header";
@@ -11,6 +11,12 @@ import { getBaseUrl, SITE_NAME } from "@/lib/seo";
 const dmSans = DM_Sans({
   subsets: ["latin"],
   display: "swap",
+});
+
+const outfit = Outfit({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-heading",
 });
 
 const defaultTitle = "Followerbase – Follower, Likes & Views kaufen";
@@ -66,7 +72,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="de">
-      <body className={dmSans.className}>
+      <body className={`${dmSans.className} ${outfit.variable}`}>
         <CartProvider>
           <div className="app-container">
             <Header />

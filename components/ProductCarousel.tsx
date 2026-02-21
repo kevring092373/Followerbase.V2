@@ -29,12 +29,12 @@ type ProductCarouselProps = {
 };
 
 export function ProductCarousel({ products, title = "Weitere Produkte" }: ProductCarouselProps) {
-  const trackRef = React.useRef<HTMLDivElement>(null);
+  const viewportRef = React.useRef<HTMLDivElement>(null);
 
   const scroll = (dir: "left" | "right") => {
-    const el = trackRef.current;
+    const el = viewportRef.current;
     if (!el) return;
-    const step = 280;
+    const step = el.clientWidth;
     el.scrollBy({ left: dir === "left" ? -step : step, behavior: "smooth" });
   };
 
@@ -44,39 +44,41 @@ export function ProductCarousel({ products, title = "Weitere Produkte" }: Produc
     <section className="product-carousel" aria-label={title}>
       <div className="product-carousel-header">
         <h2 className="product-carousel-title">{title}</h2>
-        <div className="product-carousel-nav" aria-hidden>
-          <button type="button" className="product-carousel-btn product-carousel-btn-prev" onClick={() => scroll("left")} aria-label="Zurück">
-            ‹
-          </button>
-          <button type="button" className="product-carousel-btn product-carousel-btn-next" onClick={() => scroll("right")} aria-label="Weiter">
-            ›
-          </button>
-        </div>
       </div>
-      <div className="product-carousel-track" ref={trackRef}>
-        {products.map((product) => {
-          const minPriceCents = product.pricesCents?.length ? Math.min(...product.pricesCents) : 0;
-          return (
-            <Link key={product.slug} href={`/product/${product.slug}`} className="product-carousel-card card">
-              <div className="product-carousel-card-thumb">
-                {product.image ? (
-                  product.image.startsWith("/") ? (
-                    <Image src={product.image} alt={getImageAlt(product.image, product.name)} width={120} height={120} className="product-carousel-card-img" />
-                  ) : (
-                    <img src={product.image} alt={getImageAlt(product.image, product.name)} className="product-carousel-card-img" />
-                  )
-                ) : (
-                  <span className="product-carousel-card-placeholder">Bild</span>
-                )}
-              </div>
-              <div className="product-carousel-card-body">
-                <span className="product-carousel-card-name">{product.name}</span>
-                <span className="product-carousel-card-price">{formatAbPrice(minPriceCents)}</span>
-              </div>
-              <span className="product-carousel-card-arrow">→</span>
-            </Link>
-          );
-        })}
+      <div className="product-carousel-row">
+        <button type="button" className="product-carousel-arrow product-carousel-arrow-prev" onClick={() => scroll("left")} aria-label="Zurück">
+          ‹
+        </button>
+        <div className="product-carousel-viewport" ref={viewportRef}>
+          <div className="product-carousel-track">
+            {products.map((product) => {
+              const minPriceCents = product.pricesCents?.length ? Math.min(...product.pricesCents) : 0;
+              return (
+                <Link key={product.slug} href={`/product/${product.slug}`} className="product-carousel-card card">
+                  <div className="product-carousel-card-thumb">
+                    {product.image ? (
+                      product.image.startsWith("/") ? (
+                        <Image src={product.image} alt={getImageAlt(product.image, product.name)} width={120} height={120} className="product-carousel-card-img" />
+                      ) : (
+                        <img src={product.image} alt={getImageAlt(product.image, product.name)} className="product-carousel-card-img" />
+                      )
+                    ) : (
+                      <span className="product-carousel-card-placeholder">Bild</span>
+                    )}
+                  </div>
+                  <div className="product-carousel-card-body">
+                    <span className="product-carousel-card-name">{product.name}</span>
+                    <span className="product-carousel-card-price">{formatAbPrice(minPriceCents)}</span>
+                  </div>
+                  <span className="product-carousel-card-arrow">→</span>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+        <button type="button" className="product-carousel-arrow product-carousel-arrow-next" onClick={() => scroll("right")} aria-label="Weiter">
+          ›
+        </button>
       </div>
     </section>
   );
