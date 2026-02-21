@@ -2657,7 +2657,7 @@ button.nav-link {
 
 @media (max-width: 768px) {
   .product-order-row {
-    flex-direction: column-reverse;
+    flex-direction: column;
     gap: 1rem;
     margin-bottom: 2rem;
   }

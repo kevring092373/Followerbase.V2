@@ -170,7 +170,7 @@ export function ProductOrderBlock({
       {/* Stufen (Normal / Premium) */}
       {tiers && tiers.length > 1 && (
         <div className="product-order-row product-tier-row">
-          <span className="product-order-label">Variante</span>
+          <span className="product-order-label">Variante:</span>
           <div className="product-tier-options" role="group" aria-label="Variante wählen">
             {tiers.map((tier, i) => (
               <label key={tier.id} className="product-tier-option">
@@ -190,7 +190,7 @@ export function ProductOrderBlock({
       )}
       {/* Bereich 1: Standardmengen */}
       <div className="product-order-row">
-        <span className="product-order-label">Standardmengen</span>
+        <span className="product-order-label">Standardmengen:</span>
         <div className="product-quantity-options" role="group" aria-label="Standardmenge wählen">
           {q.map((qty, i) => (
             <label key={qty} className="product-quantity-option">
@@ -211,7 +211,7 @@ export function ProductOrderBlock({
       {/* Bereich 2: Individuelle Menge (Slider) */}
       <div className="product-order-row product-order-row-individual">
         <label className="product-order-label">
-          Individuelle Menge <span className="product-quantity-value">{quantity}</span>
+          Individuelle Menge: <span className="product-quantity-value">{quantity}</span>
         </label>
         <input
           type="range"
@@ -227,13 +227,13 @@ export function ProductOrderBlock({
       </div>
 
       <div className="product-order-row product-price-row">
-        <span className="product-order-label">Preis</span>
+        <span className="product-order-label">Preis:</span>
         <span className="product-price">{(priceCents / 100).toFixed(2)} €</span>
       </div>
 
       <div className="product-order-row">
         <label htmlFor="product-target" className="product-order-label">
-          {getTargetLabel(productSlug)} <span className="product-input-required" aria-hidden>*</span>
+          {getTargetLabel(productSlug)}: <span className="product-input-required" aria-hidden>*</span>
         </label>
         <input
           id="product-target"
