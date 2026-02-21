@@ -4,9 +4,11 @@
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { getProductBySlug, getProductImageAlt } from "@/lib/products-data";
+import { getProductBySlug, getProductImageAlt, getProductsByCategoryId, getAllProducts } from "@/lib/products-data";
 import { ProductOrderBlock } from "@/components/ProductOrderBlock";
+import { ProductCarousel } from "@/components/ProductCarousel";
 import { absoluteUrl, truncateDescription } from "@/lib/seo";
+import { categories } from "@/lib/categories";
 
 type Props = { params: { slug: string } };
 
@@ -42,6 +44,22 @@ export default async function ProductPage({ params }: Props) {
 
   const bullets = product.bullets?.length ? product.bullets : defaultBullets;
 
+  const categoryProducts = await getProductsByCategoryId(product.categoryId);
+  let otherProducts = categoryProducts
+    .filter((p) => p.slug !== product.slug)
+    .map((p) => ({ slug: p.slug, name: p.name, image: p.image, pricesCents: p.pricesCents }));
+  if (otherProducts.length === 0) {
+    otherProducts = (await getAllProducts())
+      .filter((p) => p.slug !== product.slug)
+      .slice(0, 12)
+      .map((p) => ({ slug: p.slug, name: p.name, image: p.image, pricesCents: p.pricesCents }));
+  }
+  const category = categories.find((c) => c.id === product.categoryId);
+  const carouselTitle =
+    otherProducts.length && category && otherProducts.length <= categoryProducts.length - 1
+      ? `Weitere ${category.name}-Produkte`
+      : "Weitere Produkte";
+
   return (
     <>
       <Link
@@ -59,28 +77,27 @@ export default async function ProductPage({ params }: Props) {
         </p>
       )}
 
-      <div className="product-layout">
-        <div className="product-image-wrap">
+      <div className="product-order-section">
+        <div className="product-order-section-image">
           {product.image ? (
             product.image.startsWith("/") ? (
               <Image
                 src={product.image}
                 alt={getProductImageAlt(product.image, product.name)}
-                width={400}
-                height={400}
+                width={200}
+                height={200}
                 className="product-image-img"
               />
             ) : (
               <img src={product.image} alt={getProductImageAlt(product.image, product.name)} className="product-image-img" />
             )
           ) : (
-            <div className="product-image-placeholder" aria-hidden>
+            <div className="product-image-placeholder product-image-placeholder--small" aria-hidden>
               <span className="product-image-placeholder-text">Bild</span>
             </div>
           )}
         </div>
-
-        <div className="product-detail">
+        <div className="product-order-section-form">
           <ProductOrderBlock
             productSlug={product.slug}
             quantities={product.quantities}
@@ -99,6 +116,10 @@ export default async function ProductPage({ params }: Props) {
             dangerouslySetInnerHTML={{ __html: product.description }}
           />
         </section>
+      )}
+
+      {otherProducts.length > 0 && (
+        <ProductCarousel products={otherProducts} title={carouselTitle} />
       )}
     </>
   );
