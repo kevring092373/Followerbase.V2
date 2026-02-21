@@ -58,7 +58,7 @@ Trage in **`.env.local`** (lokal) bzw. in **Netlify → Site settings → Enviro
 Die E-Mails (an den Kunden und an info@followerbase.de) werden **erst ausgelöst, wenn der Kunde nach der Zahlung auf unsere Success-URL weitergeleitet wird**. Dafür muss die Success URL in Viva (Schritt 2) korrekt gesetzt sein. Zusätzlich in Netlify setzen:
 
 - `RESEND_API_KEY` – API-Key von Resend
-- Optional: `EMAIL_FROM` – z. B. `Followerbase <bestellung@followerbase.de>` (Domain bei Resend verifizieren)
+- Optional: `EMAIL_FROM` – z. B. `Shop-Name <absender@deine-domain.de>` (Domain bei Resend verifizieren)
 
 ---
 
