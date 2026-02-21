@@ -85,7 +85,9 @@ a {
 
 @media (max-width: 640px) {
   .main-content {
-    padding: 1.25rem 1rem;
+    padding: 1rem 0.75rem;
+    max-width: 100%;
+    overflow-x: hidden;
   }
 }
 
@@ -716,6 +718,17 @@ button.nav-link {
   gap: 1.25rem;
 }
 
+@media (max-width: 640px) {
+  .category-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  .category-card {
+    padding: 1.25rem;
+    min-width: 0;
+  }
+}
+
 .category-card {
   display: flex;
   flex-direction: column;
@@ -957,6 +970,39 @@ button.nav-link {
 @container carousel (max-width: 560px) {
   .product-carousel-card {
     flex: 0 0 calc((100cqi - 1rem) / 2);
+  }
+}
+
+@media (max-width: 640px) {
+  .product-carousel {
+    margin-top: 2rem;
+    padding: 0 0.25rem;
+    padding-top: 1.5rem;
+  }
+  .product-carousel-title {
+    font-size: 1.125rem;
+  }
+  .product-carousel-row {
+    gap: 0.5rem;
+  }
+  .product-carousel-arrow {
+    width: 2.5rem;
+    min-width: 2.5rem;
+  }
+  .product-carousel-card {
+    flex: 0 0 160px;
+    padding: 1rem;
+  }
+  .product-carousel-card-thumb {
+    width: 80px;
+    height: 80px;
+  }
+  .product-carousel-card-img {
+    width: 80px;
+    height: 80px;
+  }
+  .product-carousel-card-name {
+    font-size: 0.9375rem;
   }
 }
 
@@ -2282,13 +2328,24 @@ button.nav-link {
   padding: 1.5rem 1.25rem;
   border-top: 1px solid var(--border);
   background: var(--bg-card);
-  background: var(--bg-card);
   box-sizing: border-box;
 }
 
 @media (max-width: 640px) {
   .footer {
     padding: 0.875rem 1rem;
+  }
+  .footer-inner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  .footer-nav {
+    flex-wrap: wrap;
+    max-width: 100%;
+  }
+  .footer-link {
+    font-size: 0.9375rem;
   }
 }
 
@@ -2602,18 +2659,36 @@ button.nav-link {
   .product-order-row {
     flex-direction: column-reverse;
     gap: 1rem;
-  }
-  .product-order-section-image {
-    width: 180px;
-    min-width: 180px;
+    margin-bottom: 2rem;
   }
   .product-order-section {
+    width: 100%;
+    min-width: 0;
     padding: 1rem;
+  }
+  .product-order-section-image {
+    width: 100%;
+    max-width: 220px;
+    min-width: 0;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .product-order-section-image {
+    max-width: 180px;
   }
 }
 
 .product-title-page {
   margin-bottom: 0.5rem;
+}
+
+@media (max-width: 640px) {
+  .product-title-page {
+    font-size: 1.375rem;
+    word-wrap: break-word;
+  }
 }
 
 .product-article-number {
@@ -2933,6 +3008,33 @@ button.nav-link {
   padding: 0.75rem 1.25rem;
 }
 
+@media (max-width: 640px) {
+  .product-target-input {
+    font-size: 16px;
+    min-height: 44px;
+    padding: 0.75rem 1rem;
+  }
+  .product-add-btn {
+    min-height: 44px;
+    padding: 0.875rem 1.25rem;
+  }
+  .btn {
+    min-height: 44px;
+    padding: 0.75rem 1.25rem;
+  }
+  .product-quantity-options {
+    gap: 0.5rem;
+  }
+  .product-quantity-option .product-quantity-label {
+    padding: 0.5rem 0.65rem;
+    font-size: 0.875rem;
+  }
+  .product-tier-label {
+    padding: 0.5rem 0.65rem;
+    font-size: 0.875rem;
+  }
+}
+
 .product-input-required {
   color: var(--brand-primary);
   font-weight: 600;
@@ -2973,12 +3075,31 @@ button.nav-link {
   margin-top: 2rem;
   padding-top: 2rem;
   border-top: 1px solid var(--border);
+  overflow-x: auto;
+  max-width: 100%;
 }
 
 .product-description-html {
   font-size: 0.9375rem;
   color: var(--text-primary);
   line-height: 1.6;
+  max-width: 100%;
+  overflow-wrap: break-word;
+}
+
+@media (max-width: 640px) {
+  .product-description-section {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+  }
+  .product-description-html {
+    font-size: 0.9375rem;
+  }
+  .product-description-html img,
+  .product-description-html table {
+    max-width: 100%;
+    height: auto;
+  }
 }
 
 .product-description-html p {
@@ -3023,6 +3144,14 @@ button.nav-link {
 
 .home {
   padding-bottom: 4rem;
+}
+
+@media (max-width: 640px) {
+  .home {
+    padding-bottom: 3rem;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
 }
 
 .home-hero {
@@ -3124,6 +3253,19 @@ button.nav-link {
   line-height: 1.6;
   margin-bottom: 1.25rem;
   max-width: 28rem;
+}
+
+@media (max-width: 640px) {
+  .home-hero-title {
+    font-size: clamp(1.5rem, 8vw, 2rem);
+  }
+  .home-hero-sub {
+    font-size: 1rem;
+    max-width: 100%;
+  }
+  .home-hero-stats {
+    font-size: 0.875rem;
+  }
 }
 
 .home-hero-stats {
@@ -3471,6 +3613,30 @@ button.nav-link {
   line-height: 1.7;
   color: var(--text-secondary);
   margin: 0;
+}
+
+@media (max-width: 640px) {
+  .home-text-block {
+    margin-left: 0;
+    margin-right: 0;
+    padding: 1.5rem 1rem;
+    max-width: 100%;
+  }
+  .home-quick-grid {
+    gap: 1rem;
+  }
+  .home-quick-card {
+    min-width: 0;
+    padding: 1.25rem;
+  }
+  .home-platforms-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  .home-platform-card {
+    min-width: 0;
+    padding: 1.5rem 1rem;
+  }
 }
 
 /* ===== Bewertungs-Carousel ===== */
