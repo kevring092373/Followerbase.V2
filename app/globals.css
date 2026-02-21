@@ -2564,7 +2564,7 @@ button.nav-link {
 .product-order-section-form {
   flex: 1;
   min-width: 0;
-  padding: 1rem;
+  padding: 0.5rem;
 }
 
 .product-order-section-image {
@@ -2607,7 +2607,7 @@ button.nav-link {
     justify-content: flex-start;
   }
   .product-order-section-form {
-    padding: 0.75rem 1rem 1rem;
+    padding: 0.5rem 0.75rem 0.75rem;
   }
 }
 
