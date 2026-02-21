@@ -2535,6 +2535,19 @@ button.nav-link {
   gap: 1.5rem;
   align-items: flex-start;
   margin-bottom: 2.5rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.product-order-section .product-order-block {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
 }
 
 .product-order-section-image {
