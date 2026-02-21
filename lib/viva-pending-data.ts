@@ -1,9 +1,15 @@
 /**
- * Viva-Pending-Checkouts (unbezahlte Karten-Zahlungen) – dateibasiert.
- * Wird bei Success-Redirect anhand orderCode aufgelöst und in eine Bestellung überführt.
+ * Viva-Pending-Checkouts (unbezahlte Karten-Zahlungen).
+ * Auf Netlify: Supabase (read-only Dateisystem). Lokal ohne Supabase: content/viva-pending.json.
  */
 import { promises as fs } from "fs";
 import path from "path";
+import { isSupabaseConfigured } from "@/lib/supabase/server";
+import {
+  addVivaPendingSupabase,
+  getVivaPendingByOrderCodeSupabase,
+  removeVivaPendingByOrderCodeSupabase,
+} from "./viva-pending-supabase";
 import type { OrderItem } from "./orders";
 import type { PendingCheckoutCustomer } from "./orders-data";
 
@@ -51,6 +57,10 @@ export async function addVivaPending(
   sellerNote?: string,
   customer?: PendingCheckoutCustomer
 ): Promise<void> {
+  if (isSupabaseConfigured()) {
+    await addVivaPendingSupabase(vivaOrderCode, items, totalCents, sellerNote, customer);
+    return;
+  }
   const list = await readVivaPending();
   list.push({
     vivaOrderCode,
@@ -66,6 +76,9 @@ export async function addVivaPending(
 export async function getVivaPendingByOrderCode(
   vivaOrderCode: number
 ): Promise<VivaPendingCheckout | null> {
+  if (isSupabaseConfigured()) {
+    return getVivaPendingByOrderCodeSupabase(vivaOrderCode);
+  }
   const list = await readVivaPending();
   return list.find((p) => p.vivaOrderCode === vivaOrderCode) ?? null;
 }
@@ -73,6 +86,10 @@ export async function getVivaPendingByOrderCode(
 export async function removeVivaPendingByOrderCode(
   vivaOrderCode: number
 ): Promise<void> {
+  if (isSupabaseConfigured()) {
+    await removeVivaPendingByOrderCodeSupabase(vivaOrderCode);
+    return;
+  }
   const list = await readVivaPending();
   const filtered = list.filter((p) => p.vivaOrderCode !== vivaOrderCode);
   await writeVivaPending(filtered);

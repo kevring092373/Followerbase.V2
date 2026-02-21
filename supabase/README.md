@@ -15,6 +15,7 @@ Damit werden angelegt:
 **Falls du `schema.sql` schon früher ausgeführt hast:** Zusätzlich die Migrationen ausführen:
 - `migrations/001_orders_payment_and_customer.sql` – Spalten für Zahlungsart und Kundendaten in `orders`
 - `migrations/002_pending_checkouts.sql` – Tabelle `pending_checkouts` (unbezahlte PayPal-Vorgänge), damit der Checkout auf Netlify funktioniert (read-only Dateisystem)
+- `migrations/003_viva_pending_checkouts.sql` – Tabelle `viva_pending_checkouts` (unbezahlte Viva-Karten-Zahlungen), ebenfalls für Netlify nötig
 
 ## 2. API-Keys in .env.local
 

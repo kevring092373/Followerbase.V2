@@ -1,6 +1,6 @@
 # Viva Wallet (Kreditkarte) – Einrichtung
 
-Kartenzahlung läuft über Viva. Nach der technischen Integration im Projekt musst du folgende Schritte erledigen.
+Kartenzahlung läuft über Viva. **Auf Netlify (Live)** wird Supabase für Viva-Pending-Checkouts benötigt – die Datei `content/viva-pending.json` ist dort read-only. Führe im Supabase SQL Editor die Migration **`supabase/migrations/003_viva_pending_checkouts.sql`** aus, falls noch nicht geschehen.
 
 ---
 
