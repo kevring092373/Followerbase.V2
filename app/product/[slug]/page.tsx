@@ -77,8 +77,8 @@ export default async function ProductPage({ params }: Props) {
         </p>
       )}
 
-      <div className="product-order-section">
-        <div className="product-order-section-form">
+      <div className="product-order-row">
+        <div className="product-order-section">
           <ProductOrderBlock
             productSlug={product.slug}
             quantities={product.quantities}
@@ -94,8 +94,8 @@ export default async function ProductPage({ params }: Props) {
               <Image
                 src={product.image}
                 alt={getProductImageAlt(product.image, product.name)}
-                width={200}
-                height={200}
+                width={260}
+                height={260}
                 className="product-image-img"
               />
             ) : (
