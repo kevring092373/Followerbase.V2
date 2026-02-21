@@ -14,12 +14,13 @@ import {
 } from "@/lib/email-order-confirmation";
 
 type Props = {
-  searchParams: Promise<{ t?: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
 
 export default async function VivaSuccessPage({ searchParams }: Props) {
   const params = await searchParams;
-  const transactionId = params.t?.trim();
+  const t = params.t ?? params.TransactionId ?? params.tid;
+  const transactionId = (Array.isArray(t) ? t[0] : t)?.trim();
   if (!transactionId) {
     redirect("/checkout?error=viva_missing");
   }

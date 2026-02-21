@@ -24,21 +24,23 @@ Trage in **`.env.local`** (lokal) bzw. in **Netlify → Site settings → Enviro
 
 ---
 
-## 2. Payment Source (Online-Zahlungen) im Viva Dashboard
+## 2. Payment Source (Online-Zahlungen) im Viva Dashboard – **wichtig**
 
-Damit die Weiterleitung zur Zahlungsseite und die Rückleitung funktionieren:
+**Ohne korrekte Success URL bleibt der Kunde nach der Zahlung auf der Viva-Seite, und es wird keine Bestellung angelegt und keine E-Mail versendet.**
 
-1. Im Viva Dashboard: **Sales** → **Online payments** → **Websites/Apps** (oder vergleichbar).
-2. Eine **Payment Source** für deine Website anlegen (falls noch nicht geschehen).
-3. **Success URL** setzen – **genau diese URL** eintragen:
+1. Im Viva Dashboard: **Sales** → **Online payments** → **Websites/Apps**.
+2. Deine **Payment Source** für die Website auswählen (oder neu anlegen).
+3. **Success URL** – **exakt** so eintragen (deine echte Domain verwenden):
    ```
    https://DEINE-DOMAIN.de/kasse/viva/success
    ```
    Beispiele:
-   - Live: `https://followerbase.de/kasse/viva/success`
-   - Lokal testen: `https://dein-ngrok-oder-tunnel.de/kasse/viva/success`
-4. Optional: **Failure/Cancel URL** auf z. B. `https://DEINE-DOMAIN.de/checkout` setzen.
-5. Den **Source Code** dieser Payment Source (falls du mehrere nutzt) in `VIVA_SOURCE_CODE` in der .env eintragen.
+   - **Live:** `https://followerbase.de/kasse/viva/success`
+   - Mit www: `https://www.followerbase.de/kasse/viva/success` (nur wenn deine Site wirklich mit www läuft)
+   - **Nur HTTPS**, keine Leerzeichen, kein Slash am Ende.
+4. **Domain Name** in derselben Payment Source muss zu deiner Website passen (z. B. `followerbase.de` ohne https://).
+5. **Failure URL** (optional): `https://DEINE-DOMAIN.de/checkout` – dann landet der Kunde bei Abbruch wieder im Checkout.
+6. Änderungen **speichern**. Bei mehreren Payment Sources: **Source Code** dieser Quelle in `VIVA_SOURCE_CODE` in der .env eintragen.
 
 ---
 
@@ -51,11 +53,33 @@ Damit die Weiterleitung zur Zahlungsseite und die Rückleitung funktionieren:
 
 ---
 
-## 4. Checkliste
+## 4. E-Mails (Bestätigung + Benachrichtigung)
+
+Die E-Mails (an den Kunden und an info@followerbase.de) werden **erst ausgelöst, wenn der Kunde nach der Zahlung auf unsere Success-URL weitergeleitet wird**. Dafür muss die Success URL in Viva (Schritt 2) korrekt gesetzt sein. Zusätzlich in Netlify setzen:
+
+- `RESEND_API_KEY` – API-Key von Resend
+- Optional: `EMAIL_FROM` – z. B. `Followerbase <bestellung@followerbase.de>` (Domain bei Resend verifizieren)
+
+---
+
+## 5. Checkliste
 
 - [ ] `VIVA_CLIENT_ID` und `VIVA_CLIENT_SECRET` in .env.local / Netlify gesetzt
-- [ ] Success URL im Viva Dashboard = `https://DEINE-DOMAIN.de/kasse/viva/success`
-- [ ] Optional: `VIVA_SOURCE_CODE` gesetzt, falls du eine bestimmte Payment Source nutzt
-- [ ] Für Live: `VIVA_DEMO` weglassen oder auf `false`; für Tests: `VIVA_DEMO=true`
+- [ ] **Success URL** im Viva Dashboard = `https://DEINE-DOMAIN.de/kasse/viva/success` (exakt, mit deiner Live-Domain)
+- [ ] **Domain Name** in der Payment Source passt zu deiner Website
+- [ ] Optional: `VIVA_SOURCE_CODE` gesetzt, falls du mehrere Payment Sources nutzt
+- [ ] Für Live: `VIVA_DEMO` weglassen; für Tests: `VIVA_DEMO=true`
+- [ ] `RESEND_API_KEY` (und ggf. `EMAIL_FROM`) in Netlify für E-Mails gesetzt
 
-Wenn etwas nicht funktioniert: Server-Logs (lokal bzw. Netlify Functions/Logs) prüfen; Viva sendet dort keine sensiblen Kartendaten, aber Fehlermeldungen der API.
+---
+
+## 6. Troubleshooting
+
+| Problem | Lösung |
+|--------|--------|
+| Kunde bleibt nach Zahlung auf der Viva-Seite | Success URL in der **Payment Source** (Sales → Online payments → Websites/Apps) prüfen. Muss **genau** `https://deine-domain.de/kasse/viva/success` sein (mit deiner echten Domain, HTTPS). Nach Änderung speichern. |
+| Keine E-Mails | Erfolgt nur, wenn unsere Success-Seite aufgerufen wird (siehe oben). Zusätzlich: `RESEND_API_KEY` und ggf. `EMAIL_FROM` in Netlify prüfen; Resend-Domain verifizieren. |
+| Redirect zu /checkout?error=viva_verify | Transaktion konnte nicht verifiziert werden (z. B. Demo vs. Live vertauscht: `VIVA_DEMO` muss zu der Umgebung passen, in der die Zahlung lief). |
+| Redirect zu /checkout?error=viva_order | Pending-Checkout nicht gefunden – z. B. Migration `003_viva_pending_checkouts.sql` in Supabase ausgeführt? |
+
+Server-Logs (Netlify Functions / Build-Logs) prüfen; dort erscheinen API-Fehler (ohne Kartendaten).
