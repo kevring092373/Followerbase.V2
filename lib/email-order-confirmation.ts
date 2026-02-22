@@ -35,7 +35,7 @@ function buildOrderConfirmationHtml(order: Order): string {
   <h1 style="font-size: 1.5rem; margin: 0 0 24px 0;">Danke für deinen Einkauf</h1>
   <p style="margin: 0 0 16px 0;">Hallo${order.customerName ? ` ${escapeHtml(order.customerName)}` : ""},</p>
   <p style="margin: 0 0 24px 0;">vielen Dank für deine Bestellung. Hier ist deine Bestellübersicht:</p>
-  <p style="font-size: 1.25rem; font-weight: 700; color: #0284c7; margin: 0 0 8px 0;">Bestellnummer: ${escapeHtml(order.orderNumber)}</p>
+  <p style="font-size: 1.25rem; font-weight: 700; color: #6366f1; margin: 0 0 8px 0;">Bestellnummer: ${escapeHtml(order.orderNumber)}</p>
   <p style="font-size: 0.9375rem; color: #64748b; margin: 0 0 28px 0;">Zahlungsart: ${escapeHtml(paymentLabel)}</p>
   <table style="width: 100%; border-collapse: collapse; margin: 0 0 24px 0;">
     <thead>
@@ -98,7 +98,7 @@ function buildOrderNotificationHtml(order: Order): string {
     <tbody>${items}</tbody>
   </table>
   ${order.sellerNote ? `<p><strong>Nachricht des Kunden:</strong><br>${escapeHtml(order.sellerNote)}</p>` : ""}
-  <p style="margin-top: 16px;"><a href="${escapeHtml(adminOrdersUrl)}" style="color: #0284c7;">Bestellungen im Admin öffnen</a></p>
+  <p style="margin-top: 16px;"><a href="${escapeHtml(adminOrdersUrl)}" style="color: #6366f1;">Bestellungen im Admin öffnen</a></p>
 </body>
 </html>`;
 }

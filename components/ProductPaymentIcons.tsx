@@ -1,20 +1,15 @@
 /**
  * Zahlungsarten-Icons für die Produktseite (PayPal, Kreditkarte, Überweisung).
- * PayPal: offizielles Logo (Simple Icons).
  */
 
 const iconSize = 48;
 
 function IconPayPal() {
   return (
-    <img
-      src="/paypal-icon.svg"
-      alt=""
-      width={iconSize}
-      height={iconSize}
-      className="product-payment-icon-img"
-      aria-hidden
-    />
+    <svg width={iconSize} height={iconSize} viewBox="0 0 24 24" fill="none" aria-hidden>
+      <path fill="#003087" d="M10 4h-4v16h2.5V13h1.2c2 0 3.5-1.5 3.5-3.5S13.7 4 10 4zm.2 5c.5 0 .8-.3.8-.8 0-.5-.3-.8-.8-.8H8.5v1.6h1.7z" />
+      <path fill="#009CDE" d="M18.2 7.8c-.5-.5-1.2-.8-2-.9-.9-.1-1.8.1-2.5.5l-.2.1v-.2h-2.2v9.4h2.2v-3.5l.1.1c.4.3.9.5 1.5.5 1.2 0 2.2-.5 2.8-1.3.6-.8.9-1.8.9-3 0-.9-.2-1.7-.6-2.3-.4-.6-1-1-1.7-1.3z" />
+    </svg>
   );
 }
 
