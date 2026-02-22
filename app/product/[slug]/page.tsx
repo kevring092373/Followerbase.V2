@@ -76,13 +76,32 @@ export default async function ProductPage({ params }: Props) {
 
   return (
     <>
-      <Link
-        href="/products"
-        className="text-muted"
-        style={{ marginBottom: "1rem", display: "inline-block", fontSize: "0.9375rem" }}
-      >
-        ← Alle Produkte
-      </Link>
+      <nav className="product-breadcrumb" aria-label="Breadcrumb">
+        <ol className="product-breadcrumb-list" itemScope itemType="https://schema.org/BreadcrumbList">
+          <li itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
+            <Link href="/" itemProp="item">
+              <span itemProp="name">Startseite</span>
+            </Link>
+            <meta itemProp="position" content="1" />
+          </li>
+          {category && (
+            <li itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
+              <span className="product-breadcrumb-sep" aria-hidden>/</span>
+              <Link href={`/products/${category.slug}`} itemProp="item">
+                <span itemProp="name">{category.name}</span>
+              </Link>
+              <meta itemProp="position" content="2" />
+            </li>
+          )}
+          <li itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
+            <span className="product-breadcrumb-sep" aria-hidden>/</span>
+            <span className="product-breadcrumb-current" itemProp="name" aria-current="page">
+              {product.name}
+            </span>
+            <meta itemProp="position" content={category ? "3" : "2"} />
+          </li>
+        </ol>
+      </nav>
 
       <h1 className="product-title product-title-page">{product.name}</h1>
       {product.articleNumber && (
@@ -135,13 +154,15 @@ export default async function ProductPage({ params }: Props) {
         const { styleContent, htmlContent } = prepareProductDescriptionHtml(product.description);
         return (
           <section className="product-description-section">
-            {styleContent ? (
-              <style dangerouslySetInnerHTML={{ __html: styleContent }} />
-            ) : null}
-            <div
-              className="product-description-html"
-              dangerouslySetInnerHTML={{ __html: htmlContent }}
-            />
+            <div className="product-description-inner">
+              {styleContent ? (
+                <style dangerouslySetInnerHTML={{ __html: styleContent }} />
+              ) : null}
+              <div
+                className="product-description-html"
+                dangerouslySetInnerHTML={{ __html: htmlContent }}
+              />
+            </div>
           </section>
         );
       })()}
