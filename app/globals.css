@@ -2719,7 +2719,47 @@ button.nav-link {
   cursor: not-allowed;
 }
 
-/* ===== Produktseite ===== */
+/* ===== Produktseite (Layout angelehnt an Followerfabrik) ===== */
+.product-page-wrap {
+  padding-bottom: 2rem;
+}
+
+.product-back-link {
+  display: inline-block;
+  font-size: 0.9375rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.75rem;
+  text-decoration: none;
+}
+
+.product-back-link:hover {
+  color: var(--brand-primary);
+}
+
+.product-page-header {
+  margin-bottom: 1.5rem;
+}
+
+.product-trust-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.product-trust-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.4rem 0.85rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-sm);
+}
+
 .product-order-row {
   display: flex;
   flex-wrap: wrap;
@@ -2734,8 +2774,8 @@ button.nav-link {
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  padding: 1.25rem;
-  box-shadow: var(--shadow-sm);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-md);
 }
 
 .product-order-section .product-order-block {
@@ -2748,8 +2788,13 @@ button.nav-link {
 
 .product-order-section-image {
   flex-shrink: 0;
-  width: 220px;
+  width: 260px;
   min-width: 220px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  box-shadow: var(--shadow-md);
 }
 
 .product-order-section-image .product-image-img {
@@ -2828,9 +2873,17 @@ button.nav-link {
   }
   .product-order-section-image {
     width: 100%;
-    max-width: 220px;
+    max-width: 260px;
     min-width: 0;
     margin: 0 auto;
+    padding: 1rem;
+  }
+  .product-trust-bar {
+    margin-top: 0.75rem;
+  }
+  .product-trust-badge {
+    font-size: 0.75rem;
+    padding: 0.35rem 0.65rem;
   }
 }
 
@@ -2841,7 +2894,15 @@ button.nav-link {
 }
 
 .product-title-page {
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
+  font-size: 1.75rem;
+  letter-spacing: -0.02em;
+}
+
+@media (min-width: 641px) {
+  .product-title-page {
+    font-size: 2rem;
+  }
 }
 
 .product-breadcrumb {

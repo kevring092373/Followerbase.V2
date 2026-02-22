@@ -76,7 +76,10 @@ export default async function ProductPage({ params }: Props) {
       : "Weitere Produkte";
 
   return (
-    <>
+    <div className="product-page-wrap">
+      <Link href="/products" className="product-back-link">
+        ← Alle Produkte
+      </Link>
       <nav className="product-breadcrumb" aria-label="Breadcrumb">
         <ol className="product-breadcrumb-list" itemScope itemType="https://schema.org/BreadcrumbList">
           <li itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
@@ -104,12 +107,21 @@ export default async function ProductPage({ params }: Props) {
         </ol>
       </nav>
 
-      <h1 className="product-title product-title-page">{product.name}</h1>
-      {product.articleNumber && (
-        <p className="product-article-number" aria-label="Artikelnummer">
-          Artikelnummer: {product.articleNumber}
-        </p>
-      )}
+      <header className="product-page-header">
+        <h1 className="product-title product-title-page">{product.name}</h1>
+        {product.articleNumber && (
+          <p className="product-article-number" aria-label="Artikelnummer">
+            Artikelnummer: {product.articleNumber}
+          </p>
+        )}
+        <div className="product-trust-bar" role="list">
+          {bullets.map((text, i) => (
+            <span key={i} className="product-trust-badge" role="listitem">
+              {text}
+            </span>
+          ))}
+        </div>
+      </header>
 
       <div className="product-order-row">
         <div className="product-order-section">
@@ -118,7 +130,7 @@ export default async function ProductPage({ params }: Props) {
             quantities={product.quantities}
             pricesCents={product.pricesCents}
             productName={product.name}
-            bullets={bullets}
+            bullets={[]}
             tiers={product.tiers}
           />
         </div>
@@ -172,6 +184,6 @@ export default async function ProductPage({ params }: Props) {
       {otherProducts.length > 0 && (
         <ProductCarousel products={otherProducts} title={carouselTitle} />
       )}
-    </>
+    </div>
   );
 }
