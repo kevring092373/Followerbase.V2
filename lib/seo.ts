@@ -55,10 +55,24 @@ export function stripDocumentHeadAndViewport(html: string): string {
 
 const STYLE_REGEX = /<style[^>]*>([\s\S]*?)<\/style>/gi;
 
+/** Ersetzt alte Markenfarben (Indigo/Violett) in CSS durch die aktuelle Markenfarbe (Blau). */
+function replaceLegacyBrandColorsInCss(css: string): string {
+  if (!css || !css.trim()) return css;
+  return css
+    .replace(/#6366f1/gi, "#0891b2")
+    .replace(/#4f46e5/gi, "#0891b2")
+    .replace(/#5b21b6/gi, "#0e7490")
+    .replace(/#7c3aed/gi, "#0891b2")
+    .replace(/rgba\s*\(\s*99\s*,\s*102\s*,\s*241\s*,/gi, "rgba(8, 145, 178,")
+    .replace(/rgba\s*\(\s*79\s*,\s*70\s*,\s*229\s*,/gi, "rgba(8, 145, 178,")
+    .replace(/--accent\s*:\s*#?[0-9a-fA-F]{3,8}\s*;/g, "--accent: #0891b2;")
+    .replace(/--primary\s*:\s*#?[0-9a-fA-F]{3,8}\s*;/g, "--primary: #0891b2;");
+}
+
 /**
  * Extrahiert aus vollständigem Dokument-HTML (z. B. Produktbeschreibung aus Supabase)
- * alle <style>-Inhalte und den sichtbaren Body-Inhalt. So bleibt das Design aus dem
- * HTML erhalten, ohne doppelte Viewport-/head-Angaben.
+ * alle <style>-Inhalte und den sichtbaren Body-Inhalt. Alte Markenfarben werden durch
+ * die aktuelle Markenfarbe (Blau) ersetzt.
  */
 export function prepareProductDescriptionHtml(html: string): { styleContent: string; htmlContent: string } {
   if (!html || !html.trim()) return { styleContent: "", htmlContent: "" };
@@ -68,6 +82,7 @@ export function prepareProductDescriptionHtml(html: string): { styleContent: str
   while ((match = STYLE_REGEX.exec(html)) !== null) {
     styleContent += match[1].trim() + "\n";
   }
+  styleContent = replaceLegacyBrandColorsInCss(styleContent.trim());
   const htmlContent = stripDocumentHeadAndViewport(html);
-  return { styleContent: styleContent.trim(), htmlContent };
+  return { styleContent, htmlContent };
 }
