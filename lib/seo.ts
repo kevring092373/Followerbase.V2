@@ -59,14 +59,14 @@ const STYLE_REGEX = /<style[^>]*>([\s\S]*?)<\/style>/gi;
 function replaceLegacyBrandColorsInCss(css: string): string {
   if (!css || !css.trim()) return css;
   return css
-    .replace(/#6366f1/gi, "#0891b2")
-    .replace(/#4f46e5/gi, "#0891b2")
-    .replace(/#5b21b6/gi, "#0e7490")
-    .replace(/#7c3aed/gi, "#0891b2")
-    .replace(/rgba\s*\(\s*99\s*,\s*102\s*,\s*241\s*,/gi, "rgba(8, 145, 178,")
-    .replace(/rgba\s*\(\s*79\s*,\s*70\s*,\s*229\s*,/gi, "rgba(8, 145, 178,")
-    .replace(/--accent\s*:\s*#?[0-9a-fA-F]{3,8}\s*;/g, "--accent: #0891b2;")
-    .replace(/--primary\s*:\s*#?[0-9a-fA-F]{3,8}\s*;/g, "--primary: #0891b2;");
+    .replace(/#6366f1/gi, "#0284c7")
+    .replace(/#4f46e5/gi, "#0284c7")
+    .replace(/#5b21b6/gi, "#0369a1")
+    .replace(/#7c3aed/gi, "#0284c7")
+    .replace(/rgba\s*\(\s*99\s*,\s*102\s*,\s*241\s*,/gi, "rgba(2, 132, 199,")
+    .replace(/rgba\s*\(\s*79\s*,\s*70\s*,\s*229\s*,/gi, "rgba(2, 132, 199,")
+    .replace(/--accent\s*:\s*#?[0-9a-fA-F]{3,8}\s*;/g, "--accent: #0284c7;")
+    .replace(/--primary\s*:\s*#?[0-9a-fA-F]{3,8}\s*;/g, "--primary: #0284c7;");
 }
 
 /**
