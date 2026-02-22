@@ -7,7 +7,7 @@ import { notFound } from "next/navigation";
 import { getProductBySlug, getProductImageAlt, getProductsByCategoryId, getAllProducts } from "@/lib/products-data";
 import { ProductOrderBlock } from "@/components/ProductOrderBlock";
 import { ProductCarousel } from "@/components/ProductCarousel";
-import { absoluteUrl, truncateDescription } from "@/lib/seo";
+import { absoluteUrl, truncateDescription, stripDocumentHeadAndViewport } from "@/lib/seo";
 import { categories } from "@/lib/categories";
 
 type Props = { params: { slug: string } };
@@ -113,7 +113,7 @@ export default async function ProductPage({ params }: Props) {
         <section className="product-description-section">
           <div
             className="product-description-html"
-            dangerouslySetInnerHTML={{ __html: product.description }}
+            dangerouslySetInnerHTML={{ __html: stripDocumentHeadAndViewport(product.description) }}
           />
         </section>
       )}
