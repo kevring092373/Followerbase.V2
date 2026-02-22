@@ -2734,6 +2734,8 @@ button.nav-link {
 /* ===== Produktseite (Layout angelehnt an Followerfabrik) ===== */
 .product-page-wrap {
   padding-bottom: 2rem;
+  background: var(--bg-page);
+  min-height: 100vh;
 }
 
 .product-back-link {
@@ -3356,6 +3358,7 @@ button.nav-link {
   max-width: 100%;
   position: relative;
   left: 50%;
+  background: var(--bg-page);
   transform: translateX(-50%);
   box-sizing: border-box;
 }
