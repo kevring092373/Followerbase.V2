@@ -131,7 +131,18 @@ a {
 }
 
 .logo-link:hover {
-  color: var(--brand-primary);
+  color: var(--text-primary);
+  opacity: 0.9;
+}
+
+.logo-link .logo-img {
+  display: block;
+  height: auto;
+  max-height: 44px;
+  width: auto;
+  max-width: 160px;
+  object-fit: contain;
+  transition: opacity var(--transition-fast);
 }
 
 .logo-link .logo-icon {
