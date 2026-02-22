@@ -1,12 +1,21 @@
 import type { Metadata } from "next";
+import dynamic from "next/dynamic";
 import { DM_Sans, Outfit } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/context/CartContext";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { CartDrawer } from "@/components/CartDrawer";
-import { CookieBanner } from "@/components/CookieBanner";
 import { getBaseUrl, SITE_NAME } from "@/lib/seo";
+
+const CartDrawer = dynamic(
+  () => import("@/components/CartDrawer").then((m) => ({ default: m.CartDrawer })),
+  { ssr: false }
+);
+
+const CookieBanner = dynamic(
+  () => import("@/components/CookieBanner").then((m) => ({ default: m.CookieBanner })),
+  { ssr: false }
+);
 
 const dmSans = DM_Sans({
   subsets: ["latin"],

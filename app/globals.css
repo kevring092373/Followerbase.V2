@@ -642,6 +642,12 @@ button.nav-link {
   margin-bottom: 1.25rem;
 }
 
+.share-buttons--icon-only {
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .share-buttons--icon-only .share-buttons-list {
   gap: 0.5rem;
 }

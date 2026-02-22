@@ -94,7 +94,7 @@ export function ShareButtons({ url, title, text, className = "", iconOnly = fals
       role="group"
       aria-label="Seite teilen"
     >
-      {!iconOnly && <span className="share-buttons-label">Teilen:</span>}
+      <span className="share-buttons-label">{iconOnly ? "Teilen" : "Teilen:"}</span>
       <div className="share-buttons-list">
         <a
           href={buildShareUrl("facebook", url, title, text)}

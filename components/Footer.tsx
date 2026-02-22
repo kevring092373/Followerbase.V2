@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 const mainLinks = [
   { href: "/blog", label: "Blog" },
@@ -18,10 +19,13 @@ export function Footer() {
     <footer className="footer">
       <div className="footer-inner">
         <div className="footer-payment-icons">
-          <img
+          <Image
             src="/icons/zahlungsicons.png"
             alt="Zahlungsarten"
+            width={180}
+            height={40}
             className="footer-payment-img"
+            sizes="180px"
           />
         </div>
         <nav className="footer-nav" aria-label="Footer-Navigation">

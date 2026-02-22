@@ -31,6 +31,7 @@ export function CategoryIcon({ src, fallback, size = 48, className = "" }: Props
       alt=""
       width={size}
       height={size}
+      sizes={`${size}px`}
       className={className}
       onError={() => setFailed(true)}
     />

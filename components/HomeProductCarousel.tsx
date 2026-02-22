@@ -66,6 +66,7 @@ export function HomeProductCarousel({ products, title = "Beliebte Produkte" }: H
                           alt={getImageAlt(product.image, product.name)}
                           width={280}
                           height={200}
+                          sizes="(max-width: 640px) 240px, 280px"
                           className="home-product-carousel-card-img"
                         />
                       ) : (

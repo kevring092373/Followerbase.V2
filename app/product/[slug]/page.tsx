@@ -4,7 +4,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { getProductBySlug, getProductImageAlt, getProductsByCategoryId, getAllProducts } from "@/lib/products-data";
+import { getProductBySlug, getProductImageAlt, getAllProducts } from "@/lib/products-data";
 import { ProductOrderBlock } from "@/components/ProductOrderBlock";
 import { ProductCarousel } from "@/components/ProductCarousel";
 import { ShareButtons } from "@/components/ShareButtons";
@@ -14,6 +14,15 @@ import { categories } from "@/lib/categories";
 type Props = { params: { slug: string } };
 
 const defaultBullets = ["Schnelle Lieferung", "Sichere Zahlung", "Qualitätsgarantie"];
+
+/** Statische Generierung: alle Produkt-URLs beim Build vorrendern */
+export async function generateStaticParams() {
+  const products = await getAllProducts();
+  return products.map((p) => ({ slug: p.slug }));
+}
+
+/** Cache: Produktseiten stündlich neu validieren */
+export const revalidate = 3600;
 
 export async function generateMetadata({ params }: Props) {
   const product = await getProductBySlug(params.slug);
@@ -39,18 +48,22 @@ export async function generateMetadata({ params }: Props) {
 }
 
 export default async function ProductPage({ params }: Props) {
-  const product = await getProductBySlug(params.slug);
+  const slug = params.slug;
+  const [product, allProducts] = await Promise.all([
+    getProductBySlug(slug),
+    getAllProducts(),
+  ]);
 
   if (!product) notFound();
 
   const bullets = product.bullets?.length ? product.bullets : defaultBullets;
 
-  const categoryProducts = await getProductsByCategoryId(product.categoryId);
+  const categoryProducts = allProducts.filter((p) => p.categoryId === product.categoryId);
   let otherProducts = categoryProducts
     .filter((p) => p.slug !== product.slug)
     .map((p) => ({ slug: p.slug, name: p.name, image: p.image, pricesCents: p.pricesCents }));
   if (otherProducts.length === 0) {
-    otherProducts = (await getAllProducts())
+    otherProducts = allProducts
       .filter((p) => p.slug !== product.slug)
       .slice(0, 12)
       .map((p) => ({ slug: p.slug, name: p.name, image: p.image, pricesCents: p.pricesCents }));
@@ -97,6 +110,7 @@ export default async function ProductPage({ params }: Props) {
                 alt={getProductImageAlt(product.image, product.name)}
                 width={260}
                 height={260}
+                sizes="(max-width: 768px) 220px, 260px"
                 className="product-image-img"
               />
             ) : (

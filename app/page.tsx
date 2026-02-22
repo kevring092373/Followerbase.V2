@@ -12,14 +12,14 @@ function QuickAccessIcon({ productSlug }: { productSlug: string }) {
   if (productSlug.startsWith("instagram-")) {
     return (
       <span className="home-quick-card-icon home-quick-card-icon-img">
-        <Image src="/icons/instagram.png" alt="" width={48} height={48} />
+        <Image src="/icons/instagram.png" alt="" width={48} height={48} priority sizes="48px" />
       </span>
     );
   }
   if (productSlug.startsWith("tiktok-")) {
     return (
       <span className="home-quick-card-icon home-quick-card-icon-img">
-        <Image src="/icons/tiktok.png" alt="" width={48} height={48} />
+        <Image src="/icons/tiktok.png" alt="" width={48} height={48} priority sizes="48px" />
       </span>
     );
   }
@@ -48,6 +48,8 @@ const PLATFORM_ICONS: Record<string, string> = {
   facebook: "👍",
   threads: "🧵",
 };
+
+export const revalidate = 3600;
 
 export default async function HomePage() {
   const allProducts = await getAllProducts();

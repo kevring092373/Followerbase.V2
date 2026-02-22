@@ -7,6 +7,8 @@ import { getAllPosts } from "@/lib/blog-data";
 
 import { absoluteUrl } from "@/lib/seo";
 
+export const revalidate = 3600;
+
 export const metadata = {
   title: "Blog",
   description:
@@ -45,6 +47,7 @@ export default async function BlogPage() {
                       alt=""
                       width={400}
                       height={220}
+                      sizes="(max-width: 640px) 100vw, 400px"
                       className="blog-card-image"
                     />
                   ) : (

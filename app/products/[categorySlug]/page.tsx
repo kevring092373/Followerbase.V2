@@ -10,6 +10,13 @@ import { absoluteUrl, truncateDescription } from "@/lib/seo";
 
 type Props = { params: { categorySlug: string } };
 
+/** Statische Generierung: alle Kategorie-URLs beim Build */
+export function generateStaticParams() {
+  return categories.map((c) => ({ categorySlug: c.slug }));
+}
+
+export const revalidate = 3600;
+
 export function generateMetadata({ params }: Props) {
   const category = categories.find((c) => c.slug === params.categorySlug);
   if (!category) return { title: "Kategorie" };
@@ -66,7 +73,7 @@ export default async function CategoryPage({ params }: Props) {
                 {product.image ? (
                   product.image.startsWith("/") ? (
                     <div className="category-card-thumb category-card-thumb-img">
-                      <Image src={product.image} alt={getProductImageAlt(product.image, product.name)} width={120} height={120} className="category-card-thumb-img-inner" />
+                      <Image src={product.image} alt={getProductImageAlt(product.image, product.name)} width={120} height={120} sizes="120px" className="category-card-thumb-img-inner" />
                     </div>
                   ) : (
                     <div className="category-card-thumb category-card-thumb-img">
