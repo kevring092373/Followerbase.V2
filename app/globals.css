@@ -2733,9 +2733,22 @@ button.nav-link {
 
 /* ===== Produktseite (Layout angelehnt an Followerfabrik) ===== */
 .product-page-wrap {
+  position: relative;
   padding-bottom: 2rem;
-  background: var(--bg-page);
   min-height: 100vh;
+}
+/* Hintergrund über volle Viewport-Breite (bricht aus .main-content max-width aus) */
+.product-page-wrap::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100vw;
+  height: 100%;
+  min-height: 100vh;
+  background: var(--bg-page);
 }
 
 .product-back-link {
@@ -2857,13 +2870,20 @@ button.nav-link {
   box-shadow: var(--shadow-sm);
 }
 
-.product-payment-card svg {
+.product-payment-card svg,
+.product-payment-card .product-payment-icon-img {
   flex-shrink: 0;
   width: 32px;
   height: 32px;
+  display: block;
 }
 
-.product-payment-card:first-child svg {
+.product-payment-card .product-payment-icon-img {
+  object-fit: contain;
+}
+
+.product-payment-card:first-child svg,
+.product-payment-card:first-child .product-payment-icon-img {
   width: 36px;
   height: 36px;
 }
@@ -3358,9 +3378,20 @@ button.nav-link {
   max-width: 100%;
   position: relative;
   left: 50%;
-  background: var(--bg-page);
   transform: translateX(-50%);
   box-sizing: border-box;
+}
+/* Hintergrund der Beschreibung ebenfalls volle Breite (nutzt Seitenhintergrund) */
+.product-description-section::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100vw;
+  height: 100%;
+  background: var(--bg-page);
 }
 
 .product-description-inner {
