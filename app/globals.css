@@ -16,25 +16,26 @@
   --transition-normal: 0.35s var(--ease);
   --transition-smooth: 0.5s var(--ease-in-out);
 
-  /* Markenfarben Followerbase */
-  --brand-primary: #6366f1;
-  --brand-primary-hover: #4f46e5;
-  --brand-secondary: #8b5cf6;
-  --brand-gradient: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-secondary) 100%);
+  /* Markenfarben Followerbase – angelehnt an Logo (Dunkelblau/Indigo, Teal, Grün) */
+  --brand-primary: #0d9488;
+  --brand-primary-hover: #0f766e;
+  --brand-secondary: #059669;
+  --brand-dark: #1e3a5f;
+  --brand-gradient: linear-gradient(135deg, #0891b2 0%, var(--brand-primary) 50%, var(--brand-secondary) 100%);
 
-  /* UI-Farben – leicht weicher Kontrast */
-  --bg-page: #f8fafc;
+  /* UI-Farben – abgestimmt auf Logo */
+  --bg-page: #f0fdfa;
   --bg-card: #ffffff;
-  --bg-header: rgba(255, 255, 255, 0.92);
-  --text-primary: #0f172a;
+  --bg-header: rgba(255, 255, 255, 0.95);
+  --text-primary: #1e3a5f;
   --text-secondary: #475569;
-  --text-muted: #94a3b8;
+  --text-muted: #64748b;
   --accent: var(--brand-primary);
   --accent-hover: var(--brand-primary-hover);
-  --border: rgba(15, 23, 42, 0.06);
-  --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.04);
-  --shadow-md: 0 4px 20px rgba(15, 23, 42, 0.06);
-  --shadow-lg: 0 20px 40px rgba(15, 23, 42, 0.08);
+  --border: rgba(30, 58, 95, 0.08);
+  --shadow-sm: 0 1px 3px rgba(30, 58, 95, 0.06);
+  --shadow-md: 0 4px 20px rgba(30, 58, 95, 0.08);
+  --shadow-lg: 0 20px 40px rgba(30, 58, 95, 0.1);
 }
 
 * {
@@ -231,7 +232,7 @@ a {
 
 .mobile-menu-btn[aria-expanded="true"] {
   color: var(--brand-primary);
-  background: rgba(99, 102, 241, 0.1);
+  background: rgba(13, 148, 136, 0.1);
 }
 
 .mobile-menu-icon {
@@ -316,7 +317,7 @@ a {
 }
 
 .mobile-menu-link:hover {
-  background: rgba(99, 102, 241, 0.08);
+  background: rgba(13, 148, 136, 0.08);
   color: var(--brand-primary);
 }
 
@@ -395,7 +396,7 @@ button.nav-link {
 
 .nav-link-cart:hover {
   color: var(--brand-primary);
-  background: rgba(99, 102, 241, 0.1);
+  background: rgba(13, 148, 136, 0.1);
 }
 
 .nav-link-cart-wrap {
@@ -499,13 +500,13 @@ button.nav-link {
 
 .nav-dropdown-category-link:hover {
   color: var(--brand-primary);
-  background: rgba(99, 102, 241, 0.08);
+  background: rgba(13, 148, 136, 0.08);
 }
 
 
 .nav-dropdown-link:hover {
   color: var(--brand-primary);
-  background: rgba(99, 102, 241, 0.06);
+  background: rgba(13, 148, 136, 0.06);
 }
 
 /* ===== Basis-Komponenten (für spätere Seiten) ===== */
@@ -758,8 +759,8 @@ button.nav-link {
 }
 
 .products-category-card:hover {
-  border-color: rgba(99, 102, 241, 0.4);
-  box-shadow: 0 16px 40px rgba(99, 102, 241, 0.12);
+  border-color: rgba(13, 148, 136, 0.4);
+  box-shadow: 0 16px 40px rgba(13, 148, 136, 0.12);
   transform: translateY(-4px);
 }
 
@@ -876,8 +877,8 @@ button.nav-link {
 }
 
 .category-card:hover {
-  border-color: rgba(99, 102, 241, 0.4);
-  box-shadow: 0 12px 32px rgba(99, 102, 241, 0.12);
+  border-color: rgba(13, 148, 136, 0.4);
+  box-shadow: 0 12px 32px rgba(13, 148, 136, 0.12);
   transform: translateY(-4px);
 }
 
@@ -1039,8 +1040,8 @@ button.nav-link {
 }
 
 .product-carousel-card:hover {
-  border-color: rgba(99, 102, 241, 0.4);
-  box-shadow: 0 12px 32px rgba(99, 102, 241, 0.12);
+  border-color: rgba(13, 148, 136, 0.4);
+  box-shadow: 0 12px 32px rgba(13, 148, 136, 0.12);
   transform: translateY(-4px);
 }
 
@@ -1528,7 +1529,7 @@ button.nav-link {
 .admin-input:focus {
   outline: none;
   border-color: var(--brand-primary);
-  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+  box-shadow: 0 0 0 2px rgba(13, 148, 136, 0.2);
 }
 
 .admin-textarea {
@@ -3124,7 +3125,7 @@ button.nav-link {
 
 .product-tier-option input:checked + .product-tier-label {
   border-color: var(--brand-primary);
-  background: rgba(99, 102, 241, 0.08);
+  background: rgba(13, 148, 136, 0.08);
   color: var(--text-primary);
 }
 
@@ -3232,7 +3233,7 @@ button.nav-link {
 
 .product-quantity-option input:checked + .product-quantity-label {
   border-color: var(--brand-primary);
-  background: rgba(99, 102, 241, 0.08);
+  background: rgba(13, 148, 136, 0.08);
   color: var(--brand-primary);
 }
 
@@ -3267,7 +3268,7 @@ button.nav-link {
 .product-target-input:focus {
   outline: none;
   border-color: var(--brand-primary);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+  box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
 }
 
 .product-input-hint {
@@ -3467,9 +3468,9 @@ button.nav-link {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse 85% 70% at 50% -10%, rgba(99, 102, 241, 0.12) 0%, transparent 55%),
-    radial-gradient(ellipse 60% 50% at 85% 50%, rgba(139, 92, 246, 0.08) 0%, transparent 50%),
-    radial-gradient(ellipse 50% 50% at 15% 85%, rgba(99, 102, 241, 0.05) 0%, transparent 45%),
+    radial-gradient(ellipse 85% 70% at 50% -10%, rgba(13, 148, 136, 0.12) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 50% at 85% 50%, rgba(5, 150, 105, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse 50% 50% at 15% 85%, rgba(13, 148, 136, 0.05) 0%, transparent 45%),
     var(--bg-page);
 }
 
@@ -3485,7 +3486,7 @@ button.nav-link {
 .home-hero-orb-1 {
   width: 320px;
   height: 320px;
-  background: rgba(99, 102, 241, 0.16);
+  background: rgba(13, 148, 136, 0.16);
   top: -100px;
   right: -60px;
   animation-delay: 0s;
@@ -3494,7 +3495,7 @@ button.nav-link {
 .home-hero-orb-2 {
   width: 220px;
   height: 220px;
-  background: rgba(139, 92, 246, 0.14);
+  background: rgba(5, 150, 105, 0.14);
   bottom: -30px;
   left: -30px;
   animation-delay: -5s;
@@ -3503,7 +3504,7 @@ button.nav-link {
 .home-hero-orb-3 {
   width: 180px;
   height: 180px;
-  background: rgba(99, 102, 241, 0.1);
+  background: rgba(13, 148, 136, 0.1);
   top: 45%;
   left: 55%;
   animation-delay: -10s;
@@ -3663,7 +3664,7 @@ button.nav-link {
 }
 
 .home-how-step:hover {
-  border-color: rgba(99, 102, 241, 0.25);
+  border-color: rgba(13, 148, 136, 0.25);
   box-shadow: var(--shadow-md);
   transform: translateY(-2px);
 }
@@ -3741,9 +3742,9 @@ button.nav-link {
 }
 
 .home-product-carousel-zone:hover {
-  background: rgba(99, 102, 241, 0.08);
+  background: rgba(13, 148, 136, 0.08);
   color: var(--brand-primary);
-  border-color: rgba(99, 102, 241, 0.25);
+  border-color: rgba(13, 148, 136, 0.25);
 }
 
 .home-product-carousel-zone-icon {
@@ -3792,8 +3793,8 @@ button.nav-link {
 }
 
 .home-product-carousel-card:hover {
-  border-color: rgba(99, 102, 241, 0.35);
-  box-shadow: 0 16px 40px rgba(99, 102, 241, 0.1);
+  border-color: rgba(13, 148, 136, 0.35);
+  box-shadow: 0 16px 40px rgba(13, 148, 136, 0.1);
   transform: translateY(-3px);
 }
 
@@ -3875,8 +3876,8 @@ button.nav-link {
   margin: 0 auto 3rem;
   padding: 2.75rem 2.5rem 3.25rem;
   border-radius: var(--radius-xl);
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.06) 0%, rgba(139, 92, 246, 0.04) 100%);
-  border: 1px solid rgba(99, 102, 241, 0.1);
+  background: linear-gradient(135deg, rgba(13, 148, 136, 0.06) 0%, rgba(5, 150, 105, 0.04) 100%);
+  border: 1px solid rgba(13, 148, 136, 0.1);
 }
 
 .home-text-block-inner {
@@ -4017,7 +4018,7 @@ button.nav-link {
   font-size: 0.75rem;
   font-weight: 600;
   color: var(--brand-primary);
-  background: rgba(99, 102, 241, 0.12);
+  background: rgba(13, 148, 136, 0.12);
   padding: 0.2rem 0.5rem;
   border-radius: var(--radius-full);
 }
@@ -4128,8 +4129,8 @@ button.nav-link {
 }
 
 .home-quick-card:hover {
-  border-color: rgba(99, 102, 241, 0.35);
-  box-shadow: 0 16px 40px rgba(99, 102, 241, 0.1);
+  border-color: rgba(13, 148, 136, 0.35);
+  box-shadow: 0 16px 40px rgba(13, 148, 136, 0.1);
   transform: translateY(-3px);
 }
 
@@ -4240,8 +4241,8 @@ button.nav-link {
 }
 
 .home-platform-card:hover {
-  border-color: rgba(99, 102, 241, 0.35);
-  box-shadow: 0 20px 44px rgba(99, 102, 241, 0.1);
+  border-color: rgba(13, 148, 136, 0.35);
+  box-shadow: 0 20px 44px rgba(13, 148, 136, 0.1);
   transform: translateY(-3px);
 }
 
@@ -4393,7 +4394,7 @@ button.nav-link {
 .home-cta {
   text-align: center;
   padding: 4.5rem 2rem;
-  background: linear-gradient(180deg, rgba(99, 102, 241, 0.06) 0%, transparent 100%);
+  background: linear-gradient(180deg, rgba(13, 148, 136, 0.06) 0%, transparent 100%);
   border-radius: var(--radius-xl);
 }
 
@@ -4504,7 +4505,7 @@ button.nav-link {
 }
 
 .home-faq-question:hover {
-  background: rgba(99, 102, 241, 0.05);
+  background: rgba(13, 148, 136, 0.05);
   color: var(--brand-primary);
 }
 
@@ -4678,7 +4679,7 @@ button.nav-link {
 .cart-seller-note-input:focus {
   outline: none;
   border-color: var(--brand-primary);
-  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+  box-shadow: 0 0 0 2px rgba(13, 148, 136, 0.2);
 }
 
 .cart-seller-note-input::placeholder {
@@ -5162,7 +5163,7 @@ button.nav-link {
 .checkout-input:focus {
   outline: none;
   border-color: var(--brand-primary);
-  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+  box-shadow: 0 0 0 2px rgba(13, 148, 136, 0.2);
 }
 
 .checkout-save-customer {
@@ -5508,7 +5509,7 @@ button.nav-link {
 .tracking-form-input:focus {
   outline: none;
   border-color: var(--brand-primary);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+  box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
 }
 
 .tracking-form-input::placeholder {
@@ -5604,7 +5605,7 @@ button.nav-link {
 .tracking-timeline-step.current .tracking-timeline-marker {
   background: var(--brand-primary);
   border-color: var(--brand-primary);
-  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2);
+  box-shadow: 0 0 0 4px rgba(13, 148, 136, 0.2);
 }
 
 .tracking-timeline-step.pending .tracking-timeline-marker {
@@ -5653,7 +5654,7 @@ button.nav-link {
   text-transform: uppercase;
   letter-spacing: 0.04em;
   color: var(--brand-primary);
-  background: rgba(99, 102, 241, 0.12);
+  background: rgba(13, 148, 136, 0.12);
   padding: 0.2rem 0.5rem;
   border-radius: var(--radius-full);
 }
