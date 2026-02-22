@@ -2779,6 +2779,63 @@ button.nav-link {
   color: var(--text-muted);
 }
 
+.product-payment-section {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem 1.5rem;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 2rem;
+}
+
+.product-payment-icons-label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin: 0 0 1rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.product-payment-icons-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.product-payment-icons-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-secondary);
+}
+
+.product-payment-icons-item svg {
+  flex-shrink: 0;
+}
+
+.product-payment-icons-item:first-child svg {
+  width: 42px;
+  height: 42px;
+}
+
+.product-payment-icons-name {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+@media (max-width: 768px) {
+  .product-payment-section {
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+  .product-payment-icons-list {
+    gap: 1.25rem;
+  }
+}
+
 @media (max-width: 768px) {
   .product-order-row {
     flex-direction: column;
@@ -3243,7 +3300,9 @@ button.nav-link {
   overflow-x: auto;
   width: 100vw;
   max-width: 100%;
-  margin-left: calc(50% - 50vw);
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
   box-sizing: border-box;
 }
 
@@ -3268,7 +3327,8 @@ button.nav-link {
     margin-top: 1.5rem;
     padding-top: 1.5rem;
     width: 100%;
-    margin-left: 0;
+    left: 0;
+    transform: none;
   }
   .product-description-inner {
     padding: 0 0.75rem;

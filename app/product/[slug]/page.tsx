@@ -8,6 +8,7 @@ import { getProductBySlug, getProductImageAlt, getAllProducts } from "@/lib/prod
 import { ProductOrderBlock } from "@/components/ProductOrderBlock";
 import { ProductCarousel } from "@/components/ProductCarousel";
 import { ShareButtons } from "@/components/ShareButtons";
+import { ProductPaymentIcons } from "@/components/ProductPaymentIcons";
 import { absoluteUrl, truncateDescription, prepareProductDescriptionHtml } from "@/lib/seo";
 import { categories } from "@/lib/categories";
 
@@ -148,6 +149,10 @@ export default async function ProductPage({ params }: Props) {
             className="share-buttons--product"
           />
         </div>
+      </div>
+
+      <div className="product-payment-section">
+        <ProductPaymentIcons />
       </div>
 
       {product.description && (() => {
