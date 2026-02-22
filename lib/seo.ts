@@ -52,3 +52,22 @@ export function stripDocumentHeadAndViewport(html: string): string {
   out = out.replace(/<body[^>]*>/gi, "").replace(/<\/body>/gi, "");
   return out.trim();
 }
+
+const STYLE_REGEX = /<style[^>]*>([\s\S]*?)<\/style>/gi;
+
+/**
+ * Extrahiert aus vollständigem Dokument-HTML (z. B. Produktbeschreibung aus Supabase)
+ * alle <style>-Inhalte und den sichtbaren Body-Inhalt. So bleibt das Design aus dem
+ * HTML erhalten, ohne doppelte Viewport-/head-Angaben.
+ */
+export function prepareProductDescriptionHtml(html: string): { styleContent: string; htmlContent: string } {
+  if (!html || !html.trim()) return { styleContent: "", htmlContent: "" };
+  let styleContent = "";
+  let match: RegExpExecArray | null;
+  STYLE_REGEX.lastIndex = 0;
+  while ((match = STYLE_REGEX.exec(html)) !== null) {
+    styleContent += match[1].trim() + "\n";
+  }
+  const htmlContent = stripDocumentHeadAndViewport(html);
+  return { styleContent: styleContent.trim(), htmlContent };
+}

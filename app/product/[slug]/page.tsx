@@ -8,7 +8,7 @@ import { getProductBySlug, getProductImageAlt, getProductsByCategoryId, getAllPr
 import { ProductOrderBlock } from "@/components/ProductOrderBlock";
 import { ProductCarousel } from "@/components/ProductCarousel";
 import { ShareButtons } from "@/components/ShareButtons";
-import { absoluteUrl, truncateDescription, stripDocumentHeadAndViewport } from "@/lib/seo";
+import { absoluteUrl, truncateDescription, prepareProductDescriptionHtml } from "@/lib/seo";
 import { categories } from "@/lib/categories";
 
 type Props = { params: { slug: string } };
@@ -78,12 +78,6 @@ export default async function ProductPage({ params }: Props) {
         </p>
       )}
 
-      <ShareButtons
-        url={absoluteUrl(`/product/${product.slug}`)}
-        title={product.name}
-        text={product.metaDescription ?? undefined}
-      />
-
       <div className="product-order-row">
         <div className="product-order-section">
           <ProductOrderBlock
@@ -113,17 +107,30 @@ export default async function ProductPage({ params }: Props) {
               <span className="product-image-placeholder-text">Bild</span>
             </div>
           )}
+          <ShareButtons
+            url={absoluteUrl(`/product/${product.slug}`)}
+            title={product.name}
+            text={product.metaDescription ?? undefined}
+            iconOnly
+            className="share-buttons--product"
+          />
         </div>
       </div>
 
-      {product.description && (
-        <section className="product-description-section">
-          <div
-            className="product-description-html"
-            dangerouslySetInnerHTML={{ __html: stripDocumentHeadAndViewport(product.description) }}
-          />
-        </section>
-      )}
+      {product.description && (() => {
+        const { styleContent, htmlContent } = prepareProductDescriptionHtml(product.description);
+        return (
+          <section className="product-description-section">
+            {styleContent ? (
+              <style dangerouslySetInnerHTML={{ __html: styleContent }} />
+            ) : null}
+            <div
+              className="product-description-html"
+              dangerouslySetInnerHTML={{ __html: htmlContent }}
+            />
+          </section>
+        );
+      })()}
 
       {otherProducts.length > 0 && (
         <ProductCarousel products={otherProducts} title={carouselTitle} />

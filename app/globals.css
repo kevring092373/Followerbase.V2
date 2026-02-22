@@ -642,6 +642,42 @@ button.nav-link {
   margin-bottom: 1.25rem;
 }
 
+.share-buttons--icon-only .share-buttons-list {
+  gap: 0.5rem;
+}
+
+.share-buttons--icon-only .share-btn {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: var(--radius-md);
+}
+
+.share-buttons--icon-only .share-btn svg {
+  flex-shrink: 0;
+}
+
+.share-buttons--product {
+  margin-top: 1rem;
+  margin-bottom: 0;
+  justify-content: center;
+}
+
+.share-buttons--product .share-buttons-list {
+  justify-content: center;
+}
+
+.share-btn-copy-text {
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.share-buttons--icon-only .share-btn-copy:has(.share-btn-copy-text) {
+  width: auto;
+  min-width: 40px;
+  padding: 0 0.5rem;
+}
+
 .text-muted {
   color: var(--text-secondary);
 }
