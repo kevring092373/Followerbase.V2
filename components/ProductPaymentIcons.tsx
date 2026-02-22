@@ -58,16 +58,13 @@ const PAYMENTS = [
 
 export function ProductPaymentIcons() {
   return (
-    <section className="product-payment-icons" aria-label="Zahlungsarten">
-      <p className="product-payment-icons-label">Sichere Zahlung</p>
-      <div className="product-payment-icons-list">
-        {PAYMENTS.map(({ id, label, Icon }) => (
-          <span key={id} className="product-payment-icons-item" title={label}>
-            <Icon />
-            <span className="product-payment-icons-name">{label}</span>
-          </span>
-        ))}
-      </div>
+    <section className="product-payment-icons product-payment-icons--cards" aria-label="Zahlungsarten">
+      {PAYMENTS.map(({ id, label, Icon }) => (
+        <div key={id} className="product-payment-card" title={label}>
+          <Icon />
+          <span className="product-payment-card-label">{label}</span>
+        </div>
+      ))}
     </section>
   );
 }

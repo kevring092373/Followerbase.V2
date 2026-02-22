@@ -148,11 +148,8 @@ export default async function ProductPage({ params }: Props) {
             iconOnly
             className="share-buttons--product"
           />
+          <ProductPaymentIcons />
         </div>
-      </div>
-
-      <div className="product-payment-section">
-        <ProductPaymentIcons />
       </div>
 
       {product.description && (() => {
