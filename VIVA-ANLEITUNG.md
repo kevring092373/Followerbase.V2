@@ -2,6 +2,8 @@
 
 Kartenzahlung läuft über Viva. **Auf Netlify (Live)** wird Supabase für Viva-Pending-Checkouts benötigt – die Datei `content/viva-pending.json` ist dort read-only. Führe im Supabase SQL Editor die Migration **`supabase/migrations/003_viva_pending_checkouts.sql`** aus, falls noch nicht geschehen.
 
+**Live-Webseite:** Im Viva Dashboard ist die Payment Source für **followerbase.de** eingerichtet (Success URL, Domain Name, ggf. Failure URL). Für andere Domains die URLs entsprechend anpassen.
+
 ---
 
 ## 1. Umgebungsvariablen
