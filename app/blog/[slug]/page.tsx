@@ -5,6 +5,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getPostBySlug, getAllPosts } from "@/lib/blog-data";
 import { absoluteUrl, truncateDescription } from "@/lib/seo";
+import { ShareButtons } from "@/components/ShareButtons";
 
 type Props = { params: { slug: string } };
 
@@ -39,11 +40,20 @@ export default async function BlogPostPage({ params }: Props) {
 
   if (!post) notFound();
 
+  const postTitle = post.metaTitle ?? post.title ?? post.slug;
+  const blogUrl = absoluteUrl(`/blog/${post.slug}`);
+
   return (
     <>
       <Link href="/blog" className="blog-back">
         ← Blog
       </Link>
+      <ShareButtons
+        url={blogUrl}
+        title={postTitle}
+        text={post.excerpt ?? undefined}
+        className="share-buttons--blog"
+      />
       <div
         className="blog-page-html"
         dangerouslySetInnerHTML={{ __html: (post.content ?? "").trim() || "" }}

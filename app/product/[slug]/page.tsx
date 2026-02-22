@@ -7,6 +7,7 @@ import { notFound } from "next/navigation";
 import { getProductBySlug, getProductImageAlt, getProductsByCategoryId, getAllProducts } from "@/lib/products-data";
 import { ProductOrderBlock } from "@/components/ProductOrderBlock";
 import { ProductCarousel } from "@/components/ProductCarousel";
+import { ShareButtons } from "@/components/ShareButtons";
 import { absoluteUrl, truncateDescription, stripDocumentHeadAndViewport } from "@/lib/seo";
 import { categories } from "@/lib/categories";
 
@@ -76,6 +77,12 @@ export default async function ProductPage({ params }: Props) {
           Artikelnummer: {product.articleNumber}
         </p>
       )}
+
+      <ShareButtons
+        url={absoluteUrl(`/product/${product.slug}`)}
+        title={product.name}
+        text={product.metaDescription ?? undefined}
+      />
 
       <div className="product-order-row">
         <div className="product-order-section">
