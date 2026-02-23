@@ -2857,13 +2857,20 @@ button.nav-link {
   box-shadow: var(--shadow-sm);
 }
 
-.product-payment-card svg {
+.product-payment-card svg,
+.product-payment-card .product-payment-icon-img {
   flex-shrink: 0;
   width: 32px;
   height: 32px;
+  display: block;
 }
 
-.product-payment-card:first-child svg {
+.product-payment-card .product-payment-icon-img {
+  object-fit: contain;
+}
+
+.product-payment-card:first-child svg,
+.product-payment-card:first-child .product-payment-icon-img {
   width: 36px;
   height: 36px;
 }
