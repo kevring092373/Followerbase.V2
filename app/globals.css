@@ -2733,9 +2733,23 @@ button.nav-link {
 
 /* ===== Produktseite (Layout angelehnt an Followerfabrik) ===== */
 .product-page-wrap {
+  position: relative;
   padding-bottom: 2rem;
   min-height: 100vh;
+}
+/* Hintergrund volle Breite (links–rechts) und von unter Header bis ganz unten */
+.product-page-wrap::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: -2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100vw;
+  height: calc(100% + 4rem);
+  min-height: calc(100vh + 4rem);
   background: var(--bg-page);
+  box-sizing: border-box;
 }
 
 .product-back-link {
