@@ -51,7 +51,7 @@ export function Header() {
                 </nav>
               </div>
             </div>
-            <Link href="/bestellung-verfolgen" className="nav-link">
+            <Link href="/bestellung-verfolgen" className="nav-link nav-link-tracking">
               Bestellung verfolgen
             </Link>
           </div>

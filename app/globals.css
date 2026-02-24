@@ -372,6 +372,19 @@ a {
   background: rgba(0, 0, 0, 0.05);
 }
 
+.nav-link-tracking {
+  font-weight: 600;
+  color: var(--brand-primary);
+  background: rgba(138, 85, 238, 0.1);
+  border: 1px solid rgba(138, 85, 238, 0.25);
+}
+
+.nav-link-tracking:hover {
+  color: var(--brand-primary-hover);
+  background: rgba(138, 85, 238, 0.15);
+  border-color: rgba(138, 85, 238, 0.35);
+}
+
 .nav-link-cta {
   background: var(--accent);
   color: white !important;
