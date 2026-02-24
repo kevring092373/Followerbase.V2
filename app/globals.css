@@ -4473,7 +4473,7 @@ button.nav-link {
   max-width: 320px;
   background: #0a0a0a;
   border-radius: 2.5rem;
-  padding: 0.5rem;
+  padding: 0.55rem;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
 }
 
@@ -4522,22 +4522,34 @@ button.nav-link {
   border-radius: 0.08rem;
 }
 
-/* Pill-Notch oben mittig */
-.home-ig-overlay-phone-notch {
-  height: 1.5rem;
-  width: 5.5rem;
-  margin: 0 auto 0.35rem;
-  background: #0a0a0a;
-  border-radius: 999px;
-}
-
 .home-ig-overlay-screen {
+  position: relative;
   background: #fff;
-  border-radius: 1.5rem;
+  border-radius: 1.35rem;
   overflow: hidden;
   min-height: 520px;
   display: flex;
   flex-direction: column;
+}
+
+/* Pill-Notch als Aussparung oben mittig (gleiche Rahmenstärke) */
+.home-ig-overlay-phone-notch {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 1.35rem;
+  width: 5rem;
+  background: #0a0a0a;
+  border-radius: 0 0 999px 999px;
+  z-index: 1;
+}
+
+.home-ig-overlay-screen-inner {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding-top: 1.5rem;
 }
 
 .home-ig-overlay-header {
@@ -4802,12 +4814,16 @@ button.nav-link {
   .home-ig-overlay-phone {
     max-width: 280px;
     border-radius: 2.25rem;
-    padding: 0.4rem;
+    padding: 0.5rem;
   }
 
   .home-ig-overlay-phone-notch {
-    width: 4.5rem;
-    height: 1.25rem;
+    width: 4.25rem;
+    height: 1.15rem;
+  }
+
+  .home-ig-overlay-screen-inner {
+    padding-top: 1.25rem;
   }
 
   .home-ig-overlay-phone-buttons-left span {

@@ -89,8 +89,9 @@ function PhoneContent({ visible }: { visible: boolean }) {
 
   return (
     <>
-      <div className="home-ig-overlay-phone-notch" aria-hidden />
       <div className="home-ig-overlay-screen">
+        <div className="home-ig-overlay-phone-notch" aria-hidden />
+        <div className="home-ig-overlay-screen-inner">
         <div className="home-ig-overlay-header">
           <span className="home-ig-overlay-header-title">Benachrichtigungen</span>
         </div>
@@ -135,6 +136,7 @@ function PhoneContent({ visible }: { visible: boolean }) {
             </span>
           ))}
         </nav>
+        </div>
       </div>
     </>
   );
