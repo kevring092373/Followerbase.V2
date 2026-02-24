@@ -29,7 +29,7 @@ const NOTIFICATIONS = [
   },
 ];
 
-const STATS_TARGETS = { likes: 450, comments: 99, followers: 100 };
+const STATS_TARGETS = { likes: 450, followers: 100 };
 const COUNT_UP_DURATION_MS = 1800;
 const COUNT_UP_START_DELAY_MS = 400;
 
@@ -85,8 +85,7 @@ const TAB_ITEMS = [
 
 function PhoneContent({ visible }: { visible: boolean }) {
   const likes = useCountUp(visible, STATS_TARGETS.likes, COUNT_UP_START_DELAY_MS);
-  const comments = useCountUp(visible, STATS_TARGETS.comments, COUNT_UP_START_DELAY_MS + 80);
-  const followers = useCountUp(visible, STATS_TARGETS.followers, COUNT_UP_START_DELAY_MS + 160);
+  const followers = useCountUp(visible, STATS_TARGETS.followers, COUNT_UP_START_DELAY_MS + 80);
 
   return (
     <>
@@ -101,12 +100,6 @@ function PhoneContent({ visible }: { visible: boolean }) {
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" /></svg>
             </span>
             <span className="home-ig-overlay-stat-num">{likes}</span>
-          </span>
-          <span className="home-ig-overlay-stat">
-            <span className="home-ig-overlay-stat-icon" aria-hidden>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg>
-            </span>
-            <span className="home-ig-overlay-stat-num">{comments}</span>
           </span>
           <span className="home-ig-overlay-stat">
             <span className="home-ig-overlay-stat-icon home-ig-overlay-stat-icon-person" aria-hidden>

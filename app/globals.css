@@ -4535,13 +4535,13 @@ button.nav-link {
   background: #fff;
   border-radius: 1.5rem;
   overflow: hidden;
-  min-height: 440px;
+  min-height: 520px;
   display: flex;
   flex-direction: column;
 }
 
 .home-ig-overlay-header {
-  padding: 1rem 1rem 0.75rem;
+  padding: 1.25rem 1rem 0.75rem;
   border-bottom: 1px solid rgba(0, 0, 0, 0.08);
 }
 
@@ -4562,6 +4562,10 @@ button.nav-link {
   background: #ed4956;
   border-radius: 0.5rem;
   box-shadow: 0 4px 12px rgba(237, 73, 86, 0.35);
+}
+
+.home-ig-overlay-header + .home-ig-overlay-stats-bar {
+  margin-top: 0.5rem;
 }
 
 .home-ig-overlay-stat {
@@ -4778,6 +4782,7 @@ button.nav-link {
   position: absolute;
   top: -4px;
   right: -2px;
+  left: auto;
   min-width: 1.125rem;
   height: 1.125rem;
   padding: 0 0.35rem;
@@ -4819,7 +4824,7 @@ button.nav-link {
   }
 
   .home-ig-overlay-screen {
-    min-height: 380px;
+    min-height: 460px;
     border-radius: 1.35rem;
   }
 
