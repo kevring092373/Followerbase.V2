@@ -1,11 +1,17 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
+
+const NOTIFICATION_IMAGES = [
+  "/icons/Instabild1.webp",
+  "/icons/Instabild2.webp",
+  "/icons/Instabild3.webp",
+] as const;
 
 const NOTIFICATIONS = [
   {
     id: "1",
-    avatar: "LM",
     username: "lena_m",
     text: "und 12 andere folgen dir jetzt",
     type: "follow",
@@ -13,7 +19,6 @@ const NOTIFICATIONS = [
   },
   {
     id: "2",
-    avatar: "MP",
     username: "max.photo",
     text: "und 5 andere gefällt dein Beitrag",
     type: "like",
@@ -21,7 +26,6 @@ const NOTIFICATIONS = [
   },
   {
     id: "3",
-    avatar: "SC",
     username: "sarah.creative",
     text: "hat deinen Kommentar geliked",
     type: "like",
@@ -67,10 +71,10 @@ function useCountUp(visible: boolean, target: number, delayMs: number) {
   return value;
 }
 
-function AvatarCircle({ initials }: { initials: string }) {
+function AvatarCircle({ src }: { src: string }) {
   return (
-    <span className="ig-overlay-avatar" aria-hidden>
-      {initials}
+    <span className="ig-overlay-avatar ig-overlay-avatar-img" aria-hidden>
+      <Image src={src} alt="" width={44} height={44} sizes="44px" />
     </span>
   );
 }
@@ -110,9 +114,9 @@ function PhoneContent({ visible }: { visible: boolean }) {
           </span>
         </div>
         <div className="home-ig-overlay-list">
-          {NOTIFICATIONS.map((n) => (
+          {NOTIFICATIONS.map((n, i) => (
             <div key={n.id} className="home-ig-overlay-item">
-              <AvatarCircle initials={n.avatar} />
+              <AvatarCircle src={NOTIFICATION_IMAGES[i]} />
               <div className="home-ig-overlay-body">
                 <p className="home-ig-overlay-text">
                   <strong className="home-ig-overlay-username">{n.username}</strong>{" "}
