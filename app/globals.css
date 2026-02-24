@@ -4465,28 +4465,38 @@ button.nav-link {
   transform: translateY(0) scale(1);
 }
 
+/* Handy-Rahmen: dunkler Rand, leichter Metall-Look, weicher Schatten */
 .home-ig-overlay-phone {
   width: 100%;
   max-width: 320px;
-  background: #1a1a1a;
-  border-radius: 2.5rem;
-  padding: 0.75rem;
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35), 0 0 0 3px rgba(255, 255, 255, 0.08);
+  background: linear-gradient(145deg, #2c2c2e 0%, #1c1c1e 50%, #0d0d0f 100%);
+  border-radius: 2.75rem;
+  padding: 0.65rem;
+  box-shadow:
+    0 0 0 2px rgba(255, 255, 255, 0.06),
+    0 0 0 4px rgba(0, 0, 0, 0.2),
+    0 30px 60px -15px rgba(0, 0, 0, 0.5),
+    0 50px 100px -30px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 .home-ig-overlay-phone-notch {
-  height: 1.75rem;
-  width: 7rem;
-  margin: 0 auto 0.5rem;
-  background: #1a1a1a;
-  border-radius: 0 0 1.25rem 1.25rem;
+  height: 1.6rem;
+  width: 6.5rem;
+  margin: 0 auto 0.4rem;
+  background: #0d0d0f;
+  border-radius: 0 0 1.1rem 1.1rem;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .home-ig-overlay-screen {
-  background: #fff;
-  border-radius: 1.75rem;
+  background: #fafafa;
+  border-radius: 1.6rem;
   overflow: hidden;
-  min-height: 420px;
+  min-height: 440px;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 .home-ig-overlay-header {
@@ -4502,6 +4512,19 @@ button.nav-link {
 
 .home-ig-overlay-list {
   padding: 0.5rem 0;
+  flex: 1;
+}
+
+/* Einzelne Benachrichtigungen ploppen nacheinander auf */
+@keyframes ig-notif-pop {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .home-ig-overlay-item {
@@ -4510,7 +4533,17 @@ button.nav-link {
   gap: 0.75rem;
   padding: 0.75rem 1rem;
   transition: background 0.15s ease;
+  opacity: 0;
+  transform: translateY(14px) scale(0.96);
 }
+
+.home-ig-overlay-wrap.home-ig-overlay-visible .home-ig-overlay-item {
+  animation: ig-notif-pop 0.45s var(--ease-out) forwards;
+}
+
+.home-ig-overlay-wrap.home-ig-overlay-visible .home-ig-overlay-item:nth-child(1) { animation-delay: 0.25s; }
+.home-ig-overlay-wrap.home-ig-overlay-visible .home-ig-overlay-item:nth-child(2) { animation-delay: 0.5s; }
+.home-ig-overlay-wrap.home-ig-overlay-visible .home-ig-overlay-item:nth-child(3) { animation-delay: 0.75s; }
 
 .home-ig-overlay-item:hover {
   background: rgba(0, 0, 0, 0.03);
@@ -4564,6 +4597,112 @@ button.nav-link {
   font-weight: 600;
   color: #0095f6;
   cursor: default;
+}
+
+/* Instagram-Tab-Leiste unten mit roten Badges */
+.home-ig-overlay-tabs {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0.5rem 0.25rem 0.6rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  background: #fff;
+  margin-top: auto;
+}
+
+.home-ig-overlay-tab {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2rem;
+}
+
+.home-ig-overlay-tab-icon {
+  width: 1.4rem;
+  height: 1.4rem;
+  background: #262626;
+  opacity: 0.95;
+}
+
+/* Start: Haus-Dach + Körper (vereinfacht als Trapez + Rechteck) */
+.home-ig-overlay-tab-icon-home {
+  width: 1.25rem;
+  height: 1.1rem;
+  background: transparent;
+  border: 2px solid #262626;
+  border-bottom: none;
+  border-radius: 0.2rem 0.2rem 0 0;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.home-ig-overlay-tab-icon-home::after {
+  content: "";
+  position: absolute;
+  bottom: -0.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0.9rem;
+  height: 0.6rem;
+  background: #262626;
+  border-radius: 0 0 0.1rem 0.1rem;
+}
+
+/* Suchen: Lupe (Kreis + Stiel) */
+.home-ig-overlay-tab-icon-search {
+  border-radius: 50%;
+  border: 2px solid #262626;
+  background: transparent;
+  box-sizing: border-box;
+}
+
+/* Reels: abgerundetes Rechteck */
+.home-ig-overlay-tab-icon-reels {
+  width: 1.1rem;
+  height: 1.35rem;
+  border: 2px solid #262626;
+  border-radius: 0.25rem;
+  background: transparent;
+  box-sizing: border-box;
+}
+
+/* Aktivität (Herz) – einfacher Punkt, roter Badge „100“ daneben */
+.home-ig-overlay-tab-icon-heart {
+  width: 1.25rem;
+  height: 1.25rem;
+  background: #262626;
+  border-radius: 50%;
+}
+
+/* Profil: Kreisumriss */
+.home-ig-overlay-tab-icon-profile {
+  width: 1.3rem;
+  height: 1.3rem;
+  border-radius: 50%;
+  border: 2px solid #262626;
+  background: transparent;
+  box-sizing: border-box;
+}
+
+.home-ig-overlay-tab-badge {
+  position: absolute;
+  top: -4px;
+  right: -2px;
+  min-width: 1.125rem;
+  height: 1.125rem;
+  padding: 0 0.35rem;
+  font-size: 0.625rem;
+  font-weight: 700;
+  color: #fff;
+  background: #ed4956;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  box-sizing: border-box;
 }
 
 @media (max-width: 640px) {
