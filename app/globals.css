@@ -3603,6 +3603,8 @@ button.nav-link {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  padding-right: 0.08em;
+  display: inline-block;
 }
 
 .home-hero-sub {
@@ -4470,7 +4472,7 @@ button.nav-link {
 .home-ig-overlay-phone {
   position: relative;
   width: 100%;
-  max-width: 320px;
+  max-width: 292px;
   background: #0a0a0a;
   border-radius: 2.5rem;
   padding: 0.55rem;
@@ -4659,7 +4661,7 @@ button.nav-link {
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045);
+  background: linear-gradient(135deg, #a78bfa 0%, #8a55ee 50%, #7c3aed 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -4813,7 +4815,7 @@ button.nav-link {
 
 @media (max-width: 640px) {
   .home-ig-overlay-phone {
-    max-width: 280px;
+    max-width: 262px;
     border-radius: 2.25rem;
     padding: 0.5rem;
   }
