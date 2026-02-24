@@ -58,13 +58,25 @@ export function ReviewCarousel() {
     };
   }, [updateScrollState]);
 
+  const scrollingRef = useRef(false);
+
   const scroll = (direction: "prev" | "next") => {
     const el = scrollRef.current;
-    if (!el) return;
-    const cardWidth = el.querySelector(".review-card")?.getBoundingClientRect().width ?? 320;
+    if (!el || scrollingRef.current) return;
+    scrollingRef.current = true;
+
+    const slide = el.querySelector(".review-carousel-slide") as HTMLElement | null;
     const gap = 16;
+    const cardWidth = slide?.offsetWidth ?? Math.min(320, el.clientWidth - 60);
     const step = (cardWidth + gap) * (direction === "next" ? 1 : -1);
-    el.scrollBy({ left: step, behavior: "smooth" });
+
+    requestAnimationFrame(() => {
+      el.scrollBy({ left: step, behavior: "smooth" });
+      setTimeout(() => {
+        scrollingRef.current = false;
+        updateScrollState();
+      }, 400);
+    });
   };
 
   return (

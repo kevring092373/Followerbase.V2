@@ -115,6 +115,16 @@ a {
   box-sizing: border-box;
 }
 
+@media (max-width: 768px) {
+  .header-inner {
+    justify-content: space-between;
+  }
+
+  .header-nav {
+    justify-content: flex-end;
+  }
+}
+
 @media (max-width: 640px) {
   .header-inner {
     padding: 0.6rem 1rem;
@@ -3948,11 +3958,10 @@ button.nav-link {
   }
 }
 
-/* Textblock – Hintergrund bis zum Bildschirmrand */
+/* Textblock – Hintergrund bis zu beiden Bildschirmrändern, Inhalt mittig */
 .home-text-block {
-  max-width: 68rem;
-  margin: 0 auto 3rem;
-  padding: 2.75rem 2.5rem 3.25rem;
+  margin: 0 0 3rem;
+  padding: 2.75rem 1.5rem 3.25rem;
   border-radius: 0;
   background: linear-gradient(135deg, rgba(138, 85, 238, 0.05) 0%, rgba(138, 85, 238, 0.03) 100%);
   border: none;
@@ -3961,10 +3970,12 @@ button.nav-link {
   width: 100vw;
   margin-left: calc(50% - 50vw);
   box-sizing: border-box;
+  text-align: center;
 }
 
 .home-text-block-inner {
-  max-width: 100%;
+  max-width: 40rem;
+  margin: 0 auto;
   overflow-wrap: break-word;
   word-wrap: break-word;
 }
@@ -4174,7 +4185,7 @@ button.nav-link {
 
 @media (max-width: 640px) {
   .review-carousel-section {
-    padding: 0;
+    padding: 0 1rem;
     margin-left: 0;
     margin-right: 0;
   }
@@ -4183,9 +4194,14 @@ button.nav-link {
     gap: 0.35rem;
   }
 
-  /* Eine Karte vollständig sichtbar: Viewport minus Main-Padding minus beide Buttons minus Gap */
+  .review-carousel-track {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+
+  /* Eine Karte vollständig sichtbar, mit Abstand zu den Rändern */
   .review-carousel-slide {
-    flex: 0 0 min(320px, calc(100vw - 1.5rem - 4.5rem - 0.5rem));
+    flex: 0 0 min(280px, calc(100vw - 1rem - 4.5rem - 1rem - 0.5rem));
     scroll-snap-align: center;
   }
 
