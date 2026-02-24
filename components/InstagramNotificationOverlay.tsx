@@ -79,7 +79,7 @@ function AvatarCircle({ src }: { src: string }) {
   );
 }
 
-const TAB_BAR_IMAGE = "/icons/leiste.PNG";
+const TAB_BAR_IMAGE = "/icons/leiste2.png";
 
 function PhoneContent({ visible }: { visible: boolean }) {
   const likes = useCountUp(visible, STATS_TARGETS.likes, COUNT_UP_START_DELAY_MS);
