@@ -79,13 +79,7 @@ function AvatarCircle({ src }: { src: string }) {
   );
 }
 
-const TAB_ITEMS = [
-  { id: "home", label: "Start", icon: "home" },
-  { id: "search", label: "Suchen", icon: "search" },
-  { id: "reels", label: "Reels", icon: "reels" },
-  { id: "activity", label: "Aktivität", icon: "heart", badge: "100" },
-  { id: "profile", label: "Profil", icon: "profile" },
-];
+const TAB_BAR_IMAGE = "/icons/leiste.PNG";
 
 function PhoneContent({ visible }: { visible: boolean }) {
   const likes = useCountUp(visible, STATS_TARGETS.likes, COUNT_UP_START_DELAY_MS);
@@ -130,16 +124,9 @@ function PhoneContent({ visible }: { visible: boolean }) {
             </div>
           ))}
         </div>
-        <nav className="home-ig-overlay-tabs" aria-label="Instagram Navigation">
-          {TAB_ITEMS.map((tab) => (
-            <span key={tab.id} className="home-ig-overlay-tab">
-              <span className={`home-ig-overlay-tab-icon home-ig-overlay-tab-icon-${tab.icon}`} aria-hidden />
-              {tab.badge != null && (
-                <span className="home-ig-overlay-tab-badge">{tab.badge}</span>
-              )}
-            </span>
-          ))}
-        </nav>
+        <div className="home-ig-overlay-tabs" aria-hidden>
+          <Image src={TAB_BAR_IMAGE} alt="" width={280} height={56} sizes="100vw" className="home-ig-overlay-tabs-img" />
+        </div>
         </div>
       </div>
     </>
