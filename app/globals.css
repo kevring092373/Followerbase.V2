@@ -4522,10 +4522,11 @@ button.nav-link {
   border-radius: 0.08rem;
 }
 
+/* Bildschirm-Ecken: innerer Radius = äußerer − Padding, damit der Rand in den Ecken gleich stark ist */
 .home-ig-overlay-screen {
   position: relative;
   background: #fff;
-  border-radius: 1.35rem;
+  border-radius: 1.95rem; /* 2.5rem − 0.55rem */
   overflow: hidden;
   min-height: 520px;
   display: flex;
@@ -4841,7 +4842,7 @@ button.nav-link {
 
   .home-ig-overlay-screen {
     min-height: 460px;
-    border-radius: 1.35rem;
+    border-radius: 1.75rem; /* 2.25rem − 0.5rem */
   }
 
   .home-ig-overlay-item {
