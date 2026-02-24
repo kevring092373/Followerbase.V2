@@ -6,6 +6,7 @@ import { HomeMarquee } from "@/components/HomeMarquee";
 import { HomeReveal } from "@/components/HomeReveal";
 import { CategoryIcon } from "@/components/CategoryIcon";
 import { ReviewCarousel } from "@/components/ReviewCarousel";
+import { InstagramNotificationOverlay } from "@/components/InstagramNotificationOverlay";
 
 /** Icon für Schnellzugriff-Karten: Instagram und TikTok nutzen eigene Icons, Rest Fallback. */
 function QuickAccessIcon({ productSlug }: { productSlug: string }) {
@@ -56,38 +57,41 @@ export default async function HomePage() {
 
   return (
     <div className="home">
-      {/* Hero */}
+      {/* Hero + Instagram-Overlay rechts */}
       <section className="home-hero">
         <div className="home-hero-bg" aria-hidden>
           <span className="home-hero-orb home-hero-orb-1" />
           <span className="home-hero-orb home-hero-orb-2" />
           <span className="home-hero-orb home-hero-orb-3" />
         </div>
-        <div className="home-hero-inner">
-          <p className="home-hero-label">Follower, Likes & Views</p>
-          <h1 className="home-hero-title">
-            <span className="home-hero-title-gradient">Mehr Reichweite</span>
-            <br />
-            für deine Kanäle
-          </h1>
-          <p className="home-hero-sub">
-            Instagram, TikTok, YouTube und mehr – schnell, unkompliziert, fairer Preis.
-          </p>
-          <div className="home-hero-stats">
-            <span>{categories.length} Plattformen</span>
-            <span className="home-hero-stats-dot">·</span>
-            <span>{allProducts.length}+ Produkte</span>
-            <span className="home-hero-stats-dot">·</span>
-            <span>Schnelle Lieferung</span>
+        <div className="home-hero-row">
+          <div className="home-hero-inner">
+            <p className="home-hero-label">Follower, Likes & Views</p>
+            <h1 className="home-hero-title">
+              <span className="home-hero-title-gradient">Mehr Reichweite</span>
+              <br />
+              für deine Kanäle
+            </h1>
+            <p className="home-hero-sub">
+              Instagram, TikTok, YouTube und mehr – schnell, unkompliziert, fairer Preis.
+            </p>
+            <div className="home-hero-stats">
+              <span>{categories.length} Plattformen</span>
+              <span className="home-hero-stats-dot">·</span>
+              <span>{allProducts.length}+ Produkte</span>
+              <span className="home-hero-stats-dot">·</span>
+              <span>Schnelle Lieferung</span>
+            </div>
+            <div className="home-hero-cta">
+              <Link href="/products" className="btn btn-primary home-hero-btn">
+                Alle Produkte ansehen
+              </Link>
+              <Link href="/bestellung-verfolgen" className="btn btn-secondary home-hero-btn">
+                Bestellung verfolgen
+              </Link>
+            </div>
           </div>
-          <div className="home-hero-cta">
-            <Link href="/products" className="btn btn-primary home-hero-btn">
-              Alle Produkte ansehen
-            </Link>
-            <Link href="/bestellung-verfolgen" className="btn btn-secondary home-hero-btn">
-              Bestellung verfolgen
-            </Link>
-          </div>
+          <InstagramNotificationOverlay compact />
         </div>
       </section>
 
