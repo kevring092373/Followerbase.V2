@@ -84,6 +84,9 @@ export default async function HomePage() {
             <Link href="/products" className="btn btn-primary home-hero-btn">
               Alle Produkte ansehen
             </Link>
+            <Link href="/bestellung-verfolgen" className="btn btn-secondary home-hero-btn">
+              Bestellung verfolgen
+            </Link>
           </div>
         </div>
       </section>
