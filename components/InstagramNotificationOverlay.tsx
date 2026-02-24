@@ -29,6 +29,44 @@ const NOTIFICATIONS = [
   },
 ];
 
+const STATS_TARGETS = { likes: 450, comments: 99, followers: 100 };
+const COUNT_UP_DURATION_MS = 1800;
+const COUNT_UP_START_DELAY_MS = 400;
+
+function easeOutQuart(t: number) {
+  return 1 - (1 - t) ** 4;
+}
+
+function useCountUp(visible: boolean, target: number, delayMs: number) {
+  const [value, setValue] = useState(0);
+  const started = useRef(false);
+
+  useEffect(() => {
+    if (!visible || started.current || target <= 0) return;
+    started.current = true;
+
+    const startTime = performance.now() + delayMs;
+
+    const tick = (now: number) => {
+      const elapsed = now - startTime;
+      if (elapsed <= 0) {
+        setValue(0);
+        requestAnimationFrame(tick);
+        return;
+      }
+      const progress = Math.min(elapsed / COUNT_UP_DURATION_MS, 1);
+      const eased = easeOutQuart(progress);
+      setValue(Math.round(eased * target));
+      if (progress < 1) requestAnimationFrame(tick);
+    };
+
+    const id = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(id);
+  }, [visible, target, delayMs]);
+
+  return value;
+}
+
 function AvatarCircle({ initials }: { initials: string }) {
   return (
     <span className="ig-overlay-avatar" aria-hidden>
@@ -45,13 +83,37 @@ const TAB_ITEMS = [
   { id: "profile", label: "Profil", icon: "profile" },
 ];
 
-function PhoneContent() {
+function PhoneContent({ visible }: { visible: boolean }) {
+  const likes = useCountUp(visible, STATS_TARGETS.likes, COUNT_UP_START_DELAY_MS);
+  const comments = useCountUp(visible, STATS_TARGETS.comments, COUNT_UP_START_DELAY_MS + 80);
+  const followers = useCountUp(visible, STATS_TARGETS.followers, COUNT_UP_START_DELAY_MS + 160);
+
   return (
     <>
       <div className="home-ig-overlay-phone-notch" aria-hidden />
       <div className="home-ig-overlay-screen">
         <div className="home-ig-overlay-header">
           <span className="home-ig-overlay-header-title">Benachrichtigungen</span>
+        </div>
+        <div className="home-ig-overlay-stats-bar">
+          <span className="home-ig-overlay-stat">
+            <span className="home-ig-overlay-stat-icon" aria-hidden>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" /></svg>
+            </span>
+            <span className="home-ig-overlay-stat-num">{likes}</span>
+          </span>
+          <span className="home-ig-overlay-stat">
+            <span className="home-ig-overlay-stat-icon" aria-hidden>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg>
+            </span>
+            <span className="home-ig-overlay-stat-num">{comments}</span>
+          </span>
+          <span className="home-ig-overlay-stat">
+            <span className="home-ig-overlay-stat-icon home-ig-overlay-stat-icon-person" aria-hidden>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
+            </span>
+            <span className="home-ig-overlay-stat-num">{followers}</span>
+          </span>
         </div>
         <div className="home-ig-overlay-list">
           {NOTIFICATIONS.map((n) => (
@@ -105,7 +167,7 @@ export function InstagramNotificationOverlay({ compact = false }: { compact?: bo
   const wrapEl = (
     <div className={`home-ig-overlay-wrap ${visible ? "home-ig-overlay-visible" : ""}`}>
       <div className="home-ig-overlay-phone">
-        <PhoneContent />
+        <PhoneContent visible={visible} />
       </div>
     </div>
   );

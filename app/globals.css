@@ -4510,6 +4510,53 @@ button.nav-link {
   color: #262626;
 }
 
+/* Rote Leiste: Likes, Kommentare, Follower (wie im Referenzbild) */
+.home-ig-overlay-stats-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: 0.5rem;
+  margin: 0 0.75rem 0.75rem;
+  padding: 0.6rem 0.75rem;
+  background: #ed4956;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 12px rgba(237, 73, 86, 0.35);
+}
+
+.home-ig-overlay-stat {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #fff;
+}
+
+.home-ig-overlay-stat-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.15rem;
+  height: 1.15rem;
+  flex-shrink: 0;
+}
+
+.home-ig-overlay-stat-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.home-ig-overlay-stat-icon-person svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.home-ig-overlay-stat-num {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  line-height: 1;
+  min-width: 1.5em;
+  text-align: left;
+}
+
 .home-ig-overlay-list {
   padding: 0.5rem 0;
   flex: 1;
