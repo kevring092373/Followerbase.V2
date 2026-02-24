@@ -167,6 +167,12 @@ export function InstagramNotificationOverlay({ compact = false }: { compact?: bo
   const wrapEl = (
     <div className={`home-ig-overlay-wrap ${visible ? "home-ig-overlay-visible" : ""}`}>
       <div className="home-ig-overlay-phone">
+        <div className="home-ig-overlay-phone-buttons-left" aria-hidden>
+          <span /><span /><span />
+        </div>
+        <div className="home-ig-overlay-phone-buttons-right" aria-hidden>
+          <span />
+        </div>
         <PhoneContent visible={visible} />
       </div>
     </div>
