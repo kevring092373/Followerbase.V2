@@ -84,6 +84,9 @@ body {
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior-y: contain;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
   }
 }
 
@@ -1070,6 +1073,15 @@ button.nav-link {
   -ms-overflow-style: none;
   container-type: inline-size;
   container-name: carousel;
+}
+
+@media (max-width: 768px) {
+  .product-carousel-viewport {
+    -webkit-overflow-scrolling: auto;
+    scroll-snap-type: none;
+    overscroll-behavior-x: contain;
+    overscroll-behavior-y: none;
+  }
 }
 
 .product-carousel-viewport::-webkit-scrollbar {
@@ -2819,6 +2831,13 @@ button.nav-link {
   .product-page-wrap::before {
     pointer-events: none;
   }
+  .product-carousel,
+  .product-carousel-row {
+    touch-action: pan-y;
+  }
+  .product-carousel-viewport {
+    touch-action: pan-x pan-y;
+  }
 }
 /* Hintergrund volle Breite (links–rechts) und von unter Header bis ganz unten */
 .product-page-wrap::before {
@@ -2999,7 +3018,7 @@ button.nav-link {
     flex-wrap: nowrap;
     gap: 0.35rem;
     overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+    -webkit-overflow-scrolling: auto;
     scrollbar-width: none;
     padding-bottom: 0.15rem;
   }
@@ -4544,6 +4563,135 @@ button.nav-link {
 
 .home-long-text-body p:last-child {
   margin-bottom: 0;
+}
+
+/* ===== Startseiten-Artikel (langer Text mit Recht, Plattformen, FAQ, CTA) ===== */
+.home-article .home-long-text-body,
+.home-article-section .home-long-text-body {
+  margin-bottom: 1.25rem;
+}
+.home-article .home-long-text-body:last-child,
+.home-article-section .home-long-text-body:last-child {
+  margin-bottom: 0;
+}
+
+.home-article-h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 2rem 0 0.75rem;
+  line-height: 1.35;
+}
+
+.home-article-icon-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.25rem;
+  margin: 2rem 0 0;
+}
+
+.home-article-icon-card {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.home-article-icon-card-icon {
+  font-size: 1.75rem;
+  line-height: 1;
+}
+
+.home-article-icon-card-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+  line-height: 1.3;
+}
+
+.home-article-icon-card-text {
+  font-size: 0.9375rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  margin: 0;
+}
+
+.home-article-divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 2.5rem auto;
+  max-width: 68rem;
+}
+
+.home-article-section {
+  margin-bottom: 2rem;
+}
+
+.home-article-platform-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.25rem;
+  margin: 1.5rem 0;
+}
+
+.home-article-platform-card {
+  padding: 1.5rem;
+}
+
+.home-article-platform-card-title {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 0.75rem;
+  line-height: 1.35;
+}
+
+.home-article-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin: 1.5rem 0 0;
+}
+
+.home-article-step-item {
+  padding: 1.5rem;
+}
+
+.home-article-step-title {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 0.75rem;
+  line-height: 1.35;
+}
+
+.home-article-feature-card {
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+}
+
+.home-article-feature-card-title {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 0.5rem;
+  line-height: 1.35;
+}
+
+.home-article-faq .home-faq-title {
+  margin-bottom: 0.5rem;
+}
+
+.home-article-faq .home-faq-intro {
+  display: none;
+}
+
+.home-faq-answer p {
+  margin: 0;
+  font-size: 0.9375rem;
+  color: var(--text-secondary);
+  line-height: 1.65;
 }
 
 /* ===== Instagram-Benachrichtigungs-Overlay (Startseite) ===== */
