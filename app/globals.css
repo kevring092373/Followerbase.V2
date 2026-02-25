@@ -47,9 +47,6 @@
 html {
   scroll-behavior: smooth;
   overflow-x: hidden;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  /* Scroll am Dokument für zuverlässiges Wischen auf Mobile (iOS) */
 }
 
 body {
@@ -60,9 +57,34 @@ body {
   background: var(--bg-page);
   color: var(--text-primary);
   -webkit-font-smoothing: antialiased;
-  -webkit-overflow-scrolling: touch;
-  touch-action: pan-y;
-  /* Kein height: 100%, damit das Dokument natürlich scrollt (Fix für Mobile) */
+}
+
+/* Desktop: normaler Dokument-Scroll */
+.app-scroll-wrap {
+  min-height: 100vh;
+}
+
+/* Mobile: ein fester Scroll-Container, damit Wischen zuverlässig funktioniert */
+@media (max-width: 768px) {
+  html,
+  body {
+    height: 100%;
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+  }
+
+  .app-scroll-wrap {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+  }
 }
 
 a {
@@ -79,14 +101,12 @@ a {
   flex-direction: column;
   max-width: 100%;
   overflow-x: hidden;
-  -webkit-overflow-scrolling: touch;
 }
 
 @media (max-width: 768px) {
   .app-container {
-    overflow-x: hidden;
-    overflow-y: visible;
-    min-height: 100vh;
+    overflow: visible;
+    min-height: 100%;
   }
 }
 
@@ -2877,11 +2897,11 @@ button.nav-link {
   flex-shrink: 0;
   width: 260px;
   min-width: 220px;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-xl);
+  background: transparent;
+  border: none;
+  border-radius: 0;
   padding: 1.5rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  box-shadow: none;
 }
 
 .product-order-section-image .product-image-img {
@@ -2898,8 +2918,8 @@ button.nav-link {
 .product-order-section-image .product-image-placeholder {
   width: 100%;
   aspect-ratio: 1;
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--border);
+  border-radius: 0;
+  border: none;
   background: var(--bg-page);
   display: flex;
   align-items: center;

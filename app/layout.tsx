@@ -87,10 +87,12 @@ export default function RootLayout({
     <html lang="de">
       <body className={`${dmSans.className} ${outfit.variable}`}>
         <CartProvider>
-          <div className="app-container">
-            <Header />
-            <main className="main-content">{children}</main>
-            <Footer />
+          <div className="app-scroll-wrap">
+            <div className="app-container">
+              <Header />
+              <main className="main-content">{children}</main>
+              <Footer />
+            </div>
           </div>
           <CartDrawer />
           <CookieBanner />
