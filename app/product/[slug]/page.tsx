@@ -164,6 +164,10 @@ export default async function ProductPage({ params }: Props) {
         </div>
       </div>
 
+      {otherProducts.length > 0 && (
+        <ProductCarousel products={otherProducts} title={carouselTitle} />
+      )}
+
       {product.description && (() => {
         const { styleContent, htmlContent } = prepareProductDescriptionHtml(product.description);
         return (
@@ -180,10 +184,6 @@ export default async function ProductPage({ params }: Props) {
           </section>
         );
       })()}
-
-      {otherProducts.length > 0 && (
-        <ProductCarousel products={otherProducts} title={carouselTitle} />
-      )}
     </div>
   );
 }

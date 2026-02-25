@@ -47,6 +47,7 @@
 html {
   scroll-behavior: smooth;
   overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
 }
 
 body {
@@ -57,6 +58,8 @@ body {
   background: var(--bg-page);
   color: var(--text-primary);
   -webkit-font-smoothing: antialiased;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
 }
 
 a {
@@ -73,6 +76,7 @@ a {
   flex-direction: column;
   max-width: 100%;
   overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
 }
 
 .main-content {
@@ -89,6 +93,8 @@ a {
     padding: 1rem 0.75rem;
     max-width: 100%;
     overflow-x: hidden;
+    overflow-y: visible;
+    -webkit-overflow-scrolling: touch;
   }
 }
 
@@ -2770,6 +2776,13 @@ button.nav-link {
   position: relative;
   padding-bottom: 2rem;
   min-height: 100vh;
+}
+
+@media (max-width: 768px) {
+  .product-page-wrap {
+    overflow-x: hidden;
+    overflow-y: visible;
+  }
 }
 /* Hintergrund volle Breite (links–rechts) und von unter Header bis ganz unten */
 .product-page-wrap::before {
