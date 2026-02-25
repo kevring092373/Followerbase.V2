@@ -18,14 +18,15 @@ export function Footer() {
   return (
     <footer className="footer">
       <div className="footer-inner">
-        <div className="footer-payment-icons">
+        <div className="footer-payment-block">
+          <span className="footer-payment-label">Sichere Zahlung</span>
           <Image
             src="/icons/zahlungsicons.png"
-            alt="Zahlungsarten"
-            width={180}
-            height={40}
+            alt="Zahlungsarten: Visa, Mastercard, PayPal und weitere"
+            width={200}
+            height={44}
             className="footer-payment-img"
-            sizes="180px"
+            sizes="(max-width: 640px) 160px, 200px"
           />
         </div>
         <nav className="footer-nav" aria-label="Footer-Navigation">

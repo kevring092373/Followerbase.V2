@@ -2579,15 +2579,42 @@ button.nav-link {
   gap: 1rem;
 }
 
-.footer-payment-icons {
+.footer-payment-block {
   flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-md);
+  background: rgba(138, 85, 238, 0.04);
+  border: 1px solid rgba(138, 85, 238, 0.08);
+}
+
+.footer-payment-label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
 }
 
 .footer-payment-img {
   display: block;
-  max-width: 180px;
+  max-width: 200px;
+  width: 100%;
   height: auto;
   object-fit: contain;
+}
+
+@media (max-width: 640px) {
+  .footer-payment-block {
+    align-items: center;
+    padding: 0.6rem 1rem;
+  }
+  .footer-payment-img {
+    max-width: 160px;
+  }
 }
 
 .footer-nav {
