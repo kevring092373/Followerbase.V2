@@ -2814,6 +2814,10 @@ button.nav-link {
   .product-page-wrap {
     overflow-x: hidden;
     overflow-y: visible;
+    touch-action: pan-y;
+  }
+  .product-page-wrap::before {
+    pointer-events: none;
   }
 }
 /* Hintergrund volle Breite (links–rechts) und von unter Header bis ganz unten */
@@ -3464,6 +3468,13 @@ button.nav-link {
   width: 100vw;
   margin-left: calc(50% - 50vw);
   box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .product-description-section {
+    overflow-x: clip;
+    -webkit-overflow-scrolling: auto;
+  }
 }
 
 .product-description-inner {
