@@ -4242,6 +4242,7 @@ button.nav-link {
   word-wrap: break-word;
 }
 
+/* Schnellzugriff – reduziert, seomuenchen-artig */
 .home-quick {
   margin-bottom: 4rem;
 }
@@ -4257,12 +4258,13 @@ button.nav-link {
 .home-quick-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 1.5rem;
+  gap: 1.25rem;
 }
 
 @media (min-width: 640px) {
   .home-quick-grid {
     grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
   }
 }
 
@@ -4270,37 +4272,36 @@ button.nav-link {
   position: relative;
   display: flex;
   flex-direction: column;
-  padding: 2rem;
-  border-radius: var(--radius-xl);
+  padding: 1.75rem 1.5rem;
+  border-radius: var(--radius-lg);
   border: 1px solid var(--border);
   background: var(--bg-card);
   overflow: hidden;
-  transition: border-color var(--transition-normal), box-shadow var(--transition-normal), transform var(--transition-normal);
+  transition: border-color var(--transition-normal), box-shadow var(--transition-normal);
 }
 
 .home-quick-card:hover {
-  border-color: rgba(138, 85, 238, 0.35);
-  box-shadow: 0 16px 40px rgba(138, 85, 238, 0.1);
-  transform: translateY(-3px);
+  border-color: rgba(138, 85, 238, 0.2);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
 }
 
 .home-quick-card-accent {
   position: absolute;
   top: 0;
   left: 0;
-  right: 0;
-  height: 4px;
-  background: var(--brand-gradient);
-  opacity: 0.9;
+  bottom: 0;
+  width: 3px;
+  background: var(--brand-primary);
+  opacity: 0.6;
 }
 
-.home-quick-card-2 .home-quick-card-accent { background: linear-gradient(90deg, #ec4899, #f43f5e); }
-.home-quick-card-3 .home-quick-card-accent { background: linear-gradient(90deg, #f59e0b, #eab308); }
-.home-quick-card-4 .home-quick-card-accent { background: linear-gradient(90deg, #8a55ee, #7c3aed); }
+.home-quick-card:hover .home-quick-card-accent {
+  opacity: 1;
+}
 
 .home-quick-card-icon {
   font-size: 2rem;
-  margin-bottom: 0.75rem;
+  margin-bottom: 1rem;
   line-height: 1;
 }
 
@@ -4308,11 +4309,15 @@ button.nav-link {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: var(--radius);
+  background: rgba(138, 85, 238, 0.08);
 }
 
 .home-quick-card-icon-img img {
-  width: 48px;
-  height: 48px;
+  width: 28px;
+  height: 28px;
   object-fit: contain;
 }
 
@@ -4325,9 +4330,9 @@ button.nav-link {
 }
 
 .home-quick-card-text {
-  font-size: 0.8125rem;
+  font-size: 0.9375rem;
   color: var(--text-secondary);
-  line-height: 1.5;
+  line-height: 1.55;
   margin-bottom: 1rem;
   flex: 1;
 }
@@ -4336,7 +4341,11 @@ button.nav-link {
   font-size: 0.875rem;
   font-weight: 600;
   color: var(--brand-primary);
-  transition: gap var(--transition-fast), color var(--transition-fast);
+  transition: color var(--transition-fast);
+}
+
+.home-quick-card-link:hover {
+  color: var(--brand-primary-hover);
 }
 
 .home-quick-card:hover .home-quick-card-link {
@@ -5888,6 +5897,7 @@ button.nav-link {
   overflow: hidden;
   background: var(--bg-page);
   border: 1px solid var(--border);
+  cursor: zoom-in;
 }
 
 .instagram-profilbild-result-image {
@@ -5895,6 +5905,11 @@ button.nav-link {
   height: 100%;
   object-fit: cover;
   display: block;
+  transition: transform 0.25s ease;
+}
+
+.instagram-profilbild-result-image-wrap:hover .instagram-profilbild-result-image {
+  transform: scale(1.5);
 }
 
 .instagram-profilbild-result-image-placeholder {
