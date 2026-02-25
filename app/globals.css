@@ -4402,7 +4402,7 @@ button.nav-link {
   width: 2.75rem;
   height: 2.75rem;
   border-radius: var(--radius);
-  background: rgba(138, 85, 238, 0.08);
+  background: transparent;
 }
 
 .home-quick-card-icon-img img {
