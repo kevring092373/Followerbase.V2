@@ -2960,10 +2960,21 @@ button.nav-link {
   }
   .product-trust-bar {
     margin-top: 0.75rem;
+    flex-wrap: nowrap;
+    gap: 0.35rem;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 0.15rem;
+  }
+  .product-trust-bar::-webkit-scrollbar {
+    display: none;
   }
   .product-trust-badge {
-    font-size: 0.75rem;
-    padding: 0.35rem 0.65rem;
+    font-size: 0.6875rem;
+    padding: 0.3rem 0.45rem;
+    flex-shrink: 0;
+    white-space: nowrap;
   }
 }
 
