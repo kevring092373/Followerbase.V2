@@ -43,6 +43,7 @@ export default function InstagramProfilbildPage() {
   const [result, setResult] = useState<Awaited<ReturnType<typeof fetchInstagramProfilePic>> | null>(null);
   const [fallbackImageUrl, setFallbackImageUrl] = useState<string | null>(null);
   const [fallbackDone, setFallbackDone] = useState(false);
+  const [imageZoomed, setImageZoomed] = useState(false);
   const blobUrlRef = useRef<string | null>(null);
 
   // Fallback: Wenn Server nur URL liefert (kein imageDataUrl), Bild über API laden
@@ -99,6 +100,7 @@ export default function InstagramProfilbildPage() {
     try {
       const data = await fetchInstagramProfilePic(input.trim());
       setResult(data);
+    setImageZoomed(false);
     } finally {
       setLoading(false);
     }
@@ -155,12 +157,20 @@ export default function InstagramProfilbildPage() {
                 )}
               </h2>
               {result.stats && <StatsBlock stats={result.stats} />}
-              <div className="instagram-profilbild-result-image-wrap">
+              <div
+                className={`instagram-profilbild-result-image-wrap${imageZoomed ? " instagram-profilbild-result-image-wrap-zoomed" : ""}`}
+                onClick={() => displayImageUrl && setImageZoomed((z) => !z)}
+                onKeyDown={(e) => displayImageUrl && (e.key === "Enter" || e.key === " ") && (e.preventDefault(), setImageZoomed((z) => !z))}
+                role={displayImageUrl ? "button" : undefined}
+                tabIndex={displayImageUrl ? 0 : undefined}
+                aria-label={displayImageUrl ? (imageZoomed ? "Vergrößerung schließen" : "Profilbild vergrößern") : undefined}
+              >
                 {displayImageUrl ? (
                   <img
                     src={displayImageUrl}
                     alt={`Profilbild von ${result.username}`}
                     className="instagram-profilbild-result-image"
+                    draggable={false}
                   />
                 ) : (
                   <div className="instagram-profilbild-result-image-placeholder">
