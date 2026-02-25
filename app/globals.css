@@ -2897,11 +2897,11 @@ button.nav-link {
   flex-shrink: 0;
   width: 260px;
   min-width: 220px;
-  background: transparent;
-  border: none;
-  border-radius: 0;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
   padding: 1.5rem;
-  box-shadow: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
 .product-order-section-image .product-image-img {
@@ -2918,8 +2918,8 @@ button.nav-link {
 .product-order-section-image .product-image-placeholder {
   width: 100%;
   aspect-ratio: 1;
-  border-radius: 0;
-  border: none;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
   background: var(--bg-page);
   display: flex;
   align-items: center;
