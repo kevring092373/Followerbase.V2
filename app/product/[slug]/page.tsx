@@ -7,9 +7,10 @@ import { notFound } from "next/navigation";
 import { getProductBySlug, getProductImageAlt, getAllProducts } from "@/lib/products-data";
 import { ProductOrderBlock } from "@/components/ProductOrderBlock";
 import { ProductCarousel } from "@/components/ProductCarousel";
+import { ProductDescriptionDeferred } from "@/components/ProductDescriptionDeferred";
 import { ShareButtons } from "@/components/ShareButtons";
 import { ProductPaymentIcons } from "@/components/ProductPaymentIcons";
-import { absoluteUrl, truncateDescription, prepareProductDescriptionHtml } from "@/lib/seo";
+import { absoluteUrl, truncateDescription } from "@/lib/seo";
 import { categories } from "@/lib/categories";
 
 type Props = { params: { slug: string } };
@@ -168,22 +169,9 @@ export default async function ProductPage({ params }: Props) {
         <ProductCarousel products={otherProducts} title={carouselTitle} />
       )}
 
-      {product.description && (() => {
-        const { styleContent, htmlContent } = prepareProductDescriptionHtml(product.description);
-        return (
-          <section className="product-description-section">
-            <div className="product-description-inner">
-              {styleContent ? (
-                <style dangerouslySetInnerHTML={{ __html: styleContent }} />
-              ) : null}
-              <div
-                className="product-description-html"
-                dangerouslySetInnerHTML={{ __html: htmlContent }}
-              />
-            </div>
-          </section>
-        );
-      })()}
+      {product.description ? (
+        <ProductDescriptionDeferred rawHtml={product.description} />
+      ) : null}
     </div>
   );
 }

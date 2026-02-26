@@ -49,6 +49,12 @@ html {
   overflow-x: hidden;
 }
 
+@media (max-width: 768px) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
 body {
   max-width: 100%;
   min-height: 100vh;
@@ -65,6 +71,9 @@ body {
     -webkit-overflow-scrolling: touch;
     min-height: 100vh;
     min-height: 100dvh;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    overflow-anchor: none;
   }
 }
 
@@ -3501,6 +3510,10 @@ button.nav-link {
   padding: 0 1.5rem;
   width: 100%;
   box-sizing: border-box;
+}
+
+.product-description-placeholder {
+  min-height: 80px;
 }
 
 .product-description-html {
