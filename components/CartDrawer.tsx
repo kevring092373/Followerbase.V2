@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 /**
  * Warenkorb als von rechts einschiebender Drawer (~1/4 Breite).
@@ -21,16 +21,19 @@ export function CartDrawer() {
 
   const totalCentsComputed = items.reduce((sum, i) => sum + i.priceCents, 0);
 
+  const prevBodyOverflow = useRef("");
+
   useEffect(() => {
     if (!isCartOpen) return;
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") closeCart();
     };
-    document.addEventListener("keydown", onKeyDown);
+    prevBodyOverflow.current = document.body.style.overflow || "";
     document.body.style.overflow = "hidden";
+    document.addEventListener("keydown", onKeyDown);
     return () => {
       document.removeEventListener("keydown", onKeyDown);
-      document.body.style.overflow = "";
+      document.body.style.overflow = prevBodyOverflow.current;
     };
   }, [isCartOpen, closeCart]);
 

@@ -374,9 +374,15 @@ a {
   transition: max-height 0.3s ease-out;
 }
 
+/* Geschlossen: keine Touch-Events abfangen (verhindert Scroll-Block auf Produktseite) */
+.mobile-menu-panel[data-open="false"] {
+  pointer-events: none;
+}
+
 .mobile-menu-panel[data-open="true"] {
   max-height: 85vh;
   overflow-y: auto;
+  pointer-events: auto;
 }
 
 .mobile-menu-inner {
