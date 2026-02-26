@@ -160,8 +160,8 @@ export default async function HomePage() {
             </h2>
             <p className="home-text-block-body">
               Ob Creator, Marke oder kleines Business: Sichtbarkeit entscheidet. Mit dem richtigen Start
-              gewinnst du Vertrauen und Reichweite, ohne monatelang im leeren Raum zu posten. Wir liefern
-              dir die Basis – fair, schnell und transparent.
+              gewinnst du Vertrauen und Reichweite, ohne monatelang im leeren Raum zu posten. Followerbase
+              liefert dir die Basis – fair, schnell und transparent.
             </p>
           </div>
         </section>
@@ -204,7 +204,7 @@ export default async function HomePage() {
       {/* Artikel: Follower kaufen – Risiken, Nutzen, Alternativen */}
       <HomeReveal delay={180}>
         <div className="product-intro">
-          <h1 className="product-intro-title">Follower kaufen: Risiken, Nutzen und seriöse Alternativen für dein Social Media Wachstum</h1>
+          <h2 className="product-intro-title">Follower kaufen: Risiken, Nutzen und seriöse Alternativen für dein Social Media Wachstum</h2>
           <p className="product-intro-text">
             Der Kauf von Followern verspricht eine schnelle Steigerung deines Social Proof und deiner Reichweite, was für Creators, Marken und Agenturen oft entscheidend ist, um eine Kampagne zu starten oder Kooperationen zu fördern. Du siehst dich mit der Notwendigkeit konfrontiert, schnell Vertrauen zu schaffen, doch dieser Weg birgt auch potenzielle Nachteile, darunter sinkende Engagement-Raten und ein Vertrauensverlust deiner Community. Zugleich musst du die rechtlichen Grenzen und ethischen Implikationen verstehen, um Fallstricke wie gewerbsmäßigen Betrug zu vermeiden. Du erfährst nicht nur, wie der Prozess des Follower-Kaufs abläuft und wie du gefälschte Profile erkennst, sondern auch, welche seriösen Alternativen existieren, um ein nachhaltiges Wachstum zu erzielen. Am Ende dieses Leitfadens bist du in der Lage, fundierte Entscheidungen für dein Social Media Marketing zu treffen, indem du die vielschichtigen Aspekte des Follower-Kaufs klar überblickt.
           </p>

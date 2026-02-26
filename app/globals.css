@@ -59,35 +59,9 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Desktop: normaler Dokument-Scroll */
+/* Scroll-Wrapper: normaler Dokument-Scroll auf allen Geräten */
 .app-scroll-wrap {
   min-height: 100vh;
-}
-
-/* Mobile: ein fester Scroll-Container, damit Wischen zuverlässig funktioniert */
-@media (max-width: 768px) {
-  html,
-  body {
-    height: 100%;
-    overflow: hidden;
-    position: fixed;
-    width: 100%;
-  }
-
-  .app-scroll-wrap {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    overflow-y: auto;
-    overflow-x: hidden;
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior-y: contain;
-    -webkit-transform: translateZ(0);
-    transform: translateZ(0);
-    -webkit-backface-visibility: hidden;
-  }
 }
 
 a {
@@ -108,7 +82,6 @@ a {
 
 @media (max-width: 768px) {
   .app-container {
-    overflow: visible;
     min-height: 100%;
   }
 }
@@ -1077,10 +1050,7 @@ button.nav-link {
 
 @media (max-width: 768px) {
   .product-carousel-viewport {
-    -webkit-overflow-scrolling: auto;
-    scroll-snap-type: none;
     overscroll-behavior-x: contain;
-    overscroll-behavior-y: none;
   }
 }
 
@@ -2852,18 +2822,9 @@ button.nav-link {
 @media (max-width: 768px) {
   .product-page-wrap {
     overflow-x: hidden;
-    overflow-y: visible;
-    touch-action: pan-y;
   }
   .product-page-wrap::before {
     pointer-events: none;
-  }
-  .product-carousel,
-  .product-carousel-row {
-    touch-action: pan-y;
-  }
-  .product-carousel-viewport {
-    touch-action: pan-x pan-y;
   }
 }
 /* Hintergrund volle Breite (links–rechts) und von unter Header bis ganz unten */
@@ -3045,7 +3006,6 @@ button.nav-link {
     flex-wrap: nowrap;
     gap: 0.35rem;
     overflow-x: auto;
-    -webkit-overflow-scrolling: auto;
     scrollbar-width: none;
     padding-bottom: 0.15rem;
   }
@@ -3518,8 +3478,7 @@ button.nav-link {
 
 @media (max-width: 768px) {
   .product-description-section {
-    overflow-x: clip;
-    -webkit-overflow-scrolling: auto;
+    overflow-x: hidden;
   }
 }
 
