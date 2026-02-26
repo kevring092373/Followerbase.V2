@@ -77,9 +77,14 @@ body {
   }
   .app-container:has(.product-page-layout) {
     overflow-x: visible;
+    overflow-y: visible;
     min-height: auto;
   }
-  /* Produktseite: kein eigener Scroll-Container mehr – Body scrollt wie auf allen anderen Seiten (vermeidet iOS-Scroll-Hänger). */
+  /* Produktseite: Wrapper nicht als Scroll-Falle – Touch durchlassen */
+  .product-page-layout {
+    overflow: visible;
+    touch-action: manipulation;
+  }
 }
 
 /* Scroll-Wrapper: normaler Dokument-Scroll auf allen Geräten */
@@ -1085,8 +1090,9 @@ button.nav-link {
 
 @media (max-width: 768px) {
   .product-carousel-viewport {
-    touch-action: pan-y;
-    -webkit-overflow-scrolling: auto;
+    /* pan-x: nur horizontale Touches für Carousel, vertikale gehen an Body (vermeidet iOS-Scroll-Hänger) */
+    touch-action: pan-x;
+    -webkit-overflow-scrolling: touch;
     overscroll-behavior-x: contain;
   }
 }
@@ -2858,7 +2864,9 @@ button.nav-link {
 
 @media (max-width: 768px) {
   .product-page-wrap {
-    overflow-x: hidden;
+    /* clip statt hidden: kein Scroll-Kontext, reduziert iOS-Touch-Konflikte */
+    overflow-x: clip;
+    overflow-y: visible;
     min-height: 0;
   }
   .product-page-wrap::before {
