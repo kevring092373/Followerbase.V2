@@ -59,9 +59,24 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+@media (max-width: 768px) {
+  body {
+    touch-action: manipulation;
+    -webkit-overflow-scrolling: touch;
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+}
+
 /* Scroll-Wrapper: normaler Dokument-Scroll auf allen Geräten */
 .app-scroll-wrap {
   min-height: 100vh;
+}
+
+@media (max-width: 768px) {
+  .app-scroll-wrap {
+    min-height: 100dvh;
+  }
 }
 
 a {
@@ -83,6 +98,7 @@ a {
 @media (max-width: 768px) {
   .app-container {
     min-height: 100%;
+    min-height: 100dvh;
   }
 }
 
@@ -99,9 +115,6 @@ a {
   .main-content {
     padding: 1rem 0.75rem;
     max-width: 100%;
-    overflow-x: hidden;
-    overflow-y: visible;
-    -webkit-overflow-scrolling: touch;
   }
 }
 
@@ -1050,6 +1063,8 @@ button.nav-link {
 
 @media (max-width: 768px) {
   .product-carousel-viewport {
+    touch-action: pan-y;
+    -webkit-overflow-scrolling: auto;
     overscroll-behavior-x: contain;
   }
 }
@@ -2822,9 +2837,13 @@ button.nav-link {
 @media (max-width: 768px) {
   .product-page-wrap {
     overflow-x: hidden;
+    min-height: 100vh;
+    min-height: 100dvh;
   }
   .product-page-wrap::before {
     pointer-events: none;
+    min-height: calc(100vh + 4rem);
+    min-height: calc(100dvh + 4rem);
   }
 }
 /* Hintergrund volle Breite (links–rechts) und von unter Header bis ganz unten */
@@ -3003,14 +3022,8 @@ button.nav-link {
   }
   .product-trust-bar {
     margin-top: 0.75rem;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     gap: 0.35rem;
-    overflow-x: auto;
-    scrollbar-width: none;
-    padding-bottom: 0.15rem;
-  }
-  .product-trust-bar::-webkit-scrollbar {
-    display: none;
   }
   .product-trust-badge {
     font-size: 0.6875rem;
