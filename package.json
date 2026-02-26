@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "deploy": "netlify deploy --prod"
+    "deploy": "netlify deploy --prod",
+    "sync-product": "node scripts/sync-product-from-supabase.js"
   },
   "dependencies": {
     "@paypal/react-paypal-js": "^8.9.2",
