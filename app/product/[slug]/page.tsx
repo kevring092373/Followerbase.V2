@@ -171,10 +171,7 @@ export default async function ProductPage({ params }: Props) {
       {product.description && (() => {
         const { styleContent, htmlContent } = prepareProductDescriptionHtml(product.description);
         return (
-          <section className="product-description-section" aria-labelledby="product-description-heading">
-            <h2 id="product-description-heading" className="product-description-heading">
-              Produktbeschreibung
-            </h2>
+          <section className="product-description-section">
             <div className="product-description-inner">
               {styleContent ? (
                 <style dangerouslySetInnerHTML={{ __html: styleContent }} />
