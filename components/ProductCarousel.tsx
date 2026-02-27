@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { getProductImageAlt } from "@/lib/products-data";
+import { getProductImageAlt } from "@/lib/product-image-alt";
 
 export type ProductCarouselItem = {
   slug: string;

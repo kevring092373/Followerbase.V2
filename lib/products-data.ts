@@ -111,18 +111,7 @@ export async function getCategoryByProductSlug(slug: string): Promise<Category |
   return categories.find((c) => c.id === product.categoryId);
 }
 
-/** Alt-Text für Produktbilder: Dateiname ohne Endung, URL-dekodiert (z. B. „TikTok Likes kaufen“). */
-export function getProductImageAlt(imagePath: string | undefined, fallback: string): string {
-  if (!imagePath) return fallback;
-  const filename = imagePath.split("/").pop() ?? "";
-  const withoutExt = filename.replace(/\.[^.]+$/, "");
-  if (!withoutExt) return fallback;
-  try {
-    return decodeURIComponent(withoutExt) || fallback;
-  } catch {
-    return withoutExt || fallback;
-  }
-}
+export { getProductImageAlt } from "./product-image-alt";
 
 function normalizeTier(t: unknown): ProductTier | null {
   if (!t || typeof t !== "object") return null;
