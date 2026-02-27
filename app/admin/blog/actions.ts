@@ -23,6 +23,7 @@ export async function savePostAction(
   const slug = (formData.get("slug") as string)?.trim();
   const title = (formData.get("title") as string)?.trim();
   const excerpt = (formData.get("excerpt") as string)?.trim() || undefined;
+  const category = (formData.get("category") as string)?.trim() || undefined;
   const content = (formData.get("content") as string)?.trim() ?? "";
   const metaTitle = (formData.get("metaTitle") as string)?.trim() || undefined;
   const metaDescription = (formData.get("metaDescription") as string)?.trim() || undefined;
@@ -37,6 +38,7 @@ export async function savePostAction(
     slug: finalSlug,
     title,
     excerpt,
+    category,
     content,
     date: new Date().toISOString().slice(0, 10),
     metaTitle,

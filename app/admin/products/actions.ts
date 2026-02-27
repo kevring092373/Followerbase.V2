@@ -83,6 +83,32 @@ export async function deleteProductAction(slug: string): Promise<{ error?: strin
 }
 
 const UPLOAD_DIR = path.join(process.cwd(), "public", "uploads", "products");
+const DESCRIPTION_UPLOAD_DIR = path.join(process.cwd(), "public", "uploads", "products", "description");
+
+async function uploadImage(
+  file: File,
+  dir: string,
+  urlPrefix: string
+): Promise<{ error?: string; url?: string }> {
+  const allowed = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+  if (!allowed.includes(file.type)) {
+    return { error: "Nur Bilder (JPEG, PNG, GIF, WebP) erlaubt." };
+  }
+  if (file.size > 5 * 1024 * 1024) {
+    return { error: "Max. 5 MB." };
+  }
+  try {
+    await fs.mkdir(dir, { recursive: true });
+    const ext = path.extname(file.name) || ".jpg";
+    const safeName = `${Date.now()}-${Math.random().toString(36).slice(2, 9)}${ext}`;
+    const filePath = path.join(dir, safeName);
+    const bytes = await file.arrayBuffer();
+    await fs.writeFile(filePath, Buffer.from(bytes));
+    return { url: `${urlPrefix}/${safeName}` };
+  } catch (e) {
+    return { error: e instanceof Error ? e.message : "Upload fehlgeschlagen." };
+  }
+}
 
 export async function uploadProductImageAction(
   _prev: unknown,
@@ -92,22 +118,17 @@ export async function uploadProductImageAction(
   if (!file || !(file instanceof File) || file.size === 0) {
     return { error: "Bitte eine Datei auswählen." };
   }
-  const allowed = ["image/jpeg", "image/png", "image/gif", "image/webp"];
-  if (!allowed.includes(file.type)) {
-    return { error: "Nur Bilder (JPEG, PNG, GIF, WebP) erlaubt." };
+  return uploadImage(file, UPLOAD_DIR, "/uploads/products");
+}
+
+/** Bild für die Produktbeschreibung (HTML): hochladen, URL in Beschreibung einfügen. */
+export async function uploadProductDescriptionImageAction(
+  _prev: unknown,
+  formData: FormData
+): Promise<{ error?: string; url?: string }> {
+  const file = formData.get("file") as File | null;
+  if (!file || !(file instanceof File) || file.size === 0) {
+    return { error: "Bitte eine Datei auswählen." };
   }
-  if (file.size > 5 * 1024 * 1024) {
-    return { error: "Max. 5 MB." };
-  }
-  try {
-    await fs.mkdir(UPLOAD_DIR, { recursive: true });
-    const ext = path.extname(file.name) || ".jpg";
-    const safeName = `${Date.now()}-${Math.random().toString(36).slice(2, 9)}${ext}`;
-    const filePath = path.join(UPLOAD_DIR, safeName);
-    const bytes = await file.arrayBuffer();
-    await fs.writeFile(filePath, Buffer.from(bytes));
-    return { url: `/uploads/products/${safeName}` };
-  } catch (e) {
-    return { error: e instanceof Error ? e.message : "Upload fehlgeschlagen." };
-  }
+  return uploadImage(file, DESCRIPTION_UPLOAD_DIR, "/uploads/products/description");
 }

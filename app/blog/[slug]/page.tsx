@@ -1,11 +1,12 @@
 /**
- * Blog-Beitrag: Gesamte Seite = eingegebener HTML-Code (1:1 ausgegeben).
+ * Blog-Beitrag: Gesamte Seite = eingegebener HTML-Code (1:1 ausgegeben) + Autor-Box.
  */
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getPostBySlug, getAllPosts } from "@/lib/blog-data";
 import { absoluteUrl, truncateDescription } from "@/lib/seo";
 import { ShareButtons } from "@/components/ShareButtons";
+import { BlogAuthor } from "@/components/BlogAuthor";
 
 type Props = { params: { slug: string } };
 
@@ -58,6 +59,7 @@ export default async function BlogPostPage({ params }: Props) {
         className="blog-page-html"
         dangerouslySetInnerHTML={{ __html: (post.content ?? "").trim() || "" }}
       />
+      <BlogAuthor />
     </>
   );
 }

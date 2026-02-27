@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useFormState } from "react-dom";
 import type { Product } from "@/lib/products-data";
 import { categories } from "@/lib/categories";
-import { saveProductAction, uploadProductImageAction } from "./actions";
+import { saveProductAction, uploadProductImageAction, uploadProductDescriptionImageAction } from "./actions";
 
 const PRICE_TABLE_ROWS = 12;
 
@@ -19,6 +19,9 @@ export function ProductForm({ product }: Props) {
   const [imageUrl, setImageUrl] = useState(product.image ?? "");
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState("");
+  const [descImageUrl, setDescImageUrl] = useState<string | null>(null);
+  const [descUploading, setDescUploading] = useState(false);
+  const [descUploadError, setDescUploadError] = useState("");
 
   useEffect(() => {
     if (state?.success) {
@@ -40,6 +43,24 @@ export function ProductForm({ product }: Props) {
       if (result.url) setImageUrl(result.url);
     } finally {
       setUploading(false);
+      e.target.value = "";
+    }
+  }
+
+  async function handleDescriptionImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setDescUploadError("");
+    setDescUploading(true);
+    setDescImageUrl(null);
+    try {
+      const formData = new FormData();
+      formData.set("file", file);
+      const result = await uploadProductDescriptionImageAction(null, formData);
+      if (result.error) setDescUploadError(result.error);
+      if (result.url) setDescImageUrl(result.url);
+    } finally {
+      setDescUploading(false);
       e.target.value = "";
     }
   }
@@ -220,13 +241,41 @@ export function ProductForm({ product }: Props) {
       </div>
 
       <div className="admin-form-row">
+        <label>Bilder in Produktbeschreibung</label>
+        <div className="admin-image-upload">
+          <input
+            type="file"
+            accept="image/jpeg,image/png,image/gif,image/webp"
+            onChange={handleDescriptionImageUpload}
+            disabled={descUploading}
+            className="admin-input"
+          />
+          {descUploading && <span className="admin-upload-status">Wird hochgeladen …</span>}
+          {descUploadError && <span className="admin-upload-error">{descUploadError}</span>}
+          {descImageUrl && (
+            <div className="admin-desc-image-url">
+              <span className="admin-desc-image-label">URL zum Einfügen in die Beschreibung:</span>
+              <code className="admin-desc-image-code">{`<img src="${descImageUrl}" alt="Beschreibung">`}</code>
+              <button
+                type="button"
+                className="admin-copy-url-btn"
+                onClick={() => navigator.clipboard.writeText(`<img src="${descImageUrl}" alt="Beschreibung">`)}
+              >
+                HTML kopieren
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="admin-form-row">
         <label htmlFor="description">Produktbeschreibung (HTML)</label>
         <textarea
           id="description"
           name="description"
-          rows={12}
+          rows={14}
           defaultValue={product.description}
-          placeholder="HTML z. B. <p>Text</p>, <ul><li>Punkt</li></ul>"
+          placeholder="HTML, z. B.: <p>Text</p>, <ul><li>Punkt</li></ul>, <img src=\"/uploads/products/description/xxx.jpg\" alt=\"...\">"
           className="admin-input admin-textarea admin-textarea-mono"
         />
       </div>

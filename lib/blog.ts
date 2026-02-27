@@ -19,4 +19,6 @@ export interface BlogPost {
   metaDescription?: string;
   /** Beitragsbild (URL oder Pfad, z. B. /uploads/blog/xyz.jpg) – für die Blog-Übersicht */
   image?: string;
+  /** Optionale Kategorie für Filter (z. B. „Instagram“, „TikTok“, „Tipps“) */
+  category?: string;
 }

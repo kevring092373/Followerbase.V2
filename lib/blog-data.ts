@@ -16,7 +16,8 @@ function normalizePost(p: Record<string, unknown>): BlogPost {
   const metaTitle = typeof p.metaTitle === "string" ? p.metaTitle : undefined;
   const metaDescription = typeof p.metaDescription === "string" ? p.metaDescription : undefined;
   const image = typeof p.image === "string" ? p.image : undefined;
-  return { slug, title, excerpt, content, date, metaTitle, metaDescription, image };
+  const category = typeof p.category === "string" ? p.category : undefined;
+  return { slug, title, excerpt, content, date, metaTitle, metaDescription, image, category };
 }
 
 async function readPosts(): Promise<BlogPost[]> {
@@ -62,6 +63,11 @@ export async function createPost(input: BlogPost): Promise<BlogPost> {
     title: input.title,
     content: input.content,
     date: input.date ?? new Date().toISOString().slice(0, 10),
+    excerpt: input.excerpt,
+    category: input.category,
+    metaTitle: input.metaTitle,
+    metaDescription: input.metaDescription,
+    image: input.image,
   };
   if (posts.some((p) => p.slug === post.slug)) {
     throw new Error(`Ein Beitrag mit der URL "${post.slug}" existiert bereits.`);

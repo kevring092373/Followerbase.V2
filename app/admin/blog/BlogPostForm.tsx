@@ -99,6 +99,18 @@ export function BlogPostForm({ post }: Props) {
         />
       </div>
 
+      <div className="admin-form-row">
+        <label htmlFor="category">Kategorie (für Filter auf Blog-Übersicht)</label>
+        <input
+          id="category"
+          name="category"
+          type="text"
+          defaultValue={post?.category}
+          placeholder="z. B. Instagram, TikTok, Tipps"
+          className="admin-input"
+        />
+      </div>
+
       <div className="admin-form-section">
         <h3 className="admin-form-section-title">Meta-Tags (SEO)</h3>
         <div className="admin-form-row">

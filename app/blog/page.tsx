@@ -1,11 +1,9 @@
 /**
- * Blog-Übersicht: Liste aller Beiträge (Bezeichnung, optional Bild, Link).
+ * Blog-Übersicht im Stil SEO München: Hero, Kategorie-Filter, Artikel-Karten.
  */
-import Link from "next/link";
-import Image from "next/image";
 import { getAllPosts } from "@/lib/blog-data";
-
 import { absoluteUrl } from "@/lib/seo";
+import { BlogArticleList } from "@/components/BlogArticleList";
 
 export const revalidate = 3600;
 
@@ -28,44 +26,14 @@ export default async function BlogPage() {
 
   return (
     <>
-      <header className="blog-page-header">
-        <h1 className="heading-hero">Blog</h1>
-        <p className="subtitle blog-subtitle">
-          Wähle einen Beitrag.
+      <header className="blog-hero">
+        <h1 className="blog-hero-title">Blog</h1>
+        <p className="blog-hero-subtitle">
+          Tipps, Anleitungen und Insights zu Followern, Likes und Reichweite für Instagram, TikTok & mehr.
         </p>
       </header>
 
-      <div className="blog-list">
-        {posts.map((post) => (
-          <article key={post.slug} className="blog-card card">
-            <Link href={`/blog/${post.slug}`} className="blog-card-link">
-              {post.image && (
-                <div className="blog-card-image-wrap">
-                  {post.image.startsWith("/") ? (
-                    <Image
-                      src={post.image}
-                      alt={post.title}
-                      width={400}
-                      height={220}
-                      sizes="(max-width: 640px) 100vw, 400px"
-                      className="blog-card-image"
-                    />
-                  ) : (
-                    <img src={post.image} alt={post.title} className="blog-card-image" />
-                  )}
-                </div>
-              )}
-              <div className="blog-card-body">
-                <h2 className="blog-card-title">{post.title}</h2>
-                {post.excerpt && (
-                  <p className="blog-card-excerpt">{post.excerpt}</p>
-                )}
-                <span className="blog-card-more">Weiterlesen →</span>
-              </div>
-            </Link>
-          </article>
-        ))}
-      </div>
+      <BlogArticleList posts={posts} />
     </>
   );
 }
