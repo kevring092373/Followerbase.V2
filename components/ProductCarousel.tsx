@@ -3,6 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { getProductImageAlt } from "@/lib/products-data";
 
 export type ProductCarouselItem = {
   slug: string;
@@ -14,13 +15,6 @@ export type ProductCarouselItem = {
 function formatAbPrice(cents: number): string {
   const euros = cents / 100;
   return euros % 1 === 0 ? `ab ${euros} €` : `ab ${euros.toFixed(2)} €`;
-}
-
-function getImageAlt(imagePath: string | undefined, fallback: string): string {
-  if (!imagePath) return fallback;
-  const filename = imagePath.split("/").pop() ?? "";
-  const withoutExt = filename.replace(/\.[^.]+$/, "");
-  return withoutExt || fallback;
 }
 
 type ProductCarouselProps = {
@@ -58,9 +52,9 @@ export function ProductCarousel({ products, title = "Weitere Produkte" }: Produc
                   <div className="product-carousel-card-thumb">
                     {product.image ? (
                       product.image.startsWith("/") ? (
-                        <Image src={product.image} alt={getImageAlt(product.image, product.name)} width={120} height={120} sizes="120px" className="product-carousel-card-img" />
+                        <Image src={product.image} alt={getProductImageAlt(product.image, product.name)} width={120} height={120} sizes="120px" className="product-carousel-card-img" />
                       ) : (
-                        <img src={product.image} alt={getImageAlt(product.image, product.name)} className="product-carousel-card-img" />
+                        <img src={product.image} alt={getProductImageAlt(product.image, product.name)} className="product-carousel-card-img" />
                       )
                     ) : (
                       <span className="product-carousel-card-placeholder">Bild</span>

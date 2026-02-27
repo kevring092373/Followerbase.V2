@@ -3,6 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { getProductImageAlt } from "@/lib/products-data";
 
 export type HomeProductCarouselItem = {
   slug: string;
@@ -14,13 +15,6 @@ export type HomeProductCarouselItem = {
 function formatAbPrice(cents: number): string {
   const euros = cents / 100;
   return euros % 1 === 0 ? `ab ${euros} €` : `ab ${euros.toFixed(2)} €`;
-}
-
-function getImageAlt(imagePath: string | undefined, fallback: string): string {
-  if (!imagePath) return fallback;
-  const filename = imagePath.split("/").pop() ?? "";
-  const withoutExt = filename.replace(/\.[^.]+$/, "");
-  return withoutExt || fallback;
 }
 
 type HomeProductCarouselProps = {
@@ -63,7 +57,7 @@ export function HomeProductCarousel({ products, title = "Beliebte Produkte" }: H
                       product.image.startsWith("/") ? (
                         <Image
                           src={product.image}
-                          alt={getImageAlt(product.image, product.name)}
+                          alt={getProductImageAlt(product.image, product.name)}
                           width={280}
                           height={200}
                           sizes="(max-width: 640px) 240px, 280px"
@@ -72,7 +66,7 @@ export function HomeProductCarousel({ products, title = "Beliebte Produkte" }: H
                       ) : (
                         <img
                           src={product.image}
-                          alt={getImageAlt(product.image, product.name)}
+                          alt={getProductImageAlt(product.image, product.name)}
                           className="home-product-carousel-card-img"
                         />
                       )
