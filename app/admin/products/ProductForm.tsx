@@ -275,7 +275,7 @@ export function ProductForm({ product }: Props) {
           name="description"
           rows={14}
           defaultValue={product.description}
-          placeholder="HTML, z. B.: <p>Text</p>, <ul><li>Punkt</li></ul>, <img src=\"/uploads/products/description/xxx.jpg\" alt=\"...\">"
+          placeholder={'HTML, z. B. <p>Text</p> oder <img src="/uploads/products/description/xxx.jpg" alt="...">'}
           className="admin-input admin-textarea admin-textarea-mono"
         />
       </div>
