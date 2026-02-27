@@ -25,11 +25,18 @@ export async function generateStaticParams() {
 /** Cache: Produktseiten stündlich neu validieren */
 export const revalidate = 3600;
 
+/** Meta-Titel: „kaufen“ anhängen, falls nicht schon enthalten. */
+function productMetaTitle(name: string, metaTitle?: string): string {
+  if (metaTitle?.trim()) return metaTitle.trim();
+  return name.trimEnd().endsWith(" kaufen") ? name : `${name} kaufen`;
+}
+
 export async function generateMetadata({ params }: Props) {
   const product = await getProductBySlug(params.slug);
   if (!product) return { title: "Produkt" };
-  const title = product.metaTitle ?? product.name;
-  const rawDesc = product.metaDescription ?? `${product.name} bei Followerbase – faire Preise, schnelle Lieferung.`;
+  const title = productMetaTitle(product.name, product.metaTitle);
+  const defaultDesc = `${product.name} kaufen bei Followerbase – faire Preise, schnelle Lieferung. Qualitätsgarantie & sicherer Checkout.`;
+  const rawDesc = product.metaDescription ?? defaultDesc;
   const description = truncateDescription(rawDesc);
   const url = absoluteUrl(`/product/${product.slug}`);
   const image = product.image?.startsWith("/") ? absoluteUrl(product.image) : undefined;
@@ -155,7 +162,7 @@ export default async function ProductPage({ params }: Props) {
           )}
           <ShareButtons
             url={absoluteUrl(`/product/${product.slug}`)}
-            title={product.name}
+            title={productMetaTitle(product.name, product.metaTitle)}
             text={product.metaDescription ?? undefined}
             iconOnly
             className="share-buttons--product"

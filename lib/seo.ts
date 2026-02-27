@@ -3,7 +3,7 @@
  * Titel: 50–60 Zeichen. Description: 150–160 Zeichen.
  */
 
-const DESCRIPTION_MAX = 158;
+const DESCRIPTION_MAX = 160;
 
 export function getBaseUrl(): string {
   const base =

@@ -20,9 +20,9 @@ export const revalidate = 3600;
 export function generateMetadata({ params }: Props) {
   const category = categories.find((c) => c.slug === params.categorySlug);
   if (!category) return { title: "Kategorie" };
-  const title = category.name;
+  const title = `${category.name} – Follower, Likes & Views kaufen`;
   const description = truncateDescription(
-    `${category.name} – Follower, Likes und Views kaufen. Faire Preise, schnelle Lieferung bei Followerbase.`
+    `${category.name} – Follower, Likes und Views kaufen. Faire Preise, schnelle Lieferung bei Followerbase. Jetzt bestellen.`
   );
   const url = absoluteUrl(`/products/${category.slug}`);
   return {
