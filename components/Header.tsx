@@ -51,6 +51,9 @@ export function Header() {
                 </nav>
               </div>
             </div>
+            <Link href="/blog" className="nav-link">
+              Blog
+            </Link>
             <Link href="/bestellung-verfolgen" className="nav-link nav-link-tracking">
               Bestellung verfolgen
             </Link>
@@ -104,6 +107,13 @@ export function Header() {
               </Link>
             ))}
           </div>
+          <Link
+            href="/blog"
+            className="mobile-menu-link"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            Blog
+          </Link>
           <Link
             href="/bestellung-verfolgen"
             className="mobile-menu-link"
