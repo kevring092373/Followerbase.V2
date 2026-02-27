@@ -75,6 +75,7 @@ export default async function ProductsPage() {
               <CategoryIcon
                 src={CATEGORY_ICONS[category.id] ? `/icons/${CATEGORY_ICONS[category.id]}` : ""}
                 fallback={PLATFORM_ICONS[category.id] ?? "📦"}
+                alt={category.name}
                 size={48}
                 className="products-category-icon-img"
               />

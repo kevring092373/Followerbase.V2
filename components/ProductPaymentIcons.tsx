@@ -8,7 +8,7 @@ function IconPayPal() {
   return (
     <img
       src="/icons/PayPal%20Icon.webp"
-      alt=""
+      alt="PayPal"
       width={iconSize}
       height={iconSize}
       className="product-payment-icon-img"

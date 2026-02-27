@@ -44,14 +44,14 @@ export default async function BlogPage() {
                   {post.image.startsWith("/") ? (
                     <Image
                       src={post.image}
-                      alt=""
+                      alt={post.title}
                       width={400}
                       height={220}
                       sizes="(max-width: 640px) 100vw, 400px"
                       className="blog-card-image"
                     />
                   ) : (
-                    <img src={post.image} alt="" className="blog-card-image" />
+                    <img src={post.image} alt={post.title} className="blog-card-image" />
                   )}
                 </div>
               )}

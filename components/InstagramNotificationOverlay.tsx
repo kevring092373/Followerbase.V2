@@ -74,7 +74,7 @@ function useCountUp(visible: boolean, target: number, delayMs: number) {
 function AvatarCircle({ src }: { src: string }) {
   return (
     <span className="ig-overlay-avatar ig-overlay-avatar-img" aria-hidden>
-      <Image src={src} alt="" width={44} height={44} sizes="44px" />
+      <Image src={src} alt="Profilbild" width={44} height={44} sizes="44px" />
     </span>
   );
 }
@@ -125,7 +125,7 @@ function PhoneContent({ visible }: { visible: boolean }) {
           ))}
         </div>
         <div className="home-ig-overlay-tabs" aria-hidden>
-          <Image src={TAB_BAR_IMAGE} alt="" width={280} height={56} sizes="100vw" className="home-ig-overlay-tabs-img" />
+          <Image src={TAB_BAR_IMAGE} alt="Instagram Tab-Leiste" width={280} height={56} sizes="100vw" className="home-ig-overlay-tabs-img" />
         </div>
         </div>
       </div>

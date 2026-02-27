@@ -13,14 +13,14 @@ function QuickAccessIcon({ productSlug }: { productSlug: string }) {
   if (productSlug.startsWith("instagram-")) {
     return (
       <span className="home-quick-card-icon home-quick-card-icon-img">
-        <Image src="/icons/instagram.png" alt="" width={48} height={48} priority sizes="48px" />
+        <Image src="/icons/instagram.png" alt="Instagram" width={48} height={48} priority sizes="48px" />
       </span>
     );
   }
   if (productSlug.startsWith("tiktok-")) {
     return (
       <span className="home-quick-card-icon home-quick-card-icon-img">
-        <Image src="/icons/tiktok.png" alt="" width={48} height={48} priority sizes="48px" />
+        <Image src="/icons/tiktok.png" alt="TikTok" width={48} height={48} priority sizes="48px" />
       </span>
     );
   }
@@ -188,6 +188,7 @@ export default async function HomePage() {
                   <CategoryIcon
                     src={CATEGORY_ICONS[cat.id] ? `/icons/${CATEGORY_ICONS[cat.id]}` : ""}
                     fallback={PLATFORM_ICONS[cat.id] ?? "📦"}
+                    alt={cat.name}
                     size={48}
                     className="home-platform-icon-img"
                   />
