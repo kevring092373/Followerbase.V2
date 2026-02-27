@@ -1,8 +1,17 @@
 /**
- * Server-seitige Blog-Daten: Lesen/Schreiben aus content/blog-posts.json.
+ * Server-seitige Blog-Daten: Bei Supabase aus DB, sonst aus content/blog-posts.json.
+ * Auf Netlify (read-only) wird Supabase verwendet.
  */
 import { promises as fs } from "fs";
 import path from "path";
+import { isSupabaseConfigured } from "@/lib/supabase/server";
+import {
+  getAllPostsSupabase,
+  getPostBySlugSupabase,
+  createPostSupabase,
+  updatePostSupabase,
+  deletePostSupabase,
+} from "./blog-supabase";
 import type { BlogPost } from "./blog";
 
 const BLOG_FILE = path.join(process.cwd(), "content", "blog-posts.json");
@@ -42,6 +51,7 @@ async function writePosts(posts: BlogPost[]): Promise<void> {
 }
 
 export async function getAllPosts(): Promise<BlogPost[]> {
+  if (isSupabaseConfigured()) return getAllPostsSupabase();
   const posts = await readPosts();
   return [...posts].sort((a, b) => {
     const dA = a.date ?? "";
@@ -52,12 +62,15 @@ export async function getAllPosts(): Promise<BlogPost[]> {
 }
 
 export async function getPostBySlug(slug: string): Promise<BlogPost | undefined> {
+  if (isSupabaseConfigured()) {
+    const p = await getPostBySlugSupabase(slug);
+    return p ?? undefined;
+  }
   const posts = await readPosts();
   return posts.find((p) => p.slug === slug);
 }
 
 export async function createPost(input: BlogPost): Promise<BlogPost> {
-  const posts = await readPosts();
   const post: BlogPost = {
     slug: input.slug,
     title: input.title,
@@ -69,6 +82,13 @@ export async function createPost(input: BlogPost): Promise<BlogPost> {
     metaDescription: input.metaDescription,
     image: input.image,
   };
+  if (isSupabaseConfigured()) {
+    const existing = await getPostBySlugSupabase(post.slug);
+    if (existing) throw new Error(`Ein Beitrag mit der URL "${post.slug}" existiert bereits.`);
+    await createPostSupabase(post);
+    return post;
+  }
+  const posts = await readPosts();
   if (posts.some((p) => p.slug === post.slug)) {
     throw new Error(`Ein Beitrag mit der URL "${post.slug}" existiert bereits.`);
   }
@@ -78,6 +98,13 @@ export async function createPost(input: BlogPost): Promise<BlogPost> {
 }
 
 export async function updatePost(slug: string, input: Partial<BlogPost>): Promise<BlogPost> {
+  if (isSupabaseConfigured()) {
+    const existing = await getPostBySlugSupabase(slug);
+    if (!existing) throw new Error("Beitrag nicht gefunden.");
+    const updated: BlogPost = { ...existing, ...input };
+    await updatePostSupabase(slug, updated);
+    return updated;
+  }
   const posts = await readPosts();
   const index = posts.findIndex((p) => p.slug === slug);
   if (index === -1) throw new Error("Beitrag nicht gefunden.");
@@ -91,6 +118,12 @@ export async function updatePost(slug: string, input: Partial<BlogPost>): Promis
 }
 
 export async function deletePost(slug: string): Promise<void> {
+  if (isSupabaseConfigured()) {
+    const existing = await getPostBySlugSupabase(slug);
+    if (!existing) throw new Error("Beitrag nicht gefunden.");
+    await deletePostSupabase(slug);
+    return;
+  }
   const posts = await readPosts();
   const filtered = posts.filter((p) => p.slug !== slug);
   if (filtered.length === posts.length) throw new Error("Beitrag nicht gefunden.");
