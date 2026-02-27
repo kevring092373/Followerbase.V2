@@ -3623,6 +3623,17 @@ button.nav-link {
   padding: 0.75rem 1.25rem;
 }
 
+/* „In den Warenkorb“ auf Produktseiten: immer Akzentfarbe, nicht von Produktbeschreibungs-CSS überschrieben */
+.product-order-row .product-add-btn.btn-primary,
+.product-order-section .btn-primary.product-add-btn {
+  background: var(--accent) !important;
+  color: white !important;
+}
+.product-order-row .product-add-btn.btn-primary:hover,
+.product-order-section .btn-primary.product-add-btn:hover {
+  background: var(--accent-hover) !important;
+}
+
 @media (max-width: 640px) {
   .product-target-input {
     font-size: 16px;
