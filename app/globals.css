@@ -135,6 +135,18 @@ a {
     padding: 1rem 0.75rem;
     max-width: 100%;
   }
+  /* Startseite & Produktseite: kein seitlicher Abstand am main, stattdessen am Container → Hintergründe bis zum Rand */
+  .main-content:has(.home),
+  .main-content:has(.product-page-wrap) {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .home,
+  .product-page-wrap {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+    box-sizing: border-box;
+  }
 }
 
 /* ===== Header ===== */
