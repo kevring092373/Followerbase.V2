@@ -3,7 +3,7 @@ import { ContactForm } from "@/components/ContactForm";
 import { absoluteUrl } from "@/lib/seo";
 
 export const metadata = {
-  title: "Kontakt",
+  title: "Kontakt – Followerbase",
   description:
     "Fragen zu Bestellungen oder Produkten? Schreib uns per Kontaktformular – wir antworten innerhalb von 1–2 Werktagen.",
   openGraph: { title: "Kontakt – Followerbase", description: "Kontaktformular für Anfragen.", url: absoluteUrl("/kontakt"), type: "website" as const },

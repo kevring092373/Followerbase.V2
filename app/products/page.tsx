@@ -9,11 +9,11 @@ import { CategoryIcon } from "@/components/CategoryIcon";
 import { absoluteUrl } from "@/lib/seo";
 
 export const metadata = {
-  title: "Produkte",
+  title: "Produkte – Followerbase",
   description:
     "Follower, Likes und Views für Instagram, TikTok, YouTube, Snapchat, Telegram & mehr. Nach Plattform wählen – faire Preise, schnelle Lieferung.",
   openGraph: {
-    title: "Produkte – Followerbase",
+    title: "Produkte – Followerbase" as const,
     description:
       "Follower, Likes und Views für Instagram, TikTok, YouTube und mehr. Nach Plattform wählen.",
     url: absoluteUrl("/products"),

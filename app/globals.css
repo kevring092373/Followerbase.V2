@@ -418,6 +418,20 @@ a {
   font-size: 0.9375rem;
   font-weight: 500;
   color: var(--text-secondary);
+  text-decoration: none;
+}
+
+/* Header-Links auf allen Seiten ohne Unterstreichung (wie Startseite) */
+.header .nav-link,
+.header a.nav-link,
+.mobile-menu-panel .mobile-menu-link {
+  text-decoration: none !important;
+}
+.header .nav-link:hover,
+.header .nav-link:focus,
+.mobile-menu-panel .mobile-menu-link:hover,
+.mobile-menu-panel .mobile-menu-link:focus {
+  text-decoration: none !important;
 }
 
 .nav-link:hover {

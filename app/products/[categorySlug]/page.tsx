@@ -20,7 +20,7 @@ export const revalidate = 3600;
 export function generateMetadata({ params }: Props) {
   const category = categories.find((c) => c.slug === params.categorySlug);
   if (!category) return { title: "Kategorie" };
-  const title = `${category.name} – Follower, Likes & Views kaufen`;
+  const title = `${category.name} – Follower, Likes & Views kaufen – Followerbase`;
   const description = truncateDescription(
     `${category.name} – Follower, Likes und Views kaufen. Faire Preise, schnelle Lieferung bei Followerbase. Jetzt bestellen.`
   );
@@ -28,8 +28,8 @@ export function generateMetadata({ params }: Props) {
   return {
     title,
     description,
-    openGraph: { title: `${title} – Followerbase`, description, url, type: "website" as const },
-    twitter: { card: "summary" as const, title: `${title} – Followerbase`, description },
+    openGraph: { title, description, url, type: "website" as const },
+    twitter: { card: "summary" as const, title, description },
     alternates: { canonical: url },
   };
 }

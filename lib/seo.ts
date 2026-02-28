@@ -88,6 +88,19 @@ export function prepareProductDescriptionHtml(html: string): { styleContent: str
     styleContent += match[1].trim() + "\n";
   }
   styleContent = scopeDescriptionCss(styleContent.trim());
-  const htmlContent = stripDocumentHeadAndViewport(html);
+  // Damit .faq-item[open] (natives <details>) wie .faq-item.open aussieht
+  const scopeEscaped = PRODUCT_DESC_SCOPE.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  styleContent = styleContent.replace(
+    new RegExp(`${scopeEscaped} \\.faq-item\\.open`, "g"),
+    `${PRODUCT_DESC_SCOPE} .faq-item.open, ${PRODUCT_DESC_SCOPE} .faq-item[open]`
+  );
+
+  let htmlContent = stripDocumentHeadAndViewport(html);
+  // FAQ: div+button → details+summary, dann funktioniert Öffnen ohne JS (wie im Original-HTML)
+  htmlContent = htmlContent.replace(
+    /<div\s+class=["']faq-item["'][^>]*>\s*<button\s+class=["']faq-question["'][^>]*>([\s\S]*?)<\/button>\s*<div\s+class=["']faq-answer["'][^>]*>([\s\S]*?)<\/div>\s*<\/div>/gi,
+    "<details class=\"faq-item\"><summary class=\"faq-question\">$1</summary><div class=\"faq-answer\">$2</div></details>"
+  );
+
   return { styleContent, htmlContent };
 }

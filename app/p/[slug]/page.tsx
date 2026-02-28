@@ -10,7 +10,10 @@ type Props = { params: { slug: string } };
 export async function generateMetadata({ params }: Props) {
   const page = await getPageBySlug(params.slug);
   if (!page) return { title: "Seite" };
-  const title = page.metaTitle ?? page.title ?? page.slug;
+  // Meta-Titel unverändert nutzen, sonst einmal „ – Followerbase“ anhängen
+  const title = page.metaTitle?.trim()
+    ? page.metaTitle.trim()
+    : `${page.title ?? page.slug} – Followerbase`;
   const rawDesc = page.metaDescription ?? page.content?.replace(/<[^>]+>/g, "").slice(0, 200) ?? "";
   const description = truncateDescription(rawDesc);
   const url = absoluteUrl(`/p/${page.slug}`);
@@ -18,12 +21,12 @@ export async function generateMetadata({ params }: Props) {
     title,
     description: description || undefined,
     openGraph: {
-      title: `${title} – Followerbase`,
+      title,
       description: description || undefined,
       url,
       type: "website",
     },
-    twitter: { card: "summary", title: `${title} – Followerbase`, description: description || undefined },
+    twitter: { card: "summary", title, description: description || undefined },
     alternates: { canonical: url },
   };
 }

@@ -3,11 +3,11 @@ import type { Metadata } from "next";
 import { absoluteUrl } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "Bestellung verfolgen",
+  title: "Bestellung verfolgen – Followerbase",
   description:
     "Bestellstatus prüfen: Gib deine Bestellnummer ein und sieh den aktuellen Stand deiner Lieferung.",
   openGraph: {
-    title: "Bestellung verfolgen – Followerbase",
+    title: "Bestellung verfolgen – Followerbase" as const,
     description: "Status deiner Bestellung mit Bestellnummer prüfen.",
     url: absoluteUrl("/bestellung-verfolgen"),
     type: "website",

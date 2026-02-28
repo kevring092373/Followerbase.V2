@@ -6,7 +6,7 @@ import { getAllPosts } from "@/lib/blog-data";
 import { absoluteUrl } from "@/lib/seo";
 
 export const metadata = {
-  title: "Sitemap",
+  title: "Sitemap – Followerbase",
   description:
     "Übersicht aller Seiten von Followerbase: Produkte, Kategorien, Blog und rechtliche Seiten.",
   openGraph: { title: "Sitemap – Followerbase", url: absoluteUrl("/seiten"), type: "website" as const },

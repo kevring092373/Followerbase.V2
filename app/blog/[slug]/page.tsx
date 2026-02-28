@@ -13,7 +13,10 @@ type Props = { params: { slug: string } };
 export async function generateMetadata({ params }: Props) {
   const post = await getPostBySlug(params.slug);
   if (!post) return { title: "Beitrag" };
-  const title = post.metaTitle ?? post.title ?? post.slug;
+  // Supabase-Meta-Titel unverändert nutzen, sonst einmal „ – Followerbase“ anhängen
+  const title = post.metaTitle?.trim()
+    ? post.metaTitle.trim()
+    : `${post.title ?? post.slug} – Followerbase`;
   const rawDesc = post.metaDescription ?? post.excerpt ?? post.content?.replace(/<[^>]+>/g, "").slice(0, 200) ?? "";
   const description = truncateDescription(rawDesc);
   const url = absoluteUrl(`/blog/${post.slug}`);
@@ -21,12 +24,12 @@ export async function generateMetadata({ params }: Props) {
     title,
     description: description || undefined,
     openGraph: {
-      title: `${title} – Followerbase`,
+      title,
       description: description || undefined,
       url,
       type: "article",
     },
-    twitter: { card: "summary", title: `${title} – Followerbase`, description: description || undefined },
+    twitter: { card: "summary", title, description: description || undefined },
     alternates: { canonical: url },
   };
 }

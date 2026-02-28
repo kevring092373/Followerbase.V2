@@ -8,7 +8,7 @@ import { BlogArticleList } from "@/components/BlogArticleList";
 export const revalidate = 3600;
 
 export const metadata = {
-  title: "Blog",
+  title: "Blog – Followerbase",
   description:
     "Tipps, Anleitungen und News zu Followern, Likes und Reichweite für Instagram, TikTok & mehr.",
   openGraph: {

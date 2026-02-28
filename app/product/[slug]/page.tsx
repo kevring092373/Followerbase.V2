@@ -11,7 +11,7 @@ import { ProductCarousel } from "@/components/ProductCarousel";
 import { ShareButtons } from "@/components/ShareButtons";
 import { ProductDescriptionSection } from "@/components/ProductDescriptionSection";
 import { ProductPaymentIcons } from "@/components/ProductPaymentIcons";
-import { absoluteUrl, truncateDescription } from "@/lib/seo";
+import { absoluteUrl, truncateDescription, SITE_NAME } from "@/lib/seo";
 import { categories } from "@/lib/categories";
 
 type Props = { params: { slug: string } };
@@ -36,23 +36,29 @@ function productMetaTitle(name: string, metaTitle?: string): string {
 export async function generateMetadata({ params }: Props) {
   const product = await getProductBySlug(params.slug);
   if (!product) return { title: "Produkt" };
-  const title = productMetaTitle(product.name, product.metaTitle);
+  // Supabase-Meta-Titel unverändert nutzen, sonst einmal „ – Followerbase“ anhängen
+  const title = product.metaTitle?.trim()
+    ? product.metaTitle.trim()
+    : `${productMetaTitle(product.name, product.metaTitle)} – Followerbase`;
   const defaultDesc = `${product.name} kaufen bei Followerbase – faire Preise, schnelle Lieferung. Qualitätsgarantie & sicherer Checkout.`;
   const rawDesc = product.metaDescription ?? defaultDesc;
   const description = truncateDescription(rawDesc);
   const url = absoluteUrl(`/product/${product.slug}`);
   const image = product.image?.startsWith("/") ? absoluteUrl(product.image) : undefined;
+  const ogImage = image
+    ? { url: image, width: 400, height: 400, alt: product.name }
+    : { url: absoluteUrl("/icons/Followerbase%20Logo.png"), width: 1200, height: 630, alt: SITE_NAME };
   return {
     title,
     description,
     openGraph: {
-      title: `${title} – Followerbase`,
+      title,
       description,
       url,
       type: "website",
-      images: image ? [{ url: image, width: 400, height: 400, alt: product.name }] : undefined,
+      images: [ogImage],
     },
-    twitter: { card: "summary", title: `${title} – Followerbase`, description },
+    twitter: { card: "summary", title, description },
     alternates: { canonical: url },
   };
 }
