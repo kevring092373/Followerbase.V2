@@ -364,7 +364,7 @@ export default async function HomePage() {
           <div className="cta-section">
             <h2>Entdecke diskretes und sicheres Social Media Wachstum</h2>
             <p>Entdecken Sie, wie Followerbase Sie diskret und sicher auf Ihrem Weg zu mehr Social Proof und Reichweite unterstützen kann. Wir verstehen die Bedeutung eines authentischen Online-Auftritts und bieten Lösungen, die Ihre Präsenz stärken, ohne die Integrität Ihres Accounts zu gefährden.</p>
-            <Link href="/products" className="cta-btn">Jetzt entdecken →</Link>
+            <a href="/products" className="cta-btn">Jetzt entdecken →</a>
           </div>
         </section>
       </div>
