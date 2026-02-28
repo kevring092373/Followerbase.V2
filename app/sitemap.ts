@@ -56,12 +56,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   try {
     const posts = await getAllPosts();
-    blogPages = posts.map((post) => ({
-      url: absoluteUrl(`/blog/${post.slug}`),
-      lastModified: post.date ? new Date(post.date) : now,
-      changeFrequency: "monthly" as const,
-      priority: 0.6,
-    }));
+    blogPages = posts.map((post) => {
+      const date = post.date ? new Date(post.date) : null;
+      const lastModified =
+        date && !Number.isNaN(date.getTime()) ? date : now;
+      return {
+        url: absoluteUrl(`/blog/${post.slug}`),
+        lastModified,
+        changeFrequency: "monthly" as const,
+        priority: 0.6,
+      };
+    });
   } catch {
     // Blog optional
   }
