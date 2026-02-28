@@ -141,6 +141,10 @@ a {
     padding-left: 0;
     padding-right: 0;
   }
+  /* Startseite: kein Abstand nach oben → Hero-Hintergrund stößt direkt an den Header */
+  .main-content:has(.home) {
+    padding-top: 0;
+  }
   .home,
   .product-page-wrap {
     padding-left: 0.75rem;
