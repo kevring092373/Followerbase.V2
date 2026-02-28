@@ -1,7 +1,6 @@
 /**
  * Blog-Beitrag: Gesamte Seite = eingegebener HTML-Code (1:1 ausgegeben) + Autor-Box.
  */
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getPostBySlug, getAllPosts } from "@/lib/blog-data";
 import { absoluteUrl, truncateDescription, transformFaqToDetailsSummary } from "@/lib/seo";
@@ -51,10 +50,10 @@ export default async function BlogPostPage({ params }: Props) {
   const blogUrl = absoluteUrl(`/blog/${post.slug}`);
 
   return (
-    <>
-      <Link href="/blog" className="blog-back">
+    <div className="blog-post-page">
+      <a href="/blog" className="blog-back">
         ← Blog
-      </Link>
+      </a>
       <ShareButtons
         url={blogUrl}
         title={postTitle}
@@ -69,10 +68,10 @@ export default async function BlogPostPage({ params }: Props) {
       />
       <BlogAuthor />
       <div className="blog-back-wrap">
-        <Link href="/blog" className="blog-back-bottom" aria-label="Zurück zur Blog-Übersicht">
-          <span className="blog-back-bottom-text">← Zurück zum Blog</span>
-        </Link>
+        <a href="/blog" className="blog-back-bottom" aria-label="Zurück zur Blog-Übersicht">
+          ← Zurück zum Blog
+        </a>
       </div>
-    </>
+    </div>
   );
 }

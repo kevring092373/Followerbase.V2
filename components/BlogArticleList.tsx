@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Link from "next/link";
 import Image from "next/image";
 import type { BlogPost } from "@/lib/blog";
 
@@ -44,7 +43,7 @@ export function BlogArticleList({ posts }: Props) {
       <div className="blog-list blog-list--articles">
         {filteredPosts.map((post) => (
           <article key={post.slug} className="blog-card blog-card--article card">
-            <Link href={`/blog/${post.slug}`} className="blog-card-link">
+            <a href={`/blog/${post.slug}`} className="blog-card-link">
               {post.image && (
                 <div className="blog-card-image-wrap">
                   {post.image.startsWith("/") ? (
@@ -71,7 +70,7 @@ export function BlogArticleList({ posts }: Props) {
                 )}
                 <span className="blog-card-more">Artikel lesen</span>
               </div>
-            </Link>
+            </a>
           </article>
         ))}
       </div>

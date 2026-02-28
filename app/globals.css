@@ -1523,6 +1523,11 @@ button.nav-link {
   color: var(--brand-primary);
 }
 
+.blog-post-page {
+  max-width: 680px;
+  margin: 0 auto;
+}
+
 .blog-back-wrap {
   margin: 2rem 0 0;
   padding-top: 1.5rem;
@@ -1534,24 +1539,34 @@ button.nav-link {
   padding: 0.6rem 1.25rem;
   font-size: 0.9375rem;
   font-weight: 500;
-  color: var(--text-primary) !important;
+  color: var(--text-primary);
+  -webkit-text-fill-color: var(--text-primary);
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius-full);
-  text-decoration: none !important;
+  text-decoration: none;
   transition: color var(--transition-fast), background var(--transition-fast), border-color var(--transition-fast);
 }
 
 .blog-back-bottom:hover {
-  color: var(--brand-primary) !important;
+  color: var(--brand-primary);
+  -webkit-text-fill-color: var(--brand-primary);
   background: rgba(138, 85, 238, 0.06);
   border-color: rgba(138, 85, 238, 0.25);
 }
 
-.blog-back-bottom-text {
-  color: inherit;
-  font: inherit;
-  visibility: visible;
+/* Hohe Spezifität: Text des „Zurück zum Blog“-Buttons immer sichtbar */
+.blog-post-page .blog-back-wrap .blog-back-bottom {
+  color: var(--text-primary);
+  -webkit-text-fill-color: var(--text-primary);
+  opacity: 1;
+  font-size: 0.9375rem;
+  line-height: 1.4;
+}
+
+.blog-post-page .blog-back-wrap .blog-back-bottom:hover {
+  color: var(--brand-primary);
+  -webkit-text-fill-color: var(--brand-primary);
 }
 
 .blog-post-header {
