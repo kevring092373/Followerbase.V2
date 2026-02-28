@@ -9,9 +9,9 @@ import { getProductDisplayName } from "@/lib/product-image-alt";
 import { ProductOrderBlock } from "@/components/ProductOrderBlock";
 import { ProductCarousel } from "@/components/ProductCarousel";
 import { ShareButtons } from "@/components/ShareButtons";
-import { ProductDescriptionFaqInit } from "@/components/ProductDescriptionFaqInit";
+import { ProductDescriptionSection } from "@/components/ProductDescriptionSection";
 import { ProductPaymentIcons } from "@/components/ProductPaymentIcons";
-import { absoluteUrl, truncateDescription, prepareProductDescriptionHtml } from "@/lib/seo";
+import { absoluteUrl, truncateDescription } from "@/lib/seo";
 import { categories } from "@/lib/categories";
 
 type Props = { params: { slug: string } };
@@ -178,23 +178,9 @@ export default async function ProductPage({ params }: Props) {
         <ProductCarousel products={otherProducts} title={carouselTitle} />
       )}
 
-      {product.description && (() => {
-        const { styleContent, htmlContent } = prepareProductDescriptionHtml(product.description);
-        return (
-          <section className="product-description-section">
-            <div className="product-description-inner">
-              {styleContent ? (
-                <style dangerouslySetInnerHTML={{ __html: styleContent }} />
-              ) : null}
-              <div
-                className="product-description-html"
-                dangerouslySetInnerHTML={{ __html: htmlContent }}
-              />
-            </div>
-            <ProductDescriptionFaqInit />
-          </section>
-        );
-      })()}
+      {product.description ? (
+        <ProductDescriptionSection html={product.description} />
+      ) : null}
     </div>
   );
 }

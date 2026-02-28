@@ -5092,6 +5092,22 @@ button.nav-link {
   padding: 0 1.125rem 1rem;
 }
 
+/* Startseite #faqs: weiche Höhen-Animation beim Öffnen (Grid statt max-height) */
+#faqs .faq-answer {
+  display: grid;
+  grid-template-rows: 0fr;
+  max-height: none;
+  transition: grid-template-rows 0.3s var(--ease), padding 0.3s var(--ease);
+}
+#faqs .faq-answer > * {
+  min-height: 0;
+  overflow: hidden;
+}
+#faqs .faq-item[open] .faq-answer {
+  grid-template-rows: 1fr;
+  max-height: none;
+}
+
 .faq-answer p {
   font-size: 0.9rem;
   color: var(--text-secondary);
