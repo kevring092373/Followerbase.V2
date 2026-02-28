@@ -121,3 +121,20 @@ export function transformFaqToDetailsSummary(html: string): string {
     "<details class=\"faq-item\"><summary class=\"faq-question\">$1</summary><div class=\"faq-answer\">$2</div></details>"
   );
 }
+
+/**
+ * Ersetzt in Blog-HTML href="#" bei Links mit class="cta-btn" durch href="/products",
+ * damit der Button „Jetzt entdecken“ zur Produktübersicht führt.
+ */
+export function fixBlogCtaLinks(html: string): string {
+  if (!html || !html.trim()) return html;
+  return html.replace(
+    /<a\s+([^>]*?)href=["']#["']([^>]*?)>/gi,
+    (match, before, after) => {
+      if (/\bclass=["'][^"']*cta-btn[^"']*["']/.test(before + after)) {
+        return `<a ${before}href="/products"${after}>`;
+      }
+      return match;
+    }
+  );
+}

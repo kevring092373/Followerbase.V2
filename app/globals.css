@@ -2810,6 +2810,21 @@ button.nav-link {
   margin-top: 0.5rem;
 }
 
+/* CTA-Button im Blog-Beitrag („Jetzt entdecken“): Link funktioniert, Text sichtbar */
+.blog-post-page .blog-page-html .cta-btn,
+.blog-page-html .cta-btn {
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+  text-decoration: none !important;
+}
+
+.blog-post-page .blog-page-html .cta-btn:hover,
+.blog-page-html .cta-btn:hover {
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+  text-decoration: none !important;
+}
+
 /* ===== Footer ===== */
 .footer {
   margin-top: auto;
