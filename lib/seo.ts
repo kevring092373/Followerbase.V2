@@ -96,11 +96,16 @@ export function prepareProductDescriptionHtml(html: string): { styleContent: str
   );
 
   let htmlContent = stripDocumentHeadAndViewport(html);
-  // FAQ: div+button → details+summary, dann funktioniert Öffnen ohne JS (wie im Original-HTML)
-  htmlContent = htmlContent.replace(
+  htmlContent = transformFaqToDetailsSummary(htmlContent);
+
+  return { styleContent, htmlContent };
+}
+
+/** FAQ: div+button → details+summary, damit Öffnen ohne JS funktioniert (z. B. Blog, Produktbeschreibung). */
+export function transformFaqToDetailsSummary(html: string): string {
+  if (!html || !html.trim()) return html;
+  return html.replace(
     /<div\s+class=["']faq-item["'][^>]*>\s*<button\s+class=["']faq-question["'][^>]*>([\s\S]*?)<\/button>\s*<div\s+class=["']faq-answer["'][^>]*>([\s\S]*?)<\/div>\s*<\/div>/gi,
     "<details class=\"faq-item\"><summary class=\"faq-question\">$1</summary><div class=\"faq-answer\">$2</div></details>"
   );
-
-  return { styleContent, htmlContent };
 }
