@@ -65,6 +65,11 @@ export default async function BlogPostPage({ params }: Props) {
         }}
       />
       <BlogAuthor />
+      <p className="blog-back-wrap">
+        <Link href="/blog" className="blog-back blog-back-bottom">
+          ← Zurück zum Blog
+        </Link>
+      </p>
     </>
   );
 }
