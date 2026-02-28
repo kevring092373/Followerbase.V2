@@ -5106,12 +5106,13 @@ button.nav-link {
   padding: 0 1.125rem 1rem;
 }
 
-/* Startseite #faqs: weiche Höhen-Animation beim Öffnen (Grid statt max-height) */
+/* Startseite #faqs: weiche Höhen-Animation und sauberes Erscheinungsbild beim Öffnen */
 #faqs .faq-answer {
   display: grid;
   grid-template-rows: 0fr;
   max-height: none;
-  transition: grid-template-rows 0.3s var(--ease), padding 0.3s var(--ease);
+  padding: 0 1.125rem;
+  transition: grid-template-rows 0.35s var(--ease), padding 0.35s var(--ease);
 }
 #faqs .faq-answer > * {
   min-height: 0;
@@ -5120,6 +5121,11 @@ button.nav-link {
 #faqs .faq-item[open] .faq-answer {
   grid-template-rows: 1fr;
   max-height: none;
+  padding: 1rem 1.125rem 1.25rem;
+  border-top: 1px solid var(--border);
+}
+#faqs .faq-answer p {
+  padding-top: 0.125rem;
 }
 
 .faq-answer p {

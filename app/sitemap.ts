@@ -29,7 +29,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: absoluteUrl("/agb"), lastModified: now, changeFrequency: "monthly", priority: 0.3 },
     { url: absoluteUrl("/kontakt"), lastModified: now, changeFrequency: "monthly", priority: 0.5 },
     { url: absoluteUrl("/widerrufsbelehrung"), lastModified: now, changeFrequency: "monthly", priority: 0.3 },
-    { url: absoluteUrl("/seiten"), lastModified: now, changeFrequency: "monthly", priority: 0.4 },
   ];
 
   const categoryPages: MetadataRoute.Sitemap = categories.map((cat) => ({

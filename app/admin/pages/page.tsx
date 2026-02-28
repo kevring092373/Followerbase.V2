@@ -11,7 +11,6 @@ const STATIC_PAGES: { path: string; label: string }[] = [
   { path: "/", label: "Start" },
   { path: "/products", label: "Produktübersicht" },
   { path: "/blog", label: "Blog" },
-  { path: "/seiten", label: "Sitemap / Seiten" },
   { path: "/bestellung-verfolgen", label: "Bestellung verfolgen" },
   { path: "/instagram-profilbild", label: "Instagram-Profilbild" },
   { path: "/impressum", label: "Impressum" },
