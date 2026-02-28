@@ -68,9 +68,11 @@ export default async function BlogPostPage({ params }: Props) {
       />
       <BlogAuthor />
       <div className="blog-back-wrap">
-        <a href="/blog" className="blog-back-bottom" aria-label="Zurück zur Blog-Übersicht">
-          ← Zurück zum Blog
-        </a>
+        <form action="/blog" method="get" className="blog-back-form">
+          <button type="submit" className="blog-back-bottom">
+            ← Zurück zum Blog
+          </button>
+        </form>
       </div>
     </div>
   );

@@ -1534,39 +1534,31 @@ button.nav-link {
   border-top: 1px solid var(--border);
 }
 
+.blog-back-form {
+  margin: 0;
+  padding: 0;
+  display: inline-block;
+}
+
+/* Echter Button – kein <a>, damit kein Link-Style den Text versteckt */
 .blog-back-bottom {
   display: inline-block;
   padding: 0.6rem 1.25rem;
   font-size: 0.9375rem;
   font-weight: 500;
+  font-family: inherit;
   color: var(--text-primary);
-  -webkit-text-fill-color: var(--text-primary);
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius-full);
-  text-decoration: none;
+  cursor: pointer;
   transition: color var(--transition-fast), background var(--transition-fast), border-color var(--transition-fast);
 }
 
 .blog-back-bottom:hover {
   color: var(--brand-primary);
-  -webkit-text-fill-color: var(--brand-primary);
   background: rgba(138, 85, 238, 0.06);
   border-color: rgba(138, 85, 238, 0.25);
-}
-
-/* Hohe Spezifität: Text des „Zurück zum Blog“-Buttons immer sichtbar */
-.blog-post-page .blog-back-wrap .blog-back-bottom {
-  color: var(--text-primary);
-  -webkit-text-fill-color: var(--text-primary);
-  opacity: 1;
-  font-size: 0.9375rem;
-  line-height: 1.4;
-}
-
-.blog-post-page .blog-back-wrap .blog-back-bottom:hover {
-  color: var(--brand-primary);
-  -webkit-text-fill-color: var(--brand-primary);
 }
 
 .blog-post-header {
