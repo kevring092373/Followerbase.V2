@@ -69,7 +69,7 @@ function scopeDescriptionCss(css: string): string {
     if (/^\d+%$|^from$|^to$/i.test(t)) return space + sel + "{";
     const prefixed = t
       .split(",")
-      .map((s) => `${PRODUCT_DESC_SCOPE} ${s.trim()}`)
+      .map((s: string) => `${PRODUCT_DESC_SCOPE} ${s.trim()}`)
       .join(", ");
     return space + prefixed + " {";
   });
