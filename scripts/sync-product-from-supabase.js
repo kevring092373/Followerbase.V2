@@ -4,6 +4,7 @@
  *
  * Aufruf: node scripts/sync-product-from-supabase.js <slug>
  * z.B. node scripts/sync-product-from-supabase.js tiktok-follower-kaufen
+ *     node scripts/sync-product-from-supabase.js tiktok-views-kaufen
  *
  * Erfordert .env.local mit NEXT_PUBLIC_SUPABASE_URL und SUPABASE_SERVICE_ROLE_KEY
  */
