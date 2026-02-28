@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getProductBySlug, getProductImageAlt, getAllProducts } from "@/lib/products-data";
+import { getProductDisplayName } from "@/lib/product-image-alt";
 import { ProductOrderBlock } from "@/components/ProductOrderBlock";
 import { ProductCarousel } from "@/components/ProductCarousel";
 import { ShareButtons } from "@/components/ShareButtons";
@@ -115,7 +116,7 @@ export default async function ProductPage({ params }: Props) {
       </nav>
 
       <header className="product-page-header">
-        <h1 className="product-title product-title-page">{product.name}</h1>
+        <h1 className="product-title product-title-page">{getProductDisplayName(product.name)}</h1>
         {product.articleNumber && (
           <p className="product-article-number" aria-label="Artikelnummer">
             Artikelnummer: {product.articleNumber}
