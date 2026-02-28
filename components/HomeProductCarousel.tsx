@@ -68,6 +68,8 @@ export function HomeProductCarousel({ products, title = "Beliebte Produkte" }: H
                           src={product.image}
                           alt={getProductImageAlt(product.image, product.name)}
                           className="home-product-carousel-card-img"
+                          loading="lazy"
+                          decoding="async"
                         />
                       )
                     ) : (

@@ -77,7 +77,7 @@ export default async function CategoryPage({ params }: Props) {
                     </div>
                   ) : (
                     <div className="category-card-thumb category-card-thumb-img">
-                      <img src={product.image} alt={getProductImageAlt(product.image, product.name)} className="category-card-thumb-img-inner" />
+                      <img src={product.image} alt={getProductImageAlt(product.image, product.name)} className="category-card-thumb-img-inner" loading="lazy" decoding="async" />
                     </div>
                   )
                 ) : (

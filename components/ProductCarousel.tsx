@@ -54,7 +54,7 @@ export function ProductCarousel({ products, title = "Weitere Produkte" }: Produc
                       product.image.startsWith("/") ? (
                         <Image src={product.image} alt={getProductImageAlt(product.image, product.name)} width={120} height={120} sizes="120px" className="product-carousel-card-img" />
                       ) : (
-                        <img src={product.image} alt={getProductImageAlt(product.image, product.name)} className="product-carousel-card-img" />
+                        <img src={product.image} alt={getProductImageAlt(product.image, product.name)} className="product-carousel-card-img" loading="lazy" decoding="async" />
                       )
                     ) : (
                       <span className="product-carousel-card-placeholder">Bild</span>

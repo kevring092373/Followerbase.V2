@@ -9,6 +9,7 @@ import { getProductDisplayName } from "@/lib/product-image-alt";
 import { ProductOrderBlock } from "@/components/ProductOrderBlock";
 import { ProductCarousel } from "@/components/ProductCarousel";
 import { ShareButtons } from "@/components/ShareButtons";
+import { ProductDescriptionFaqInit } from "@/components/ProductDescriptionFaqInit";
 import { ProductPaymentIcons } from "@/components/ProductPaymentIcons";
 import { absoluteUrl, truncateDescription, prepareProductDescriptionHtml } from "@/lib/seo";
 import { categories } from "@/lib/categories";
@@ -152,9 +153,10 @@ export default async function ProductPage({ params }: Props) {
                 height={260}
                 sizes="(max-width: 768px) 220px, 260px"
                 className="product-image-img"
+                priority
               />
             ) : (
-              <img src={product.image} alt={getProductImageAlt(product.image, product.name)} className="product-image-img" />
+              <img src={product.image} alt={getProductImageAlt(product.image, product.name)} className="product-image-img" decoding="async" />
             )
           ) : (
             <div className="product-image-placeholder product-image-placeholder--small" aria-hidden>
@@ -189,6 +191,7 @@ export default async function ProductPage({ params }: Props) {
                 dangerouslySetInnerHTML={{ __html: htmlContent }}
               />
             </div>
+            <ProductDescriptionFaqInit />
           </section>
         );
       })()}
