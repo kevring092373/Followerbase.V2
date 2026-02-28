@@ -40,11 +40,15 @@ export type FetchProfilePicResult =
     }
   | { ok: false; error: string };
 
-/** Bild von URL abrufen und als Data-URL (base64) zurückgeben. */
+/** Bild von URL abrufen und als Data-URL (base64) zurückgeben. Referer/Origin erhöhen Erfolg bei CDN. */
 async function fetchImageAsDataUrl(imageUrl: string): Promise<string | null> {
   try {
     const res = await fetch(imageUrl, {
-      headers: { "User-Agent": BROWSER_UA },
+      headers: {
+        "User-Agent": BROWSER_UA,
+        Referer: "https://www.instagram.com/",
+        Origin: "https://www.instagram.com",
+      },
       cache: "no-store",
     });
     if (!res.ok) return null;
@@ -64,26 +68,38 @@ const BROWSER_UA =
 const GOOGLEBOT_UA =
   "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)";
 
+const FACEBOOKEXTERNALHIT_UA =
+  "facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)";
+
 function parseProfilePicFromHtml(html: string): string | null {
-  // 1. og:image (doppelte oder einfache Anführungszeichen)
-  const ogMatch = html.match(/<meta\s+property="og:image"\s+content=["']([^"']+)["']/i);
-  if (ogMatch?.[1]?.startsWith("http")) return ogMatch[1];
+  // 1. og:image – property vor content oder content vor property, doppelte/einfache Anführungszeichen
+  const ogMatch =
+    html.match(/<meta\s+property=["']og:image["']\s+content=["']([^"']+)["']/i) ||
+    html.match(/<meta\s+content=["']([^"']+)["']\s+property=["']og:image["']/i);
+  if (ogMatch?.[1]?.startsWith("http")) return ogMatch[1].replace(/&amp;/g, "&");
+  // 1b. og:image:secure_url
+  const secureMatch =
+    html.match(/<meta\s+property=["']og:image:secure_url["']\s+content=["']([^"']+)["']/i) ||
+    html.match(/<meta\s+content=["']([^"']+)["']\s+property=["']og:image:secure_url["']/i);
+  if (secureMatch?.[1]?.startsWith("http")) return secureMatch[1].replace(/&amp;/g, "&");
   // 2. Embedded JSON: profile_pic_url_hd oder profile_pic_url (escaped oder unescaped)
   const hdMatch = html.match(/"profile_pic_url_hd"\s*:\s*"((?:[^"\\]|\\.)*)"/);
-  if (hdMatch?.[1]) return hdMatch[1].replace(/\\u0026/g, "&").replace(/\\\//g, "/");
+  if (hdMatch?.[1]) return hdMatch[1].replace(/\\u0026/g, "&").replace(/\\\//g, "/").replace(/&amp;/g, "&");
   const picMatch = html.match(/"profile_pic_url"\s*:\s*"((?:[^"\\]|\\.)*)"/);
-  if (picMatch?.[1]) return picMatch[1].replace(/\\u0026/g, "&").replace(/\\\//g, "/");
-  // 3. Erstes CDN-Bild das nach Profilbild aussieht (s150x150, s320x320)
-  const cdnMatch = html.match(/"(https:\/\/[^"]*cdninstagram[^"]*(?:s150|s320|s640)[^"]*\.(?:jpg|jpeg|webp)[^"]*)"/);
-  if (cdnMatch?.[1]) return cdnMatch[1].replace(/\\u0026/g, "&").replace(/\\\//g, "/");
+  if (picMatch?.[1]) return picMatch[1].replace(/\\u0026/g, "&").replace(/\\\//g, "/").replace(/&amp;/g, "&");
+  // 3. Erstes CDN-Bild (s150, s320, s640, s1080)
+  const cdnMatch = html.match(/"(https:\/\/[^"]*cdninstagram[^"]*(?:s\d+x\d+|s150|s320|s640|s1080)[^"]*\.(?:jpg|jpeg|webp)[^"]*)"/);
+  if (cdnMatch?.[1]) return cdnMatch[1].replace(/\\u0026/g, "&").replace(/\\\//g, "/").replace(/&amp;/g, "&");
   return null;
 }
 
 function parseFullNameFromHtml(html: string): string | undefined {
-  const ogTitle = html.match(/<meta\s+property="og:title"\s+content="([^"]+)"/i);
+  const ogTitle =
+    html.match(/<meta\s+property=["']og:title["']\s+content=["']([^"']+)["']/i) ||
+    html.match(/<meta\s+content=["']([^"']+)["']\s+property=["']og:title["']/i);
   const title = ogTitle?.[1] || "";
   if (!title) return undefined;
-  return title.replace(/\s*\(@[\w.]+\)\s*$/, "").trim() || undefined;
+  return title.replace(/\s*\(@[\w.]+\)\s*$/, "").trim().replace(/&amp;/g, "&") || undefined;
 }
 
 /**
@@ -307,8 +323,11 @@ export async function fetchInstagramProfilePic(
     };
   }
 
-  // 1. Mit Googlebot-User-Agent (Instagram liefert an Crawler oft volles HTML inkl. og:image)
-  let result: FetchProfilePicResult | null = await fetchWithHttpGet(username, GOOGLEBOT_UA);
+  // 1. Facebookexternalhit (Instagram nutzt ihn für Link-Vorschau – liefert oft og:image)
+  let result: FetchProfilePicResult | null = await fetchWithHttpGet(username, FACEBOOKEXTERNALHIT_UA);
+  if (!result) {
+    result = await fetchWithHttpGet(username, GOOGLEBOT_UA);
+  }
   if (!result) {
     const httpResult = await fetchWithHttpGet(username, BROWSER_UA);
     if (httpResult) result = httpResult;
@@ -324,7 +343,8 @@ export async function fetchInstagramProfilePic(
 
   if (result && result.ok) {
     const dataUrl = await fetchImageAsDataUrl(result.url);
-    if (dataUrl) {
+    // Nur mitsenden wenn klein genug (Server-Action-Payload-Limit), sonst Client lädt über /api/instagram-download
+    if (dataUrl && dataUrl.length < 200_000) {
       return { ...result, imageDataUrl: dataUrl };
     }
     return result;

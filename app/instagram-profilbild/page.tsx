@@ -90,7 +90,10 @@ export default function InstagramProfilbildPage() {
 
   const displayImageUrl = result?.ok ? (result.imageDataUrl ?? fallbackImageUrl) : null;
   const showPlaceholder = result?.ok && !displayImageUrl;
-  const placeholderText = showPlaceholder && !fallbackDone ? "Bild wird geladen…" : "Bild konnte nicht geladen werden.";
+  const placeholderText =
+    showPlaceholder && !fallbackDone
+      ? "Bild wird geladen…"
+      : "Bild konnte nicht geladen werden. Unten „Profil auf Instagram öffnen“ nutzen und Bild dort speichern.";
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
