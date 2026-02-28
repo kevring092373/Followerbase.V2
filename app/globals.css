@@ -1534,18 +1534,24 @@ button.nav-link {
   padding: 0.6rem 1.25rem;
   font-size: 0.9375rem;
   font-weight: 500;
-  color: var(--text-primary);
+  color: var(--text-primary) !important;
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius-full);
-  text-decoration: none;
+  text-decoration: none !important;
   transition: color var(--transition-fast), background var(--transition-fast), border-color var(--transition-fast);
 }
 
 .blog-back-bottom:hover {
-  color: var(--brand-primary);
+  color: var(--brand-primary) !important;
   background: rgba(138, 85, 238, 0.06);
   border-color: rgba(138, 85, 238, 0.25);
+}
+
+.blog-back-bottom-text {
+  color: inherit;
+  font: inherit;
+  visibility: visible;
 }
 
 .blog-post-header {

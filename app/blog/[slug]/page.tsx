@@ -10,6 +10,9 @@ import { BlogAuthor } from "@/components/BlogAuthor";
 
 type Props = { params: { slug: string } };
 
+/** Immer aktuell vom Server laden, damit Inhalt bei Navigation sofort sichtbar ist (nicht erst nach Reload). */
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata({ params }: Props) {
   const post = await getPostBySlug(params.slug);
   if (!post) return { title: "Beitrag" };
@@ -65,11 +68,11 @@ export default async function BlogPostPage({ params }: Props) {
         }}
       />
       <BlogAuthor />
-      <p className="blog-back-wrap">
-        <Link href="/blog" className="blog-back blog-back-bottom">
-          ← Zurück zum Blog
+      <div className="blog-back-wrap">
+        <Link href="/blog" className="blog-back-bottom" aria-label="Zurück zur Blog-Übersicht">
+          <span className="blog-back-bottom-text">← Zurück zum Blog</span>
         </Link>
-      </p>
+      </div>
     </>
   );
 }
