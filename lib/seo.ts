@@ -44,12 +44,13 @@ export function stripDocumentHeadAndViewport(html: string): string {
     .replace(/<meta\s+[^>]*name\s*=\s*["']viewport["'][^>]*\/?>/gi, "")
     .replace(/<head[^>]*>[\s\S]*?<\/head>/gi, "");
   const bodyOpen = /<body[^>]*>/i.exec(out);
-  const bodyClose = out.indexOf("</body>");
-  if (bodyOpen && bodyClose > -1) {
+  const bodyCloseMatch = /<\/body\s*>/i.exec(out);
+  const bodyClose = bodyCloseMatch ? bodyCloseMatch.index : -1;
+  if (bodyOpen && bodyClose > -1 && bodyClose > bodyOpen.index) {
     const start = bodyOpen.index + bodyOpen[0].length;
     out = out.slice(start, bodyClose).trim();
   }
-  out = out.replace(/<body[^>]*>/gi, "").replace(/<\/body>/gi, "");
+  out = out.replace(/<body[^>]*>/gi, "").replace(/<\/body\s*>/gi, "");
   return out.trim();
 }
 
@@ -75,12 +76,21 @@ function scopeDescriptionCss(css: string): string {
   });
 }
 
+/** Entfernt <style>...</style> aus dem HTML, damit sie nicht doppelt erscheinen (Inhalt ist schon in styleContent). */
+function stripStyleTags(html: string): string {
+  if (!html || !html.trim()) return html;
+  return html.replace(/<style[^>]*>[\s\S]*?<\/style>/gi, "").trim();
+}
+
 /**
  * Extrahiert aus vollständigem Dokument-HTML (z. B. Produktbeschreibung aus Supabase)
  * alle <style>-Inhalte (nur innerhalb .product-description-html wirksam) und den Body-Inhalt.
  */
 export function prepareProductDescriptionHtml(html: string): { styleContent: string; htmlContent: string } {
-  if (!html || !html.trim()) return { styleContent: "", htmlContent: "" };
+  if (!html || typeof html !== "string") return { styleContent: "", htmlContent: "" };
+  // Einheitliche Zeilenumbrüche (z. B. aus Supabase/Editor)
+  html = html.replace(/\r\n/g, "\n").replace(/\r/g, "\n").trim();
+  if (!html) return { styleContent: "", htmlContent: "" };
   let styleContent = "";
   let match: RegExpExecArray | null;
   STYLE_REGEX.lastIndex = 0;
@@ -96,6 +106,8 @@ export function prepareProductDescriptionHtml(html: string): { styleContent: str
   );
 
   let htmlContent = stripDocumentHeadAndViewport(html);
+  // <style>-Tags aus dem Anzeige-Inhalt entfernen (bereits in styleContent), verhindert leere Blöcke / Dopplung
+  htmlContent = stripStyleTags(htmlContent);
   htmlContent = transformFaqToDetailsSummary(htmlContent);
 
   return { styleContent, htmlContent };
