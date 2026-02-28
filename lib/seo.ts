@@ -55,9 +55,29 @@ export function stripDocumentHeadAndViewport(html: string): string {
 
 const STYLE_REGEX = /<style[^>]*>([\s\S]*?)<\/style>/gi;
 
+const PRODUCT_DESC_SCOPE = ".product-description-html";
+
+/**
+ * Begrenzt CSS aus der Produktbeschreibung auf den Container .product-description-html.
+ * So behält der Button „In den Warenkorb“ auf allen Produktseiten dieselbe Farbe.
+ */
+function scopeDescriptionCss(css: string): string {
+  if (!css || !css.trim()) return css;
+  return css.replace(/(\s*)([^{]+)\{/g, (_m, space, sel) => {
+    const t = sel.trim();
+    if (t.startsWith("@")) return space + sel + "{";
+    if (/^\d+%$|^from$|^to$/i.test(t)) return space + sel + "{";
+    const prefixed = t
+      .split(",")
+      .map((s) => `${PRODUCT_DESC_SCOPE} ${s.trim()}`)
+      .join(", ");
+    return space + prefixed + " {";
+  });
+}
+
 /**
  * Extrahiert aus vollständigem Dokument-HTML (z. B. Produktbeschreibung aus Supabase)
- * alle <style>-Inhalte und den sichtbaren Body-Inhalt.
+ * alle <style>-Inhalte (nur innerhalb .product-description-html wirksam) und den Body-Inhalt.
  */
 export function prepareProductDescriptionHtml(html: string): { styleContent: string; htmlContent: string } {
   if (!html || !html.trim()) return { styleContent: "", htmlContent: "" };
@@ -67,6 +87,7 @@ export function prepareProductDescriptionHtml(html: string): { styleContent: str
   while ((match = STYLE_REGEX.exec(html)) !== null) {
     styleContent += match[1].trim() + "\n";
   }
+  styleContent = scopeDescriptionCss(styleContent.trim());
   const htmlContent = stripDocumentHeadAndViewport(html);
-  return { styleContent: styleContent.trim(), htmlContent };
+  return { styleContent, htmlContent };
 }
