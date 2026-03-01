@@ -2,6 +2,7 @@
  * Blog-Beitrag: Gesamte Seite = eingegebener HTML-Code (1:1 ausgegeben) + Autor-Box.
  */
 import { notFound } from "next/navigation";
+import Image from "next/image";
 import { getPostBySlug, getAllPosts } from "@/lib/blog-data";
 import { absoluteUrl, truncateDescription, transformFaqToDetailsSummary, fixBlogCtaLinks } from "@/lib/seo";
 import { ShareButtons } from "@/components/ShareButtons";
@@ -60,6 +61,24 @@ export default async function BlogPostPage({ params }: Props) {
         text={post.excerpt ?? undefined}
         className="share-buttons--blog"
       />
+      {post.image && (
+        <div className="blog-post-image-wrap">
+          {post.image.startsWith("/") ? (
+            <Image
+              src={post.image}
+              alt={postTitle}
+              width={1200}
+              height={630}
+              sizes="(max-width: 768px) 100vw, 1200px"
+              className="blog-post-image"
+              priority
+            />
+          ) : (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={post.image} alt={postTitle} className="blog-post-image" />
+          )}
+        </div>
+      )}
       <div
         className="blog-page-html"
         dangerouslySetInnerHTML={{
