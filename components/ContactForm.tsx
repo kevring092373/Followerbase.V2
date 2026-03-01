@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 export function ContactForm() {
   const [name, setName] = useState("");
@@ -97,6 +98,14 @@ export function ContactForm() {
           Nachricht wurde gesendet. Wir melden uns schnellstmöglich.
         </p>
       )}
+
+      <p className="contact-form-datenschutz">
+        Weitere Informationen zur Verarbeitung deiner Daten findest du in unserer{" "}
+        <Link href="/datenschutz" className="contact-form-datenschutz-link">
+          Datenschutzerklärung
+        </Link>
+        .
+      </p>
 
       <button
         type="submit"

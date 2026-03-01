@@ -8,8 +8,7 @@
 | `app/page.tsx` | Startseite (Links zu Produkten) |
 | `app/products/` | Produktübersicht (Links zu allen Produkt-URLs) |
 | `app/product/[slug]/` | Einzelprodukt, z.B. /product/instagram-follower-kaufen |
-| `app/admin/` | Admin-Bereich – nicht von der öffentlichen Seite verlinkt, später eigene URL/Login |
-| `app/admin/products/` | Produktverwaltung |
+| `app/admin/` | Admin-Bereich – Bestellungen; Produkte, Blog und Seiten werden über Supabase bzw. extern gepflegt |
 | `app/admin/orders/` | Bestellübersicht |
 | `app/api/` | API für Frontend und ggf. externes Ausführungssystem |
 | `lib/` | Gemeinsame Typen, später DB/Store-Logik |

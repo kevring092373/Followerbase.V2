@@ -1,5 +1,6 @@
 /**
- * Admin-Übersicht: Produkte & Bestellungen verwalten.
+ * Admin-Übersicht: Bestellungen verwalten.
+ * Produkte, Blog und Seiten werden über Supabase bzw. extern gepflegt.
  */
 import Link from "next/link";
 
@@ -10,7 +11,7 @@ export default function AdminPage() {
         <div>
           <h1 className="heading-hero">Admin</h1>
           <p className="subtitle" style={{ marginBottom: 0 }}>
-            Verwaltung von Produkten und Bestellungen. Ausführung der Bestellungen erfolgt extern.
+            Bestellungen verwalten. Ausführung der Bestellungen erfolgt extern.
           </p>
         </div>
         <Link
@@ -22,27 +23,6 @@ export default function AdminPage() {
         </Link>
       </div>
       <nav style={{ display: "flex", flexDirection: "column", gap: "0.5rem", marginTop: "1.5rem" }}>
-        <Link
-          href="/admin/products"
-          className="card"
-          style={{ display: "block", padding: "1rem 1.25rem", color: "var(--text-primary)" }}
-        >
-          Produkte verwalten
-        </Link>
-        <Link
-          href="/admin/blog"
-          className="card"
-          style={{ display: "block", padding: "1rem 1.25rem", color: "var(--text-primary)" }}
-        >
-          Blog-Beiträge
-        </Link>
-        <Link
-          href="/admin/pages"
-          className="card"
-          style={{ display: "block", padding: "1rem 1.25rem", color: "var(--text-primary)" }}
-        >
-          Seiten verwalten
-        </Link>
         <Link
           href="/admin/orders"
           className="card"

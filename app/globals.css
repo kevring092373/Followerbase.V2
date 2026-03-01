@@ -2685,6 +2685,20 @@ button.nav-link {
   color: var(--text-primary);
 }
 
+.danke-widerruf {
+  font-size: 0.9375rem;
+  color: var(--text-secondary);
+  margin: 0 0 1rem 0;
+}
+
+.danke-widerruf-link {
+  color: var(--brand-primary);
+}
+
+.danke-widerruf-link:hover {
+  text-decoration: underline;
+}
+
 .danke-actions {
   display: flex;
   flex-direction: column;
@@ -3095,6 +3109,20 @@ button.nav-link {
   color: var(--error, #b91c1c);
   background: rgba(185, 28, 28, 0.08);
   border-radius: var(--radius-md);
+}
+
+.contact-form-datenschutz {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+}
+
+.contact-form-datenschutz-link {
+  color: var(--brand-primary);
+}
+
+.contact-form-datenschutz-link:hover {
+  text-decoration: underline;
 }
 
 .contact-form-success {
@@ -6501,6 +6529,13 @@ button.nav-link {
   padding: 1rem;
   background: var(--bg-muted);
   border-radius: var(--radius-sm);
+}
+
+.checkout-datenschutz-hinweis {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-top: 0.5rem;
+  margin-bottom: 0;
 }
 
 .checkout-customer-fields {

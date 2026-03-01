@@ -79,6 +79,11 @@ export default async function BestellungDankePage({ searchParams }: Props) {
         )}
       </div>
 
+      <p className="danke-widerruf">
+        Du hast ein <Link href="/widerrufsbelehrung" className="danke-widerruf-link">Widerrufsrecht</Link> von 14 Tagen.
+        Einzelheiten findest du in unserer Widerrufsbelehrung.
+      </p>
+
       <div className="danke-actions">
         {isUeberweisung && (
           <Link

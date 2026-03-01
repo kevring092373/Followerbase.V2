@@ -349,6 +349,13 @@ function CheckoutContent() {
               </span>
             </label>
           </div>
+          <p className="checkout-datenschutz-hinweis">
+            Unsere{" "}
+            <Link href="/datenschutz" target="_blank" rel="noopener noreferrer" className="checkout-agb-link">
+              Datenschutzerklärung
+            </Link>{" "}
+            findest du hier.
+          </p>
         </section>
 
         {/* Rechts: Produktübersicht + Zahlung */}
