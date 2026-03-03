@@ -4,7 +4,7 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { getPostBySlug, getAllPosts } from "@/lib/blog-data";
-import { absoluteUrl, truncateDescription, transformFaqToDetailsSummary, fixBlogCtaLinks } from "@/lib/seo";
+import { absoluteUrl, truncateDescription, fixBlogCtaLinks } from "@/lib/seo";
 import { ShareButtons } from "@/components/ShareButtons";
 import { BlogAuthor } from "@/components/BlogAuthor";
 
@@ -82,7 +82,7 @@ export default async function BlogPostPage({ params }: Props) {
       <div
         className="blog-page-html"
         dangerouslySetInnerHTML={{
-          __html: transformFaqToDetailsSummary(fixBlogCtaLinks((post.content ?? "").trim() || "")),
+          __html: fixBlogCtaLinks((post.content ?? "").trim() || ""),
         }}
       />
       <BlogAuthor />
