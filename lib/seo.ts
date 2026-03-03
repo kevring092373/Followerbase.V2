@@ -118,7 +118,7 @@ export function transformFaqToDetailsSummary(html: string): string {
   if (!html || !html.trim()) return html;
   return html.replace(
     /<div\s+class=["']faq-item["'][^>]*>\s*<button\s+class=["']faq-question["'][^>]*>([\s\S]*?)<\/button>\s*<div\s+class=["']faq-answer["'][^>]*>([\s\S]*?)<\/div>\s*<\/div>/gi,
-    "<details class=\"faq-item\"><summary class=\"faq-question\">$1</summary><div class=\"faq-answer\">$2</div></details>"
+    "<details class=\"faq-item\"><summary class=\"faq-question\">$1</summary><div class=\"faq-answer\"><div class=\"faq-answer-inner\">$2</div></div></details>"
   );
 }
 

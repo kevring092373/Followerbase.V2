@@ -5271,29 +5271,33 @@ button.nav-link {
   border-radius: 0;
   padding: 1rem 2.5rem 1rem 1.125rem;
 }
+/* max-height-Animation (nicht Grid), damit mehrere direkte Kinder (z. B. mehrere <p>) korrekt untereinander stehen */
 .blog-page-html .faq-answer {
-  display: grid;
-  grid-template-rows: 0fr;
-  max-height: none;
+  max-height: 0;
+  overflow: hidden;
   padding: 0 1.125rem;
-  transition: grid-template-rows 0.35s var(--ease), padding 0.35s var(--ease);
+  transition: max-height 0.4s var(--ease), padding 0.35s var(--ease);
   background: var(--bg-card);
 }
-.blog-page-html .faq-answer > * {
-  min-height: 0;
-  overflow: hidden;
+.blog-page-html .faq-answer .faq-answer-inner {
+  padding-top: 0;
 }
 .blog-page-html .faq-item[open] .faq-answer {
-  grid-template-rows: 1fr;
+  max-height: 1200px;
   padding: 1rem 1.125rem 1.25rem;
   border-top: 1px solid var(--border);
 }
-.blog-page-html .faq-answer p {
+.blog-page-html .faq-answer p,
+.blog-page-html .faq-answer-inner p {
   font-size: 0.9rem;
   color: var(--text-secondary);
   line-height: 1.65;
-  margin: 0;
+  margin: 0 0 0.5rem 0;
   padding-top: 0.125rem;
+}
+.blog-page-html .faq-answer p:last-child,
+.blog-page-html .faq-answer-inner p:last-child {
+  margin-bottom: 0;
 }
 
 .faq-answer p {
