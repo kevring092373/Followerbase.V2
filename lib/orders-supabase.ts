@@ -4,7 +4,7 @@
  */
 import { supabaseServer, isSupabaseConfigured } from "@/lib/supabase/server";
 import type { Order, OrderItem, OrderStatus, PaymentMethod } from "./orders";
-import { ORDER_STATUSES } from "./orders";
+import { ORDER_STATUSES, getOrderTotalCents } from "./orders";
 
 type OrderRow = {
   id: string;
@@ -224,6 +224,13 @@ async function getNextOrderNumberSupabase(): Promise<string> {
 export async function insertOrderSupabase(order: Order): Promise<boolean> {
   if (!isSupabaseConfigured()) return false;
 
+  const totalCents =
+    order.totalCents != null && order.totalCents >= 0
+      ? order.totalCents
+      : order.items?.length
+        ? getOrderTotalCents(order)
+        : null;
+
   const { data: inserted, error: orderError } = await supabaseServer
     .from("orders")
     .insert({
@@ -233,7 +240,7 @@ export async function insertOrderSupabase(order: Order): Promise<boolean> {
       payment_method: order.paymentMethod ?? null,
       paypal_order_id: order.paypalOrderId ?? null,
       seller_note: order.sellerNote ?? null,
-      total_cents: order.totalCents ?? null,
+      total_cents: totalCents,
       customer_email: order.customerEmail ?? null,
       customer_name: order.customerName ?? null,
       customer_phone: order.customerPhone ?? null,

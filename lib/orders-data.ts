@@ -323,13 +323,19 @@ export async function createOrderFromPendingAndRemovePending(
 
   const now = new Date().toISOString();
   const c = pending.customer;
+  const totalCents =
+    pending.totalCents != null && pending.totalCents >= 0
+      ? pending.totalCents
+      : pending.items?.length
+        ? pending.items.reduce((sum, i) => sum + i.priceCents, 0)
+        : undefined;
   const orderPayload: Omit<Order, "orderNumber"> = {
     status: "eingegangen",
     paymentMethod: "paypal",
     paypalOrderId,
     items: pending.items.length ? pending.items : undefined,
     sellerNote: pending.sellerNote,
-    totalCents: pending.totalCents,
+    totalCents,
     createdAt: pending.createdAt,
     updatedAt: now,
     customerEmail: c?.email,
