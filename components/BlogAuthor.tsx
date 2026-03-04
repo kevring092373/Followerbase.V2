@@ -12,7 +12,7 @@ export function BlogAuthor() {
         <div className="blog-author-avatar" aria-hidden>
           <Image
             src={AUTHOR_IMAGE}
-            alt=""
+            alt="Moritz Sachmann"
             width={56}
             height={56}
             sizes="56px"

@@ -32,6 +32,15 @@ export const SITE_NAME = "Followerbase";
 export const DEFAULT_OG_IMAGE_PATH = "/opengraph.png";
 
 /**
+ * Entfernt nur Viewport-Meta-Tags aus HTML (z. B. Blog-Inhalt aus Supabase),
+ * damit nur eine Viewport-Angabe (die der App) existiert. Rest des HTML bleibt unverändert.
+ */
+export function stripViewportFromHtml(html: string): string {
+  if (!html || !html.trim()) return html;
+  return html.replace(/<meta\s+[^>]*name\s*=\s*["']viewport["'][^>]*\/?>/gi, "");
+}
+
+/**
  * Entfernt aus eingebettetem HTML (z. B. Produktbeschreibung) alle head-/viewport-Anteile,
  * damit nur eine Viewport-Angabe (die der App) existiert und SEO-Prüfer keine Duplikate melden.
  */
