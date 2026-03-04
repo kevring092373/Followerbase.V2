@@ -41,7 +41,9 @@ export function BlogArticleList({ posts }: Props) {
         ))}
       </div>
       <div className="blog-list blog-list--articles">
-        {filteredPosts.map((post) => (
+        {filteredPosts.map((post) => {
+          const imageAlt = post.metaTitle ?? post.title ?? post.slug;
+          return (
           <article key={post.slug} className="blog-card blog-card--article card">
             <a href={`/blog/${post.slug}`} className="blog-card-link">
               {post.image && (
@@ -49,14 +51,14 @@ export function BlogArticleList({ posts }: Props) {
                   {post.image.startsWith("/") ? (
                     <Image
                       src={post.image}
-                      alt={post.title}
+                      alt={imageAlt}
                       width={400}
                       height={220}
                       sizes="(max-width: 640px) 100vw, 400px"
                       className="blog-card-image"
                     />
                   ) : (
-                    <img src={post.image} alt={post.title} className="blog-card-image" />
+                    <img src={post.image} alt={imageAlt} className="blog-card-image" />
                   )}
                 </div>
               )}
@@ -72,7 +74,8 @@ export function BlogArticleList({ posts }: Props) {
               </div>
             </a>
           </article>
-        ))}
+          );
+        })}
       </div>
       {filteredPosts.length === 0 && (
         <p className="blog-articles-empty">Keine Beiträge in dieser Kategorie.</p>
