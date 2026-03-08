@@ -50,16 +50,16 @@ async function writeVivaPending(pending: VivaPendingCheckout[]): Promise<void> {
   );
 }
 
+/** Gibt bei Supabase true zurück, wenn der Pending gespeichert wurde; sonst immer true (Datei). */
 export async function addVivaPending(
   vivaOrderCode: number,
   items: OrderItem[],
   totalCents: number,
   sellerNote?: string,
   customer?: PendingCheckoutCustomer
-): Promise<void> {
+): Promise<boolean> {
   if (isSupabaseConfigured()) {
-    await addVivaPendingSupabase(vivaOrderCode, items, totalCents, sellerNote, customer);
-    return;
+    return addVivaPendingSupabase(vivaOrderCode, items, totalCents, sellerNote, customer);
   }
   const list = await readVivaPending();
   list.push({
@@ -71,6 +71,7 @@ export async function addVivaPending(
     createdAt: new Date().toISOString(),
   });
   await writeVivaPending(list);
+  return true;
 }
 
 export async function getVivaPendingByOrderCode(

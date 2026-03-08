@@ -2,16 +2,26 @@
 
 import { useCallback, useMemo, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useCart } from "@/context/CartContext";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 
 const PAYPAL_CLIENT_ID = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID ?? "";
 
+const VIVA_ERROR_MESSAGES: Record<string, string> = {
+  viva_missing: "Keine Transaktionsdaten erhalten. Bitte versuche es erneut.",
+  viva_verify: "Die Zahlung konnte nicht bestätigt werden.",
+  viva_order:
+    "Die Zahlung war erfolgreich, aber die Bestellung konnte nicht automatisch angelegt werden. Bitte schreib uns mit deinen Kundendaten und dem Betrag (Kontakt oder info@followerbase.de), wir erledigen den Rest.",
+};
+
 function CheckoutContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { items, sellerNote, itemCount, clearCart, openCart } = useCart();
   const [paypalError, setPaypalError] = useState<string | null>(null);
+  const urlError = searchParams.get("error");
+  const urlErrorMessage = urlError ? VIVA_ERROR_MESSAGES[urlError] : null;
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -219,9 +229,9 @@ function CheckoutContent() {
       </button>
       <h1 className="checkout-title">Kasse</h1>
 
-      {paypalError && (
+      {(paypalError || urlErrorMessage) && (
         <div className="checkout-error-banner" role="alert">
-          {paypalError}
+          {urlErrorMessage ?? paypalError}
         </div>
       )}
 

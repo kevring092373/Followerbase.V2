@@ -50,8 +50,8 @@ export async function addVivaPendingSupabase(
   totalCents: number,
   sellerNote?: string,
   customer?: PendingCheckoutCustomer
-): Promise<void> {
-  if (!isSupabaseConfigured()) return;
+): Promise<boolean> {
+  if (!isSupabaseConfigured()) return false;
 
   const { error } = await supabaseServer.from("viva_pending_checkouts").insert({
     viva_order_code: vivaOrderCode,
@@ -61,7 +61,11 @@ export async function addVivaPendingSupabase(
     customer: customer ?? null,
   });
 
-  if (error) console.error("Supabase addVivaPending:", error.message);
+  if (error) {
+    console.error("Supabase addVivaPending:", error.message);
+    return false;
+  }
+  return true;
 }
 
 export async function getVivaPendingByOrderCodeSupabase(

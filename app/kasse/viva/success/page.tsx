@@ -32,6 +32,11 @@ export default async function VivaSuccessPage({ searchParams }: Props) {
 
   const order = await createOrderFromVivaPendingAndRemove(transaction.orderCode);
   if (!order) {
+    console.error(
+      "Viva Success: Kein Pending-Checkout für orderCode",
+      transaction.orderCode,
+      "- Tabelle viva_pending_checkouts (Migration 003) in Supabase vorhanden und beschreibbar?"
+    );
     redirect("/checkout?error=viva_order");
   }
 

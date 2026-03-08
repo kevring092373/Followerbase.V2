@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
       }
     );
 
-    await addVivaPending(
+    const pendingSaved = await addVivaPending(
       orderCode,
       items,
       totalCents,
@@ -73,6 +73,13 @@ export async function POST(request: NextRequest) {
         country: customer.country ?? undefined,
       }
     );
+    if (!pendingSaved) {
+      console.error("Viva: Pending-Checkout konnte nicht gespeichert werden (z. B. Supabase-Tabelle viva_pending_checkouts prüfen).");
+      return NextResponse.json(
+        { error: "Zahlung konnte vorbereitet werden. Bitte später erneut versuchen oder eine andere Zahlungsart wählen." },
+        { status: 500 }
+      );
+    }
 
     const paymentUrl = getVivaPaymentPageUrl(orderCode);
     return NextResponse.json({ paymentUrl, orderCode });
