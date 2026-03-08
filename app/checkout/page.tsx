@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCart } from "@/context/CartContext";
@@ -496,7 +496,16 @@ export default function CheckoutPage() {
       }}
       deferLoading={!clientId}
     >
-      <CheckoutContent />
+      <Suspense
+        fallback={
+          <div className="checkout-page">
+            <h1 className="checkout-title">Kasse</h1>
+            <p className="checkout-customer-hint">Laden…</p>
+          </div>
+        }
+      >
+        <CheckoutContent />
+      </Suspense>
     </PayPalScriptProvider>
   );
 }
