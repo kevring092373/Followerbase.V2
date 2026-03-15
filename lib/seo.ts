@@ -83,12 +83,17 @@ const PRODUCT_DESC_SCOPE = ".product-description-html";
 function scopeDescriptionCss(css: string): string {
   if (!css || !css.trim()) return css;
   return css.replace(/(\s*)([^{]+)\{/g, (_m, space, sel) => {
-    const t = sel.trim();
-    if (t.startsWith("@")) return space + sel + "{";
-    if (/^\d+%$|^from$|^to$/i.test(t)) return space + sel + "{";
-    const prefixed = t
+    const raw = sel.trim();
+    if (raw.startsWith("@")) return space + sel + "{";
+    if (/^\d+%$|^from$|^to$/i.test(raw)) return space + sel + "{";
+    const prefixed = raw
       .split(",")
-      .map((s: string) => `${PRODUCT_DESC_SCOPE} ${s.trim()}`)
+      .map((s: string) => {
+        const t = s.trim();
+        // Body-Styles aus Supabase auf den Beschreibungs-Container anwenden (nach strip gibt es kein <body> mehr)
+        if (t === "body") return PRODUCT_DESC_SCOPE;
+        return `${PRODUCT_DESC_SCOPE} ${t}`;
+      })
       .join(", ");
     return space + prefixed + " {";
   });
@@ -127,6 +132,7 @@ export function prepareProductDescriptionHtml(html: string): { styleContent: str
   // <style>-Tags aus dem Anzeige-Inhalt entfernen (bereits in styleContent), verhindert leere Blöcke / Dopplung
   htmlContent = stripStyleTags(htmlContent);
   htmlContent = transformFaqToDetailsSummary(htmlContent);
+  htmlContent = fixBlogCtaLinks(htmlContent);
 
   return { styleContent, htmlContent };
 }
