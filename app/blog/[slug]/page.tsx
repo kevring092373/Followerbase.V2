@@ -3,8 +3,10 @@
  */
 import { notFound } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 import { getPostBySlug, getAllPosts } from "@/lib/blog-data";
 import { absoluteUrl, truncateDescription, stripViewportFromHtml } from "@/lib/seo";
+import { BLOG_AUTHOR, getAuthorPagePath } from "@/lib/blog-author";
 import { ShareButtons } from "@/components/ShareButtons";
 import { BlogAuthor } from "@/components/BlogAuthor";
 
@@ -49,9 +51,43 @@ export default async function BlogPostPage({ params }: Props) {
 
   const postTitle = post.metaTitle ?? post.title ?? post.slug;
   const blogUrl = absoluteUrl(`/blog/${post.slug}`);
+  const authorUrl = absoluteUrl(getAuthorPagePath());
+
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: postTitle,
+    ...(post.date && { datePublished: post.date }),
+    author: {
+      "@type": "Person",
+      name: BLOG_AUTHOR.name,
+      url: authorUrl,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "Followerbase",
+      url: absoluteUrl("/"),
+    },
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": blogUrl,
+    },
+  };
+
+  const personSchema = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    name: BLOG_AUTHOR.name,
+    jobTitle: BLOG_AUTHOR.role,
+    description: BLOG_AUTHOR.bio,
+    url: authorUrl,
+    image: absoluteUrl(BLOG_AUTHOR.image),
+  };
 
   return (
     <div className="blog-post-page">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }} />
       <a href="/blog" className="blog-back">
         ← Blog
       </a>
@@ -79,6 +115,9 @@ export default async function BlogPostPage({ params }: Props) {
           )}
         </div>
       )}
+      <p className="blog-post-byline">
+        Von <Link href={getAuthorPagePath()} className="blog-post-byline-link">{BLOG_AUTHOR.name}</Link>
+      </p>
       <div
         className="blog-page-html"
         dangerouslySetInnerHTML={{

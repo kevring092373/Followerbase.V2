@@ -1,29 +1,37 @@
 /**
- * Autor-Box für Blog-Beiträge: Moritz Sachmann
+ * Autor-Box für Blog-Beiträge: Name, Foto, Kurzbiografie, Link zur Autorenseite.
  */
 import Image from "next/image";
-
-const AUTHOR_IMAGE = "/icons/Autor Moritz.webp";
+import Link from "next/link";
+import { BLOG_AUTHOR, getAuthorPagePath } from "@/lib/blog-author";
 
 export function BlogAuthor() {
+  const authorPath = getAuthorPagePath();
   return (
     <aside className="blog-author" aria-label="Autor">
       <div className="blog-author-inner">
         <div className="blog-author-avatar" aria-hidden>
-          <Image
-            src={AUTHOR_IMAGE}
-            alt="Moritz Sachmann"
-            width={56}
-            height={56}
-            sizes="56px"
-            className="blog-author-avatar-img"
-          />
+          <Link href={authorPath}>
+            <Image
+              src={BLOG_AUTHOR.image}
+              alt={BLOG_AUTHOR.name}
+              width={56}
+              height={56}
+              sizes="56px"
+              className="blog-author-avatar-img"
+            />
+          </Link>
         </div>
         <div className="blog-author-text">
-          <p className="blog-author-name">Moritz Sachmann</p>
-          <p className="blog-author-role">Social Media Experte</p>
-          <p className="blog-author-bio">
-            Langjährige Erfahrung mit Reichweitenaufbau und Community-Management für Instagram, TikTok und YouTube. Unterstützt Creator und Marken dabei, organisch und strategisch zu wachsen.
+          <p className="blog-author-name">
+            <Link href={authorPath} className="blog-author-name-link">
+              {BLOG_AUTHOR.name}
+            </Link>
+          </p>
+          <p className="blog-author-role">{BLOG_AUTHOR.role}</p>
+          <p className="blog-author-bio">{BLOG_AUTHOR.bio}</p>
+          <p className="blog-author-page-link">
+            <Link href={authorPath}>Alle Artikel von {BLOG_AUTHOR.name}</Link>
           </p>
         </div>
       </div>
