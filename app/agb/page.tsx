@@ -1,7 +1,7 @@
 export const metadata = {
   title: "AGB – Followerbase",
   description: "Allgemeine Geschäftsbedingungen des Shops.",
-  robots: { index: false, follow: true },
+  robots: { index: true, follow: true },
 };
 
 export default function AGBPage() {

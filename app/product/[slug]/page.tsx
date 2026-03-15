@@ -11,7 +11,7 @@ import { ProductCarousel } from "@/components/ProductCarousel";
 import { ShareButtons } from "@/components/ShareButtons";
 import { ProductDescriptionSection } from "@/components/ProductDescriptionSection";
 import { ProductPaymentIcons } from "@/components/ProductPaymentIcons";
-import { absoluteUrl, truncateDescription, SITE_NAME } from "@/lib/seo";
+import { absoluteUrl, truncateDescription, truncateTitle, SITE_NAME } from "@/lib/seo";
 import { categories } from "@/lib/categories";
 
 type Props = { params: { slug: string } };
@@ -36,11 +36,11 @@ function productMetaTitle(name: string, metaTitle?: string): string {
 export async function generateMetadata({ params }: Props) {
   const product = await getProductBySlug(params.slug);
   if (!product) return { title: "Produkt" };
-  // Supabase-Meta-Titel unverändert nutzen, sonst einmal „ – Followerbase“ anhängen
+  // Eigenen Meta-Titel (Supabase) unverändert; nur den selbst erzeugten Titel auf 60 Zeichen kürzen
   const title = product.metaTitle?.trim()
     ? product.metaTitle.trim()
-    : `${productMetaTitle(product.name, product.metaTitle)} – Followerbase`;
-  const defaultDesc = `${product.name} kaufen bei Followerbase – faire Preise, schnelle Lieferung. Qualitätsgarantie & sicherer Checkout.`;
+    : truncateTitle(`${productMetaTitle(product.name, product.metaTitle)} – Followerbase`);
+  const defaultDesc = `${productMetaTitle(product.name, product.metaTitle)} bei Followerbase – faire Preise, schnelle Lieferung. Qualitätsgarantie & sicherer Checkout.`;
   const rawDesc = product.metaDescription ?? defaultDesc;
   const description = truncateDescription(rawDesc);
   const url = absoluteUrl(`/product/${product.slug}`);

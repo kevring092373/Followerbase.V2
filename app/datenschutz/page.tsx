@@ -1,7 +1,7 @@
 export const metadata = {
   title: "Datenschutz – Followerbase",
   description: "Datenschutzerklärung und Informationen zur Verarbeitung personenbezogener Daten.",
-  robots: { index: false, follow: true },
+  robots: { index: true, follow: true },
 };
 
 export default function DatenschutzPage() {
@@ -13,7 +13,7 @@ export default function DatenschutzPage() {
       </p>
       <div className="legal-content">
         <h2>1. Verantwortlicher</h2>
-        <p>Verantwortlich für die Datenverarbeitung auf dieser Website ist Venus Management GbR, vertreten durch Kevin Ringsdorf, Ulmenweg 15, 51766 Engelskirchen (E-Mail: info@followerbase.de).</p>
+        <p>Verantwortlich für die Datenverarbeitung auf dieser Website ist Venus Management GbR, Ulmenweg 15, 51766 Engelskirchen (E-Mail: info@followerbase.de).</p>
 
         <h2>2. Cookies und lokale Speicherung</h2>
         <p>Wir setzen keine Cookies zu Analyse- oder Werbezwecken. Im lokalen Speicher deines Browsers (localStorage) speichern wir nur: (1) den Warenkorb-Inhalt (ausgewählte Produkte, Mengen und eine optionale Notiz an den Verkäufer), damit dein Einkauf zwischen Besuchen erhalten bleibt; (2) deine Cookie-Einwilligung („Nur notwendige“ oder „Alle akzeptieren“), die du über das Cookie-Banner erteilst. Diese Daten verlassen nicht dein Gerät und werden von uns nicht auf einem Server ausgewertet.</p>

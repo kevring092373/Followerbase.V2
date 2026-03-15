@@ -68,9 +68,7 @@ export default async function HomePage() {
           <div className="home-hero-inner">
             <p className="home-hero-label">Follower, Likes & Views</p>
             <h1 className="home-hero-title">
-              <span className="home-hero-title-gradient">Mehr Reichweite</span>
-              <br />
-              für deine Kanäle
+              Instagram & TikTok Follower kaufen
             </h1>
             <p className="home-hero-sub">
               Instagram, TikTok, YouTube und mehr – schnell, unkompliziert, fairer Preis.

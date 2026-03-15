@@ -4,6 +4,15 @@
  */
 
 const DESCRIPTION_MAX = 160;
+const TITLE_MAX = 60;
+
+/** Meta-Titel auf max. 60 Zeichen kürzen (SEO-empfohlen). */
+export function truncateTitle(text: string | undefined, max = TITLE_MAX): string {
+  if (!text || !text.trim()) return "";
+  const t = text.trim().replace(/\s+/g, " ");
+  if (t.length <= max) return t;
+  return t.slice(0, max - 3).trim() + "...";
+}
 
 export function getBaseUrl(): string {
   const base =

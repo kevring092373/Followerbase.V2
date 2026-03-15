@@ -1,7 +1,7 @@
 export const metadata = {
   title: "Impressum – Followerbase",
   description: "Impressum und Angaben gemäß § 5 TMG.",
-  robots: { index: false, follow: true },
+  robots: { index: true, follow: true },
 };
 
 export default function ImpressumPage() {
@@ -15,8 +15,6 @@ export default function ImpressumPage() {
         <p><strong>Venus Management GbR</strong></p>
         <p>Ulmenweg 15</p>
         <p>51766 Engelskirchen</p>
-        <p style={{ marginTop: "1rem" }}><strong>Vertreten durch</strong></p>
-        <p>Kevin Ringsdorf</p>
         <p style={{ marginTop: "1rem" }}><strong>Kontakt</strong></p>
         <p>E-Mail: info@followerbase.de</p>
         <p>Telefon: 01786 718703</p>
@@ -25,7 +23,7 @@ export default function ImpressumPage() {
         <p style={{ marginTop: "1rem" }}><strong>Umsatzsteuer-ID</strong></p>
         <p>Umsatzsteuer-Identifikationsnummer gemäß § 27a UStG: DE361898179</p>
         <p style={{ marginTop: "1rem" }}><strong>Verantwortlich für den Inhalt</strong></p>
-        <p>Kevin Ringsdorf, Ulmenweg 15, 51766 Engelskirchen</p>
+        <p>Venus Management GbR, Ulmenweg 15, 51766 Engelskirchen</p>
         <p style={{ marginTop: "1.5rem", fontSize: "0.9375rem", color: "var(--text-secondary)" }}>
           Stand 20.02.2026
         </p>
