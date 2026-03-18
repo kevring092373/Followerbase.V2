@@ -4132,6 +4132,32 @@ button.nav-link {
   max-width: 100%;
 }
 
+/* Tabellen im raw-Wrapper (Supabase HTML 1:1) */
+.product-description-raw-html table {
+  width: 100%;
+  height: auto;
+  border-collapse: collapse;
+  border-spacing: 0;
+  table-layout: auto;
+  margin: 1rem 0;
+}
+
+.product-description-raw-html th,
+.product-description-raw-html td {
+  padding: 0.55rem 0.5rem;
+  text-align: left;
+  vertical-align: middle;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  white-space: normal;
+  border: 1px solid var(--border);
+}
+
+.product-description-raw-html th {
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
 /* Tabellen in Produktbeschreibungen (Content aus Editor/Supabase) */
 .product-description-html table {
   width: 100%;
@@ -5707,6 +5733,7 @@ button.nav-link {
   }
 
   /* Raw-Produktcontent: Schritt-Nummer überlagert Text (Pseudo-Element zu hoch). */
+  .product-description-raw-html .step-item::before,
   .product-description-html .step-item::before,
   .blog-page-html .step-item::before {
     top: 1.25rem;
@@ -5714,6 +5741,8 @@ button.nav-link {
   }
   .product-description-html .step-item h4,
   .product-description-html .step-item p,
+  .product-description-raw-html .step-item h4,
+  .product-description-raw-html .step-item p,
   .blog-page-html .step-item h4,
   .blog-page-html .step-item p {
     position: relative;
