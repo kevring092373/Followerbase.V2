@@ -4086,6 +4086,24 @@ button.nav-link {
   overflow-wrap: break-word;
 }
 
+/* Für Raw-Content (Supabase "1:1"): Reset gegen embedded styles */
+.product-description-raw-html * {
+  box-sizing: border-box;
+}
+
+.product-description-raw-html body,
+.product-description-raw-html html {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.product-description-raw-html img,
+.product-description-raw-html table {
+  max-width: 100%;
+}
+
 /* Tabellen in Produktbeschreibungen (Content aus Editor/Supabase) */
 .product-description-html table {
   width: 100%;
@@ -4118,7 +4136,7 @@ button.nav-link {
     width: 100%;
   }
   .product-description-inner {
-    padding: 0;
+    padding: 0 0.75rem;
   }
   .product-description-html {
     font-size: 0.9375rem;
