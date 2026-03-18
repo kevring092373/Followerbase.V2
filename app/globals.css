@@ -5368,6 +5368,11 @@ button.nav-link {
   padding: 0 1.5rem 3rem;
 }
 
+/* Produktseiten: Supabase-HTML soll deutlich breiter laufen (wie Blog-Content). */
+.product-page-wrap .content-wrap {
+  max-width: 90rem;
+}
+
 .content-wrap h2 {
   font-family: var(--font-heading), system-ui, serif;
   font-size: clamp(1.25rem, 3vw, 1.625rem);
