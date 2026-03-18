@@ -4080,10 +4080,10 @@ button.nav-link {
 
 /* Tabellen in Produktbeschreibungen (Content aus Editor/Supabase) */
 .product-description-html table {
-  width: 100% !important;
-  max-width: 100% !important;
+  width: 100%;
+  max-width: 100%;
   height: auto;
-  border-collapse: collapse !important;
+  border-collapse: collapse;
   border-spacing: 0;
   table-layout: auto;
   margin: 1rem 0;
@@ -4091,21 +4091,16 @@ button.nav-link {
 
 .product-description-html th,
 .product-description-html td {
-  padding: 0.55rem 0.5rem !important;
-  text-align: left !important;
-  vertical-align: middle !important;
-  border: 1px solid var(--border) !important;
+  padding: 0.55rem 0.5rem;
+  text-align: left;
+  vertical-align: middle;
   word-break: break-word;
   overflow-wrap: anywhere;
-  white-space: normal !important;
-  background: transparent !important;
-  color: inherit;
+  white-space: normal;
 }
 
 .product-description-html th {
-  font-weight: 600 !important;
-  color: var(--text-secondary) !important;
-  background: transparent !important;
+  font-weight: 600;
 }
 
 @media (max-width: 640px) {
@@ -4131,9 +4126,8 @@ button.nav-link {
 
   /* Tabellen: nichts abschneiden (stattdessen scroll-bar intern) */
   .product-description-html table {
-    display: block;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+    display: table;
+    max-width: 100%;
   }
 
   .product-description-html pre,
