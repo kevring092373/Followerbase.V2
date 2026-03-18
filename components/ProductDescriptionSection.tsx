@@ -23,9 +23,10 @@ export function ProductDescriptionSection({ html, mode }: Props) {
   if (effectiveMode === "raw") {
     return (
       <section className="product-description-section">
-        <div className="product-description-inner">
-          <div className="product-description-raw-html" dangerouslySetInnerHTML={{ __html: html }} />
-        </div>
+        <div
+          className="content-wrap product-description-raw-html"
+          dangerouslySetInnerHTML={{ __html: html }}
+        />
       </section>
     );
   }

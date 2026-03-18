@@ -5777,27 +5777,6 @@ button.nav-link {
     padding-right: 1.75rem;
     box-sizing: border-box;
   }
-
-  /* Produktbeschreibung (Supabase raw): keine 100vw-Blöcke, sonst entstehen links/rechts weiße Ränder */
-  .product-description-raw-html .content-wrap .callout,
-  .product-description-raw-html .content-wrap .icon-card,
-  .product-description-raw-html .content-wrap .step-item,
-  .product-description-raw-html .content-wrap .feature-card,
-  .product-description-raw-html .content-wrap .faq-item,
-  .product-description-raw-html .content-wrap .cta-section {
-    width: 100%;
-    max-width: 100%;
-    margin-left: 0;
-    margin-right: 0;
-    padding-left: 0;
-    padding-right: 0;
-    box-sizing: border-box;
-  }
-
-  /* Schritt-Block nutzt weiterhin Platz links für den Text */
-  .product-description-raw-html .content-wrap .step-item {
-    padding-left: 1.25rem;
-  }
   .content-wrap .faq-item {
     border-radius: 0;
   }
