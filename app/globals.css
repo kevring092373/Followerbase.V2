@@ -4109,7 +4109,7 @@ button.nav-link {
 .product-description-raw-html {
   width: 100%;
   max-width: 100%;
-  overflow-x: hidden;
+  overflow-x: visible;
   word-break: break-word;
   overflow-wrap: break-word;
 }
