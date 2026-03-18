@@ -4078,6 +4078,14 @@ button.nav-link {
   overflow-wrap: break-word;
 }
 
+.product-description-raw-html {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
 /* Tabellen in Produktbeschreibungen (Content aus Editor/Supabase) */
 .product-description-html table {
   width: 100%;
@@ -4120,6 +4128,15 @@ button.nav-link {
   .product-description-html iframe,
   .product-description-html pre,
   .product-description-html video {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .product-description-raw-html img,
+  .product-description-raw-html table,
+  .product-description-raw-html iframe,
+  .product-description-raw-html pre,
+  .product-description-raw-html video {
     max-width: 100%;
     height: auto;
   }

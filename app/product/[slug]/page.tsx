@@ -89,6 +89,7 @@ export default async function ProductPage({ params }: Props) {
     otherProducts.length && category && otherProducts.length <= categoryProducts.length - 1
       ? `Weitere ${category.name}-Produkte`
       : "Weitere Produkte";
+  const rawSupabaseDescription = slug === "instagram-follower-kaufen";
 
   return (
     <div className="product-page-wrap">
@@ -185,7 +186,7 @@ export default async function ProductPage({ params }: Props) {
       )}
 
       {product.description ? (
-        <ProductDescriptionSection html={product.description} />
+        <ProductDescriptionSection html={product.description} raw={rawSupabaseDescription} />
       ) : null}
     </div>
   );
