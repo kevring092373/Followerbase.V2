@@ -136,8 +136,7 @@ a {
     max-width: 100%;
   }
   /* Startseite & Produktseite: kein seitlicher Abstand am main, stattdessen am Container → Hintergründe bis zum Rand */
-  .main-content:has(.home),
-  .main-content:has(.product-page-wrap) {
+  .main-content:has(.home) {
     padding-left: 0;
     padding-right: 0;
   }
@@ -145,8 +144,7 @@ a {
   .main-content:has(.home) {
     padding-top: 0;
   }
-  .home,
-  .product-page-wrap {
+  .home {
     padding-left: 0.75rem;
     padding-right: 0.75rem;
     box-sizing: border-box;
@@ -1638,8 +1636,7 @@ button.nav-link {
 }
 
 .blog-post-page {
-  /* Breiterer Content-Bereich wie auf Produktseiten */
-  max-width: 90rem;
+  max-width: 680px;
   width: 100%;
   margin: 0 auto;
 }
@@ -5679,12 +5676,12 @@ button.nav-link {
   }
 
   /* Raw-Produktcontent: Schritt-Nummer überlagert Text (Pseudo-Element zu hoch). */
-  .product-description-raw-html .step-item::before {
+  .blog-page-html .step-item::before {
     top: 1.25rem;
     z-index: 0;
   }
-  .product-description-raw-html .step-item h4,
-  .product-description-raw-html .step-item p {
+  .blog-page-html .step-item h4,
+  .blog-page-html .step-item p {
     position: relative;
     z-index: 1;
   }
