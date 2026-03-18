@@ -5677,6 +5677,17 @@ button.nav-link {
     left: 1rem;
     top: 1rem;
   }
+
+  /* Raw-Produktcontent: Schritt-Nummer überlagert Text (Pseudo-Element zu hoch). */
+  .product-description-raw-html .step-item::before {
+    top: 1.25rem;
+    z-index: 0;
+  }
+  .product-description-raw-html .step-item h4,
+  .product-description-raw-html .step-item p {
+    position: relative;
+    z-index: 1;
+  }
   .trust-bar {
     gap: 0.35rem;
   }
