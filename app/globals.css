@@ -137,7 +137,8 @@ a {
   }
   /* Startseite & Produktseite: kein seitlicher Abstand am main, stattdessen am Container → Hintergründe bis zum Rand */
   .main-content:has(.home),
-  .main-content:has(.product-page-wrap) {
+  .main-content:has(.product-page-wrap),
+  .main-content:has(.blog-post-page) {
     padding-left: 0;
     padding-right: 0;
   }
@@ -1638,7 +1639,9 @@ button.nav-link {
 }
 
 .blog-post-page {
-  max-width: 680px;
+  /* Breiterer Content-Bereich wie auf Produktseiten */
+  max-width: 90rem;
+  width: 100%;
   margin: 0 auto;
 }
 
@@ -3961,22 +3964,23 @@ button.nav-link {
   margin-top: 2rem;
   padding-top: 2rem;
   border-top: 1px solid var(--border);
-  overflow-x: auto;
-  width: 100vw;
-  margin-left: calc(50% - 50vw);
+  /* Kein 100vw-Trick: verhindert mobile "komische" Layout-/Scroll-Effekte */
+  overflow-x: visible;
+  width: 100%;
   box-sizing: border-box;
 }
 
 @media (max-width: 768px) {
   .product-description-section {
-    overflow-x: hidden;
+    overflow-x: visible;
   }
 }
 
 .product-description-inner {
   max-width: 90rem;
   margin: 0 auto;
-  padding: 0 1.5rem;
+  /* main-content und product-page-wrap liefern das Padding -> keine doppelte Einfassung */
+  padding: 0;
   width: 100%;
   box-sizing: border-box;
 }
@@ -4000,7 +4004,7 @@ button.nav-link {
     width: 100%;
   }
   .product-description-inner {
-    padding: 0 0.75rem;
+    padding: 0;
   }
   .product-description-html {
     font-size: 0.9375rem;
