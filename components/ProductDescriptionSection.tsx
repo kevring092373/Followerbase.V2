@@ -33,16 +33,16 @@ export function ProductDescriptionSection({ html, mode }: Props) {
 
   if (effectiveMode === "minimal") {
     const { styleContent, htmlContent } = useMemo(
-      () => prepareProductDescriptionHtmlMinimal(html, ".product-description-html"),
+      () => prepareProductDescriptionHtmlMinimal(html, ".blog-page-html"),
       [html]
     );
 
     return (
       <section className="product-description-section">
-        <div className="product-description-inner">
+        <div className="blog-post-page">
           {styleContent ? <style dangerouslySetInnerHTML={{ __html: styleContent }} /> : null}
           <div
-            className="product-description-html"
+            className="blog-page-html"
             dangerouslySetInnerHTML={{ __html: htmlContent }}
           />
         </div>

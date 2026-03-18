@@ -89,7 +89,7 @@ export default async function ProductPage({ params }: Props) {
     otherProducts.length && category && otherProducts.length <= categoryProducts.length - 1
       ? `Weitere ${category.name}-Produkte`
       : "Weitere Produkte";
-  const descriptionMode: "raw" | undefined = slug === "instagram-follower-kaufen" ? "raw" : undefined;
+  const descriptionMode: "minimal" = "minimal";
 
   return (
     <div className="product-page-wrap">
