@@ -89,7 +89,7 @@ export default async function ProductPage({ params }: Props) {
     otherProducts.length && category && otherProducts.length <= categoryProducts.length - 1
       ? `Weitere ${category.name}-Produkte`
       : "Weitere Produkte";
-  const descriptionMode: "minimal" = "minimal";
+  const descriptionMode: "raw" = "raw";
 
   return (
     <div className="product-page-wrap">
