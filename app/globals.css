@@ -4132,6 +4132,20 @@ button.nav-link {
   max-width: 100%;
 }
 
+/* FAQ (Supabase raw): falls es <details>/<summary> ist,
+   native Pfeil-Markierungen ausblenden (sonst sieht man "Pfeil + +"). */
+.product-description-raw-html summary {
+  list-style: none;
+}
+
+.product-description-raw-html summary::-webkit-details-marker {
+  display: none;
+}
+
+.product-description-raw-html summary::marker {
+  content: "";
+}
+
 /* Tabellen im raw-Wrapper (Supabase HTML 1:1) */
 .product-description-raw-html table {
   width: 100%;
