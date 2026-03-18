@@ -4078,6 +4078,32 @@ button.nav-link {
   overflow-wrap: break-word;
 }
 
+/* Tabellen in Produktbeschreibungen (Content aus Editor/Supabase) */
+.product-description-html table {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  border-collapse: collapse;
+  border-spacing: 0;
+  table-layout: auto;
+}
+
+.product-description-html th,
+.product-description-html td {
+  padding: 0.55rem 0.5rem;
+  text-align: left;
+  vertical-align: middle;
+  border: 1px solid var(--border);
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+.product-description-html th {
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: var(--bg-card);
+}
+
 @media (max-width: 640px) {
   .product-description-section {
     margin-top: 1.5rem;
