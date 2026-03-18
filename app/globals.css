@@ -137,8 +137,7 @@ a {
   }
   /* Startseite & Produktseite: kein seitlicher Abstand am main, stattdessen am Container → Hintergründe bis zum Rand */
   .main-content:has(.home),
-  .main-content:has(.product-page-wrap),
-  .main-content:has(.blog-post-page) {
+  .main-content:has(.product-page-wrap) {
     padding-left: 0;
     padding-right: 0;
   }
@@ -2953,6 +2952,85 @@ button.nav-link {
 
 .blog-page-html {
   margin-top: 0.5rem;
+  /* Damit Blog-HTML auch bei "widerem" Container sauber bleibt */
+  font-size: 1.0625rem;
+  line-height: 1.75;
+  color: var(--text-primary);
+  max-width: 100%;
+  overflow-wrap: break-word;
+}
+
+/* HTML im Blog-Content: Tags wie auf den Admin/Blog-Styles ausrichten */
+.blog-page-html p {
+  margin: 0 0 1.25rem 0;
+  color: var(--text-primary);
+}
+
+.blog-page-html p:last-child {
+  margin-bottom: 0;
+}
+
+.blog-page-html h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 1.5rem 0 0.75rem 0;
+  color: var(--text-primary);
+}
+
+.blog-page-html h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin: 1.25rem 0 0.5rem 0;
+  color: var(--text-primary);
+}
+
+.blog-page-html ul,
+.blog-page-html ol {
+  margin: 0 0 1.25rem 0;
+  padding-left: 1.5rem;
+  color: var(--text-primary);
+}
+
+.blog-page-html li {
+  margin-bottom: 0.35rem;
+}
+
+.blog-page-html a {
+  color: var(--brand-primary);
+}
+
+.blog-page-html a:hover {
+  text-decoration: underline;
+}
+
+.blog-page-html strong {
+  font-weight: 600;
+}
+
+.blog-page-html blockquote {
+  margin: 1.25rem 0;
+  padding-left: 1rem;
+  border-left: 3px solid var(--border);
+  color: var(--text-secondary);
+}
+
+.blog-page-html img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.blog-page-html table {
+  max-width: 100%;
+  width: 100%;
+  height: auto;
+  border-collapse: collapse;
+}
+
+.blog-page-html pre,
+.blog-page-html code {
+  max-width: 100%;
+  overflow-x: auto;
 }
 
 /* CTA-Button im Blog-Beitrag („Jetzt entdecken“): Link funktioniert, Text sichtbar */
