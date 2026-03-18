@@ -5732,9 +5732,19 @@ button.nav-link {
     top: 1rem;
   }
 
-  /* Raw-Produktcontent: Schritt-Nummer überlagert Text (Pseudo-Element zu hoch). */
+  /* Raw-Produktcontent: Schritt-Zahlen (Punkte 1/2/3) auf Mobile weglassen */
   .product-description-raw-html .step-item::before,
-  .product-description-html .step-item::before,
+  .product-description-html .step-item::before {
+    display: none;
+  }
+
+  /* Kein Platzhalter-Padding für ausgeblendete Schritt-Zahl */
+  .product-description-raw-html .step-item,
+  .product-description-html .step-item {
+    padding-left: 1.25rem;
+  }
+
+  /* Blog-Content: Schritt-Zahl liegt visuell über dem Text */
   .blog-page-html .step-item::before {
     top: 1.25rem;
     z-index: 0;
