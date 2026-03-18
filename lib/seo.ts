@@ -99,6 +99,26 @@ function scopeDescriptionCss(css: string): string {
   });
 }
 
+function scopeCssTo(css: string, scopeSelector: string): string {
+  if (!css || !css.trim()) return css;
+  const scope = scopeSelector.trim();
+  return css.replace(/(\s*)([^{]+)\{/g, (_m, space, sel) => {
+    const raw = sel.trim();
+    if (raw.startsWith("@")) return space + sel + "{";
+    if (/^\d+%$|^from$|^to$/i.test(raw)) return space + sel + "{";
+    const prefixed = raw
+      .split(",")
+      .map((s: string) => {
+        const t = s.trim();
+        // Supabase/Editor: "body { ... }" soll auf den Container scoped werden
+        if (t === "body") return scope;
+        return `${scope} ${t}`;
+      })
+      .join(", ");
+    return space + prefixed + " {";
+  });
+}
+
 /** Entfernt <style>...</style> aus dem HTML, damit sie nicht doppelt erscheinen (Inhalt ist schon in styleContent). */
 function stripStyleTags(html: string): string {
   if (!html || !html.trim()) return html;
@@ -133,6 +153,34 @@ export function prepareProductDescriptionHtml(html: string): { styleContent: str
   htmlContent = stripStyleTags(htmlContent);
   htmlContent = transformFaqToDetailsSummary(htmlContent);
   htmlContent = fixBlogCtaLinks(htmlContent);
+
+  return { styleContent, htmlContent };
+}
+
+/**
+ * Minimal-Variante für Produktseiten:
+ * - entfernt head/html/body + Viewport (damit Mobile nicht "kippt")
+ * - extrahiert <style> und scoped es auf den gewünschten Container
+ * - kein FAQ-Transform, keine CTA-Link-Fixes (minimaler Eingriff)
+ */
+export function prepareProductDescriptionHtmlMinimal(
+  html: string,
+  scopeSelector: string
+): { styleContent: string; htmlContent: string } {
+  if (!html || typeof html !== "string") return { styleContent: "", htmlContent: "" };
+  html = html.replace(/\r\n/g, "\n").replace(/\r/g, "\n").trim();
+  if (!html) return { styleContent: "", htmlContent: "" };
+
+  let styleContent = "";
+  let match: RegExpExecArray | null;
+  STYLE_REGEX.lastIndex = 0;
+  while ((match = STYLE_REGEX.exec(html)) !== null) {
+    styleContent += match[1].trim() + "\n";
+  }
+  styleContent = scopeCssTo(styleContent.trim(), scopeSelector);
+
+  let htmlContent = stripDocumentHeadAndViewport(html);
+  htmlContent = stripStyleTags(htmlContent);
 
   return { styleContent, htmlContent };
 }

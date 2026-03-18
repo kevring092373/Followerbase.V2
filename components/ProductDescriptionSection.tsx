@@ -1,29 +1,53 @@
 "use client";
 
 import { useMemo } from "react";
-import { prepareProductDescriptionHtml } from "@/lib/seo";
+import { prepareProductDescriptionHtml, prepareProductDescriptionHtmlMinimal } from "@/lib/seo";
 
 type Props = {
   html: string;
   /**
-   * Wenn true: komplett "raw" rendern (ohne prepareProductDescriptionHtml),
-   * damit die Supabase-Inhalte 1:1 wie gespeichert ausgegeben werden.
+   * prepared: volle Vorbereitung (FAQ-Transform + CTA-Fix + Scoping)
+   * minimal: nur Viewport/head entfernen + embedded <style> auf Container scoped
+   * raw: 1:1 Supabase-HTML rendern (ohne Vorbereitung)
    */
-  raw?: boolean;
+  mode?: "prepared" | "minimal" | "raw";
 };
 
 /**
  * Rendert die Produktbeschreibung. FAQs werden beim Aufbereiten in
  * <details>/<summary> umgewandelt und öffnen sich nativ ohne JS.
  */
-export function ProductDescriptionSection({ html, raw }: Props) {
-  if (raw) {
+export function ProductDescriptionSection({ html, mode }: Props) {
+  const effectiveMode = mode ?? "prepared";
+
+  if (effectiveMode === "raw") {
     return (
       <section className="product-description-section">
         <div className="blog-post-page">
           <div
             className="blog-page-html"
             dangerouslySetInnerHTML={{ __html: html }}
+          />
+        </div>
+      </section>
+    );
+  }
+
+  if (effectiveMode === "minimal") {
+    const { styleContent, htmlContent } = useMemo(
+      () => prepareProductDescriptionHtmlMinimal(html, ".blog-page-html"),
+      [html]
+    );
+
+    return (
+      <section className="product-description-section">
+        <div className="blog-post-page">
+          {styleContent ? (
+            <style dangerouslySetInnerHTML={{ __html: styleContent }} />
+          ) : null}
+          <div
+            className="blog-page-html"
+            dangerouslySetInnerHTML={{ __html: htmlContent }}
           />
         </div>
       </section>

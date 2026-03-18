@@ -89,7 +89,7 @@ export default async function ProductPage({ params }: Props) {
     otherProducts.length && category && otherProducts.length <= categoryProducts.length - 1
       ? `Weitere ${category.name}-Produkte`
       : "Weitere Produkte";
-  const rawSupabaseDescription = slug === "instagram-follower-kaufen";
+  const descriptionMode: "minimal" | undefined = slug === "instagram-follower-kaufen" ? "minimal" : undefined;
 
   return (
     <div className="product-page-wrap">
@@ -186,7 +186,7 @@ export default async function ProductPage({ params }: Props) {
       )}
 
       {product.description ? (
-        <ProductDescriptionSection html={product.description} raw={rawSupabaseDescription} />
+        <ProductDescriptionSection html={product.description} mode={descriptionMode} />
       ) : null}
     </div>
   );
