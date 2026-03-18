@@ -3377,7 +3377,8 @@ button.nav-link {
 @media (max-width: 768px) {
   .product-page-wrap {
     /* clip statt hidden: kein Scroll-Kontext, reduziert iOS-Touch-Konflikte */
-    overflow-x: clip;
+    /* Auf Mobile sonst wird horizontale Produktbeschreibung "abgeschnitten". */
+    overflow-x: visible;
     overflow-y: visible;
     min-height: 0;
   }
@@ -4072,6 +4073,8 @@ button.nav-link {
   color: var(--text-primary);
   line-height: 1.6;
   max-width: 100%;
+  overflow-x: hidden;
+  word-break: break-word;
   overflow-wrap: break-word;
 }
 
@@ -4088,9 +4091,17 @@ button.nav-link {
     font-size: 0.9375rem;
   }
   .product-description-html img,
-  .product-description-html table {
+  .product-description-html table,
+  .product-description-html iframe,
+  .product-description-html pre,
+  .product-description-html video {
     max-width: 100%;
     height: auto;
+  }
+  .product-description-html pre,
+  .product-description-html code {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
 }
 
