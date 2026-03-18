@@ -2954,7 +2954,21 @@ button.nav-link {
   line-height: 1.75;
   color: var(--text-primary);
   max-width: 100%;
+  overflow-x: hidden;
   overflow-wrap: break-word;
+}
+
+/* Raw-Supabase-HTML: eingebettetes <html>/<body> darf nicht eigenen Margin/Padding setzen */
+.blog-page-html * {
+  box-sizing: border-box;
+}
+
+.blog-page-html html,
+.blog-page-html body {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
 }
 
 /* HTML im Blog-Content: Tags wie auf den Admin/Blog-Styles ausrichten */
@@ -3022,6 +3036,23 @@ button.nav-link {
   width: 100%;
   height: auto;
   border-collapse: collapse;
+}
+
+.blog-page-html th,
+.blog-page-html td {
+  padding: 0.55rem 0.5rem;
+  text-align: left;
+  vertical-align: middle;
+  border: 1px solid var(--border);
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+.blog-page-html th {
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: var(--bg-card);
 }
 
 .blog-page-html pre,
