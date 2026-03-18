@@ -5785,6 +5785,19 @@ button.nav-link {
   }
 }
 
+/* Auf "mobil" (breiter als 640px, z. B. manche Geräte): Schritt-Zahlen ebenfalls ausblenden */
+@media (max-width: 768px) {
+  .product-description-raw-html .step-item::before,
+  .product-description-html .step-item::before {
+    display: none;
+  }
+
+  .product-description-raw-html .step-item,
+  .product-description-html .step-item {
+    padding-left: 1.25rem;
+  }
+}
+
 /* ===== Instagram-Benachrichtigungs-Overlay (Startseite) ===== */
 .home-ig-overlay-section {
   margin-bottom: 4rem;
