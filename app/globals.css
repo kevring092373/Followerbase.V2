@@ -4146,6 +4146,25 @@ button.nav-link {
   content: "";
 }
 
+/* noch stärker gegen native Details/Summary-Pfeile (mehr Browser/Markup-Varianten) */
+.product-description-raw-html details > summary,
+.product-description-raw-html summary,
+.product-description-raw-html .faq-question {
+  list-style: none !important;
+}
+
+.product-description-raw-html details > summary::-webkit-details-marker,
+.product-description-raw-html summary::-webkit-details-marker,
+.product-description-raw-html .faq-question::-webkit-details-marker {
+  display: none !important;
+}
+
+.product-description-raw-html details > summary::marker,
+.product-description-raw-html summary::marker,
+.product-description-raw-html .faq-question::marker {
+  content: "" !important;
+}
+
 /* Tabellen im raw-Wrapper (Supabase HTML 1:1) */
 .product-description-raw-html table {
   width: 100%;
