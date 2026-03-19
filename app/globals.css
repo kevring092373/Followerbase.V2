@@ -1620,7 +1620,7 @@ button.nav-link {
 }
 
 .blog-post {
-  max-width: 680px;
+  max-width: 90rem;
   margin: 0 auto;
 }
 
@@ -1636,7 +1636,7 @@ button.nav-link {
 }
 
 .blog-post-page {
-  max-width: 680px;
+  max-width: 90rem;
   width: 100%;
   margin: 0 auto;
 }
