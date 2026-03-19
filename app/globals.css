@@ -5439,8 +5439,19 @@ button.nav-link {
   padding: 0 1rem 3rem !important;
 }
 
+/* Ersten Intro-Block aus Supabase auf dieselbe Breite wie den restlichen Content bringen */
+.product-page-wrap .product-description-raw-html .product-intro {
+  max-width: 90rem !important;
+  padding: 2rem 1rem 0 !important;
+}
+
 @media (max-width: 640px) {
   .product-page-wrap .content-wrap {
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+  }
+
+  .product-page-wrap .product-description-raw-html .product-intro {
     padding-left: 0.5rem !important;
     padding-right: 0.5rem !important;
   }
