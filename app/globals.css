@@ -1637,16 +1637,24 @@ button.nav-link {
 
 .blog-post-page {
   --blog-content-max-width: 90rem;
+  --blog-image-max-width: 68rem;
   max-width: 90rem;
   width: 100%;
   margin: 0 auto;
 }
 
-/* Bild und Text im Blog-Detail auf exakt gleicher Breite halten */
-.blog-post-page .blog-post-image-wrap,
+/* Text im Blog-Detail breit halten */
 .blog-post-page .blog-page-html {
   width: 100%;
   max-width: var(--blog-content-max-width);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Beitragsbild etwas schmaler halten (sonst wirkt es breiter als der Lesetext) */
+.blog-post-page .blog-post-image-wrap {
+  width: 100%;
+  max-width: var(--blog-image-max-width);
   margin-left: auto;
   margin-right: auto;
 }
