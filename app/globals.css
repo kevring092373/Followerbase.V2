@@ -4159,6 +4159,16 @@ button.nav-link {
   display: none !important;
 }
 
+.product-description-raw-html details > summary::-moz-details-marker,
+.product-description-raw-html summary::-moz-details-marker {
+  display: none !important;
+}
+
+.product-description-raw-html details > summary::-moz-list-bullet,
+.product-description-raw-html summary::-moz-list-bullet {
+  display: none !important;
+}
+
 .product-description-raw-html details > summary::marker,
 .product-description-raw-html summary::marker,
 .product-description-raw-html .faq-question::marker {
@@ -4180,6 +4190,23 @@ button.nav-link {
 }
 
 .product-page-wrap details > summary::-webkit-details-marker {
+  display: none !important;
+}
+
+/* Firefox/Weitere Marker-Varianten (falls Browser keinen ::-webkit-details-marker nutzt) */
+.product-description-raw-html summary::-moz-details-marker {
+  display: none !important;
+}
+
+.product-description-raw-html summary::-moz-list-bullet {
+  display: none !important;
+}
+
+.product-page-wrap summary::-moz-details-marker {
+  display: none !important;
+}
+
+.product-page-wrap summary::-moz-list-bullet {
   display: none !important;
 }
 
@@ -5408,6 +5435,15 @@ button.nav-link {
 /* Produktseiten: Supabase-HTML soll deutlich breiter laufen (wie Blog-Content). */
 .product-page-wrap .content-wrap {
   max-width: 90rem;
+  /* Embedded Supabase-Styles gewinnen sonst manchmal über Reihenfolge; deshalb !important. */
+  padding: 0 1rem 3rem !important;
+}
+
+@media (max-width: 640px) {
+  .product-page-wrap .content-wrap {
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+  }
 }
 
 .content-wrap h2 {
