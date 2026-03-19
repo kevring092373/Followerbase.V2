@@ -5670,7 +5670,29 @@ button.nav-link {
 }
 
 .faq-question::-webkit-details-marker {
-  display: none;
+  display: none !important;
+}
+
+.faq-question::marker {
+  content: "" !important;
+}
+
+/* Zusätzliche Browser-Varianten (falls der native Marker nicht über ::-webkit-details-marker verschwindet) */
+.faq-question::-moz-details-marker {
+  display: none !important;
+}
+
+.faq-question::-moz-list-bullet {
+  display: none !important;
+}
+
+/* Höhere Spezifität: für den echten `summary`-Marker in den Home-FAQs */
+.faq-item > summary.faq-question::-webkit-details-marker {
+  display: none !important;
+}
+
+.faq-item > summary.faq-question::marker {
+  content: "" !important;
 }
 
 .faq-question::after {
