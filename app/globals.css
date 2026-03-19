@@ -4165,6 +4165,24 @@ button.nav-link {
   content: "" !important;
 }
 
+/* Wichtig: Supabase-HTML enthält <html>/<body> und kann den DOM "umsetzen".
+   Daher Fix auch global im Produkt-Wrapper scopen, damit <summary>-Marker sicher verschwinden. */
+.product-page-wrap summary {
+  list-style: none !important;
+}
+
+.product-page-wrap summary::-webkit-details-marker {
+  display: none !important;
+}
+
+.product-page-wrap summary::marker {
+  content: "" !important;
+}
+
+.product-page-wrap details > summary::-webkit-details-marker {
+  display: none !important;
+}
+
 /* Tabellen im raw-Wrapper (Supabase HTML 1:1) */
 .product-description-raw-html table {
   width: 100%;
