@@ -50,6 +50,31 @@ export function stripViewportFromHtml(html: string): string {
 }
 
 /**
+ * Entfernt <title> aus eingebettetem Voll-Dokument-HTML (z. B. Supabase-Export).
+ * Nur innerhalb von <head> sowie direkt unter <html> (ohne <head>), damit
+ * z. B. <svg><title> im Body unangetastet bleibt.
+ */
+export function stripTitleTagsFromHtml(html: string): string {
+  if (!html || !html.trim()) return html;
+  let out = html.replace(/<head(\b[^>]*)>([\s\S]*?)<\/head>/gi, (_full, attrs: string, inner: string) => {
+    const cleaned = inner.replace(/<title\b[^>]*>[\s\S]*?<\/title>/gi, "");
+    return `<head${attrs}>${cleaned}</head>`;
+  });
+  // Seltene Exporte: <html><title>…</title> ohne umschließendes <head>
+  out = out.replace(/<html(\b[^>]*)>\s*<title\b[^>]*>[\s\S]*?<\/title>\s*/gi, "<html$1>");
+  return out;
+}
+
+/**
+ * Viewport-Meta + <title> aus CMS-HTML entfernen.
+ * Den sichtbaren Seitentitel liefert Next.js über generateMetadata (z. B. metaTitle aus Supabase).
+ */
+export function stripEmbeddedDuplicateSeoFromHtml(html: string): string {
+  if (!html || !html.trim()) return html;
+  return stripViewportFromHtml(stripTitleTagsFromHtml(html)).trim();
+}
+
+/**
  * Entfernt aus eingebettetem HTML (z. B. Produktbeschreibung) alle head-/viewport-Anteile,
  * damit nur eine Viewport-Angabe (die der App) existiert und SEO-Prüfer keine Duplikate melden.
  */

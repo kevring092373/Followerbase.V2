@@ -3,7 +3,7 @@
  */
 import { notFound } from "next/navigation";
 import { getPageBySlug, getAllPages } from "@/lib/pages-data";
-import { absoluteUrl, truncateDescription } from "@/lib/seo";
+import { absoluteUrl, truncateDescription, stripEmbeddedDuplicateSeoFromHtml } from "@/lib/seo";
 
 type Props = { params: { slug: string } };
 
@@ -44,7 +44,9 @@ export default async function PagePage({ params }: Props) {
   return (
     <div
       className="blog-page-html"
-      dangerouslySetInnerHTML={{ __html: (page.content ?? "").trim() || "" }}
+      dangerouslySetInnerHTML={{
+        __html: stripEmbeddedDuplicateSeoFromHtml((page.content ?? "").trim() || ""),
+      }}
     />
   );
 }

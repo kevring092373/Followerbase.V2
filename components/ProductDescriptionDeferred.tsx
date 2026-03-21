@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { prepareProductDescriptionHtml } from "@/lib/seo";
+import { prepareProductDescriptionHtml, stripEmbeddedDuplicateSeoFromHtml } from "@/lib/seo";
 
 /**
  * Rendert die Produktbeschreibung erst nach dem ersten Paint.
@@ -47,10 +47,11 @@ export function ProductDescriptionDeferred({
   if (!rawHtml) return null;
 
   if (raw) {
+    const safeHtml = stripEmbeddedDuplicateSeoFromHtml(rawHtml);
     return (
       <section className="product-description-section">
         <div className="blog-post-page">
-          <div className="blog-page-html" dangerouslySetInnerHTML={{ __html: rawHtml }} />
+          <div className="blog-page-html" dangerouslySetInnerHTML={{ __html: safeHtml }} />
         </div>
       </section>
     );

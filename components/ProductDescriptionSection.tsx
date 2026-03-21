@@ -1,7 +1,11 @@
 "use client";
 
 import { useMemo } from "react";
-import { prepareProductDescriptionHtml, prepareProductDescriptionHtmlMinimal } from "@/lib/seo";
+import {
+  prepareProductDescriptionHtml,
+  prepareProductDescriptionHtmlMinimal,
+  stripEmbeddedDuplicateSeoFromHtml,
+} from "@/lib/seo";
 
 type Props = {
   html: string;
@@ -21,11 +25,12 @@ export function ProductDescriptionSection({ html, mode }: Props) {
   const effectiveMode = mode ?? "prepared";
 
   if (effectiveMode === "raw") {
+    const safeHtml = stripEmbeddedDuplicateSeoFromHtml(html);
     return (
       <section className="product-description-section">
         <div
           className="content-wrap product-description-raw-html"
-          dangerouslySetInnerHTML={{ __html: html }}
+          dangerouslySetInnerHTML={{ __html: safeHtml }}
         />
       </section>
     );

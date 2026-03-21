@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { getPostBySlug, getAllPosts } from "@/lib/blog-data";
-import { absoluteUrl, truncateDescription, stripViewportFromHtml } from "@/lib/seo";
+import { absoluteUrl, truncateDescription, stripEmbeddedDuplicateSeoFromHtml } from "@/lib/seo";
 import { BLOG_AUTHOR, getAuthorPagePath } from "@/lib/blog-author";
 import { ShareButtons } from "@/components/ShareButtons";
 import { BlogAuthor } from "@/components/BlogAuthor";
@@ -121,7 +121,7 @@ export default async function BlogPostPage({ params }: Props) {
       <div
         className="blog-page-html"
         dangerouslySetInnerHTML={{
-          __html: stripViewportFromHtml((post.content ?? "").trim() || ""),
+          __html: stripEmbeddedDuplicateSeoFromHtml((post.content ?? "").trim() || ""),
         }}
       />
       <BlogAuthor />
