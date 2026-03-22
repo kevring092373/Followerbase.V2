@@ -47,6 +47,8 @@
 html {
   scroll-behavior: smooth;
   overflow-x: hidden;
+  /* Verhindert horizontales „Zucken“, wenn die Scrollbar erst nach Layout/Fonts erscheint (Windows). */
+  scrollbar-gutter: stable;
 }
 
 @media (max-width: 768px) {
