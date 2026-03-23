@@ -66,12 +66,38 @@ export function stripTitleTagsFromHtml(html: string): string {
 }
 
 /**
- * Viewport-Meta + <title> aus CMS-HTML entfernen.
+ * Entfernt SEO-konfliktige Tags aus eingebettetem HTML-Dokument:
+ * - canonical Links
+ * - robots/description/og/twitter Meta-Tags
+ * Nur im Head-Bereich bzw. als "verirrte" Einzel-Tags; Content-HTML bleibt erhalten.
+ */
+export function stripConflictingSeoTagsFromHtml(html: string): string {
+  if (!html || !html.trim()) return html;
+
+  const removeSeoTags = (input: string): string =>
+    input
+      .replace(/<link\s+[^>]*rel\s*=\s*["']canonical["'][^>]*\/?>/gi, "")
+      .replace(/<meta\s+[^>]*name\s*=\s*["']robots["'][^>]*\/?>/gi, "")
+      .replace(/<meta\s+[^>]*name\s*=\s*["']description["'][^>]*\/?>/gi, "")
+      .replace(/<meta\s+[^>]*name\s*=\s*["']twitter:[^"']*["'][^>]*\/?>/gi, "")
+      .replace(/<meta\s+[^>]*property\s*=\s*["']og:[^"']*["'][^>]*\/?>/gi, "");
+
+  let out = html.replace(/<head(\b[^>]*)>([\s\S]*?)<\/head>/gi, (_full, attrs: string, inner: string) => {
+    return `<head${attrs}>${removeSeoTags(inner)}</head>`;
+  });
+
+  // Falls Tags außerhalb von <head> im CMS-HTML stehen, ebenfalls entfernen.
+  out = removeSeoTags(out);
+  return out;
+}
+
+/**
+ * Doppelte/konfliktige SEO-Tags aus CMS-HTML entfernen.
  * Den sichtbaren Seitentitel liefert Next.js über generateMetadata (z. B. metaTitle aus Supabase).
  */
 export function stripEmbeddedDuplicateSeoFromHtml(html: string): string {
   if (!html || !html.trim()) return html;
-  return stripViewportFromHtml(stripTitleTagsFromHtml(html)).trim();
+  return stripConflictingSeoTagsFromHtml(stripViewportFromHtml(stripTitleTagsFromHtml(html))).trim();
 }
 
 /**
