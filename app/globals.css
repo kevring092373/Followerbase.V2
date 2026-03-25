@@ -6468,7 +6468,21 @@ button.nav-link {
 }
 
 .home-faq-question::-webkit-details-marker {
-  display: none;
+  display: none !important;
+}
+
+/* Native Marker teils anders gerendert (z. B. über ::marker) */
+.home-faq-question::marker {
+  content: "" !important;
+}
+
+/* Firefox/Weitere Varianten */
+.home-faq-question::-moz-details-marker {
+  display: none !important;
+}
+
+.home-faq-question::-moz-list-bullet {
+  display: none !important;
 }
 
 .home-faq-question::after {
@@ -6481,7 +6495,7 @@ button.nav-link {
 }
 
 .home-faq-item[open] .home-faq-question::after {
-  transform: rotate(45deg);
+  transform: none;
   color: var(--brand-primary);
 }
 
