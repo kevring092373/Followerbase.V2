@@ -5664,25 +5664,25 @@ button.nav-link {
 }
 
 /* FAQ Artikel */
-.faq-section {
+#faqs {
   margin: 2.25rem 0;
 }
 
-.faq-section > h2 {
+#faqs > h2 {
   margin-bottom: 1rem;
 }
 
-.faq-item {
+#faqs .faq-item {
   margin-bottom: 0.5rem;
   overflow: hidden;
   border-radius: var(--radius-sm);
 }
 
-.faq-item:hover {
+#faqs .faq-item:hover {
   box-shadow: var(--shadow-sm);
 }
 
-.faq-question {
+#faqs .faq-question {
   width: 100%;
   padding: 1rem 2.5rem 1rem 1.125rem;
   text-align: left;
@@ -5700,33 +5700,33 @@ button.nav-link {
   transition: box-shadow var(--transition-fast);
 }
 
-.faq-question::-webkit-details-marker {
+#faqs .faq-question::-webkit-details-marker {
   display: none !important;
 }
 
-.faq-question::marker {
+#faqs .faq-question::marker {
   content: "" !important;
 }
 
 /* Zusätzliche Browser-Varianten (falls der native Marker nicht über ::-webkit-details-marker verschwindet) */
-.faq-question::-moz-details-marker {
+#faqs .faq-question::-moz-details-marker {
   display: none !important;
 }
 
-.faq-question::-moz-list-bullet {
+#faqs .faq-question::-moz-list-bullet {
   display: none !important;
 }
 
 /* Höhere Spezifität: für den echten `summary`-Marker in den Home-FAQs */
-.faq-item > summary.faq-question::-webkit-details-marker {
+#faqs .faq-item > summary.faq-question::-webkit-details-marker {
   display: none !important;
 }
 
-.faq-item > summary.faq-question::marker {
+#faqs .faq-item > summary.faq-question::marker {
   content: "" !important;
 }
 
-.faq-question::after {
+#faqs .faq-question::after {
   content: "+";
   position: absolute;
   right: 1.125rem;
@@ -5737,17 +5737,17 @@ button.nav-link {
   color: var(--brand-primary);
 }
 
-.faq-item[open] .faq-question::after {
+#faqs .faq-item[open] .faq-question::after {
   content: "−";
 }
 
-.faq-answer {
+#faqs .faq-answer {
   overflow: hidden;
   max-height: 0;
   transition: max-height 0.3s var(--ease), padding 0.3s var(--ease);
 }
 
-.faq-item[open] .faq-answer {
+#faqs .faq-item[open] .faq-answer {
   max-height: 500px;
   padding: 0 1.125rem 1rem;
 }
@@ -5774,7 +5774,7 @@ button.nav-link {
   padding-top: 0.125rem;
 }
 
-.faq-answer p {
+#faqs .faq-answer p {
   font-size: 0.9rem;
   color: var(--text-secondary);
   line-height: 1.65;
