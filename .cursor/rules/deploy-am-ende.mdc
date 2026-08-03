@@ -10,7 +10,7 @@ Wenn du Änderungen am Code vornimmst (Features, Fixes, Refactor), **füge am En
 Verwende diese Befehle (Windows PowerShell, Projekt Followercloud.V1):
 
 ```powershell
-cd "c:\Users\Kevin Ringsdorf\.cursor\projects\Followercloud.V1"
+cd "c:\Users\kevin\.cursor\projects\Followercloud.V1"
 git add .
 git status
 git commit -m "Deploy: kurze Beschreibung der Änderung"
