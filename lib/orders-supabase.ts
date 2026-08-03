@@ -120,31 +120,52 @@ export async function getOrderByNumberSupabase(orderNumber: string): Promise<Ord
   return order ?? null;
 }
 
+/**
+ * Supabase liefert pro Abfrage höchstens 1000 Zeilen. Für die Admin-Liste seitenweise
+ * alles holen, damit weder Bestellungen noch Positionen stillschweigend fehlen.
+ */
+const PAGE_SIZE = 1000;
+
+async function selectAllRows<T>(
+  table: "orders" | "order_items",
+  orderColumn: string,
+  ascending: boolean
+): Promise<T[]> {
+  const all: T[] = [];
+  for (let from = 0; ; from += PAGE_SIZE) {
+    const { data, error } = await supabaseServer
+      .from(table)
+      .select("*")
+      .order(orderColumn, { ascending })
+      .range(from, from + PAGE_SIZE - 1);
+
+    if (error) {
+      console.error(`Supabase selectAllRows ${table}:`, error.message);
+      break;
+    }
+    const batch = (data ?? []) as T[];
+    all.push(...batch);
+    if (batch.length < PAGE_SIZE) break;
+  }
+  return all;
+}
+
 export async function getAllOrdersSupabase(): Promise<Order[]> {
   if (!isSupabaseConfigured()) return [];
 
-  const { data: rows, error } = await supabaseServer
-    .from("orders")
-    .select("*")
-    .order("created_at", { ascending: false });
+  const orderRows = await selectAllRows<OrderRow>("orders", "created_at", false);
+  if (!orderRows.length) return [];
 
-  if (error) {
-    console.error("Supabase getAllOrders:", error.message);
-    return [];
+  const itemRows = await selectAllRows<OrderItemRow>("order_items", "created_at", true);
+
+  const itemsByOrderId = new Map<string, OrderItem[]>();
+  for (const row of itemRows) {
+    const list = itemsByOrderId.get(row.order_id);
+    if (list) list.push(itemRowToItem(row));
+    else itemsByOrderId.set(row.order_id, [itemRowToItem(row)]);
   }
 
-  const orders: Order[] = [];
-  for (const row of rows ?? []) {
-    const r = row as OrderRow;
-    const { data: itemRows } = await supabaseServer
-      .from("order_items")
-      .select("*")
-      .eq("order_id", r.id)
-      .order("created_at", { ascending: true });
-    const items: OrderItem[] = (itemRows ?? []).map((item) => itemRowToItem(item as OrderItemRow));
-    orders.push(rowToOrder(r, items));
-  }
-  return orders;
+  return orderRows.map((row) => rowToOrder(row, itemsByOrderId.get(row.id) ?? []));
 }
 
 export async function updateOrderStatusSupabase(

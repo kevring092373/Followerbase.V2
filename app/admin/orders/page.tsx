@@ -5,6 +5,13 @@ import Link from "next/link";
 import { getAllOrders, getOrderErrors } from "@/lib/orders-data";
 import { OrdersList } from "./OrdersList";
 
+/**
+ * Nie cachen: neue Bestellungen entstehen in den Checkout-Routen, die den Admin-Pfad
+ * nicht revalidieren. Ohne das blieb die Liste auf einem alten Stand stehen.
+ */
+export const dynamic = "force-dynamic";
+export const fetchCache = "force-no-store";
+
 function formatDateTime(iso: string) {
   try {
     return new Date(iso).toLocaleString("de-DE", {

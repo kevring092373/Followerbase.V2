@@ -7,6 +7,10 @@ import { getOrderByNumber } from "@/lib/orders-data";
 import { getStatusLabel, getOrderTotalCents, getPaymentMethodLabel } from "@/lib/orders";
 import { OrderStatusForm } from "../OrderStatusForm";
 
+/** Nie cachen: Status und Ziel-Angaben müssen den aktuellen DB-Stand zeigen. */
+export const dynamic = "force-dynamic";
+export const fetchCache = "force-no-store";
+
 type Props = { params: { orderNumber: string } };
 
 function formatDate(iso: string) {
