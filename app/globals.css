@@ -2220,6 +2220,49 @@ button.nav-link {
   background: var(--bg-muted);
 }
 
+/* Umsatzkennzahlen über der Bestellliste */
+.admin-stats-section {
+  margin-bottom: 2rem;
+}
+
+.admin-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.75rem;
+}
+
+.admin-stat {
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.admin-stat-label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.admin-stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.admin-stat-hint {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
+
+.admin-stats-note {
+  margin: 0.75rem 0 0 0;
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
+
 /* Einspaltig: nur Bestellungen, darunter Fehler */
 .admin-orders-section {
   margin-bottom: 2rem;

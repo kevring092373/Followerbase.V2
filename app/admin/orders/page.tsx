@@ -3,6 +3,7 @@
  */
 import Link from "next/link";
 import { getAllOrders, getOrderErrors } from "@/lib/orders-data";
+import { getOrderAmountCents } from "@/lib/orders";
 import { OrdersList } from "./OrdersList";
 
 /**
@@ -26,8 +27,23 @@ function formatDateTime(iso: string) {
   }
 }
 
+function formatEuro(cents: number) {
+  return `${(cents / 100).toFixed(2).replace(".", ",")} €`;
+}
+
 export default async function AdminOrdersPage() {
   const [orders, errors] = await Promise.all([getAllOrders(), getOrderErrors()]);
+
+  const paid = orders.filter((o) => o.status !== "pending_payment");
+  const completed = orders.filter((o) => o.status === "abgeschlossen");
+  const awaitingPayment = orders.filter((o) => o.status === "pending_payment");
+
+  const sum = (list: typeof orders) =>
+    list.reduce((total, order) => total + getOrderAmountCents(order), 0);
+
+  const totalCents = sum(paid);
+  const completedCents = sum(completed);
+  const awaitingCents = sum(awaitingPayment);
 
   return (
     <>
@@ -42,6 +58,31 @@ export default async function AdminOrdersPage() {
       <p className="subtitle" style={{ marginBottom: "1.5rem" }}>
         Bestellungen nach Status filtern. Unten: Vorgänge mit Fehler.
       </p>
+
+      <section className="admin-stats-section">
+        <div className="admin-stats">
+          <div className="card admin-stat">
+            <span className="admin-stat-label">Gesamtumsatz</span>
+            <span className="admin-stat-value">{formatEuro(totalCents)}</span>
+            <span className="admin-stat-hint">
+              {paid.length} {paid.length === 1 ? "Bestellung" : "Bestellungen"}
+            </span>
+          </div>
+          <div className="card admin-stat">
+            <span className="admin-stat-label">Umsatz abgeschlossen</span>
+            <span className="admin-stat-value">{formatEuro(completedCents)}</span>
+            <span className="admin-stat-hint">
+              {completed.length} {completed.length === 1 ? "Bestellung" : "Bestellungen"}
+            </span>
+          </div>
+        </div>
+        {awaitingPayment.length > 0 && (
+          <p className="admin-stats-note">
+            Nicht enthalten: {formatEuro(awaitingCents)} aus {awaitingPayment.length}{" "}
+            {awaitingPayment.length === 1 ? "Bestellung" : "Bestellungen"} mit ausstehender Zahlung.
+          </p>
+        )}
+      </section>
 
       <OrdersList orders={orders} />
 

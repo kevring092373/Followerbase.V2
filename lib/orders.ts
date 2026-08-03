@@ -72,6 +72,15 @@ export function getOrderTotalCents(order: Order): number {
   return order.items.reduce((sum, i) => sum + i.priceCents, 0);
 }
 
+/**
+ * Betrag einer Bestellung in Cent für Umsatzsummen: bevorzugt der tatsächlich
+ * berechnete Betrag, sonst aus den Einzelpositionen.
+ */
+export function getOrderAmountCents(order: Order): number {
+  if (order.totalCents != null && order.totalCents >= 0) return order.totalCents;
+  return getOrderTotalCents(order);
+}
+
 /** Anzeige der Zahlungsart. */
 export function getPaymentMethodLabel(order: Order): string {
   if (order.paymentMethod === "paypal" || order.paypalOrderId) return "PayPal";
