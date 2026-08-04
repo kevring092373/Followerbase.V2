@@ -7,6 +7,8 @@ import { HomeReveal } from "@/components/HomeReveal";
 import { CategoryIcon } from "@/components/CategoryIcon";
 import { ReviewCarousel } from "@/components/ReviewCarousel";
 import { InstagramNotificationOverlay } from "@/components/InstagramNotificationOverlay";
+import { JsonLd } from "@/components/JsonLd";
+import { buildOrganizationSchema } from "@/lib/structured-data";
 
 /** Icon für Schnellzugriff-Karten: Instagram und TikTok nutzen eigene Icons, Rest Fallback. */
 function QuickAccessIcon({ productSlug }: { productSlug: string }) {
@@ -57,6 +59,7 @@ export default async function HomePage() {
 
   return (
     <div className="home">
+      <JsonLd data={buildOrganizationSchema()} />
       {/* Hero + Instagram-Overlay rechts */}
       <section className="home-hero">
         <div className="home-hero-bg" aria-hidden>

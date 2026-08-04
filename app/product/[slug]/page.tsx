@@ -13,6 +13,8 @@ import { ProductDescriptionSection } from "@/components/ProductDescriptionSectio
 import { ProductPaymentIcons } from "@/components/ProductPaymentIcons";
 import { absoluteUrl, truncateDescription, truncateTitle, SITE_NAME } from "@/lib/seo";
 import { categories } from "@/lib/categories";
+import { JsonLd } from "@/components/JsonLd";
+import { buildProductSchema, buildBreadcrumbSchema } from "@/lib/structured-data";
 
 type Props = { params: { slug: string } };
 
@@ -91,34 +93,35 @@ export default async function ProductPage({ params }: Props) {
       : "Weitere Produkte";
   const descriptionMode: "raw" = "raw";
 
+  const breadcrumbSchema = buildBreadcrumbSchema([
+    { name: "Startseite", path: "/" },
+    ...(category ? [{ name: category.name, path: `/products/${category.slug}` }] : []),
+    { name: getProductDisplayName(product.name) },
+  ]);
+
   return (
     <div className="product-page-wrap">
+      <JsonLd data={buildProductSchema(product, category)} />
+      <JsonLd data={breadcrumbSchema} />
       <Link href="/products" className="product-back-link">
         ← Alle Produkte
       </Link>
       <nav className="product-breadcrumb" aria-label="Breadcrumb">
-        <ol className="product-breadcrumb-list" itemScope itemType="https://schema.org/BreadcrumbList">
-          <li itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
-            <Link href="/" itemProp="item">
-              <span itemProp="name">Startseite</span>
-            </Link>
-            <meta itemProp="position" content="1" />
+        <ol className="product-breadcrumb-list">
+          <li>
+            <Link href="/">Startseite</Link>
           </li>
           {category && (
-            <li itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
+            <li>
               <span className="product-breadcrumb-sep" aria-hidden>/</span>
-              <Link href={`/products/${category.slug}`} itemProp="item">
-                <span itemProp="name">{category.name}</span>
-              </Link>
-              <meta itemProp="position" content="2" />
+              <Link href={`/products/${category.slug}`}>{category.name}</Link>
             </li>
           )}
-          <li itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
+          <li>
             <span className="product-breadcrumb-sep" aria-hidden>/</span>
-            <span className="product-breadcrumb-current" itemProp="name" aria-current="page">
+            <span className="product-breadcrumb-current" aria-current="page">
               {product.name}
             </span>
-            <meta itemProp="position" content={category ? "3" : "2"} />
           </li>
         </ol>
       </nav>

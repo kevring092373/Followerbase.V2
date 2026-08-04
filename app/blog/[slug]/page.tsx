@@ -9,6 +9,8 @@ import { absoluteUrl, truncateDescription, stripEmbeddedDuplicateSeoFromHtml } f
 import { BLOG_AUTHOR, getAuthorPagePath } from "@/lib/blog-author";
 import { ShareButtons } from "@/components/ShareButtons";
 import { BlogAuthor } from "@/components/BlogAuthor";
+import { JsonLd } from "@/components/JsonLd";
+import { buildBreadcrumbSchema } from "@/lib/structured-data";
 
 type Props = { params: { slug: string } };
 
@@ -84,10 +86,17 @@ export default async function BlogPostPage({ params }: Props) {
     image: absoluteUrl(BLOG_AUTHOR.image),
   };
 
+  const breadcrumbSchema = buildBreadcrumbSchema([
+    { name: "Startseite", path: "/" },
+    { name: "Blog", path: "/blog" },
+    { name: post.title ?? postTitle },
+  ]);
+
   return (
     <div className="blog-post-page">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }} />
+      <JsonLd data={articleSchema} />
+      <JsonLd data={personSchema} />
+      <JsonLd data={breadcrumbSchema} />
       <a href="/blog" className="blog-back">
         ← Blog
       </a>
