@@ -1,7 +1,10 @@
+import { absoluteUrl } from "@/lib/seo";
+
 export const metadata = {
   title: "AGB – Followerbase",
   description: "Allgemeine Geschäftsbedingungen des Shops.",
   robots: { index: true, follow: true },
+  alternates: { canonical: absoluteUrl("/agb") },
 };
 
 export default function AGBPage() {

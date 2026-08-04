@@ -9,6 +9,7 @@ import { ReviewCarousel } from "@/components/ReviewCarousel";
 import { InstagramNotificationOverlay } from "@/components/InstagramNotificationOverlay";
 import { JsonLd } from "@/components/JsonLd";
 import { buildOrganizationSchema } from "@/lib/structured-data";
+import { absoluteUrl } from "@/lib/seo";
 
 /** Icon für Schnellzugriff-Karten: Instagram und TikTok nutzen eigene Icons, Rest Fallback. */
 function QuickAccessIcon({ productSlug }: { productSlug: string }) {
@@ -53,6 +54,11 @@ const PLATFORM_ICONS: Record<string, string> = {
 };
 
 export const revalidate = 3600;
+
+/** Titel und Beschreibung kommen aus dem Root-Layout; hier nur die kanonische URL. */
+export const metadata = {
+  alternates: { canonical: absoluteUrl("/") },
+};
 
 export default async function HomePage() {
   const allProducts = await getAllProducts();

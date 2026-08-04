@@ -1,7 +1,10 @@
+import { absoluteUrl } from "@/lib/seo";
+
 export const metadata = {
   title: "Datenschutz – Followerbase",
   description: "Datenschutzerklärung und Informationen zur Verarbeitung personenbezogener Daten.",
   robots: { index: true, follow: true },
+  alternates: { canonical: absoluteUrl("/datenschutz") },
 };
 
 export default function DatenschutzPage() {

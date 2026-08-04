@@ -1,7 +1,10 @@
+import { absoluteUrl } from "@/lib/seo";
+
 export const metadata = {
   title: "Impressum – Followerbase",
   description: "Impressum und Angaben gemäß § 5 TMG.",
   robots: { index: true, follow: true },
+  alternates: { canonical: absoluteUrl("/impressum") },
 };
 
 export default function ImpressumPage() {
