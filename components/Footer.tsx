@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { categories } from "@/lib/categories";
 
 const mainLinks = [
   { href: "/blog", label: "Blog" },
@@ -16,6 +17,18 @@ const legalLinks = [
 export function Footer() {
   return (
     <footer className="footer">
+      {/* Kategorieseiten brauchen statische Links von jeder indexierten Seite, damit Google
+          sie zuverlässig findet – im Header stehen sie nur im ausgeblendeten Dropdown. */}
+      <div className="footer-platforms">
+        <span className="footer-platforms-label">Plattformen</span>
+        <nav className="footer-platforms-nav" aria-label="Plattformen">
+          {categories.map((cat) => (
+            <Link key={cat.id} href={`/products/${cat.slug}`} className="footer-link">
+              {cat.name}
+            </Link>
+          ))}
+        </nav>
+      </div>
       <div className="footer-inner">
         <div className="footer-payment-block">
           <span className="footer-payment-label">Sichere Zahlung</span>
