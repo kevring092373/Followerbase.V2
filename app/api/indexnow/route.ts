@@ -4,7 +4,7 @@ import type { NextRequest } from "next/server";
 import { revalidatePath } from "next/cache";
 import sitemap from "@/app/sitemap";
 import { getCategoryByProductSlug } from "@/lib/categories";
-import { normalizeUrls, submitToIndexNow } from "@/lib/indexnow";
+import { INDEXNOW_KEY, normalizeUrls, submitToIndexNow } from "@/lib/indexnow";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -22,9 +22,24 @@ export const dynamic = "force-dynamic";
  * damit sie nicht als offener Melde-Endpunkt missbraucht werden kann.
  */
 
+/**
+ * Der IndexNow-Key steht öffentlich unter /<key>.txt und darf deshalb nicht als
+ * Passwort dienen – sonst könnte jeder den Endpunkt auslösen.
+ */
+function isSecretUsable(secret: string): boolean {
+  if (secret === INDEXNOW_KEY) {
+    console.error(
+      "[indexnow] INDEXNOW_SECRET entspricht dem öffentlichen IndexNow-Key. " +
+        "Bitte einen eigenen Zufallswert setzen – der Endpunkt bleibt bis dahin deaktiviert."
+    );
+    return false;
+  }
+  return true;
+}
+
 function isAuthorized(request: NextRequest): boolean {
   const secret = process.env.INDEXNOW_SECRET?.trim();
-  if (!secret) return false;
+  if (!secret || !isSecretUsable(secret)) return false;
 
   const header = request.headers.get("x-indexnow-secret")?.trim();
   const bearer = request.headers.get("authorization")?.trim().replace(/^Bearer\s+/i, "");
@@ -70,11 +85,20 @@ async function allSitemapPaths(): Promise<string[]> {
 
 export async function POST(request: NextRequest) {
   if (!isAuthorized(request)) {
-    const configured = Boolean(process.env.INDEXNOW_SECRET?.trim());
-    return NextResponse.json(
-      { ok: false, error: configured ? "Nicht autorisiert" : "INDEXNOW_SECRET ist nicht gesetzt" },
-      { status: configured ? 401 : 503 }
-    );
+    const secret = process.env.INDEXNOW_SECRET?.trim();
+    if (!secret) {
+      return NextResponse.json(
+        { ok: false, error: "INDEXNOW_SECRET ist nicht gesetzt" },
+        { status: 503 }
+      );
+    }
+    if (!isSecretUsable(secret)) {
+      return NextResponse.json(
+        { ok: false, error: "INDEXNOW_SECRET darf nicht der öffentliche IndexNow-Key sein" },
+        { status: 503 }
+      );
+    }
+    return NextResponse.json({ ok: false, error: "Nicht autorisiert" }, { status: 401 });
   }
 
   let body: Record<string, unknown> = {};
