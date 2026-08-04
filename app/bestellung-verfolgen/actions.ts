@@ -1,10 +1,10 @@
 "use server";
 
 import { getOrderByNumber } from "@/lib/orders-data";
-import type { Order } from "@/lib/orders";
+import type { OrderTrackingInfo } from "@/lib/orders";
 
 export type LookupResult =
-  | { ok: true; order: Order }
+  | { ok: true; order: OrderTrackingInfo }
   | { ok: false; error: string };
 
 export async function lookupOrder(orderNumber: string): Promise<LookupResult> {
@@ -16,5 +16,9 @@ export async function lookupOrder(orderNumber: string): Promise<LookupResult> {
   if (!order) {
     return { ok: false, error: "Zu dieser Bestellnummer wurde keine Bestellung gefunden." };
   }
-  return { ok: true, order };
+  // Nur Nummer und Status herausgeben – siehe OrderTrackingInfo.
+  return {
+    ok: true,
+    order: { orderNumber: order.orderNumber, status: order.status },
+  };
 }

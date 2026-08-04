@@ -7752,26 +7752,3 @@ button.nav-link {
   padding: 0.2rem 0.5rem;
   border-radius: var(--radius-full);
 }
-
-.tracking-remarks {
-  margin-top: 1.5rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--border);
-}
-
-.tracking-remarks-heading {
-  font-size: 0.8125rem;
-  font-weight: 600;
-  color: var(--text-secondary);
-  margin-bottom: 0.35rem;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-}
-
-.tracking-remarks-text {
-  font-size: 0.9375rem;
-  color: var(--text-primary);
-  line-height: 1.55;
-  margin: 0;
-  white-space: pre-wrap;
-}

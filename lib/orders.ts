@@ -46,6 +46,18 @@ export interface Order {
   customerCountry?: string;
 }
 
+/**
+ * Was die öffentliche Bestellverfolgung erfahren darf.
+ *
+ * Bewusst minimal: die Abfrage verlangt nur die Bestellnummer, kein zweites Merkmal.
+ * Interne Bemerkungen und Kundendaten (Name, Anschrift, Telefon, E-Mail, Ziel-Angaben)
+ * dürfen deshalb nicht an den Browser gehen – auch nicht ungenutzt im Netzwerk-Response.
+ */
+export interface OrderTrackingInfo {
+  orderNumber: string;
+  status: OrderStatus;
+}
+
 const STATUS_LABELS: Record<OrderStatus, string> = {
   pending_payment: "Zahlung ausstehend",
   eingegangen: "Bestellung eingegangen",

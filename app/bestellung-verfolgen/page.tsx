@@ -6,12 +6,12 @@ import { lookupOrder } from "./actions";
 import {
   ORDER_STATUSES,
   getStatusLabel,
-  type Order,
+  type OrderTrackingInfo,
 } from "@/lib/orders";
 
 const TRACKING_STATUSES = ORDER_STATUSES.filter((s) => s !== "pending_payment");
 
-function TrackingTimeline({ order }: { order: Order }) {
+function TrackingTimeline({ order }: { order: OrderTrackingInfo }) {
   const currentIndex =
     order.status === "pending_payment" ? -1 : TRACKING_STATUSES.indexOf(order.status);
   const steps = currentIndex < 0 ? [] : TRACKING_STATUSES;
@@ -52,7 +52,7 @@ function TrackingContent() {
   const [orderNumber, setOrderNumber] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<
-    { ok: true; order: Order } | { ok: false; error: string } | null
+    { ok: true; order: OrderTrackingInfo } | { ok: false; error: string } | null
   >(null);
   const loadedForSuccess = useRef<string | null>(null);
 
@@ -131,12 +131,6 @@ function TrackingContent() {
             <p className="tracking-pending-note">Zahlung ausstehend – bitte schließe die Zahlung ab.</p>
           )}
           <TrackingTimeline order={result.order} />
-          {result.order.remarks && (
-            <div className="tracking-remarks">
-              <h3 className="tracking-remarks-heading">Bemerkungen</h3>
-              <p className="tracking-remarks-text">{result.order.remarks}</p>
-            </div>
-          )}
         </div>
       )}
     </div>
