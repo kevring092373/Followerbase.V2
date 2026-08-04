@@ -10,7 +10,12 @@ import { BLOG_AUTHOR, getAuthorPagePath } from "@/lib/blog-author";
 import { ShareButtons } from "@/components/ShareButtons";
 import { BlogAuthor } from "@/components/BlogAuthor";
 import { JsonLd } from "@/components/JsonLd";
-import { buildBreadcrumbSchema } from "@/lib/structured-data";
+import {
+  buildBreadcrumbSchema,
+  buildPublisherSchema,
+  absoluteImageUrl,
+  toIsoDateTime,
+} from "@/lib/structured-data";
 
 type Props = { params: { slug: string } };
 
@@ -55,21 +60,22 @@ export default async function BlogPostPage({ params }: Props) {
   const blogUrl = absoluteUrl(`/blog/${post.slug}`);
   const authorUrl = absoluteUrl(getAuthorPagePath());
 
+  const datePublished = toIsoDateTime(post.date);
+  const articleImage = post.image ? absoluteImageUrl(post.image) : undefined;
+
   const articleSchema = {
     "@context": "https://schema.org",
     "@type": "Article",
     headline: postTitle,
-    ...(post.date && { datePublished: post.date }),
+    ...(post.excerpt?.trim() && { description: post.excerpt.trim() }),
+    ...(articleImage && { image: [articleImage] }),
+    ...(datePublished && { datePublished }),
     author: {
       "@type": "Person",
       name: BLOG_AUTHOR.name,
       url: authorUrl,
     },
-    publisher: {
-      "@type": "Organization",
-      name: "Followerbase",
-      url: absoluteUrl("/"),
-    },
+    publisher: buildPublisherSchema(),
     mainEntityOfPage: {
       "@type": "WebPage",
       "@id": blogUrl,

@@ -70,7 +70,7 @@ function formatPrice(cents: number): string {
  * teils sind sie bereits kodiert. Erst dekodieren, dann kodieren – so entsteht in beiden
  * Fällen genau eine gültige URL.
  */
-function absoluteImageUrl(imagePath: string): string {
+export function absoluteImageUrl(imagePath: string): string {
   if (!imagePath.startsWith("/")) return imagePath;
   const encoded = imagePath
     .split("/")
@@ -125,6 +125,34 @@ export function buildProductSchema(
         },
       },
     }),
+  };
+}
+
+/**
+ * Google erwartet für datePublished einen vollständigen ISO-8601-Zeitstempel mit Zeitzone.
+ * In Supabase steht das Datum als reiner Text, meist nur "2026-03-08" – das allein wird
+ * als ungültiger Wert gemeldet. Mitternacht UTC vermeidet ein Verschieben des Datums.
+ */
+export function toIsoDateTime(value: string | undefined): string | undefined {
+  const raw = value?.trim();
+  if (!raw) return undefined;
+  const dateOnly = /^\d{4}-\d{2}-\d{2}$/.test(raw);
+  const parsed = new Date(dateOnly ? `${raw}T00:00:00Z` : raw);
+  if (Number.isNaN(parsed.getTime())) return undefined;
+  return parsed.toISOString();
+}
+
+/** Publisher-Angabe inkl. Logo – für Article von Google erwartet. */
+export function buildPublisherSchema(): Record<string, unknown> {
+  return {
+    "@type": "Organization",
+    "@id": ORGANIZATION_ID,
+    name: SITE_NAME,
+    url: absoluteUrl("/"),
+    logo: {
+      "@type": "ImageObject",
+      url: absoluteUrl(LOGO_PATH),
+    },
   };
 }
 
