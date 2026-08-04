@@ -7,7 +7,9 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: ["/impressum", "/datenschutz", "/agb", "/widerrufsbelehrung"],
+      // Rechtstexte (Impressum, Datenschutz, AGB, Widerruf) sind ausdrücklich erlaubt:
+      // sie stehen auch in der Sitemap, ein Ausschluss wäre ein widersprüchliches Signal.
+      disallow: ["/admin", "/api"],
     },
     sitemap: `${origin}/sitemap.xml`,
   };
