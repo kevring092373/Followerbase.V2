@@ -2,6 +2,7 @@ import Link from "next/link";
 import { categories } from "@/lib/categories";
 
 const mainLinks = [
+  { href: "/ueber-uns", label: "Über uns" },
   { href: "/blog", label: "Blog" },
   { href: "/instagram-profilbild", label: "Instagram-Profilbild" },
 ] as const;
