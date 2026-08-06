@@ -8,7 +8,7 @@ export const BLOG_AUTHOR = {
   slug: AUTHOR_SLUG,
   name: "Moritz Sachmann",
   role: "Social Media Experte",
-  image: "/icons/Autor Moritz.webp",
+  image: "/icons/Autor-Moritz-clean.webp",
   /** 2–3 Sätze Expertise für Autorenbox und Autorenseite */
   bio: "Langjährige Erfahrung mit Reichweitenaufbau und Community-Management für Instagram, TikTok und YouTube. Unterstützt Creator und Marken dabei, organisch und strategisch zu wachsen.",
 } as const;

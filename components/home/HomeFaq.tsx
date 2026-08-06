@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 const FAQS = [
   {
     q: "Was ist eine Nachfüllgarantie (Refill) beim Follower-Kauf?",
@@ -21,7 +23,9 @@ const FAQS = [
   },
   {
     q: "Wie kann ich bei Followerbase bezahlen?",
-    a: "Du bezahlst wie in jedem normalen Online-Shop: PayPal, Klarna, Kreditkarte (Visa und Mastercard), Apple Pay oder Google Pay. Alle Zahlungen laufen SSL-verschlüsselt.",
+    a: "Du bezahlst wie in jedem normalen Online-Shop: PayPal, Klarna, Kreditkarte (Visa und Mastercard), Apple Pay oder Google Pay. Alle Zahlungen laufen SSL-verschlüsselt – und auf dem Kontoauszug erscheint eine neutrale Zahlungsreferenz. Mehr dazu in unserem ",
+    linkHref: "/blog/follower-kaufen-paypal-klarna",
+    linkLabel: "Ratgeber zum sicheren Bezahlen",
   },
 ] as const;
 
@@ -32,7 +36,13 @@ export function HomeFaq() {
         <details key={item.q} className="faq-item">
           <summary className="faq-q">{item.q}</summary>
           <div className="faq-a">
-            <div className="faq-a-inner">{item.a}</div>
+            <div className="faq-a-inner">
+              {item.a}
+              {"linkHref" in item && item.linkHref ? (
+                <Link href={item.linkHref}>{item.linkLabel}</Link>
+              ) : null}
+              {"linkHref" in item && item.linkHref ? "." : null}
+            </div>
           </div>
         </details>
       ))}

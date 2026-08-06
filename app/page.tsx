@@ -461,7 +461,6 @@ export default async function HomePage() {
                 height={150}
                 sizes="150px"
               />
-              <span className="flag">DE</span>
             </div>
             <div>
               <span className="eyebrow">Dein Ansprechpartner</span>
@@ -562,10 +561,15 @@ export default async function HomePage() {
             </div>
             <p>
               Der Kauf von Followern verspricht eine schnelle Steigerung deines Social Proof und
-              deiner Reichweite. Gleichzeitig birgt dieser Weg Risiken – von sinkenden
-              Engagement-Raten bis zu rechtlichen Grauzonen. Bei Followerbase bekommst du
-              transparente Preise, Lieferung ohne Passwort und ehrliche Informationen, wann sich
-              der Kauf lohnt und wann du besser in Content investierst.
+              deiner Reichweite, was für Creators, Marken und Agenturen oft entscheidend ist, um
+              eine Kampagne zu starten oder Kooperationen zu fördern. Du siehst dich mit der
+              Notwendigkeit konfrontiert, schnell Vertrauen zu schaffen, doch dieser Weg birgt auch
+              potenzielle Nachteile, darunter sinkende Engagement-Raten und ein Vertrauensverlust
+              deiner Community. Zugleich musst du die rechtlichen Grenzen und ethischen
+              Implikationen verstehen, um Fallstricke wie gewerbsmäßigen Betrug zu vermeiden. Du
+              erfährst nicht nur, wie der Prozess des Follower-Kaufs abläuft und wie du gefälschte
+              Profile erkennst, sondern auch, welche seriösen Alternativen existieren, um ein
+              nachhaltiges Wachstum zu erzielen.
             </p>
             <div className="usp-row">
               <div className="usp">
@@ -581,25 +585,97 @@ export default async function HomePage() {
                 <b>Nachfüllgarantie</b>
               </div>
               <div className="usp">
-                <div className="e">🇩🇪</div>
-                <b>Deutscher Anbieter</b>
+                <div className="e">📊</div>
+                <b>87 % vertrauen Social Media</b>
               </div>
             </div>
+            <h3>Follower kaufen: Eine Einführung in ein kontroverses Thema</h3>
+            <p>
+              Follower kaufen bedeutet, Social-Media-Accounts zu erwerben, die Ihrem Profil auf
+              Instagram, TikTok oder YouTube folgen. Ziel ist es, die Reichweite künstlich zu
+              steigern. Manchmal braucht man eben einen kleinen Anstoß, um sichtbar zu werden. Dies
+              generiert schnellen Social Proof für Kampagnen, Creator, Marken und Agenturen.
+              Vorsicht: Gekaufte Follower erhöhen zwar Zahlen, aber bringen kaum echtes Engagement
+              oder nachhaltige organische Reichweite.
+            </p>
             <h3>Warum Creator und Unternehmen Follower kaufen</h3>
             <p>
-              Manchmal ist organisches Wachstum einfach zu langsam. Eine sichtbare Community
-              senkt die Schwelle für neues Engagement und signalisiert Relevanz – als Startschub,
-              nicht als Ersatz für guten Content.
+              Wir sehen, wie Creator und Unternehmen Follower kaufen, um ihre Reichweite und den
+              Social Proof schnell zu pushen. Manchmal ist organisches Wachstum einfach zu langsam.
+              Eine Studie von Kilian und Rudmann (2020) zeigt: Die Followerzahl beeinflusst die
+              Glaubwürdigkeit von Influencern. Das ist entscheidend, wenn man schnell eine starke
+              Online-Präsenz braucht, ohne ewig auf organisches Wachstum zu warten.
+            </p>
+            <h3>Legalität und ethische Betrachtung beim Follower-Kauf</h3>
+            <p>
+              Der Kauf von Followern bewegt sich in einem rechtlichen und ethischen Graubereich,
+              besonders im kommerziellen Kontext. Obwohl kein explizites Verbot besteht, kann die
+              Praxis unter Umständen als gewerbsmäßiger Betrug oder Verstoß gegen das
+              Wettbewerbsrecht eingestuft werden. Die genauen Auswirkungen hängen stark davon ab,
+              wie die Zahlen eingesetzt werden.
             </p>
             <div className="info-box">
-              <b>⚖️ Rechtliche Grauzone:</b> Kein explizites Verbot, aber § 263 StGB und UWG können
-              greifen, wenn gekaufte Follower zur Täuschung von Werbekunden eingesetzt werden.
+              <b>⚖️ Rechtliche Grauzone:</b> Kein explizites Verbot, aber § 263 StGB (Betrug) und
+              UWG (unlauterer Wettbewerb) können greifen, wenn gekaufte Follower zur Täuschung von
+              Werbekunden oder Konkurrenten eingesetzt werden.
+            </div>
+            <h3>Was tun nach dem Follower-Kauf: seriöse Alternativen zum Wachstum</h3>
+            <p>
+              Nach dem Kauf von Followern ist es entscheidend, den Fokus auf authentisches Wachstum
+              zu verlagern, um die Glaubwürdigkeit und Relevanz deines Profils langfristig zu
+              sichern. Eine klare Strategie aus hochwertigem Content, aktiver Community-Bindung und
+              gezieltem Engagement steigert deine Reichweite kontinuierlich. Kurzvideos wie Reels
+              oder TikToks sind Haupttreiber für organisches Wachstum. Antworte auf Kommentare,
+              Direktnachrichten und Erwähnungen, um persönliche Bindungen aufzubauen, und nutze die
+              „Follow + Like + Comment“-Regel, um relevante Profile gezielt auf dich aufmerksam zu
+              machen.
+            </p>
+            <h3>Einfluss auf Markenkooperationen und branchenspezifische Nuancen</h3>
+            <p>
+              Gekaufte Follower können deiner Glaubwürdigkeit bei Markenkooperationen schaden.
+              Partner fordern Authentizität und echte Reichweite, deshalb prüfen Marken Influencer
+              verstärkt nach Engagement-Raten, nicht nur nach Follower-Zahlen. Die Auswirkungen
+              variieren dabei stark je nach Branche:
+            </p>
+            <div className="branch-row">
+              <div className="branch">
+                <div className="e">💄</div>
+                <b>Beauty &amp; Lifestyle</b>
+                <p>
+                  Community-Vertrauen und visuelle Anziehung stehen im Fokus. Fehlende
+                  Authentizität ist hier besonders schädlich.
+                </p>
+              </div>
+              <div className="branch">
+                <div className="e">💻</div>
+                <b>Tech &amp; Startups</b>
+                <p>
+                  Präzise Engagement-Metriken und qualifizierte Leads zählen. Fake-Follower werden
+                  sofort als wertlos entlarvt.
+                </p>
+              </div>
+              <div className="branch">
+                <div className="e">📈</div>
+                <b>Agenturen &amp; Marken</b>
+                <p>
+                  Messbarer ROI und authentische Verbindung zur Zielgruppe sind entscheidend für
+                  erfolgreiche Kooperationen.
+                </p>
+              </div>
             </div>
             <h3>Follower-Zahlen als Teil der Gesamtstrategie</h3>
             <p>
-              Initialer Social Proof → Sichtbarkeit → hochwertiger Content → echtes Engagement →
-              loyale Community → nachhaltiges Wachstum. Follower-Zahlen sind nur der Anfang.
+              Follower-Zahlen beeinflussen Social Proof und Reichweite maßgeblich. Eine Studie
+              zeigt: 87 % der Online-Einkäufer sehen soziale Medien als Hilfe bei
+              Kaufentscheidungen. Strategisch erhöhte Follower-Zahlen senken die Schwelle für
+              organisches Engagement, denn Profile mit vielen Followern wirken vertrauenswürdiger.
+              Sie bilden jedoch nur einen Teil der Gesamtstrategie.
             </p>
+            <div className="info-box">
+              <b>🎯 Die Gesamtstrategie:</b> Initialer Social Proof → Sichtbarkeit → Hochwertiger
+              Content → Echtes Engagement → Loyale Community → Nachhaltiges Wachstum.
+              Follower-Zahlen sind nur der Anfang.
+            </div>
           </div>
         </div>
       </section>

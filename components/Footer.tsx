@@ -19,7 +19,7 @@ export function Footer() {
             <div className="pay-note">
               <span>Sichere Zahlung</span>
               <img
-                src="/icons/zahlungsicons.png"
+                src="/icons/zahlungsicons-transparent.png"
                 alt="Zahlungsarten: Visa, Mastercard, PayPal und weitere"
                 className="footer-payment-img"
                 width={220}
