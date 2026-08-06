@@ -19,7 +19,7 @@ function HamburgerIcon({ open }: { open: boolean }) {
 
 /**
  * Header in einer Zeile: Quick-Links + Produkte/Blog/Über uns,
- * rechts WhatsApp-Icon + Bestellung verfolgen + Warenkorb.
+ * rechts WhatsApp-Icon + Warenkorb + Bestellung verfolgen.
  */
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -66,10 +66,10 @@ export function Header() {
                 label=""
                 iconSize={18}
               />
+              <CartLink />
               <Link href="/bestellung-verfolgen" className="nav-link nav-link-tracking">
                 Bestellung verfolgen
               </Link>
-              <CartLink />
             </div>
           </div>
 
@@ -89,6 +89,7 @@ export function Header() {
               label=""
               iconSize={20}
             />
+            <CartLink />
             <Link
               href="/bestellung-verfolgen"
               className="nav-link nav-link-tracking nav-link-tracking-compact"
@@ -96,7 +97,6 @@ export function Header() {
             >
               Bestellung
             </Link>
-            <CartLink />
           </div>
         </nav>
       </div>
