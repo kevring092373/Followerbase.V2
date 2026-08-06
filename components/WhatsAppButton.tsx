@@ -29,9 +29,10 @@ export function WhatsAppButton({
       rel="noopener noreferrer"
       className={className}
       aria-label="Kontakt per WhatsApp aufnehmen"
+      title="WhatsApp"
     >
       <WhatsAppIcon size={iconSize} />
-      <span>{label}</span>
+      {label ? <span>{label}</span> : null}
     </a>
   );
 }
