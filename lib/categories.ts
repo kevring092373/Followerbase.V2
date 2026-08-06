@@ -38,7 +38,6 @@ export const categories: Category[] = [
       prod("instagram-follower-tuerkisch-kaufen", "Instagram Follower Türkisch"),
       prod("instagram-follower-deutsch-kaufen", "Instagram Follower Deutsch"),
       prod("instagram-follower-blauer-haken-kaufen", "Instagram Follower Blauer Haken"),
-      prod("instagram-follower-kostenlos-kaufen", "Instagram Follower Kostenlos"),
       prod("instagram-likes-kaufen", "Instagram Likes"),
       prod("instagram-likes-deutsch-kaufen", "Instagram Likes Deutsch"),
       prod("instagram-likes-tuerkisch-kaufen", "Instagram Likes Türkisch"),

@@ -1,5 +1,11 @@
 import Link from "next/link";
 import { absoluteUrl } from "@/lib/seo";
+import { JsonLd } from "@/components/JsonLd";
+import {
+  buildAboutPageSchema,
+  buildBreadcrumbSchema,
+  buildOrganizationSchema,
+} from "@/lib/structured-data";
 
 const title = "Das Team hinter Followerbase: Social Media aus NRW";
 const description =
@@ -15,8 +21,17 @@ export const metadata = {
 };
 
 export default function UeberUnsPage() {
+  const aboutSchema = buildAboutPageSchema({ name: title, description });
+  const breadcrumbSchema = buildBreadcrumbSchema([
+    { name: "Startseite", path: "/" },
+    { name: "Über uns" },
+  ]);
+
   return (
     <article>
+      <JsonLd data={buildOrganizationSchema()} />
+      <JsonLd data={aboutSchema} />
+      <JsonLd data={breadcrumbSchema} />
       <div className="content-wrap">
         <h1 className="heading-hero">Über uns: Wer hinter Followerbase steht</h1>
         <p>

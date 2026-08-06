@@ -174,3 +174,32 @@ export function buildBreadcrumbSchema(items: BreadcrumbItem[]): Record<string, u
     })),
   };
 }
+
+/**
+ * AboutPage für /ueber-uns – verweist auf die Organization aus dem Impressum.
+ */
+export function buildAboutPageSchema(opts: {
+  name: string;
+  description: string;
+}): Record<string, unknown> {
+  const url = absoluteUrl("/ueber-uns");
+  return {
+    "@context": "https://schema.org",
+    "@type": "AboutPage",
+    "@id": `${url}#webpage`,
+    url,
+    name: opts.name,
+    description: opts.description,
+    inLanguage: "de-DE",
+    isPartOf: {
+      "@type": "WebSite",
+      "@id": `${absoluteUrl("/")}#website`,
+      url: absoluteUrl("/"),
+      name: SITE_NAME,
+      publisher: { "@id": ORGANIZATION_ID },
+    },
+    about: { "@id": ORGANIZATION_ID },
+    mainEntity: { "@id": ORGANIZATION_ID },
+    publisher: { "@id": ORGANIZATION_ID },
+  };
+}
