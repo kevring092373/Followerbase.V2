@@ -18,8 +18,8 @@ function HamburgerIcon({ open }: { open: boolean }) {
 }
 
 /**
- * Header: Logo, Quick-Links, „Alle Produkte“, Warenkorb.
- * Auf Mobile: Hamburger-Menü, das sich ausklappt.
+ * Header: Logo, Produkt-Links, Blog/Über uns links; „Bestellung verfolgen“ + Warenkorb
+ * rechts fest verankert. WhatsApp nur im Hero und Mobile-Menü (Desktop-Nav wäre zu voll).
  */
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -29,42 +29,50 @@ export function Header() {
       <div className="header-inner">
         <Logo />
         <nav className="header-nav" aria-label="Hauptnavigation">
-          {/* Desktop: normale Links */}
+          {/* Desktop: Mitte = Produkt-/Info-Links, rechts fest = Tracking + Warenkorb */}
           <div className="header-nav-desktop">
-            {headerQuickLinks.map(({ label, productSlug }) => (
-              <Link key={productSlug} href={`/product/${productSlug}`} className="nav-link">
-                {label}
-              </Link>
-            ))}
-            <div className="nav-menu-wrap">
-              <span className="nav-link nav-menu-trigger">Alle Produkte</span>
-              <div className="nav-dropdown nav-dropdown-categories-only" aria-hidden>
-                <nav className="nav-dropdown-categories-list">
-                  {categories.map((category) => (
-                    <Link
-                      key={category.id}
-                      href={`/products/${category.slug}`}
-                      className="nav-dropdown-category-link"
-                    >
-                      {category.name}
-                    </Link>
-                  ))}
-                </nav>
+            <div className="header-nav-main">
+              {headerQuickLinks.map(({ label, productSlug }) => (
+                <Link
+                  key={productSlug}
+                  href={`/product/${productSlug}`}
+                  className="nav-link nav-link-quick"
+                >
+                  {label}
+                </Link>
+              ))}
+              <div className="nav-menu-wrap">
+                <span className="nav-link nav-menu-trigger">Alle Produkte</span>
+                <div className="nav-dropdown nav-dropdown-categories-only" aria-hidden>
+                  <nav className="nav-dropdown-categories-list">
+                    {categories.map((category) => (
+                      <Link
+                        key={category.id}
+                        href={`/products/${category.slug}`}
+                        className="nav-dropdown-category-link"
+                      >
+                        {category.name}
+                      </Link>
+                    ))}
+                  </nav>
+                </div>
               </div>
+              <Link href="/blog" className="nav-link">
+                Blog
+              </Link>
+              <Link href="/ueber-uns" className="nav-link">
+                Über uns
+              </Link>
             </div>
-            <Link href="/blog" className="nav-link">
-              Blog
-            </Link>
-            <Link href="/ueber-uns" className="nav-link">
-              Über uns
-            </Link>
-            <WhatsAppButton className="nav-link whatsapp-nav-link" iconSize={17} />
-            <Link href="/bestellung-verfolgen" className="nav-link nav-link-tracking">
-              Bestellung verfolgen
-            </Link>
+            <div className="header-nav-actions">
+              <Link href="/bestellung-verfolgen" className="nav-link nav-link-tracking">
+                Bestellung verfolgen
+              </Link>
+              <CartLink />
+            </div>
           </div>
 
-          {/* Mobile: Hamburger-Button + Warenkorb */}
+          {/* Mobile: Hamburger + Tracking + Warenkorb */}
           <div className="header-nav-mobile">
             <button
               type="button"
@@ -76,6 +84,13 @@ export function Header() {
             >
               <HamburgerIcon open={mobileMenuOpen} />
             </button>
+            <Link
+              href="/bestellung-verfolgen"
+              className="nav-link nav-link-tracking nav-link-tracking-compact"
+              aria-label="Bestellung verfolgen"
+            >
+              Bestellung
+            </Link>
             <CartLink />
           </div>
         </nav>
