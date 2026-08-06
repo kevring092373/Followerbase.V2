@@ -257,6 +257,13 @@ a {
   justify-content: flex-end;
 }
 
+/* Ab ~1200px: Quick-Links ausblenden, damit die Zeile nicht umbricht */
+@media (max-width: 1200px) {
+  .header-nav-main .nav-link-quick {
+    display: none;
+  }
+}
+
 .header-nav-actions {
   display: flex;
   align-items: center;

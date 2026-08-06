@@ -18,8 +18,8 @@ function HamburgerIcon({ open }: { open: boolean }) {
 }
 
 /**
- * Header in einer Zeile: links Produkte/Info, rechts WhatsApp + Tracking + Warenkorb.
- * Produkt-Schnelllinks nur im Mobile-Menü – sonst bricht die Desktop-Nav um.
+ * Header in einer Zeile: Quick-Links + Produkte/Blog/Über uns,
+ * rechts WhatsApp-Icon + Bestellung verfolgen + Warenkorb.
  */
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -31,6 +31,15 @@ export function Header() {
         <nav className="header-nav" aria-label="Hauptnavigation">
           <div className="header-nav-desktop">
             <div className="header-nav-main">
+              {headerQuickLinks.map(({ label, productSlug }) => (
+                <Link
+                  key={productSlug}
+                  href={`/product/${productSlug}`}
+                  className="nav-link nav-link-quick"
+                >
+                  {label}
+                </Link>
+              ))}
               <div className="nav-menu-wrap">
                 <span className="nav-link nav-menu-trigger">Alle Produkte</span>
                 <div className="nav-dropdown nav-dropdown-categories-only" aria-hidden>
@@ -53,15 +62,12 @@ export function Header() {
               <Link href="/ueber-uns" className="nav-link">
                 Über uns
               </Link>
-              <Link href="/kontakt" className="nav-link">
-                Kontakt
-              </Link>
             </div>
             <div className="header-nav-actions">
               <WhatsAppButton
-                className="nav-link whatsapp-nav-link"
-                label="WhatsApp"
-                iconSize={16}
+                className="nav-link whatsapp-nav-link whatsapp-nav-link-icon"
+                label=""
+                iconSize={18}
               />
               <Link href="/bestellung-verfolgen" className="nav-link nav-link-tracking">
                 Bestellung verfolgen
@@ -141,13 +147,6 @@ export function Header() {
             onClick={() => setMobileMenuOpen(false)}
           >
             Über uns
-          </Link>
-          <Link
-            href="/kontakt"
-            className="mobile-menu-link"
-            onClick={() => setMobileMenuOpen(false)}
-          >
-            Kontakt
           </Link>
           <Link
             href="/bestellung-verfolgen"
