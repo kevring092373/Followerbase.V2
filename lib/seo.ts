@@ -127,47 +127,147 @@ const STYLE_REGEX = /<style[^>]*>([\s\S]*?)<\/style>/gi;
 
 const PRODUCT_DESC_SCOPE = ".product-description-html";
 
+/** Liest einen balancierten `{ ... }`-Block ab openIdx (Position der `{`). */
+function readBalancedCssBlock(css: string, openIdx: number): { block: string; end: number } {
+  let depth = 0;
+  for (let j = openIdx; j < css.length; j++) {
+    const ch = css[j];
+    if (ch === "{") depth++;
+    else if (ch === "}") {
+      depth--;
+      if (depth === 0) return { block: css.slice(openIdx, j + 1), end: j + 1 };
+    }
+  }
+  return { block: css.slice(openIdx), end: css.length };
+}
+
+function prefixCssSelectorList(selectorList: string, scope: string): string {
+  return selectorList
+    .split(",")
+    .map((s) => {
+      const t = s.trim();
+      if (!t) return "";
+      // Keyframes-Schritte unangetastet lassen
+      if (/^(\d+%|from|to)$/i.test(t)) return t;
+      // html/body/:root → Scope-Container (CSS-Variablen & Basis)
+      if (t === "body" || t === "html" || t === ":root") return scope;
+      // Bereits gescoped
+      if (t === scope || t.startsWith(`${scope} `) || t.startsWith(`${scope}:`) || t.startsWith(`${scope}.`) || t.startsWith(`${scope}[`)) {
+        return t;
+      }
+      return `${scope} ${t}`;
+    })
+    .filter(Boolean)
+    .join(", ");
+}
+
+/**
+ * Begrenzt CSS auf einen Container-Selektor.
+ * Wichtig: Selektoren dürfen keine `}` enthalten – sonst zerlegt die naive
+ * `[^{]+\\{`-Regex Regelinhalte (z. B. rgba()-Kommas) und zerstört das Design.
+ */
+function scopeCssTo(css: string, scopeSelector: string): string {
+  if (!css || !css.trim()) return css;
+  const scope = scopeSelector.trim();
+  let out = "";
+  let i = 0;
+  const n = css.length;
+
+  while (i < n) {
+    // Kommentare durchreichen
+    if (css.startsWith("/*", i)) {
+      const end = css.indexOf("*/", i + 2);
+      const stop = end === -1 ? n : end + 2;
+      out += css.slice(i, stop);
+      i = stop;
+      continue;
+    }
+
+    // @-Regeln
+    if (css[i] === "@") {
+      const brace = css.indexOf("{", i);
+      if (brace === -1) {
+        out += css.slice(i);
+        break;
+      }
+      const atHeader = css.slice(i, brace).trim();
+      const { block, end } = readBalancedCssBlock(css, brace);
+
+      // @keyframes / @font-face: innen nicht umschreiben
+      if (/^@(keyframes|font-face|import|charset|namespace)\b/i.test(atHeader)) {
+        out += atHeader + block;
+        i = end;
+        continue;
+      }
+
+      // @media / @supports: innere Regeln scopeden
+      if (/^@(media|supports|document|layer)\b/i.test(atHeader)) {
+        const inner = block.slice(1, -1);
+        out += `${atHeader}{${scopeCssTo(inner, scope)}}`;
+        i = end;
+        continue;
+      }
+
+      out += atHeader + block;
+      i = end;
+      continue;
+    }
+
+    // Normale Regel: nur Selektor bis zur nächsten `{`, ohne `}` dazwischen
+    const brace = css.indexOf("{", i);
+    if (brace === -1) {
+      out += css.slice(i);
+      break;
+    }
+
+    const between = css.slice(i, brace);
+    if (between.includes("}")) {
+      const close = between.lastIndexOf("}");
+      out += between.slice(0, close + 1);
+      i = i + close + 1;
+      continue;
+    }
+
+    const sel = between.trim();
+    const { block, end } = readBalancedCssBlock(css, brace);
+
+    if (!sel) {
+      out += block;
+      i = end;
+      continue;
+    }
+
+    if (/^(\d+%|from|to)$/i.test(sel)) {
+      out += sel + block;
+    } else {
+      out += prefixCssSelectorList(sel, scope) + block;
+    }
+    i = end;
+  }
+
+  return out;
+}
+
 /**
  * Begrenzt CSS aus der Produktbeschreibung auf den Container .product-description-html.
  * So behält der Button „In den Warenkorb“ auf allen Produktseiten dieselbe Farbe.
  */
 function scopeDescriptionCss(css: string): string {
-  if (!css || !css.trim()) return css;
-  return css.replace(/(\s*)([^{]+)\{/g, (_m, space, sel) => {
-    const raw = sel.trim();
-    if (raw.startsWith("@")) return space + sel + "{";
-    if (/^\d+%$|^from$|^to$/i.test(raw)) return space + sel + "{";
-    const prefixed = raw
-      .split(",")
-      .map((s: string) => {
-        const t = s.trim();
-        // Body-Styles aus Supabase auf den Beschreibungs-Container anwenden (nach strip gibt es kein <body> mehr)
-        if (t === "body") return PRODUCT_DESC_SCOPE;
-        return `${PRODUCT_DESC_SCOPE} ${t}`;
-      })
-      .join(", ");
-    return space + prefixed + " {";
-  });
+  return scopeCssTo(css, PRODUCT_DESC_SCOPE);
 }
 
-function scopeCssTo(css: string, scopeSelector: string): string {
-  if (!css || !css.trim()) return css;
-  const scope = scopeSelector.trim();
-  return css.replace(/(\s*)([^{]+)\{/g, (_m, space, sel) => {
-    const raw = sel.trim();
-    if (raw.startsWith("@")) return space + sel + "{";
-    if (/^\d+%$|^from$|^to$/i.test(raw)) return space + sel + "{";
-    const prefixed = raw
-      .split(",")
-      .map((s: string) => {
-        const t = s.trim();
-        // Supabase/Editor: "body { ... }" soll auf den Container scoped werden
-        if (t === "body") return scope;
-        return `${scope} ${t}`;
-      })
-      .join(", ");
-    return space + prefixed + " {";
-  });
+/**
+ * JS-FAQ nutzt .faq-item.open; wir rendern natives <details open>.
+ * Dupliziert Selektoren korrekt inkl. Folgeselektoren:
+ * `.scope .faq-item.open .faq-answer` → zusätzlich `.scope .faq-item[open] .faq-answer`
+ */
+function remapFaqItemOpenToDetailsOpen(css: string, scopeSelector: string): string {
+  if (!css) return css;
+  const scopeEscaped = scopeSelector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return css.replace(
+    new RegExp(`(${scopeEscaped}\\s+\\.faq-item)\\.open((?:\\s+[.#:\\[\\w-]+)*)`, "g"),
+    (_m, before: string, after: string) => `${before}.open${after || ""}, ${before}[open]${after || ""}`
+  );
 }
 
 /** Entfernt <style>...</style> aus dem HTML, damit sie nicht doppelt erscheinen (Inhalt ist schon in styleContent). */
@@ -191,13 +291,7 @@ export function prepareProductDescriptionHtml(html: string): { styleContent: str
   while ((match = STYLE_REGEX.exec(html)) !== null) {
     styleContent += match[1].trim() + "\n";
   }
-  styleContent = scopeDescriptionCss(styleContent.trim());
-  // Damit .faq-item[open] (natives <details>) wie .faq-item.open aussieht
-  const scopeEscaped = PRODUCT_DESC_SCOPE.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  styleContent = styleContent.replace(
-    new RegExp(`${scopeEscaped} \\.faq-item\\.open`, "g"),
-    `${PRODUCT_DESC_SCOPE} .faq-item.open, ${PRODUCT_DESC_SCOPE} .faq-item[open]`
-  );
+  styleContent = remapFaqItemOpenToDetailsOpen(scopeDescriptionCss(styleContent.trim()), PRODUCT_DESC_SCOPE);
 
   let htmlContent = stripDocumentHeadAndViewport(html);
   // <style>-Tags aus dem Anzeige-Inhalt entfernen (bereits in styleContent), verhindert leere Blöcke / Dopplung
@@ -228,7 +322,10 @@ export function prepareProductDescriptionHtmlMinimal(
   while ((match = STYLE_REGEX.exec(html)) !== null) {
     styleContent += match[1].trim() + "\n";
   }
-  styleContent = scopeCssTo(styleContent.trim(), scopeSelector);
+  styleContent = remapFaqItemOpenToDetailsOpen(
+    scopeCssTo(styleContent.trim(), scopeSelector),
+    scopeSelector
+  );
 
   let htmlContent = stripDocumentHeadAndViewport(html);
   htmlContent = stripStyleTags(htmlContent);
@@ -239,10 +336,13 @@ export function prepareProductDescriptionHtmlMinimal(
 /** FAQ: div+button → details+summary, damit Öffnen ohne JS funktioniert (z. B. Blog, Produktbeschreibung). */
 export function transformFaqToDetailsSummary(html: string): string {
   if (!html || !html.trim()) return html;
-  return html.replace(
-    /<div\s+class=["']faq-item["'][^>]*>\s*<button\s+class=["']faq-question["'][^>]*>([\s\S]*?)<\/button>\s*<div\s+class=["']faq-answer["'][^>]*>([\s\S]*?)<\/div>\s*<\/div>/gi,
-    "<details class=\"faq-item\"><summary class=\"faq-question\">$1</summary><div class=\"faq-answer\">$2</div></details>"
+  // Variante 1: class="faq-item" exakt / mit weiteren Klassen
+  let out = html.replace(
+    /<div\s+([^>]*class=["'][^"']*\bfaq-item\b[^"']*["'][^>]*)>\s*<button\s+([^>]*class=["'][^"']*\bfaq-question\b[^"']*["'][^>]*)>([\s\S]*?)<\/button>\s*<div\s+([^>]*class=["'][^"']*\bfaq-answer\b[^"']*["'][^>]*)>([\s\S]*?)<\/div>\s*<\/div>/gi,
+    (_m, _itemAttrs, _qAttrs, question, _aAttrs, answer) =>
+      `<details class="faq-item"><summary class="faq-question">${question}</summary><div class="faq-answer">${answer}</div></details>`
   );
+  return out;
 }
 
 /**

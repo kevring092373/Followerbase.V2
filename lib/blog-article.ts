@@ -107,7 +107,8 @@ function reshapeBlogArticleHtml(html: string): string {
     pull(/<p[^>]*class=["'][^"']*\barticle-lead\b[^"']*["'][^>]*>[\s\S]*?<\/p>/i) ||
     pull(/<div[^>]*class=["'][^"']*\barticle-lead\b[^"']*["'][^>]*>[\s\S]*?<\/div>/i);
   const image = pull(/<div[^>]*class=["'][^"']*\barticle-image\b[^"']*["'][^>]*>[\s\S]*?<\/div>/i);
-  const toc = pull(/<nav[^>]*class=["'][^"']*\btoc\b[^"']*["'][^>]*>[\s\S]*?<\/nav>/i);
+  // Inline-TOC aus dem Body ziehen (wird nicht wieder eingefügt – sticky Rail übernimmt)
+  pull(/<(nav|div)[^>]*class=["'][^"']*\btoc\b[^"']*["'][^>]*>[\s\S]*?<\/\1>/i);
 
   // h2 ohne id in section ohne id → id vergeben
   body = body.replace(/<h2(?![^>]*\bid=)([^>]*)>/gi, (_full, attrs: string) => {
@@ -122,7 +123,7 @@ function reshapeBlogArticleHtml(html: string): string {
     return `<h2 id="${id}"${attrs}>${inner}</h2>`;
   });
 
-  const head = [image, h1, meta, lead, toc].filter(Boolean).join("\n");
+  const head = [image, h1, meta, lead].filter(Boolean).join("\n");
   return `<div class="article-container">${head}\n${body.trim()}</div>`;
 }
 
@@ -137,6 +138,9 @@ export function prepareBlogArticleHtml(rawHtml: string): {
   const prepared = prepareProductDescriptionHtmlMinimal(cleaned, BLOG_SCOPE);
   let htmlContent = transformFaqToDetailsSummary(prepared.htmlContent);
   htmlContent = fixBlogCtaLinks(htmlContent);
+
+  // TOC vor reshape (dort wird das Inline-TOC entfernt)
+  const toc = extractBlogToc(htmlContent);
   htmlContent = reshapeBlogArticleHtml(htmlContent);
 
   // Hero aus dem Artikel ziehen und im Seiten-Chrome rendern (Reihenfolge wie seomuenchen)
@@ -149,10 +153,23 @@ export function prepareBlogArticleHtml(rawHtml: string): {
     htmlContent = htmlContent.replace(heroMatch[0], "");
   }
 
-  const toc = extractBlogToc(htmlContent);
+  // Fallback: falls reshape das TOC nicht erwischt hat
+  htmlContent = htmlContent.replace(
+    /<(nav|div)[^>]*class=["'][^"']*\btoc\b[^"']*["'][^>]*>[\s\S]*?<\/\1>/gi,
+    ""
+  );
+
+  // details/summary + Layout-Korrekturen gegen Supabase-Vollseiten-CSS
+  const faqDetailsCss = `
+${BLOG_SCOPE} { background: transparent !important; }
+${BLOG_SCOPE} .article-container { max-width: none !important; margin: 0 !important; padding: 0 !important; width: 100% !important; }
+${BLOG_SCOPE} details.faq-item > summary { list-style: none; cursor: pointer; }
+${BLOG_SCOPE} details.faq-item > summary::-webkit-details-marker { display: none; }
+${BLOG_SCOPE} details.faq-item[open] .faq-answer { max-height: 800px; }
+`.trim();
 
   return {
-    styleContent: prepared.styleContent,
+    styleContent: `${prepared.styleContent}\n${faqDetailsCss}`,
     htmlContent,
     toc,
     hasEmbeddedHero: Boolean(heroHtml),
