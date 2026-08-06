@@ -203,3 +203,31 @@ export function buildAboutPageSchema(opts: {
     publisher: { "@id": ORGANIZATION_ID },
   };
 }
+
+/** FAQPage aus sichtbaren Frage/Antwort-Paaren (z. B. Blog-FAQ). */
+export function buildFaqPageSchema(
+  faqs: { question: string; answer: string }[]
+): Record<string, unknown> | null {
+  const mainEntity = faqs
+    .map((f) => ({
+      question: f.question.trim(),
+      answer: f.answer.trim(),
+    }))
+    .filter((f) => f.question && f.answer)
+    .map((f) => ({
+      "@type": "Question",
+      name: f.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: f.answer,
+      },
+    }));
+
+  if (mainEntity.length === 0) return null;
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity,
+  };
+}

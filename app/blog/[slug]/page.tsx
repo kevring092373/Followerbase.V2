@@ -19,6 +19,7 @@ import { JsonLd } from "@/components/JsonLd";
 import {
   buildBreadcrumbSchema,
   buildPublisherSchema,
+  buildFaqPageSchema,
   absoluteImageUrl,
   toIsoDateTime,
 } from "@/lib/structured-data";
@@ -114,6 +115,8 @@ export default async function BlogPostPage({ params }: Props) {
     { name: postTitle },
   ]);
 
+  const faqSchema = buildFaqPageSchema(prepared.faqs);
+
   const showHero = Boolean(post.image) && !prepared.hasEmbeddedHero;
   const imageSrc =
     post.image && !post.image.startsWith("/") && !post.image.startsWith("http")
@@ -126,6 +129,7 @@ export default async function BlogPostPage({ params }: Props) {
       <JsonLd data={articleSchema} />
       <JsonLd data={personSchema} />
       <JsonLd data={breadcrumbSchema} />
+      {faqSchema ? <JsonLd data={faqSchema} /> : null}
       {prepared.styleContent ? (
         <style dangerouslySetInnerHTML={{ __html: prepared.styleContent }} />
       ) : null}

@@ -10,7 +10,40 @@ import {
 
 export type BlogTocItem = { id: string; label: string };
 
+export type BlogFaqItem = { question: string; answer: string };
+
 const BLOG_SCOPE = ".blog-page-html";
+
+function stripHtmlToText(html: string): string {
+  return html
+    .replace(/<script[\s\S]*?<\/script>/gi, " ")
+    .replace(/<style[\s\S]*?<\/style>/gi, " ")
+    .replace(/<svg[\s\S]*?<\/svg>/gi, " ")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/&amp;/gi, "&")
+    .replace(/&lt;/gi, "<")
+    .replace(/&gt;/gi, ">")
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;|&apos;/gi, "'")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+/** FAQ-Paare aus transformiertem Blog-HTML (details.faq-item). */
+export function extractBlogFaqItems(html: string): BlogFaqItem[] {
+  if (!html) return [];
+  const items: BlogFaqItem[] = [];
+  const re =
+    /<details[^>]*class=["'][^"']*\bfaq-item\b[^"']*["'][^>]*>[\s\S]*?<summary[^>]*>([\s\S]*?)<\/summary>([\s\S]*?)<\/details>/gi;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(html)) !== null) {
+    const question = stripHtmlToText(m[1]);
+    const answer = stripHtmlToText(m[2]);
+    if (question && answer) items.push({ question, answer });
+  }
+  return items;
+}
 
 function slugifyHeading(text: string): string {
   return text
@@ -131,6 +164,7 @@ export function prepareBlogArticleHtml(rawHtml: string): {
   styleContent: string;
   htmlContent: string;
   toc: BlogTocItem[];
+  faqs: BlogFaqItem[];
   hasEmbeddedHero: boolean;
   heroHtml: string | null;
 } {
@@ -159,6 +193,8 @@ export function prepareBlogArticleHtml(rawHtml: string): {
     ""
   );
 
+  const faqs = extractBlogFaqItems(htmlContent);
+
   // details/summary + Layout-Korrekturen gegen Supabase-Vollseiten-CSS
   const faqDetailsCss = `
 ${BLOG_SCOPE} { background: transparent !important; }
@@ -172,6 +208,7 @@ ${BLOG_SCOPE} details.faq-item[open] .faq-answer { max-height: 800px; }
     styleContent: `${prepared.styleContent}\n${faqDetailsCss}`,
     htmlContent,
     toc,
+    faqs,
     hasEmbeddedHero: Boolean(heroHtml),
     heroHtml,
   };
