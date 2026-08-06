@@ -681,6 +681,34 @@ button.nav-link {
   color: var(--brand-primary);
 }
 
+/* ===== WhatsApp-Kontakt (Hero + Navigation) ===== */
+/* Markenfarbe von WhatsApp, damit der Button ohne Beschriftung erkennbar bleibt. */
+.whatsapp-btn {
+  gap: 0.5rem;
+  background: #25d366;
+  color: #fff;
+  /* Transparenter Rahmen statt none: sonst ist der Button 2px flacher als .btn-secondary daneben. */
+  border: 1px solid transparent;
+}
+
+.whatsapp-btn:hover {
+  background: #1eb555;
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(37, 211, 102, 0.3);
+}
+
+.whatsapp-nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #10893d;
+}
+
+.whatsapp-nav-link:hover {
+  color: #0c6e30;
+}
+
 /* ===== Share-Buttons (Produkt & Blog) ===== */
 .share-buttons {
   display: flex;

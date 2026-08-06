@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Logo } from "./Logo";
 import { CartLink } from "./CartLink";
 import { categories, headerQuickLinks } from "@/lib/categories";
+import { WhatsAppButton } from "./WhatsAppButton";
 
 function HamburgerIcon({ open }: { open: boolean }) {
   return (
@@ -57,6 +58,7 @@ export function Header() {
             <Link href="/ueber-uns" className="nav-link">
               Über uns
             </Link>
+            <WhatsAppButton className="nav-link whatsapp-nav-link" iconSize={17} />
             <Link href="/bestellung-verfolgen" className="nav-link nav-link-tracking">
               Bestellung verfolgen
             </Link>
@@ -131,6 +133,7 @@ export function Header() {
           >
             Bestellung verfolgen
           </Link>
+          <WhatsAppButton className="mobile-menu-link whatsapp-nav-link" iconSize={17} />
         </div>
       </div>
 

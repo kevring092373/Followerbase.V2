@@ -7,6 +7,7 @@ import { HomeReveal } from "@/components/HomeReveal";
 import { CategoryIcon } from "@/components/CategoryIcon";
 import { ReviewCarousel } from "@/components/ReviewCarousel";
 import { InstagramNotificationOverlay } from "@/components/InstagramNotificationOverlay";
+import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { JsonLd } from "@/components/JsonLd";
 import { buildOrganizationSchema } from "@/lib/structured-data";
 import { absoluteUrl } from "@/lib/seo";
@@ -96,6 +97,10 @@ export default async function HomePage() {
               <Link href="/bestellung-verfolgen" className="btn btn-secondary home-hero-btn">
                 Bestellung verfolgen
               </Link>
+              <WhatsAppButton
+                className="btn home-hero-btn whatsapp-btn"
+                label="Per WhatsApp fragen"
+              />
             </div>
           </div>
           <InstagramNotificationOverlay compact />
