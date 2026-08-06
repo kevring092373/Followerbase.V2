@@ -9,7 +9,7 @@
    ============================================================ */
 & {
   --primary:#8a55ee;--primary-hover:#7c3aed;--secondary:#a78bfa;--dark:#5b21b6;
-  --ink:#211a38;--text:#2b2447;--text-2:#6b6584;--text-3:#9691ab;
+  --ink:#3a3355;--text:#4a4463;--text-2:#6b6584;--text-3:#9691ab;
   --bg:#ffffff;--bg-soft:#faf9fe;--card:#fff;--border:#eceaf5;--border-2:#f5f3fb;
   --grad:linear-gradient(135deg,#a78bfa,#8a55ee 50%,#7c3aed);
   --grad-deep:linear-gradient(135deg,#7c3aed,#8a55ee);
@@ -123,9 +123,8 @@
 .icon-tt{background:#14101f}
 .p-card h3{font-size:1.08rem;font-weight:700;margin-bottom:.4rem}
 .p-card p{font-size:.88rem;color:var(--text-2);flex-grow:1;margin-bottom:1rem}
-.p-card .link{font-weight:700;font-size:.9rem;display:inline-flex;align-items:center;gap:.3rem}
-.p-card .link::after{content:'â†’';transition:transform .18s}
-.p-card:hover .link::after{transform:translateX(3px)}
+.p-card .link{font-weight:700;font-size:.9rem;color:var(--primary-hover);display:inline-flex;align-items:center;gap:.3rem}
+.p-card:hover .link{color:var(--dark)}
 .p-badge{position:absolute;top:1.1rem;right:1.1rem;background:linear-gradient(135deg,rgba(138,85,238,.1),rgba(167,139,250,.12));color:var(--dark);font-size:.68rem;font-weight:700;padding:.2rem .6rem;border-radius:50px}
 
 /* â•â•â• PROZESS-TIMELINE (â€žVon unsichtbar zu sichtbar") â•â•â• */
@@ -422,6 +421,12 @@ section[id]{scroll-margin-top:86px}
   max-width: none;
   overflow-x: clip;
   background: #fff;
+  color: var(--text);
+}
+.home-new h1,
+.home-new h2,
+.home-new h3 {
+  color: var(--ink);
 }
 .home-new .hero {
   margin: 0;

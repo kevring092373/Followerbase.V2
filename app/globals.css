@@ -27,9 +27,9 @@
   --bg-page: #fafafa;
   --bg-card: #ffffff;
   --bg-header: rgba(255, 255, 255, 0.95);
-  --text-primary: #1f2937;
-  --text-secondary: #4b5563;
-  --text-muted: #6b7280;
+  --text-primary: #3a4150;
+  --text-secondary: #5b6472;
+  --text-muted: #7a8494;
   --accent: var(--brand-primary);
   --accent-hover: var(--brand-primary-hover);
   --border: rgba(139, 92, 246, 0.12);
@@ -65,7 +65,10 @@ body {
   font-family: "DM Sans", system-ui, -apple-system, sans-serif;
   background: var(--bg-page);
   color: var(--text-primary);
-  -webkit-font-smoothing: antialiased;
+  /* auto = ClearType auf Windows → weichere Kanten als erzwungenes antialiased */
+  -webkit-font-smoothing: auto;
+  -moz-osx-font-smoothing: auto;
+  text-rendering: optimizeLegibility;
 }
 
 @media (max-width: 768px) {
