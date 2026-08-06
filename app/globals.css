@@ -132,6 +132,14 @@ a {
   box-sizing: border-box;
 }
 
+/* Neue Startseite: volle Breite, kein Abstand zum Header – Hintergründe bis zum Rand */
+.main-content:has(.home-new) {
+  max-width: none;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+
 @media (max-width: 640px) {
   .main-content {
     padding: 1rem 0.75rem;

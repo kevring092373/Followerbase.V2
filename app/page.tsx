@@ -123,15 +123,15 @@ export default async function HomePage() {
             </div>
             <HomePhoneMockup />
           </div>
+        </div>
 
-          <div className="marquee" aria-hidden>
-            <div className="marquee-track">
-              {[...MARQUEE, ...MARQUEE].map((label, i) => (
-                <span key={`${label}-${i}`} className="m-chip">
-                  {label}
-                </span>
-              ))}
-            </div>
+        <div className="marquee" aria-hidden>
+          <div className="marquee-track">
+            {[...MARQUEE, ...MARQUEE].map((label, i) => (
+              <span key={`${label}-${i}`} className="m-chip">
+                {label}
+              </span>
+            ))}
           </div>
         </div>
       </section>
@@ -436,8 +436,9 @@ export default async function HomePage() {
                   <div>
                     <b>{cat.name}</b>
                     <span>
-                      {cat.products.length} Produkt
-                      {cat.products.length === 1 ? "" : "e"}
+                      {cat.products.length === 1
+                        ? "1 Produkt"
+                        : `${cat.products.length} Produkte`}
                     </span>
                   </div>
                   <span className="arrow">→</span>
@@ -615,7 +616,7 @@ export default async function HomePage() {
       </section>
 
       {/* ═══ CTA ═══ */}
-      <section className="section" style={{ paddingTop: "1rem" }}>
+      <section className="cta-band">
         <div className="wrap">
           <div className="cta">
             <h2>
