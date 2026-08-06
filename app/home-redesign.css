@@ -427,8 +427,8 @@ section[id]{scroll-margin-top:86px}
   margin: 0;
   width: 100%;
   max-width: none;
-  padding-top: 3.2rem;
-  padding-bottom: 3.4rem;
+  padding-top: 4.2rem;
+  padding-bottom: 4.6rem;
   background:
     radial-gradient(ellipse 55% 55% at 92% 8%, rgba(138, 85, 238, 0.2), transparent 70%),
     radial-gradient(ellipse 45% 50% at 4% 88%, rgba(167, 139, 250, 0.15), transparent 70%),
@@ -440,7 +440,16 @@ section[id]{scroll-margin-top:86px}
 }
 .home-new .hero-grid {
   gap: 4rem;
-  min-height: 640px;
+  min-height: 720px;
+}
+@media (max-width: 1020px) {
+  .home-new .hero {
+    padding-top: 3.4rem;
+    padding-bottom: 3.8rem;
+  }
+  .home-new .hero-grid {
+    min-height: 0;
+  }
 }
 .home-new .stats-band,
 .home-new .section,
