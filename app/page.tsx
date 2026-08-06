@@ -322,6 +322,14 @@ export default async function HomePage() {
             <span className="stars">★★★★★</span>
             <span className="big">5,0&nbsp;/&nbsp;5</span>
             <span className="note">aus verifizierten Käufen</span>
+            <a
+              href="https://www.provenexpert.com/followerbase2"
+              className="rating-sum-pe"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              ProvenExpert-Profil ansehen
+            </a>
           </div>
           <div className="reviews">
             {reviews.map((r) => (
@@ -338,6 +346,15 @@ export default async function HomePage() {
               </div>
             ))}
           </div>
+          <p className="reviews-pe-link">
+            <a
+              href="https://www.provenexpert.com/followerbase2"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Alle Bewertungen auf ProvenExpert ansehen →
+            </a>
+          </p>
         </div>
       </section>
 

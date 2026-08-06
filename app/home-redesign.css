@@ -263,6 +263,17 @@ section[id]{scroll-margin-top:86px}
 .rating-sum .big{font-family:inherit;font-weight:800;font-size:1.5rem;color:var(--ink)}
 .rating-sum .stars{color:#f59e0b;font-size:1.1rem;letter-spacing:2px}
 .rating-sum .note{font-size:.85rem;color:var(--text-3)}
+.rating-sum-pe{
+  font-size:.85rem;font-weight:700;color:var(--primary-hover);
+  text-decoration:none;border-bottom:1px solid rgba(124,58,237,.25);
+  padding-bottom:1px;transition:color .15s,border-color .15s;
+}
+.rating-sum-pe:hover{color:var(--dark);border-color:var(--dark)}
+.reviews-pe-link{text-align:center;margin:2rem 0 0}
+.reviews-pe-link a{
+  font-weight:700;font-size:.95rem;color:var(--primary-hover);text-decoration:none;
+}
+.reviews-pe-link a:hover{color:var(--dark);text-decoration:underline;text-underline-offset:3px}
 
 /* ??? VERGLEICH ??? */
 .compare{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;max-width:900px;margin:0 auto}
