@@ -46,7 +46,8 @@
 
 html {
   scroll-behavior: smooth;
-  overflow-x: hidden;
+  /* clip statt hidden: verhindert horizontales Scrollen, ohne sticky Header zu brechen */
+  overflow-x: clip;
   /* Verhindert horizontales „Zucken“, wenn die Scrollbar erst nach Layout/Fonts erscheint (Windows). */
   scrollbar-gutter: stable;
 }
@@ -60,7 +61,7 @@ html {
 body {
   max-width: 100%;
   min-height: 100vh;
-  overflow-x: hidden;
+  overflow-x: clip;
   font-family: "DM Sans", system-ui, -apple-system, sans-serif;
   background: var(--bg-page);
   color: var(--text-primary);
@@ -73,7 +74,7 @@ body {
     min-height: 100vh;
     min-height: 100dvh;
     overflow-y: scroll;
-    overflow-x: hidden;
+    overflow-x: clip;
     overflow-anchor: none;
     -webkit-overflow-scrolling: touch;
   }
@@ -113,7 +114,7 @@ a {
   display: flex;
   flex-direction: column;
   max-width: 100%;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 @media (max-width: 768px) {
