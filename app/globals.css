@@ -1745,10 +1745,10 @@ button.nav-link {
 .blog-toc-rail-label {
   margin: 0 0 0.75rem;
   font-size: 0.72rem;
-  font-weight: 700;
+  font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--text-muted);
+  color: var(--text-primary);
 }
 
 .blog-toc-rail-list {
@@ -1813,7 +1813,29 @@ button.nav-link {
 }
 
 .blog-breadcrumb [aria-current="page"] span {
-  color: var(--text-secondary);
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+/* Lese-Fortschritt: dünner Strich am unteren Rand des sticky Headers */
+.blog-reading-progress {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  z-index: 2;
+  pointer-events: none;
+  background: transparent;
+}
+
+.blog-reading-progress-bar {
+  height: 100%;
+  width: 100%;
+  transform-origin: left center;
+  transform: scaleX(0);
+  background: var(--brand-primary, #8a55ee);
+  will-change: transform;
 }
 
 .blog-article-hero {

@@ -14,6 +14,7 @@ import {
 } from "@/lib/blog-article";
 import { ShareButtons } from "@/components/ShareButtons";
 import { BlogAuthor } from "@/components/BlogAuthor";
+import { BlogReadingProgress } from "@/components/BlogReadingProgress";
 import { JsonLd } from "@/components/JsonLd";
 import {
   buildBreadcrumbSchema,
@@ -121,6 +122,7 @@ export default async function BlogPostPage({ params }: Props) {
 
   return (
     <div className="blog-article">
+      <BlogReadingProgress />
       <JsonLd data={articleSchema} />
       <JsonLd data={personSchema} />
       <JsonLd data={breadcrumbSchema} />
