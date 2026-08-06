@@ -2,36 +2,16 @@ import Link from "next/link";
 import Image from "next/image";
 import { categories, headerQuickLinks } from "@/lib/categories";
 import { getAllProducts } from "@/lib/products-data";
-import { HomeMarquee } from "@/components/HomeMarquee";
-import { HomeReveal } from "@/components/HomeReveal";
-import { CategoryIcon } from "@/components/CategoryIcon";
-import { ReviewCarousel } from "@/components/ReviewCarousel";
-import { InstagramNotificationOverlay } from "@/components/InstagramNotificationOverlay";
+import { getAllPosts } from "@/lib/blog-data";
+import { reviews } from "@/lib/reviews-data";
+import { BLOG_AUTHOR } from "@/lib/blog-author";
+import { HomePhoneMockup } from "@/components/home/HomePhoneMockup";
+import { HomeFaq } from "@/components/home/HomeFaq";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { JsonLd } from "@/components/JsonLd";
 import { buildOrganizationSchema } from "@/lib/structured-data";
 import { absoluteUrl } from "@/lib/seo";
 
-/** Icon für Schnellzugriff-Karten: Instagram und TikTok nutzen eigene Icons, Rest Fallback. */
-function QuickAccessIcon({ productSlug }: { productSlug: string }) {
-  if (productSlug.startsWith("instagram-")) {
-    return (
-      <span className="home-quick-card-icon home-quick-card-icon-img">
-        <Image src="/icons/instagram.png" alt="Instagram" width={48} height={48} priority sizes="48px" />
-      </span>
-    );
-  }
-  if (productSlug.startsWith("tiktok-")) {
-    return (
-      <span className="home-quick-card-icon home-quick-card-icon-img">
-        <Image src="/icons/tiktok.png" alt="TikTok" width={48} height={48} priority sizes="48px" />
-      </span>
-    );
-  }
-  return null;
-}
-
-/** Kategorie-ID → Dateiname in public/icons/ (für „Nach Plattform wählen“). */
 const CATEGORY_ICONS: Record<string, string> = {
   instagram: "instagram.png",
   tiktok: "tiktok.png",
@@ -43,342 +23,622 @@ const CATEGORY_ICONS: Record<string, string> = {
   threads: "threads.png",
 };
 
-const PLATFORM_ICONS: Record<string, string> = {
-  instagram: "📷",
-  tiktok: "🎵",
-  youtube: "▶️",
-  snapchat: "👻",
-  reddit: "🤖",
-  telegram: "✈️",
-  facebook: "👍",
-  threads: "🧵",
+const QUICK_COPY: Record<string, { badge?: string; text: string; price: string }> = {
+  "instagram-follower-kaufen": {
+    badge: "Bestseller",
+    text: "Starke Basis für deinen Account. Hochwertige Follower für mehr Sichtbarkeit.",
+    price: "ab 0,99 €",
+  },
+  "tiktok-follower-kaufen": {
+    badge: "Beliebt",
+    text: "Wachse auf der beliebtesten Video-Plattform. Echte Reichweite von Anfang an.",
+    price: "ab 2,99 €",
+  },
+  "instagram-likes-kaufen": {
+    text: "Mehr Engagement für deine Posts. Likes, die ankommen und bleiben.",
+    price: "ab 0,99 €",
+  },
+  "tiktok-likes-kaufen": {
+    text: "Unterstützung für deine TikToks. Likes für mehr Algorithmus-Push.",
+    price: "ab 0,99 €",
+  },
 };
+
+const MARQUEE = [
+  "📸 Instagram",
+  "🎵 TikTok",
+  "▶️ YouTube",
+  "👻 Snapchat",
+  "🤖 Reddit",
+  "✈️ Telegram",
+  "👍 Facebook",
+  "🧵 Threads",
+  "✦ Follower",
+  "✦ Likes",
+  "✦ Views",
+  "✦ Reichweite",
+];
 
 export const revalidate = 3600;
 
-/** Titel und Beschreibung kommen aus dem Root-Layout; hier nur die kanonische URL. */
 export const metadata = {
   alternates: { canonical: absoluteUrl("/") },
 };
 
 export default async function HomePage() {
-  const allProducts = await getAllProducts();
+  const [allProducts, posts] = await Promise.all([getAllProducts(), getAllPosts()]);
+  const blogTeasers = posts.slice(0, 3);
 
   return (
-    <div className="home">
+    <div className="home-new">
       <JsonLd data={buildOrganizationSchema()} />
-      {/* Hero + Instagram-Overlay rechts */}
-      <section className="home-hero">
-        <div className="home-hero-bg" aria-hidden>
-          <span className="home-hero-orb home-hero-orb-1" />
-          <span className="home-hero-orb home-hero-orb-2" />
-          <span className="home-hero-orb home-hero-orb-3" />
-        </div>
-        <div className="home-hero-row">
-          <div className="home-hero-inner">
-            <p className="home-hero-label">Follower, Likes & Views</p>
-            <h1 className="home-hero-title">
-              Instagram & TikTok Follower kaufen
-            </h1>
-            <p className="home-hero-sub">
-              Instagram, TikTok, YouTube und mehr – schnell, unkompliziert, fairer Preis.
-            </p>
-            <div className="home-hero-stats">
-              <span>{categories.length} Plattformen</span>
-              <span className="home-hero-stats-dot">·</span>
-              <span>{allProducts.length}+ Produkte</span>
-              <span className="home-hero-stats-dot">·</span>
-              <span>Schnelle Lieferung</span>
+
+      {/* ═══ HERO ═══ */}
+      <section className="hero">
+        <div className="wrap">
+          <div className="hero-grid">
+            <div>
+              <span className="eyebrow-pill">✦ Follower, Likes &amp; Views</span>
+              <h1>
+                Instagram &amp; TikTok <span className="grad">Follower kaufen</span>
+              </h1>
+              <p className="hero-sub">
+                Instagram, TikTok, YouTube und mehr. Schnell, unkompliziert und zum fairen Preis.
+                Kein Abo, kein Passwort nötig.
+              </p>
+              <div className="hero-stats">
+                <span>
+                  <b>{categories.length}</b> Plattformen
+                </span>
+                <span className="dot" />
+                <span>
+                  <b>{allProducts.length}+</b> Produkte
+                </span>
+                <span className="dot" />
+                <span>
+                  <b>10.000+</b> zufriedene Kunden
+                </span>
+              </div>
+              <div className="hero-ctas">
+                <Link href="/products" className="btn btn-primary">
+                  Alle Produkte ansehen
+                </Link>
+                <Link href="/bestellung-verfolgen" className="btn btn-ghost">
+                  Bestellung verfolgen
+                </Link>
+                <WhatsAppButton
+                  className="btn whatsapp-btn"
+                  label="Per WhatsApp fragen"
+                />
+              </div>
+              <p style={{ fontSize: ".85rem", color: "var(--text-3)", margin: "-1rem 0 1.6rem" }}>
+                Pakete ab 0,45 € · Einmalzahlung, kein Abo
+              </p>
+              <div className="hero-trust">
+                <span className="pill">✓ Ohne Passwort</span>
+                <span className="pill">✓ Schnelle Lieferung</span>
+                <span className="pill">✓ 30 Tage Nachfüllgarantie</span>
+                <span className="pill">✓ PayPal &amp; Klarna</span>
+              </div>
             </div>
-            <div className="home-hero-cta">
-              <Link href="/products" className="btn btn-primary home-hero-btn">
-                Alle Produkte ansehen
-              </Link>
-              <Link href="/bestellung-verfolgen" className="btn btn-secondary home-hero-btn">
-                Bestellung verfolgen
-              </Link>
-              <WhatsAppButton
-                className="btn home-hero-btn whatsapp-btn"
-                label="Per WhatsApp fragen"
-              />
+            <HomePhoneMockup />
+          </div>
+
+          <div className="marquee" aria-hidden>
+            <div className="marquee-track">
+              {[...MARQUEE, ...MARQUEE].map((label, i) => (
+                <span key={`${label}-${i}`} className="m-chip">
+                  {label}
+                </span>
+              ))}
             </div>
           </div>
-          <InstagramNotificationOverlay compact />
         </div>
       </section>
 
-      {/* Marquee */}
-      <HomeMarquee />
-
-      {/* Schnellzugriff: 4 Hauptprodukte */}
-      <HomeReveal delay={0}>
-        <section className="home-quick">
-          <h2 className="home-section-label">Schnellzugriff</h2>
-          <p className="home-quick-intro">Unsere meistgefragten Produkte – schnell bestellt, schnell geliefert.</p>
-          <div className="home-quick-grid">
-            {headerQuickLinks.map(({ label, productSlug }, index) => (
-              <Link
-                key={productSlug}
-                href={`/product/${productSlug}`}
-                className={`home-quick-card home-quick-card-${index + 1}`}
-              >
-                <span className="home-quick-card-accent" aria-hidden />
-                <QuickAccessIcon productSlug={productSlug} />
-                <h3 className="home-quick-card-title">{label}</h3>
-                <p className="home-quick-card-text">
-                  {index === 0 && "Starke Basis für deinen Account – hochwertige Follower für mehr Sichtbarkeit."}
-                  {index === 1 && "Wachse auf der beliebtesten Video-Plattform – echte Reichweite von Anfang an."}
-                  {index === 2 && "Mehr Engagement für deine Posts – Likes die ankommen und bleiben."}
-                  {index === 3 && "Unterstützung für deine TikToks – Likes für mehr Algorithmus-Push."}
-                </p>
-                <span className="home-quick-card-link">Zum Produkt →</span>
-              </Link>
-            ))}
-          </div>
-        </section>
-      </HomeReveal>
-
-      {/* So funktioniert's */}
-      <HomeReveal delay={80}>
-        <section className="home-how">
-          <h2 className="home-section-label">So funktioniert&apos;s</h2>
-          <div className="home-how-grid">
-            <div className="home-how-step card">
-              <span className="home-how-step-num">1</span>
-              <h3 className="home-how-step-title">Produkt wählen</h3>
-              <p className="home-how-step-text">Plattform und Menge auswählen – Preise auf einen Blick.</p>
+      {/* ═══ STATS ═══ */}
+      <section className="stats-band">
+        <div className="wrap">
+          <div className="stats-grid">
+            <div className="stat">
+              <div className="n">10.000+</div>
+              <div className="l">Zufriedene Kunden</div>
             </div>
-            <div className="home-how-step card">
-              <span className="home-how-step-num">2</span>
-              <h3 className="home-how-step-title">Sicher bezahlen</h3>
-              <p className="home-how-step-text">Über unseren Checkout – schnell und geschützt.</p>
+            <div className="stat">
+              <div className="n">{categories.length}</div>
+              <div className="l">Plattformen</div>
             </div>
-            <div className="home-how-step card">
-              <span className="home-how-step-num">3</span>
-              <h3 className="home-how-step-title">Reichweite erhalten</h3>
-              <p className="home-how-step-text">Lieferung startet zeitnah. Kein Abo, keine versteckten Kosten.</p>
+            <div className="stat">
+              <div className="n">{allProducts.length}+</div>
+              <div className="l">Produkte</div>
             </div>
-          </div>
-        </section>
-      </HomeReveal>
-
-      {/* Textblock */}
-      <HomeReveal delay={120}>
-        <section className="home-text-block">
-          <div className="home-text-block-inner">
-            <p className="home-text-block-label">Warum Reichweite?</p>
-            <h2 className="home-text-block-title">
-              Dein Auftritt zählt – im Feed, in der Story, im Algorithmus.
-            </h2>
-            <p className="home-text-block-body">
-              Ob Creator, Marke oder kleines Business: Sichtbarkeit entscheidet. Mit dem richtigen Start
-              gewinnst du Vertrauen und Reichweite, ohne monatelang im leeren Raum zu posten. Followerbase
-              liefert dir die Basis – fair, schnell und transparent.
-            </p>
-          </div>
-        </section>
-      </HomeReveal>
-
-      {/* Bewertungs-Carousel (verifiziert + normal) */}
-      <HomeReveal delay={140}>
-        <ReviewCarousel />
-      </HomeReveal>
-
-      {/* Plattformen – groß, klare Karten */}
-      <HomeReveal delay={160}>
-        <section className="home-platforms">
-          <h2 className="home-platforms-title">Nach Plattform wählen</h2>
-          <p className="home-platforms-intro">Wähle deine Plattform – wir haben Follower, Likes und Views für alle großen Kanäle.</p>
-          <div className="home-platforms-grid">
-            {categories.map((cat) => (
-              <Link
-                key={cat.id}
-                href={`/products/${cat.slug}`}
-                className="home-platform-card"
-              >
-                <span className="home-platform-icon">
-                  <CategoryIcon
-                    src={CATEGORY_ICONS[cat.id] ? `/icons/${CATEGORY_ICONS[cat.id]}` : ""}
-                    fallback={PLATFORM_ICONS[cat.id] ?? "📦"}
-                    alt={cat.name}
-                    size={48}
-                    className="home-platform-icon-img"
-                  />
-                </span>
-                <span className="home-platform-name">{cat.name}</span>
-                <span className="home-platform-meta">{cat.products.length} Produkte</span>
-                <span className="home-platform-arrow">→</span>
-              </Link>
-            ))}
-          </div>
-        </section>
-      </HomeReveal>
-
-      {/* Artikel: Follower kaufen – Risiken, Nutzen, Alternativen */}
-      <HomeReveal delay={180}>
-        <div className="product-intro">
-          <h2 className="product-intro-title">Follower kaufen: Risiken, Nutzen und seriöse Alternativen für dein Social Media Wachstum</h2>
-          <p className="product-intro-text">
-            Der Kauf von Followern verspricht eine schnelle Steigerung deines Social Proof und deiner Reichweite, was für Creators, Marken und Agenturen oft entscheidend ist, um eine Kampagne zu starten oder Kooperationen zu fördern. Du siehst dich mit der Notwendigkeit konfrontiert, schnell Vertrauen zu schaffen, doch dieser Weg birgt auch potenzielle Nachteile, darunter sinkende Engagement-Raten und ein Vertrauensverlust deiner Community. Zugleich musst du die rechtlichen Grenzen und ethischen Implikationen verstehen, um Fallstricke wie gewerbsmäßigen Betrug zu vermeiden. Du erfährst nicht nur, wie der Prozess des Follower-Kaufs abläuft und wie du gefälschte Profile erkennst, sondern auch, welche seriösen Alternativen existieren, um ein nachhaltiges Wachstum zu erzielen. Am Ende dieses Leitfadens bist du in der Lage, fundierte Entscheidungen für dein Social Media Marketing zu treffen, indem du die vielschichtigen Aspekte des Follower-Kaufs klar überblickt.
-          </p>
-          <div className="trust-bar">
-            <div className="trust-badge"><span aria-hidden>🔒</span> Ohne Passwort</div>
-            <div className="trust-badge"><span aria-hidden>⚡</span> Schnelle Lieferung</div>
-            <div className="trust-badge"><span aria-hidden>🔄</span> Nachfüllgarantie</div>
-            <div className="trust-badge"><span aria-hidden>📊</span> 87 % vertrauen Social Media</div>
+            <div className="stat">
+              <div className="n">30 Tage</div>
+              <div className="l">Nachfüllgarantie</div>
+            </div>
           </div>
         </div>
-      </HomeReveal>
+      </section>
 
-      <div className="content-wrap">
-        <section id="einfuehrung">
-          <h2>Follower kaufen: Eine Einführung in ein kontroverses Thema</h2>
-          <p>Follower kaufen bedeutet, Social-Media-Accounts zu erwerben, die Ihrem Profil auf Instagram, TikTok oder YouTube folgen. Ziel ist es, die Reichweite künstlich zu steigern. Manchmal braucht man eben einen kleinen Anstoß, um sichtbar zu werden. Dies generiert schnellen Social Proof für Kampagnen, Creator, Marken und Agenturen. Vorsicht: Gekaufte Follower erhöhen zwar Zahlen, aber bringen kaum echtes Engagement oder nachhaltige organische Reichweite.</p>
-          <h3>Motivation und Erwartungshaltung beim Follower-Kauf</h3>
-          <p>Wir verstehen gut, warum der Reiz so groß ist. Die primäre Motivation ist der Wunsch nach schneller Sichtbarkeit und Social Proof. Ein Profil mit vielen Followern wirkt für Creator, Marken und Agenturen attraktiver, besonders bei Kooperationen. Doch ich muss ehrlich sein: Sie erhalten einen visuellen Startvorteil, keine Garantie für aktives Engagement oder eine bessere Algorithmus-Performance. Viele nutzen die Option, Instagram Follower zu kaufen, um ihren Start auf der Plattform zu beschleunigen. Dabei ist es entscheidend, einen seriösen Anbieter zu finden, der Diskretion und transparente Prozesse garantiert.</p>
-        </section>
+      {/* ═══ SCHNELLZUGRIFF ═══ */}
+      <section className="section" id="schnellzugriff">
+        <div className="wrap">
+          <div className="section-head">
+            <span className="eyebrow">Schnellzugriff</span>
+            <h2>Unsere meistgefragten Produkte</h2>
+            <p>Schnell bestellt, schnell geliefert.</p>
+          </div>
+          <div className="products-grid">
+            {headerQuickLinks.map(({ label, productSlug }) => {
+              const copy = QUICK_COPY[productSlug];
+              const icon =
+                productSlug.startsWith("instagram-")
+                  ? "/icons/instagram.png"
+                  : "/icons/tiktok.png";
+              return (
+                <Link
+                  key={productSlug}
+                  href={`/product/${productSlug}`}
+                  className="p-card"
+                >
+                  {copy?.badge && <span className="p-badge">{copy.badge}</span>}
+                  <span className="icon-img">
+                    <Image src={icon} alt="" width={46} height={46} sizes="46px" />
+                  </span>
+                  <h3>{label}</h3>
+                  {copy?.price && <span className="p-price">{copy.price}</span>}
+                  <p>{copy?.text ?? "Zum Produkt"}</p>
+                  <span className="link">Zum Produkt</span>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      </section>
 
-        <hr className="section-divider" />
-
-        <section id="warum">
-          <h2>Warum Creator und Unternehmen Follower kaufen</h2>
-          <p>Wir sehen, wie Creator und Unternehmen Follower kaufen, um ihre Reichweite und den Social Proof schnell zu pushen. Manchmal ist organisches Wachstum einfach zu langsam. Eine Studie von Kilian und Rudmann (2020) zeigt: Die Followerzahl beeinflusst die Glaubwürdigkeit von Influencern. Das ist entscheidend, wenn man schnell eine starke Online-Präsenz braucht, ohne ewig auf organisches Wachstum zu warten.</p>
-          <div className="icon-grid">
-            <div className="icon-card card">
-              <span className="icon-card-icon" aria-hidden>🚀</span>
-              <h4>Schnellere Wahrnehmung von Reichweite und Social Proof</h4>
-              <p>Ein rascher Follower-Zuwachs macht ein Profil attraktiver. Das ist super für Kooperationen und Produktlaunches, die nicht warten können. Hohe Followerzahlen signalisieren Popularität und Relevanz. Das erleichtert die Kontaktaufnahme und steigert die Sichtbarkeit von Kampagnen sofort. So wird die Marke schneller auf dem Markt wahrgenommen.</p>
+      {/* ═══ TIMELINE ═══ */}
+      <section className="section" id="so-funktionierts" style={{ paddingTop: "1rem" }}>
+        <div className="wrap">
+          <div className="section-head">
+            <span className="eyebrow">So funktioniert&apos;s</span>
+            <h2>Von unsichtbar zu sichtbar</h2>
+            <p>Vom leeren Profil zum überzeugenden Auftritt, in vier einfachen Schritten.</p>
+          </div>
+          <div className="timeline">
+            <div className="tl-item">
+              <div className="tl-node">0</div>
+              <span className="tl-tag muted">Ausgangslage</span>
+              <h3>Unsichtbar</h3>
+              <p>
+                Dein Content ist gut, aber dein Profil wirkt leer. Neue Besucher folgen nicht, der
+                Algorithmus spielt dich kaum aus.
+              </p>
             </div>
-            <div className="icon-card card">
-              <span className="icon-card-icon" aria-hidden>🤝</span>
-              <h4>Vertrauensbildung bei langsamem organischem Wachstum</h4>
-              <p>Ein Profil, das gut gefüllt ist, schafft bei neuen Besuchern sofort mehr Vertrauen. Besonders, wenn das organische Wachstum mal wieder stockt. Ein Profil mit sichtbarer Community signalisiert Autorität und Authentizität. So stärkt es die Glaubwürdigkeit einer Marke oder Person von Anfang an.</p>
+            <div className="tl-item active">
+              <div className="tl-node">1</div>
+              <span className="tl-tag">Schritt 1</span>
+              <h3>Produkt wählen</h3>
+              <p>Plattform und Menge auswählen. Preise auf einen Blick, ab 0,45 €.</p>
+            </div>
+            <div className="tl-item active">
+              <div className="tl-node">2</div>
+              <span className="tl-tag">Schritt 2</span>
+              <h3>Sicher bezahlen</h3>
+              <p>
+                PayPal, Klarna, Kreditkarte, Apple Pay oder Google Pay. Schnell, geschützt und ohne
+                dein Passwort.
+              </p>
+            </div>
+            <div className="tl-item active">
+              <div className="tl-node">3</div>
+              <span className="tl-tag">Schritt 3</span>
+              <h3>Reichweite erhalten</h3>
+              <p>
+                Lieferung startet zeitnah per Drip-Feed, also schrittweise und natürlich wirkend.
+                Kein Abo, keine versteckten Kosten.
+              </p>
+            </div>
+            <div className="tl-item result">
+              <div className="tl-node">✓</div>
+              <span className="tl-tag dark">Ergebnis</span>
+              <h3>Social Proof, der wirkt</h3>
+              <p>
+                Dein Profil wirkt etabliert, neue Besucher folgen leichter, und dein Content
+                bekommt die Basis, die er verdient.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══ WARUM ═══ */}
+      <section className="section" id="warum">
+        <div className="wrap">
+          <div className="why">
+            <div>
+              <span className="eyebrow">Warum Reichweite?</span>
+              <h2>Dein Auftritt zählt. Im Feed, in der Story, im Algorithmus.</h2>
+              <p>
+                Ob Creator, Marke oder kleines Business: Sichtbarkeit entscheidet. Mit dem
+                richtigen Start gewinnst du Vertrauen und Reichweite, ohne monatelang im leeren
+                Raum zu posten. Followerbase liefert dir die Basis. Fair, schnell und transparent.
+              </p>
+              <Link href="/products" className="btn btn-primary">
+                Jetzt Basis aufbauen
+              </Link>
+            </div>
+            <ul className="feature-list">
+              <li>
+                <span className="f-ico">🔒</span>
+                <div>
+                  <b>Ohne Passwort</b>
+                  <span>Dein öffentlicher Benutzername genügt. Mehr fragen wir nie ab.</span>
+                </div>
+              </li>
+              <li>
+                <span className="f-ico">⚡</span>
+                <div>
+                  <b>Schnelle Lieferung</b>
+                  <span>Start zeitnah nach Bestellung, Zustellung per Drip-Feed.</span>
+                </div>
+              </li>
+              <li>
+                <span className="f-ico">🔄</span>
+                <div>
+                  <b>30 Tage Nachfüllgarantie</b>
+                  <span>Verluste innerhalb von 30 Tagen füllen wir kostenlos auf.</span>
+                </div>
+              </li>
+              <li>
+                <span className="f-ico">🇩🇪</span>
+                <div>
+                  <b>Deutscher Anbieter</b>
+                  <span>
+                    Venus Management GbR aus Engelskirchen, mit vollständigem Impressum.
+                  </span>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══ REVIEWS ═══ */}
+      <section
+        className="section"
+        id="bewertungen"
+        style={{
+          background:
+            "linear-gradient(180deg,transparent,rgba(138,85,238,.045),transparent)",
+        }}
+      >
+        <div className="wrap">
+          <div className="section-head">
+            <span className="eyebrow">Was Kunden sagen</span>
+            <h2>Verifizierte Käufe, ehrliche Meinungen</h2>
+            <p>Bewertungen von Nutzer:innen zu Followerbase.</p>
+          </div>
+          <div className="rating-sum">
+            <span className="stars">★★★★★</span>
+            <span className="big">5,0&nbsp;/&nbsp;5</span>
+            <span className="note">aus verifizierten Käufen</span>
+          </div>
+          <div className="reviews">
+            {reviews.map((r) => (
+              <div key={r.id} className="review">
+                <span className="stars">{"★".repeat(r.rating)}</span>
+                {r.verified && (
+                  <span className="verified">
+                    ✓ Verifizierter Kauf
+                    {r.productHint ? ` · ${r.productHint}` : ""}
+                  </span>
+                )}
+                <p>{r.text}</p>
+                <span className="who">{r.author}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ═══ VERGLEICH ═══ */}
+      <section className="section" id="unterschied" style={{ paddingTop: "1rem" }}>
+        <div className="wrap">
+          <div className="section-head">
+            <span className="eyebrow">Der Unterschied</span>
+            <h2>Woran du unseriöse Anbieter erkennst</h2>
+            <p>
+              Der Markt ist voller schwarzer Schafe. So unterscheidet sich Followerbase von
+              anonymen Billig-Shops.
+            </p>
+          </div>
+          <div className="compare">
+            <div className="cmp-card bad">
+              <h3>Typische Billig-Anbieter</h3>
+              <ul>
+                <li>
+                  <span className="x">✕</span> Fragen nach deinem Account-Passwort
+                </li>
+                <li>
+                  <span className="x">✕</span> Nur Krypto oder anonyme Zahlwege
+                </li>
+                <li>
+                  <span className="x">✕</span> Kein Impressum, kein Ansprechpartner
+                </li>
+                <li>
+                  <span className="x">✕</span> Bot-Dump: alles auf einen Schlag, hohes Risiko
+                </li>
+                <li>
+                  <span className="x">✕</span> Follower verschwinden nach Tagen, keine Garantie
+                </li>
+                <li>
+                  <span className="x">✕</span> Versteckte Abos und Folgekosten
+                </li>
+              </ul>
+            </div>
+            <div className="cmp-card good">
+              <h3>Followerbase</h3>
+              <ul>
+                <li>
+                  <span className="c">✓</span> Nur dein öffentlicher Benutzername, nie ein
+                  Passwort
+                </li>
+                <li>
+                  <span className="c">✓</span> PayPal, Klarna, Kreditkarte, Apple &amp; Google
+                  Pay
+                </li>
+                <li>
+                  <span className="c">✓</span> Deutsches Unternehmen mit vollständigem Impressum
+                </li>
+                <li>
+                  <span className="c">✓</span> Drip-Feed: schrittweise Lieferung, natürlich
+                  wirkend
+                </li>
+                <li>
+                  <span className="c">✓</span> 30 Tage Nachfüllgarantie auf Follower
+                </li>
+                <li>
+                  <span className="c">✓</span> Einmalzahlung ab 0,45 €, kein Abo
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══ PLATTFORMEN ═══ */}
+      <section className="section" id="plattformen">
+        <div className="wrap">
+          <div className="section-head">
+            <span className="eyebrow">Nach Plattform wählen</span>
+            <h2>Follower, Likes und Views für alle großen Kanäle</h2>
+          </div>
+          <div className="platforms">
+            {categories.map((cat) => {
+              const iconFile = CATEGORY_ICONS[cat.id];
+              return (
+                <Link
+                  key={cat.id}
+                  href={`/products/${cat.slug}`}
+                  className="pf-card"
+                >
+                  <span className="pf-ico-img">
+                    {iconFile ? (
+                      <Image
+                        src={`/icons/${iconFile}`}
+                        alt={cat.name}
+                        width={42}
+                        height={42}
+                        sizes="42px"
+                      />
+                    ) : null}
+                  </span>
+                  <div>
+                    <b>{cat.name}</b>
+                    <span>
+                      {cat.products.length} Produkt
+                      {cat.products.length === 1 ? "" : "e"}
+                    </span>
+                  </div>
+                  <span className="arrow">→</span>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ═══ ANSPRECHPARTNER ═══ */}
+      <section className="section" id="vertrauen" style={{ paddingTop: "1rem" }}>
+        <div className="wrap">
+          <div className="trust">
+            <div className="trust-avatar-img">
+              <Image
+                src={BLOG_AUTHOR.image}
+                alt={BLOG_AUTHOR.name}
+                width={150}
+                height={150}
+                sizes="150px"
+              />
+              <span className="flag">DE</span>
+            </div>
+            <div>
+              <span className="eyebrow">Dein Ansprechpartner</span>
+              <h2>Ein echtes Unternehmen. Kein anonymer Reseller.</h2>
+              <p>
+                Followerbase wird von der Venus Management GbR aus Engelskirchen bei Köln
+                betrieben. Mit vollständigem Impressum, deutscher Umsatzsteuer-ID und Support, der
+                deine Sprache spricht. Du erreichst uns per E-Mail, Telefon und WhatsApp – und wir
+                antworten in der Regel innerhalb von 24 Stunden.
+              </p>
+              <p style={{ marginTop: "0.75rem", fontWeight: 700, color: "var(--ink)" }}>
+                {BLOG_AUTHOR.name} · {BLOG_AUTHOR.role}
+              </p>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "0.75rem", marginTop: "1rem" }}>
+                <Link href="/ueber-uns" className="btn btn-ghost">
+                  Mehr über uns
+                </Link>
+                <WhatsAppButton className="btn whatsapp-btn" label="WhatsApp" />
+              </div>
+            </div>
+            <div className="trust-badges">
+              <span className="t-badge">SSL-verschlüsselt &amp; DSGVO-konform</span>
+              <span className="t-badge">
+                PayPal, Klarna, Kreditkarte, Apple &amp; Google Pay
+              </span>
+              <span className="t-badge">Kein Abo, einmalig ab 0,45 €</span>
+              <span className="t-badge">30 Tage Nachfüllgarantie auf Follower</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══ BLOG ═══ */}
+      {blogTeasers.length > 0 && (
+        <section className="section" id="ratgeber-teaser">
+          <div className="wrap">
+            <div className="section-head">
+              <span className="eyebrow">Aus dem Blog</span>
+              <h2>Ehrliche Ratgeber statt Verkaufs-Blabla</h2>
+              <p>
+                Wir erklären dir auch, wann sich der Kauf nicht lohnt. Genau deshalb vertrauen uns
+                unsere Kunden.
+              </p>
+            </div>
+            <div className="blog-grid">
+              {blogTeasers.map((post) => {
+                const imgSrc = post.image
+                  ? post.image.startsWith("/") || post.image.startsWith("http")
+                    ? post.image
+                    : `/icons/${post.image}`
+                  : null;
+                return (
+                <Link key={post.slug} href={`/blog/${post.slug}`} className="blog-card">
+                  <div className="bc-top">
+                    {imgSrc ? (
+                      <Image
+                        src={imgSrc}
+                        alt=""
+                        width={400}
+                        height={110}
+                        sizes="(max-width: 860px) 100vw, 33vw"
+                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                      />
+                    ) : (
+                      <span style={{ fontSize: "2rem" }}>📰</span>
+                    )}
+                  </div>
+                  <div className="bc-body">
+                    {post.category && <span className="bc-tag">{post.category}</span>}
+                    <h3>{post.title}</h3>
+                    {post.excerpt && <p>{post.excerpt}</p>}
+                    <span className="link">Weiterlesen →</span>
+                  </div>
+                </Link>
+                );
+              })}
             </div>
           </div>
         </section>
+      )}
 
-        <hr className="section-divider" />
-
-        <section id="legal">
-          <h2>Legalität und ethische Betrachtung beim Follower-Kauf</h2>
-          <p>Der Kauf von Followern bewegt sich in einem rechtlichen und ethischen Graubereich, besonders im kommerziellen Kontext. Klarheit ist hier oft so trüb wie ein schlecht gemixter Cocktail. Obwohl kein explizites Verbot besteht, kann die Praxis unter Umständen als gewerbsmäßiger Betrug oder Verstoß gegen das Wettbewerbsrecht eingestuft werden. Dies erläutert die Medien Kanzlei. Die genauen Auswirkungen hängen stark davon ab, wie die Zahlen eingesetzt werden.</p>
-          <h3>Rechtliche Konsequenzen im gewerblichen Bereich</h3>
-          <p>Wer gekaufte Follower nutzt, um Reichweite vorzutäuschen, und dadurch Werbekunden zu Verträgen bewegt, gilt als Betrug (§ 263 StGB). Dies kann finanziellen Schaden verursachen. Das Vortäuschen von Popularität verstößt zudem gegen das Wettbewerbsrecht (UWG). Es verschafft unfaire Vorteile und wirkt irreführend.</p>
-          <h3>Ethische Verantwortung und Transparenz</h3>
-          <p>Ethisch gesehen untergräbt der Follower-Kauf das Vertrauen von Zielgruppe und Kooperationspartnern. Authentische Interaktionen und organisches Wachstum sind für nachhaltigen Erfolg entscheidend. Gekaufte, oft inaktive Follower, mindern die Engagement-Rate. Transparenz ist der Grundstein für Glaubwürdigkeit und langfristige Beziehungen. Wahren Sie stets Ihre Glaubwürdigkeit, denn nur so lässt sich nachhaltiger Erfolg auf Social Media erzielen, indem Sie auf seriöse Strategien setzen.</p>
-          <div className="callout callout-warning">
-            <div className="callout-title">⚖️ Rechtliche Grauzone</div>
-            <p>Kein explizites Verbot – aber § 263 StGB (Betrug) und UWG (unlauterer Wettbewerb) können greifen, wenn gekaufte Follower zur Täuschung von Werbekunden oder Konkurrenten eingesetzt werden.</p>
+      {/* ═══ SEO ═══ */}
+      <section
+        className="section"
+        id="ratgeber"
+        style={{
+          background: "linear-gradient(180deg,transparent,rgba(138,85,238,.04),transparent)",
+        }}
+      >
+        <div className="wrap">
+          <div className="prose">
+            <div className="section-head" style={{ marginBottom: "1rem" }}>
+              <span className="eyebrow">Ratgeber</span>
+              <h2 style={{ marginTop: 0 }}>
+                Follower kaufen: Risiken, Nutzen und seriöse Alternativen für dein Social Media
+                Wachstum
+              </h2>
+            </div>
+            <p>
+              Der Kauf von Followern verspricht eine schnelle Steigerung deines Social Proof und
+              deiner Reichweite. Gleichzeitig birgt dieser Weg Risiken – von sinkenden
+              Engagement-Raten bis zu rechtlichen Grauzonen. Bei Followerbase bekommst du
+              transparente Preise, Lieferung ohne Passwort und ehrliche Informationen, wann sich
+              der Kauf lohnt und wann du besser in Content investierst.
+            </p>
+            <div className="usp-row">
+              <div className="usp">
+                <div className="e">🔒</div>
+                <b>Ohne Passwort</b>
+              </div>
+              <div className="usp">
+                <div className="e">⚡</div>
+                <b>Schnelle Lieferung</b>
+              </div>
+              <div className="usp">
+                <div className="e">🔄</div>
+                <b>Nachfüllgarantie</b>
+              </div>
+              <div className="usp">
+                <div className="e">🇩🇪</div>
+                <b>Deutscher Anbieter</b>
+              </div>
+            </div>
+            <h3>Warum Creator und Unternehmen Follower kaufen</h3>
+            <p>
+              Manchmal ist organisches Wachstum einfach zu langsam. Eine sichtbare Community
+              senkt die Schwelle für neues Engagement und signalisiert Relevanz – als Startschub,
+              nicht als Ersatz für guten Content.
+            </p>
+            <div className="info-box">
+              <b>⚖️ Rechtliche Grauzone:</b> Kein explizites Verbot, aber § 263 StGB und UWG können
+              greifen, wenn gekaufte Follower zur Täuschung von Werbekunden eingesetzt werden.
+            </div>
+            <h3>Follower-Zahlen als Teil der Gesamtstrategie</h3>
+            <p>
+              Initialer Social Proof → Sichtbarkeit → hochwertiger Content → echtes Engagement →
+              loyale Community → nachhaltiges Wachstum. Follower-Zahlen sind nur der Anfang.
+            </p>
           </div>
-        </section>
+        </div>
+      </section>
 
-        <hr className="section-divider" />
-
-        <section id="nach-kauf">
-          <h2>Was tun nach dem Follower-Kauf und seriöse Alternativen zum Wachstum</h2>
-          <p>Nach dem Kauf von Followern ist es entscheidend, den Fokus auf authentisches Wachstum zu verlagern, um die Glaubwürdigkeit und Relevanz deines Profils langfristig zu sichern. Das Management gekaufter Follower und organische Strategien sind essentiell für nachhaltigen Social-Media-Erfolg. Eine klare Strategie aus hochwertigem Content, aktiver Community-Bindung und gezieltem Engagement steigert deine Reichweite kontinuierlich.</p>
-          <div className="steps">
-            <div className="step-item card">
-              <h4>Authentischen Content erstellen und verbreiten</h4>
-              <p>Der Schlüssel zu organischem Wachstum sind Inhalte, die deine Zielgruppe ansprechen und Mehrwert bieten. Konzentriere dich auf relevante, unterhaltsame oder informative Beiträge, die zum Speichern und Teilen anregen – denn wer will schon ein Profil, das nur als digitaler Staubfänger dient? Kurzvideos wie Reels oder TikToks waren 2023 Haupttreiber für organisches Wachstum, wie eine Mainblick-Analyse zu Social-Media-Trends 2023 zeigte. Nutze relevante Hashtags, um die Sichtbarkeit zu erhöhen und neue Nutzer zu erreichen.</p>
-            </div>
-            <div className="step-item card">
-              <h4>Aktive Community-Interaktion fördern</h4>
-              <p>Echtes Engagement entsteht durch den Dialog mit deiner Community. Antworte auf Kommentare, Direktnachrichten und Erwähnungen, um persönliche Bindungen aufzubauen. Nimm dir die Zeit, Beiträge anderer zu kommentieren und zu liken; so wirst du als aktives Mitglied der Plattform wahrgenommen. Diese bidirektionale Kommunikation ist unerlässlich, um echte und loyale Follower zu gewinnen.</p>
-            </div>
-            <div className="step-item card">
-              <h4>Die FLC-Regel gezielt einsetzen</h4>
-              <p>Die &quot;Follow + Like + Comment&quot; (FLC)-Regel ist eine effektive manuelle Strategie, um relevante Profile auf dich aufmerksam zu machen. Folge gezielt Accounts, like ihre Beiträge und hinterlasse durchdachte Kommentare. So interagieren sie eher mit dir und folgen dir. Dieser gezielte Ansatz hilft, eine organische und qualitativ hochwertige Anhängerschaft aufzubauen.</p>
-            </div>
+      {/* ═══ FAQ ═══ */}
+      <section className="section" id="faq">
+        <div className="wrap">
+          <div className="section-head">
+            <span className="eyebrow">FAQ</span>
+            <h2>Häufig gestellte Fragen zu Social Media Interaktionen</h2>
           </div>
-        </section>
+          <HomeFaq />
+        </div>
+      </section>
 
-        <hr className="section-divider" />
-
-        <section id="kooperationen">
-          <h2>Einfluss auf Markenkooperationen und branchenspezifische Nuancen</h2>
-          <p>Wer möchte schon mit einem Phantom kooperieren? Gekaufte Follower schaden deiner Glaubwürdigkeit bei Markenkooperationen. Partner fordern Authentizität und echte Reichweite. Deshalb prüfen Marken Influencer verstärkt nach Engagement-Raten, nicht nur nach Follower-Zahlen. So wollen sie Betrug vermeiden und einen echten ROI erzielen. Schließlich geht es um mehr als nur um Zahlen, oder?</p>
-          <h3>Erwartungen von Marken und Risiken für die Glaubwürdigkeit</h3>
-          <p>Marken erwarten messbare Ergebnisse und eine authentische Verbindung zur Zielgruppe. Gekaufte Follower verzerren die Engagement-Raten. Eine ehrliche Bewertung der Kampagnenleistung wird so unmöglich. Für Influencer birgt dies das Risiko eines massiven Vertrauensverlustes und dauerhafter Rufschädigung. Algorithmische Tools erkennen solche Unaufrichtigkeit zudem immer leichter. Doch wie unterscheiden sich diese Effekte je nach Branche?</p>
-          <h3>Branchenspezifische Nuancen beim Follower-Kauf</h3>
-          <p>Die Auswirkungen gekaufter Follower variieren stark je nach Branche. Ein Beauty-Influencer lebt von visueller Anziehung und Community-Vertrauen. Für ihn ist fehlende Authentizität besonders schädlich. Tech-Startups, die Nischen besetzen und Leads generieren, achten stark auf präzise Engagement-Metriken und qualifizierte Leads. Hier werden Fake-Follower sofort als wertlos entlarvt, was potenzielle Partnerschaften direkt gefährdet. Solche branchenspezifischen Unterschiede zeigen, wie wichtig es ist, die eigene Strategie genau anzupassen.</p>
-          <div className="icon-grid">
-            <div className="icon-card card">
-              <span className="icon-card-icon" aria-hidden>💄</span>
-              <h4>Beauty &amp; Lifestyle</h4>
-              <p>Community-Vertrauen und visuelle Anziehung stehen im Fokus – fehlende Authentizität ist hier besonders schädlich.</p>
-            </div>
-            <div className="icon-card card">
-              <span className="icon-card-icon" aria-hidden>💻</span>
-              <h4>Tech &amp; Startups</h4>
-              <p>Präzise Engagement-Metriken und qualifizierte Leads zählen – Fake-Follower werden sofort als wertlos entlarvt.</p>
-            </div>
-            <div className="icon-card card">
-              <span className="icon-card-icon" aria-hidden>📈</span>
-              <h4>Agenturen &amp; Marken</h4>
-              <p>Messbarer ROI und authentische Verbindung zur Zielgruppe sind entscheidend für erfolgreiche Kooperationen.</p>
-            </div>
+      {/* ═══ CTA ═══ */}
+      <section className="section" style={{ paddingTop: "1rem" }}>
+        <div className="wrap">
+          <div className="cta">
+            <h2>
+              Dein nächster Besucher entscheidet in Sekunden.
+              <br />
+              Gib ihm einen Grund zu bleiben.
+            </h2>
+            <p>
+              Followerbase unterstützt dich diskret und sicher auf dem Weg zu mehr Social Proof.
+              Ohne Passwort, ohne Abo, mit 30 Tagen Nachfüllgarantie.
+            </p>
+            <Link href="/products" className="btn">
+              Jetzt entdecken →
+            </Link>
+            <WhatsAppButton className="btn ghost-dark" label="Per WhatsApp fragen" />
           </div>
-        </section>
+        </div>
+      </section>
 
-        <hr className="section-divider" />
-
-        <section id="strategie">
-          <h2>Follower-Zahlen als Schlüssel zur umfassenden Social-Media-Strategie</h2>
-          <p>Follower-Zahlen sind entscheidend für digitale Marketingstrategien, da sie Social Proof und Reichweite maßgeblich beeinflussen. Eine starke Social-Media-Präsenz steigert das Vertrauen potenzieller Kunden. Eine Studie zeigt: 87 % der Online-Einkäufer sehen soziale Medien als Hilfe bei Kaufentscheidungen. Diskret erworbene Social-Media-Interaktionen schaffen erste Sichtbarkeit und fördern organisches Wachstum. Manchmal braucht man eben einen kleinen Schubs, um überhaupt wahrgenommen zu werden. Sie bilden jedoch nur einen Teil der Gesamtstrategie.</p>
-          <h3>Initialer Schub für Sichtbarkeit und Vertrauen</h3>
-          <p>Ein ansprechendes Profil mit vielen Followern signalisiert Autorität und Relevanz. Diese initiale Sichtbarkeit ist entscheidend, um im digitalen Raum wahrgenommen zu werden. Strategisch erhöhte Follower-Zahlen senken die Schwelle für organisches Engagement. Inhalte erreichen so schneller eine kritische Masse, da Profile mit vielen Followern vertrauenswürdiger wirken.</p>
-          <h3>Mehr als nur Zahlen: Markenbildung und Community-Aufbau</h3>
-          <p>Follower-Kauf ist ein taktisches Instrument. Man sollte es in eine umfassende Strategie für Markenbildung und Community-Aufbau integrieren. So schaffen Sie eine attraktive Basis für echtes Engagement. Diskrete und planbare Prozesse helfen, anfängliche Reichweite zu nutzen. Marken und Creator verbreiten hochwertigen Content und fördern echte Interaktionen. So entsteht eine loyale Community.</p>
-          <div className="feature-card">
-            <h4>🎯 Die Gesamtstrategie</h4>
-            <p>Initialer Social Proof → Sichtbarkeit → Hochwertiger Content → Echtes Engagement → Loyale Community → Nachhaltiges Wachstum. Follower-Zahlen sind nur der Anfang.</p>
-          </div>
-        </section>
-
-        <hr className="section-divider" />
-
-        <section id="faqs" className="faq-section" aria-labelledby="faq-heading">
-          <h2 id="faq-heading">Häufig gestellte Fragen zu Social Media Interaktionen</h2>
-          <details className="faq-item">
-            <summary className="faq-question">Was ist eine Nachfüllgarantie (Refill) beim Follower-Kauf?</summary>
-            <div className="faq-answer">
-              <p>Eine Nachfüllgarantie, oft als „Refill&quot; bezeichnet, ist ein Service, der von einigen Anbietern beim Kauf von Social Media Interaktionen angeboten wird. Sie stellt sicher, dass verloren gegangene Follower innerhalb eines bestimmten Zeitraums kostenlos ersetzt werden. Da gekaufte Follower im Laufe der Zeit abnehmen können, dient diese Garantie dazu, die ursprünglich erworbene Follower-Zahl zu stabilisieren und das Profil des Kunden langfristig zu unterstützen.</p>
-            </div>
-          </details>
-          <details className="faq-item">
-            <summary className="faq-question">Wie erkenne ich einen seriösen Anbieter für Social Media Interaktionen?</summary>
-            <div className="faq-answer">
-              <p>Ein seriöser Anbieter für Social Media Interaktionen zeichnet sich durch Transparenz, klaren Kundenservice und die ausschließliche Anforderung öffentlicher Profilinformationen aus – niemals nach Ihrem Passwort. Zudem sollten die angebotenen Dienstleistungen realistisch kommuniziert werden, ohne überzogene Versprechen von sofortigem, massivem Wachstum. Achten Sie auf sichere Zahlungsmethoden und positive Bewertungen, die die Glaubwürdigkeit des Dienstleisters untermauern.</p>
-            </div>
-          </details>
-          <details className="faq-item">
-            <summary className="faq-question">Kann mein Account gesperrt werden, wenn ich Follower kaufe?</summary>
-            <div className="faq-answer">
-              <p>Der Kauf von Followern birgt das Risiko einer Account-Sperrung, da dies gegen die Nutzungsbedingungen der meisten Social-Media-Plattformen verstößt. Sowohl Offizielle Instagram Nutzungsbedingungen als auch Offizielle TikTok Nutzungsbedingungen verbieten explizit künstliche Interaktionen und die Manipulation von Reichweiten. Plattformen entwickeln ihre Algorithmen stetig weiter, um solche Aktivitäten zu erkennen und entsprechende Maßnahmen zu ergreifen, die von der Entfernung gekaufter Follower bis zur temporären oder permanenten Sperrung des Accounts reichen können.</p>
-            </div>
-          </details>
-          <details className="faq-item">
-            <summary className="faq-question">Wie schnell werden gekaufte Follower geliefert?</summary>
-            <div className="faq-answer">
-              <p>Die Liefergeschwindigkeit gekaufter Follower variiert stark je nach Anbieter und dem gewählten Paket. Wir bevorzugen oft eine gestaffelte Lieferung über einen bestimmten Zeitraum, um ein natürlicheres Wachstum zu simulieren und die Wahrscheinlichkeit zu verringern, von den Plattform-Algorithmen als künstlich erkannt zu werden. Sofortige, massenhafte Zugänge können hingegen ein Warnsignal sein und das Risiko für Ihren Account erhöhen.</p>
-            </div>
-          </details>
-          <details className="faq-item">
-            <summary className="faq-question">Was bedeutet &quot;ohne Passwort&quot; beim Kauf von Social Media Diensten?</summary>
-            <div className="faq-answer">
-              <p>Die Option &quot;ohne Passwort&quot; beim Kauf von Social Media Diensten bedeutet, dass Sie für die Abwicklung des Kaufs lediglich Ihren Benutzernamen oder den Link zu Ihrem öffentlichen Profil angeben müssen. Ein vertrauenswürdiger Anbieter wird niemals nach Ihrem Account-Passwort fragen, da dies ein erhebliches Sicherheitsrisiko darstellt und gegen die Sicherheitsrichtlinien der meisten sozialen Netzwerke verstößt. Die Anforderung eines Passworts ist ein deutliches Anzeichen für einen unseriösen Dienstleister. Diese Praxis gewährleistet nicht nur die Sicherheit Ihrer Daten, sondern unterstreicht auch eine diskrete und sichere Herangehensweise an Ihr Social Media Wachstum.</p>
-            </div>
-          </details>
-        </section>
-
-        <section id="cta">
-          <div className="cta-section">
-            <h2>Entdecke diskretes und sicheres Social Media Wachstum</h2>
-            <p>Entdecken Sie, wie Followerbase Sie diskret und sicher auf Ihrem Weg zu mehr Social Proof und Reichweite unterstützen kann. Wir verstehen die Bedeutung eines authentischen Online-Auftritts und bieten Lösungen, die Ihre Präsenz stärken, ohne die Integrität Ihres Accounts zu gefährden.</p>
-            <a href="/products" className="cta-btn">Jetzt entdecken →</a>
-          </div>
-        </section>
+      <div className="mobile-cta">
+        <Link href="/products" className="btn btn-primary">
+          Alle Produkte ansehen →
+        </Link>
       </div>
     </div>
   );
