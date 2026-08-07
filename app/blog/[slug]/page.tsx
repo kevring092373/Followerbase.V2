@@ -4,7 +4,7 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { getPostBySlug, getAllPosts } from "@/lib/blog-data";
+import { getPostBySlug } from "@/lib/blog-data";
 import { absoluteUrl, truncateDescription } from "@/lib/seo";
 import { BLOG_AUTHOR, getAuthorPagePath } from "@/lib/blog-author";
 import {
@@ -28,9 +28,15 @@ type Props = { params: { slug: string } };
 
 /** Immer aktuell vom Server laden, damit Inhalt bei Navigation sofort sichtbar ist. */
 export const dynamic = "force-dynamic";
+export const fetchCache = "force-no-store";
+export const revalidate = 0;
+
+function resolveSlug(params: Props["params"]): string {
+  return decodeURIComponent(params.slug ?? "").trim();
+}
 
 export async function generateMetadata({ params }: Props) {
-  const post = await getPostBySlug(params.slug);
+  const post = await getPostBySlug(resolveSlug(params));
   if (!post) return { title: "Beitrag" };
   const title = post.metaTitle?.trim()
     ? post.metaTitle.trim()
@@ -56,13 +62,8 @@ export async function generateMetadata({ params }: Props) {
   };
 }
 
-export async function generateStaticParams() {
-  const posts = await getAllPosts();
-  return posts.map((post) => ({ slug: post.slug }));
-}
-
 export default async function BlogPostPage({ params }: Props) {
-  const post = await getPostBySlug(params.slug);
+  const post = await getPostBySlug(resolveSlug(params));
   if (!post) notFound();
 
   const postTitle = post.title ?? post.metaTitle ?? post.slug;

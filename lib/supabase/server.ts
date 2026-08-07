@@ -15,6 +15,11 @@ if (!url || !serviceRoleKey) {
 
 export const supabaseServer = createClient(url ?? "", serviceRoleKey ?? "", {
   auth: { persistSession: false },
+  // Next.js 14 cached fetch by default – ohne no-store bleiben leere Blog-Lookups als 404 hängen.
+  global: {
+    fetch: (input: RequestInfo | URL, init?: RequestInit) =>
+      fetch(input, { ...init, cache: "no-store" }),
+  },
 });
 
 export function isSupabaseConfigured(): boolean {

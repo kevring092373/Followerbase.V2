@@ -16,16 +16,28 @@ import type { BlogPost } from "./blog";
 
 const BLOG_FILE = path.join(process.cwd(), "content", "blog-posts.json");
 
+/** Slug für URLs: trimmen, Kleinbuchstaben, nur a-z0-9 und Bindestriche. */
+export function normalizeBlogSlug(raw: string): string {
+  return raw
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .replace(/[^a-z0-9-]/g, "")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
 function normalizePost(p: Record<string, unknown>): BlogPost {
-  const slug = typeof p.slug === "string" ? p.slug : "";
+  const rawSlug = typeof p.slug === "string" ? p.slug : "";
+  const slug = normalizeBlogSlug(rawSlug) || rawSlug.trim();
   const title = typeof p.title === "string" ? p.title : (typeof p.excerpt === "string" ? p.excerpt : slug);
   const excerpt = typeof p.excerpt === "string" ? p.excerpt : undefined;
   const content = typeof p.content === "string" ? p.content : "";
   const date = typeof p.date === "string" ? p.date : undefined;
   const metaTitle = typeof p.metaTitle === "string" ? p.metaTitle : undefined;
   const metaDescription = typeof p.metaDescription === "string" ? p.metaDescription : undefined;
-  const image = typeof p.image === "string" ? p.image : undefined;
-  const category = typeof p.category === "string" ? p.category : undefined;
+  const image = typeof p.image === "string" ? p.image.trim() || undefined : undefined;
+  const category = typeof p.category === "string" ? p.category.trim() || undefined : undefined;
   return { slug, title, excerpt, content, date, metaTitle, metaDescription, image, category };
 }
 
@@ -62,17 +74,20 @@ export async function getAllPosts(): Promise<BlogPost[]> {
 }
 
 export async function getPostBySlug(slug: string): Promise<BlogPost | undefined> {
+  const clean = normalizeBlogSlug(slug) || slug.trim();
   if (isSupabaseConfigured()) {
-    const p = await getPostBySlugSupabase(slug);
+    const p = await getPostBySlugSupabase(clean);
     return p ?? undefined;
   }
   const posts = await readPosts();
-  return posts.find((p) => p.slug === slug);
+  return posts.find((p) => p.slug === clean || normalizeBlogSlug(p.slug) === clean);
 }
 
 export async function createPost(input: BlogPost): Promise<BlogPost> {
+  const slug = normalizeBlogSlug(input.slug);
+  if (!slug) throw new Error("Bitte eine gültige URL (Slug) angeben.");
   const post: BlogPost = {
-    slug: input.slug,
+    slug,
     title: input.title,
     content: input.content,
     date: input.date ?? new Date().toISOString().slice(0, 10),
@@ -98,19 +113,29 @@ export async function createPost(input: BlogPost): Promise<BlogPost> {
 }
 
 export async function updatePost(slug: string, input: Partial<BlogPost>): Promise<BlogPost> {
+  const cleanSlugParam = normalizeBlogSlug(slug) || slug.trim();
+  const nextSlug =
+    input.slug !== undefined ? normalizeBlogSlug(input.slug) || input.slug.trim() : undefined;
   if (isSupabaseConfigured()) {
-    const existing = await getPostBySlugSupabase(slug);
+    const existing = await getPostBySlugSupabase(cleanSlugParam);
     if (!existing) throw new Error("Beitrag nicht gefunden.");
-    const updated: BlogPost = { ...existing, ...input };
-    await updatePostSupabase(slug, updated);
+    const updated: BlogPost = {
+      ...existing,
+      ...input,
+      ...(nextSlug ? { slug: nextSlug } : {}),
+    };
+    await updatePostSupabase(existing.slug, updated);
     return updated;
   }
   const posts = await readPosts();
-  const index = posts.findIndex((p) => p.slug === slug);
+  const index = posts.findIndex(
+    (p) => p.slug === cleanSlugParam || normalizeBlogSlug(p.slug) === cleanSlugParam
+  );
   if (index === -1) throw new Error("Beitrag nicht gefunden.");
   const updated: BlogPost = {
     ...posts[index],
     ...input,
+    ...(nextSlug ? { slug: nextSlug } : {}),
   };
   posts[index] = updated;
   await writePosts(posts);
@@ -118,14 +143,17 @@ export async function updatePost(slug: string, input: Partial<BlogPost>): Promis
 }
 
 export async function deletePost(slug: string): Promise<void> {
+  const clean = normalizeBlogSlug(slug) || slug.trim();
   if (isSupabaseConfigured()) {
-    const existing = await getPostBySlugSupabase(slug);
+    const existing = await getPostBySlugSupabase(clean);
     if (!existing) throw new Error("Beitrag nicht gefunden.");
-    await deletePostSupabase(slug);
+    await deletePostSupabase(existing.slug);
     return;
   }
   const posts = await readPosts();
-  const filtered = posts.filter((p) => p.slug !== slug);
+  const filtered = posts.filter(
+    (p) => p.slug !== clean && normalizeBlogSlug(p.slug) !== clean
+  );
   if (filtered.length === posts.length) throw new Error("Beitrag nicht gefunden.");
   await writePosts(filtered);
 }

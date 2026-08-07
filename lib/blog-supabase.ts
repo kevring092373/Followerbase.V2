@@ -24,23 +24,34 @@ type BlogPostRow = {
   category: string | null;
 };
 
+function cleanSlug(slug: string): string {
+  return slug
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .replace(/[^a-z0-9-]/g, "")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
 function rowToPost(r: BlogPostRow): BlogPost {
   return {
-    slug: r.slug,
+    slug: cleanSlug(r.slug) || r.slug.trim(),
     title: r.title,
     excerpt: r.excerpt ?? undefined,
     content: r.content,
     date: r.date ?? undefined,
     metaTitle: r.meta_title ?? undefined,
     metaDescription: r.meta_description ?? undefined,
-    image: r.image ?? undefined,
-    category: r.category ?? undefined,
+    image: r.image?.trim() || undefined,
+    category: r.category?.trim() || undefined,
   };
 }
 
 function postToRow(p: BlogPost): Record<string, unknown> {
+  const slug = cleanSlug(p.slug) || p.slug.trim();
   return {
-    slug: p.slug,
+    slug,
     title: p.title,
     excerpt: p.excerpt ?? null,
     content: p.content,
@@ -97,9 +108,18 @@ export async function getAllPostsSupabase(): Promise<BlogPost[]> {
 export async function getPostBySlugSupabase(slug: string): Promise<BlogPost | null> {
   if (!isSupabaseConfigured()) return null;
   await seedFromFileIfNeeded();
-  const { data, error } = await supabaseServer.from(TABLE).select("*").eq("slug", slug).limit(1).maybeSingle();
-  if (error || !data) return null;
-  return rowToPost(data as BlogPostRow);
+  const clean = cleanSlug(slug) || slug.trim();
+  const { data, error } = await supabaseServer
+    .from(TABLE)
+    .select("*")
+    .eq("slug", clean)
+    .limit(1)
+    .maybeSingle();
+  if (!error && data) return rowToPost(data as BlogPostRow);
+  // Fallback: alte Einträge mit Leerzeichen am Slug (z. B. Copy-Paste)
+  const { data: loose } = await supabaseServer.from(TABLE).select("*").ilike("slug", clean);
+  const match = (loose ?? []).find((r) => cleanSlug((r as BlogPostRow).slug) === clean);
+  return match ? rowToPost(match as BlogPostRow) : null;
 }
 
 export async function createPostSupabase(post: BlogPost): Promise<void> {
