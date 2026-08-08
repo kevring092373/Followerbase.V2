@@ -8,7 +8,7 @@
 import { getBaseUrl } from "@/lib/seo";
 
 export const INDEXNOW_KEY =
-  process.env.INDEXNOW_KEY?.trim() || "0630b9df6ed55b429cf7c66f88d12407";
+  process.env.INDEXNOW_KEY?.trim() || "a8c39dc9f6e64c79b59409b682c15d4c";
 
 const ENDPOINT = "https://api.indexnow.org/indexnow";
 
