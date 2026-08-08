@@ -2,23 +2,12 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Logo } from "./Logo";
 import { CartLink } from "./CartLink";
 import { categories, headerQuickLinks } from "@/lib/categories";
 import { WhatsAppButton } from "./WhatsAppButton";
-
-const CAT_ICONS: Record<string, string> = {
-  instagram: "/icons/Instagram.png",
-  tiktok: "/icons/tiktok.png",
-  youtube: "/icons/youtube.png",
-  snapchat: "/icons/Snapchat.png",
-  telegram: "/icons/telegram.webp",
-  facebook: "/icons/facebook.png",
-  reddit: "/icons/reddit.webp",
-  threads: "/icons/threads.png",
-};
+import { PlatformMiniIcon } from "./PlatformMiniIcon";
 
 const CAT_BG: Record<string, string> = {
   instagram: "bg-ig",
@@ -111,7 +100,6 @@ export function Header() {
               const href = `/products/${category.slug}`;
               const active =
                 pathname === href || pathname.startsWith(`${href}/`);
-              const icon = CAT_ICONS[category.id];
               const bg = CAT_BG[category.id] ?? "";
               return (
                 <Link
@@ -120,15 +108,7 @@ export function Header() {
                   className={`cat${active ? " active" : ""}`}
                 >
                   <span className={`pf-mini ${bg}`}>
-                    {icon ? (
-                      <Image
-                        src={icon}
-                        alt=""
-                        width={14}
-                        height={14}
-                        sizes="14px"
-                      />
-                    ) : null}
+                    <PlatformMiniIcon id={category.id} />
                   </span>
                   {category.name}
                 </Link>

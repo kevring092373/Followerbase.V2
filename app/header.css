@@ -226,21 +226,18 @@
   overflow: hidden;
 }
 
-.pf-mini img {
-  width: 14px;
-  height: 14px;
-  object-fit: contain;
-  filter: brightness(0) invert(1);
-}
-
-.bg-sc img {
-  filter: brightness(0);
+.pf-mini svg {
+  width: 13px;
+  height: 13px;
+  fill: #fff;
+  display: block;
 }
 
 .bg-ig { background: linear-gradient(45deg, #f09433, #dc2743 60%, #bc1888); }
 .bg-tt { background: #211a38; }
 .bg-yt { background: #ff0000; }
 .bg-sc { background: #f7d70c; }
+.bg-sc svg { fill: #211a38; }
 .bg-rd { background: #ff4500; }
 .bg-tg { background: #2aabee; }
 .bg-fb { background: #1877f2; }
