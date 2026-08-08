@@ -310,7 +310,8 @@ section[id]{scroll-margin-top:86px}
 /* ??? RESPONSIVE ??? */
 @media(max-width:1020px){
   .hero-grid{grid-template-columns:1fr;gap:3rem}
-  .hero-visual{order:-1}
+  /* Text zuerst, Handy darunter (DOM-Reihenfolge) */
+  .hero-visual{order:0}
   .phone{width:260px;height:530px}
   .products-grid,.reviews{grid-template-columns:repeat(2,1fr)}
   .platforms{grid-template-columns:repeat(2,1fr)}
