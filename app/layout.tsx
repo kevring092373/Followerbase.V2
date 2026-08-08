@@ -3,6 +3,7 @@ import dynamic from "next/dynamic";
 import { DM_Sans, Outfit } from "next/font/google";
 import "./globals.css";
 import "./header.css";
+import "./footer.css";
 import { CartProvider } from "@/context/CartContext";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";

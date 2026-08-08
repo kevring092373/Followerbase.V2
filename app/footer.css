@@ -1,0 +1,140 @@
+/* ===== Site Footer (global – auf allen Seiten) ===== */
+.site-footer {
+  background: #251d42;
+  color: #bdb5d8;
+  margin-top: auto;
+  padding: 3.5rem 0 2rem;
+  width: 100%;
+  max-width: none;
+  box-sizing: border-box;
+}
+
+.site-footer .wrap {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  box-sizing: border-box;
+}
+
+.site-footer .footer-wordmark {
+  display: inline-block;
+  font-weight: 900;
+  font-size: 1.35rem;
+  color: #fff;
+  letter-spacing: -0.02em;
+  text-decoration: none;
+  margin-bottom: 0.15rem;
+}
+
+.site-footer .footer-wordmark:hover {
+  color: #fff;
+  opacity: 0.92;
+}
+
+.site-footer .footer-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr 1fr;
+  gap: 2.2rem;
+  margin-bottom: 2.5rem;
+}
+
+.site-footer h4 {
+  color: #fff;
+  font-size: 0.95rem;
+  margin-bottom: 0.9rem;
+  font-weight: 700;
+}
+
+.site-footer ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.site-footer li {
+  margin-bottom: 0.5rem;
+}
+
+.site-footer a {
+  color: #b7aed4;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.site-footer a:hover {
+  color: #fff;
+  text-decoration: none;
+}
+
+.site-footer .footer-brand p {
+  font-size: 0.88rem;
+  max-width: 280px;
+  margin-top: 0.8rem;
+  line-height: 1.6;
+  color: #bdb5d8;
+}
+
+.site-footer .footer-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 1.6rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  font-size: 0.82rem;
+  color: #9691ab;
+}
+
+.site-footer .pay-note {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.55rem;
+  margin-top: 1.15rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #9691ab;
+}
+
+.site-footer .footer-payment-img {
+  display: block;
+  max-width: 220px;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  background: transparent;
+  border-radius: 10px;
+  padding: 0;
+}
+
+@media (max-width: 1020px) {
+  .site-footer .footer-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .site-footer {
+    padding: 2.75rem 0 1.75rem;
+  }
+
+  .site-footer .wrap {
+    padding: 0 0.9rem;
+  }
+
+  .site-footer .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 1.75rem;
+    margin-bottom: 2rem;
+  }
+
+  .site-footer .footer-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+}
