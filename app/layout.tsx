@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import dynamic from "next/dynamic";
 import { DM_Sans, Outfit } from "next/font/google";
 import "./globals.css";
+import "./header.css";
 import "./home-redesign.css";
 import { CartProvider } from "@/context/CartContext";
 import { Header } from "@/components/Header";

@@ -1,0 +1,364 @@
+/* ===== Header (zweizeilig: Nav + Plattform-Leiste) ===== */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border);
+}
+
+.site-header-wrap {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  box-sizing: border-box;
+}
+
+.site-header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  height: 64px;
+}
+
+.site-header .logo-link {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  color: var(--text-primary);
+}
+
+.site-header .logo-link:hover {
+  color: var(--text-primary);
+  opacity: 0.9;
+}
+
+.site-header .logo-img {
+  display: block;
+  height: 36px;
+  width: auto;
+  max-width: 160px;
+  object-fit: contain;
+}
+
+.site-header-nav {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.site-navlink {
+  color: var(--text-primary);
+  font-weight: 600;
+  font-size: 0.93rem;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.site-navlink:hover {
+  color: var(--brand-primary);
+}
+
+.site-navlink-muted {
+  color: var(--text-secondary);
+}
+
+.site-header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.site-header-cta {
+  display: inline-flex;
+  align-items: center;
+  background: var(--brand-gradient);
+  color: #fff;
+  font-weight: 800;
+  font-size: 0.92rem;
+  padding: 0.6rem 1.35rem;
+  border-radius: 50px;
+  text-decoration: none;
+  box-shadow: 0 6px 18px -6px rgba(138, 85, 238, 0.55);
+  transition: transform 0.15s;
+  white-space: nowrap;
+}
+
+.site-header-cta:hover {
+  transform: translateY(-1px);
+  color: #fff;
+}
+
+.site-header-wa {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 50%;
+  color: #10893d;
+  transition: background 0.15s, color 0.15s;
+}
+
+.site-header-wa:hover {
+  color: #0c6e30;
+  background: rgba(37, 211, 102, 0.12);
+}
+
+.site-header .nav-link-cart {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+}
+
+.site-header .nav-link-cart:hover {
+  color: var(--brand-primary);
+  background: rgba(138, 85, 238, 0.1);
+}
+
+.site-header .nav-link-cart-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.site-header .nav-link-cart-badge {
+  position: absolute;
+  top: -4px;
+  right: -6px;
+  min-width: 1.25rem;
+  height: 1.25rem;
+  padding: 0 0.35rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  line-height: 1.25rem;
+  color: white;
+  background: var(--brand-primary);
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.site-burger {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.4rem;
+  margin-left: 0.1rem;
+}
+
+.site-burger span {
+  display: block;
+  width: 22px;
+  height: 2.5px;
+  background: var(--text-primary);
+  border-radius: 2px;
+  margin: 4.5px 0;
+}
+
+/* Plattform-Leiste */
+.catbar-outer {
+  border-top: 1px solid var(--border);
+  background: var(--bg-page);
+}
+
+.catbar {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.5rem 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.catbar::-webkit-scrollbar {
+  display: none;
+}
+
+.cat {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.85rem;
+  border-radius: 50px;
+  text-decoration: none;
+  color: var(--text-primary);
+  font-weight: 700;
+  font-size: 0.87rem;
+  white-space: nowrap;
+  transition: background 0.15s, color 0.15s;
+}
+
+.cat:hover,
+.cat.active {
+  background: #efe9fb;
+  color: var(--brand-primary);
+}
+
+.cat-all {
+  color: var(--brand-primary);
+}
+
+.pf-mini {
+  width: 24px;
+  height: 24px;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.pf-mini img {
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+}
+
+.bg-sc img {
+  filter: brightness(0);
+}
+
+.bg-ig { background: linear-gradient(45deg, #f09433, #dc2743 60%, #bc1888); }
+.bg-tt { background: #211a38; }
+.bg-yt { background: #ff0000; }
+.bg-sc { background: #f7d70c; }
+.bg-rd { background: #ff4500; }
+.bg-tg { background: #2aabee; }
+.bg-fb { background: #1877f2; }
+.bg-th { background: #211a38; }
+
+/* Mobile-Menü */
+.site-mobile-menu {
+  display: none;
+  border-top: 1px solid var(--border);
+  background: #fff;
+  padding: 0.8rem 1.5rem 1.4rem;
+  max-height: calc(100vh - 64px);
+  overflow-y: auto;
+  position: relative;
+  z-index: 52;
+}
+
+.site-mobile-menu.open {
+  display: block;
+}
+
+.site-mobile-menu a {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.6rem 0;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+.site-mobile-menu a:hover {
+  color: var(--brand-primary);
+}
+
+.site-mobile-wa {
+  color: #10893d !important;
+}
+
+.mm-label {
+  display: block;
+  padding: 0.9rem 0 0.3rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.site-mobile-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  border: none;
+  padding: 0;
+  margin: 0;
+  background: rgba(15, 23, 42, 0.35);
+  cursor: pointer;
+}
+
+@media (max-width: 900px) {
+  .site-header-nav {
+    display: none;
+  }
+
+  .site-burger {
+    display: block;
+  }
+
+  .site-header-top {
+    height: 60px;
+    gap: 0.9rem;
+  }
+
+  .site-header-right {
+    gap: 0.45rem;
+  }
+
+  .site-header .logo-img {
+    height: 32px;
+  }
+
+  .site-header-cta {
+    padding: 0.5rem 1.05rem;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 430px) {
+  .site-header-wrap {
+    padding: 0 0.9rem;
+  }
+
+  .site-header-top {
+    gap: 0.5rem;
+  }
+
+  .site-header-right {
+    gap: 0.3rem;
+  }
+
+  .site-header .logo-link {
+    flex-shrink: 1;
+    min-width: 0;
+  }
+
+  .site-header .logo-img {
+    height: 24px;
+    max-width: 34vw;
+  }
+
+  .site-header-cta {
+    padding: 0.42rem 0.78rem;
+    font-size: 0.78rem;
+  }
+
+  .site-burger {
+    flex-shrink: 0;
+    padding: 0.3rem;
+  }
+}

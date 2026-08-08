@@ -2,159 +2,183 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { Logo } from "./Logo";
 import { CartLink } from "./CartLink";
 import { categories, headerQuickLinks } from "@/lib/categories";
 import { WhatsAppButton } from "./WhatsAppButton";
 
-function HamburgerIcon({ open }: { open: boolean }) {
-  return (
-    <span className="mobile-menu-icon" aria-hidden>
-      <span className="mobile-menu-icon-line" />
-      <span className="mobile-menu-icon-line" />
-      <span className="mobile-menu-icon-line" />
-    </span>
+const CAT_ICONS: Record<string, string> = {
+  instagram: "/icons/Instagram.png",
+  tiktok: "/icons/tiktok.png",
+  youtube: "/icons/youtube.png",
+  snapchat: "/icons/Snapchat.png",
+  telegram: "/icons/telegram.webp",
+  facebook: "/icons/facebook.png",
+  reddit: "/icons/reddit.webp",
+  threads: "/icons/threads.png",
+};
+
+const CAT_BG: Record<string, string> = {
+  instagram: "bg-ig",
+  tiktok: "bg-tt",
+  youtube: "bg-yt",
+  snapchat: "bg-sc",
+  telegram: "bg-tg",
+  facebook: "bg-fb",
+  reddit: "bg-rd",
+  threads: "bg-th",
+};
+
+/** Reihenfolge wie im Header-Entwurf */
+const CAT_ORDER = [
+  "instagram",
+  "tiktok",
+  "youtube",
+  "snapchat",
+  "telegram",
+  "facebook",
+  "reddit",
+  "threads",
+] as const;
+
+function orderedCategories() {
+  return CAT_ORDER.map((id) => categories.find((c) => c.id === id)).filter(
+    (c): c is (typeof categories)[number] => Boolean(c)
   );
 }
 
 /**
- * Header in einer Zeile: Quick-Links + Produkte/Blog/Über uns,
- * rechts WhatsApp-Icon + Warenkorb + Bestellung verfolgen.
+ * Zweizeiliger Header: Logo · Nav · CTA oben,
+ * Plattform-Leiste darunter (mobil horizontal wischbar).
  */
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const pathname = usePathname() || "";
+  const cats = orderedCategories();
+
+  const closeMenu = () => setMobileMenuOpen(false);
 
   return (
-    <header className="header">
-      <div className="header-inner">
-        <Logo />
-        <nav className="header-nav" aria-label="Hauptnavigation">
-          <div className="header-nav-desktop">
-            <div className="header-nav-main">
-              {headerQuickLinks.map(({ label, productSlug }) => (
-                <Link
-                  key={productSlug}
-                  href={`/product/${productSlug}`}
-                  className="nav-link nav-link-quick"
-                >
-                  {label}
-                </Link>
-              ))}
-              <div className="nav-menu-wrap">
-                <span className="nav-link nav-menu-trigger">Alle Produkte</span>
-                <div className="nav-dropdown nav-dropdown-categories-only" aria-hidden>
-                  <nav className="nav-dropdown-categories-list">
-                    {categories.map((category) => (
-                      <Link
-                        key={category.id}
-                        href={`/products/${category.slug}`}
-                        className="nav-dropdown-category-link"
-                      >
-                        {category.name}
-                      </Link>
-                    ))}
-                  </nav>
-                </div>
-              </div>
-              <Link href="/ueber-uns" className="nav-link">
-                Über uns
-              </Link>
-            </div>
-            <div className="header-nav-actions">
-              <WhatsAppButton
-                className="nav-link whatsapp-nav-link whatsapp-nav-link-icon"
-                label=""
-                iconSize={18}
-              />
-              <CartLink />
-              <Link href="/bestellung-verfolgen" className="nav-link nav-link-tracking">
-                Bestellung verfolgen
-              </Link>
-            </div>
-          </div>
+    <header className="site-header">
+      <div className="site-header-wrap">
+        <div className="site-header-top">
+          <Logo />
 
-          <div className="header-nav-mobile">
-            <button
-              type="button"
-              className="mobile-menu-btn"
-              onClick={() => setMobileMenuOpen((o) => !o)}
-              aria-expanded={mobileMenuOpen}
-              aria-controls="mobile-menu-panel"
-              aria-label={mobileMenuOpen ? "Menü schließen" : "Menü öffnen"}
-            >
-              <HamburgerIcon open={mobileMenuOpen} />
-            </button>
+          <nav className="site-header-nav" aria-label="Hauptnavigation">
+            <Link href="/blog" className="site-navlink">
+              Blog
+            </Link>
+            <Link href="/ueber-uns" className="site-navlink">
+              Über uns
+            </Link>
+            <Link href="/bestellung-verfolgen" className="site-navlink site-navlink-muted">
+              Bestellung verfolgen
+            </Link>
+          </nav>
+
+          <div className="site-header-right">
             <WhatsAppButton
-              className="nav-link whatsapp-nav-link whatsapp-nav-link-icon"
+              className="site-header-wa"
               label=""
-              iconSize={20}
+              iconSize={18}
             />
             <CartLink />
-            <Link
-              href="/bestellung-verfolgen"
-              className="nav-link nav-link-tracking nav-link-tracking-compact"
-              aria-label="Bestellung verfolgen"
-            >
-              Bestellung
+            <Link href="/products" className="site-header-cta">
+              Follower kaufen
             </Link>
+            <button
+              type="button"
+              className="site-burger"
+              aria-label={mobileMenuOpen ? "Menü schließen" : "Menü öffnen"}
+              aria-expanded={mobileMenuOpen}
+              aria-controls="site-mobile-menu"
+              onClick={() => setMobileMenuOpen((o) => !o)}
+            >
+              <span />
+              <span />
+              <span />
+            </button>
           </div>
-        </nav>
+        </div>
+      </div>
+
+      <div className="catbar-outer">
+        <div className="site-header-wrap">
+          <nav className="catbar" aria-label="Plattformen">
+            {cats.map((category) => {
+              const href = `/products/${category.slug}`;
+              const active =
+                pathname === href || pathname.startsWith(`${href}/`);
+              const icon = CAT_ICONS[category.id];
+              const bg = CAT_BG[category.id] ?? "";
+              return (
+                <Link
+                  key={category.id}
+                  href={href}
+                  className={`cat${active ? " active" : ""}`}
+                >
+                  <span className={`pf-mini ${bg}`}>
+                    {icon ? (
+                      <Image
+                        src={icon}
+                        alt=""
+                        width={14}
+                        height={14}
+                        sizes="14px"
+                      />
+                    ) : null}
+                  </span>
+                  {category.name}
+                </Link>
+              );
+            })}
+            <Link href="/products" className="cat cat-all">
+              Alle Produkte →
+            </Link>
+          </nav>
+        </div>
       </div>
 
       <div
-        id="mobile-menu-panel"
-        className="mobile-menu-panel"
-        data-open={mobileMenuOpen}
+        id="site-mobile-menu"
+        className={`site-mobile-menu${mobileMenuOpen ? " open" : ""}`}
         aria-hidden={!mobileMenuOpen}
       >
-        <div className="mobile-menu-inner">
-          {headerQuickLinks.map(({ label, productSlug }) => (
-            <Link
-              key={productSlug}
-              href={`/product/${productSlug}`}
-              className="mobile-menu-link"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              {label}
-            </Link>
-          ))}
-          <div className="mobile-menu-section">
-            <span className="mobile-menu-label">Alle Produkte</span>
-            {categories.map((category) => (
-              <Link
-                key={category.id}
-                href={`/products/${category.slug}`}
-                className="mobile-menu-link mobile-menu-sublink"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                {category.name}
-              </Link>
-            ))}
-          </div>
+        <span className="mm-label">Bestseller</span>
+        {headerQuickLinks.map(({ label, productSlug }) => (
           <Link
-            href="/ueber-uns"
-            className="mobile-menu-link"
-            onClick={() => setMobileMenuOpen(false)}
+            key={productSlug}
+            href={`/product/${productSlug}`}
+            onClick={closeMenu}
           >
-            Über uns
+            {label}
           </Link>
-          <Link
-            href="/bestellung-verfolgen"
-            className="mobile-menu-link"
-            onClick={() => setMobileMenuOpen(false)}
-          >
-            Bestellung verfolgen
-          </Link>
-          <WhatsAppButton className="mobile-menu-link whatsapp-nav-link" iconSize={17} />
-        </div>
+        ))}
+        <span className="mm-label">Mehr</span>
+        <Link href="/blog" onClick={closeMenu}>
+          Blog
+        </Link>
+        <Link href="/ueber-uns" onClick={closeMenu}>
+          Über uns
+        </Link>
+        <Link href="/bestellung-verfolgen" onClick={closeMenu}>
+          Bestellung verfolgen
+        </Link>
+        <WhatsAppButton
+          className="site-mobile-wa"
+          label="WhatsApp"
+          iconSize={17}
+        />
       </div>
 
       {mobileMenuOpen && (
         <button
           type="button"
-          className="mobile-menu-overlay"
+          className="site-mobile-overlay"
           aria-label="Menü schließen"
-          onClick={() => setMobileMenuOpen(false)}
+          onClick={closeMenu}
         />
       )}
     </header>
