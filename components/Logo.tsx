@@ -19,7 +19,7 @@ export function Logo({ className = "", showText = false }: Props) {
         height={44}
         className="logo-img"
         priority
-        sizes="(max-width: 640px) 120px, 160px"
+        sizes="(max-width: 430px) 148px, (max-width: 900px) 160px, 160px"
       />
       {showText && <span className="logo-text">Followerbase</span>}
     </Link>
