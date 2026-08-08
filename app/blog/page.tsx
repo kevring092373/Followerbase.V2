@@ -5,9 +5,7 @@ import { getAllPosts } from "@/lib/blog-data";
 import { absoluteUrl } from "@/lib/seo";
 import { BlogArticleList } from "@/components/BlogArticleList";
 
-export const dynamic = "force-dynamic";
-export const fetchCache = "force-no-store";
-export const revalidate = 0;
+export const revalidate = 300;
 
 export const metadata = {
   title: "Blog – Followerbase",

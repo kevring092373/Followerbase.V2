@@ -8,6 +8,9 @@ import { isSupabaseConfigured } from "@/lib/supabase/server";
 import {
   getAllProductsSupabase,
   getProductBySlugSupabase,
+  getProductsByCategoryIdSupabase,
+  getRelatedProductsSupabase,
+  getProductCountSupabase,
   upsertProductSupabase,
   deleteProductSupabase,
 } from "./products-supabase";
@@ -101,8 +104,35 @@ export async function getProductBySlug(slug: string): Promise<Product | undefine
 }
 
 export async function getProductsByCategoryId(categoryId: string): Promise<Product[]> {
+  if (isSupabaseConfigured()) {
+    return getProductsByCategoryIdSupabase(categoryId);
+  }
   const products = await readProducts();
-  return products.filter((p) => p.categoryId === categoryId).sort((a, b) => a.name.localeCompare(b.name));
+  return products
+    .filter((p) => p.categoryId === categoryId)
+    .sort((a, b) => a.name.localeCompare(b.name));
+}
+
+/** Weitere Produkte derselben Kategorie (Carousel) – ohne Full-Table-Fetch. */
+export async function getRelatedProducts(
+  categoryId: string,
+  excludeSlug: string,
+  limit = 12
+): Promise<Product[]> {
+  if (isSupabaseConfigured()) {
+    return getRelatedProductsSupabase(categoryId, excludeSlug, limit);
+  }
+  const products = await readProducts();
+  return products
+    .filter((p) => p.categoryId === categoryId && p.slug !== excludeSlug)
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .slice(0, limit);
+}
+
+export async function getProductCount(): Promise<number> {
+  if (isSupabaseConfigured()) return getProductCountSupabase();
+  const products = await readProducts();
+  return products.length;
 }
 
 export async function getCategoryByProductSlug(slug: string): Promise<Category | undefined> {

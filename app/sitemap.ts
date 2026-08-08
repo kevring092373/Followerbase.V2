@@ -5,9 +5,8 @@ import { getAllPosts } from "@/lib/blog-data";
 import { getAllPages } from "@/lib/pages-data";
 import { getBaseUrl } from "@/lib/seo";
 
-/** Sitemap bei jedem Abruf frisch (neue Blog-URLs sofort sichtbar). */
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
+/** Sitemap alle 5 Min neu – schneller als force-dynamic bei jedem Hit. */
+export const revalidate = 300;
 
 /** Erzeugt absolute URLs für die Sitemap (Google-konform). */
 function absoluteUrl(path: string): string {

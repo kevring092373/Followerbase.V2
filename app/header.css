@@ -7,6 +7,7 @@
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--border);
+  overflow: visible;
 }
 
 .site-header-spacer {
@@ -199,6 +200,11 @@
   display: none;
 }
 
+.cat-item {
+  position: relative;
+  flex-shrink: 0;
+}
+
 .cat {
   display: inline-flex;
   align-items: center;
@@ -213,6 +219,7 @@
   transition: background 0.15s, color 0.15s;
 }
 
+.cat-item:hover > .cat,
 .cat:hover,
 .cat.active {
   background: #efe9fb;
@@ -221,6 +228,101 @@
 
 .cat-all {
   color: var(--brand-primary);
+  flex-shrink: 0;
+}
+
+/* Desktop: Produkt-Dropdown beim Hover über Kategorie */
+.cat-dropdown {
+  display: none;
+}
+
+@media (min-width: 901px) {
+  .catbar {
+    overflow: visible;
+  }
+
+  .catbar-outer {
+    overflow: visible;
+  }
+
+  .cat-dropdown {
+    display: block;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    padding-top: 0.45rem;
+    min-width: 240px;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(4px);
+    transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s;
+    z-index: 60;
+  }
+
+  .cat-item:hover > .cat-dropdown,
+  .cat-item:focus-within > .cat-dropdown {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: none;
+  }
+
+  /* Letzte Kategorien: Dropdown nach links ausrichten, damit es nicht abgeschnitten wird */
+  .cat-item:nth-last-child(-n + 3) > .cat-dropdown {
+    left: auto;
+    right: 0;
+  }
+
+  .cat-dropdown-inner {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: 0 16px 40px -12px rgba(91, 33, 182, 0.22);
+    padding: 0.55rem;
+    max-height: min(70vh, 420px);
+    overflow-y: auto;
+  }
+
+  .cat-dropdown-title {
+    display: block;
+    padding: 0.55rem 0.75rem 0.45rem;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--brand-primary);
+    text-decoration: none;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 0.25rem;
+  }
+
+  .cat-dropdown-title:hover {
+    color: var(--brand-primary-hover);
+  }
+
+  .cat-dropdown-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+  }
+
+  .cat-dropdown-link {
+    display: block;
+    padding: 0.55rem 0.75rem;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background 0.12s, color 0.12s;
+  }
+
+  .cat-dropdown-link:hover {
+    background: #efe9fb;
+    color: var(--brand-primary);
+  }
 }
 
 .catbar-arrow {

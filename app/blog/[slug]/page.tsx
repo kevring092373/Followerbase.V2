@@ -26,10 +26,8 @@ import {
 
 type Props = { params: { slug: string } };
 
-/** Immer aktuell vom Server laden, damit Inhalt bei Navigation sofort sichtbar ist. */
-export const dynamic = "force-dynamic";
-export const fetchCache = "force-no-store";
-export const revalidate = 0;
+/** ISR: Beitrag max. 5 Min alt – schneller als force-dynamic. */
+export const revalidate = 300;
 
 function resolveSlug(params: Props["params"]): string {
   return decodeURIComponent(params.slug ?? "").trim();

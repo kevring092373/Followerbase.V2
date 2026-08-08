@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { categories, headerQuickLinks } from "@/lib/categories";
-import { getAllProducts } from "@/lib/products-data";
+import { getProductCount } from "@/lib/products-data";
 import { getAllPosts } from "@/lib/blog-data";
 import { reviews } from "@/lib/reviews-data";
 import { BLOG_AUTHOR } from "@/lib/blog-author";
@@ -11,6 +11,7 @@ import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { JsonLd } from "@/components/JsonLd";
 import { buildOrganizationSchema } from "@/lib/structured-data";
 import { absoluteUrl } from "@/lib/seo";
+import "./home-redesign.css";
 
 const CATEGORY_ICONS: Record<string, string> = {
   instagram: "instagram.png",
@@ -66,7 +67,7 @@ export const metadata = {
 };
 
 export default async function HomePage() {
-  const [allProducts, posts] = await Promise.all([getAllProducts(), getAllPosts()]);
+  const [productCount, posts] = await Promise.all([getProductCount(), getAllPosts()]);
   const blogTeasers = posts.slice(0, 3);
 
   return (
@@ -92,7 +93,7 @@ export default async function HomePage() {
                 </span>
                 <span className="dot" />
                 <span>
-                  <b>{allProducts.length}+</b> Produkte
+                  <b>{productCount}+</b> Produkte
                 </span>
                 <span className="dot" />
                 <span>
@@ -149,7 +150,7 @@ export default async function HomePage() {
               <div className="l">Plattformen</div>
             </div>
             <div className="stat">
-              <div className="n">{allProducts.length}+</div>
+              <div className="n">{productCount}+</div>
               <div className="l">Produkte</div>
             </div>
             <div className="stat">

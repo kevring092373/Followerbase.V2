@@ -134,16 +134,36 @@ export function Header() {
                   pathname === href || pathname.startsWith(`${href}/`);
                 const bg = CAT_BG[category.id] ?? "";
                 return (
-                  <Link
-                    key={category.id}
-                    href={href}
-                    className={`cat${active ? " active" : ""}`}
-                  >
-                    <span className={`pf-mini ${bg}`}>
-                      <PlatformMiniIcon id={category.id} />
-                    </span>
-                    {category.name}
-                  </Link>
+                  <div key={category.id} className="cat-item">
+                    <Link
+                      href={href}
+                      className={`cat${active ? " active" : ""}`}
+                    >
+                      <span className={`pf-mini ${bg}`}>
+                        <PlatformMiniIcon id={category.id} />
+                      </span>
+                      {category.name}
+                    </Link>
+                    <div className="cat-dropdown" role="menu" aria-label={`${category.name} Produkte`}>
+                      <div className="cat-dropdown-inner">
+                        <Link href={href} className="cat-dropdown-title">
+                          Alle {category.name}-Produkte
+                        </Link>
+                        <div className="cat-dropdown-list">
+                          {category.products.map((product) => (
+                            <Link
+                              key={product.slug}
+                              href={`/product/${product.slug}`}
+                              className="cat-dropdown-link"
+                              role="menuitem"
+                            >
+                              {product.name}
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 );
               })}
               <Link href="/products" className="cat cat-all">

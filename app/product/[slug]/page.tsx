@@ -4,7 +4,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { getProductBySlug, getProductImageAlt, getAllProducts } from "@/lib/products-data";
+import { getProductBySlug, getProductImageAlt, getAllProducts, getRelatedProducts } from "@/lib/products-data";
 import { getProductDisplayName } from "@/lib/product-image-alt";
 import { ProductOrderBlock } from "@/components/ProductOrderBlock";
 import { ProductCarousel } from "@/components/ProductCarousel";
@@ -67,28 +67,27 @@ export async function generateMetadata({ params }: Props) {
 
 export default async function ProductPage({ params }: Props) {
   const slug = params.slug;
-  const [product, allProducts] = await Promise.all([
-    getProductBySlug(slug),
-    getAllProducts(),
-  ]);
+  const product = await getProductBySlug(slug);
 
   if (!product) notFound();
 
   const bullets = product.bullets?.length ? product.bullets : defaultBullets;
 
-  const categoryProducts = allProducts.filter((p) => p.categoryId === product.categoryId);
-  let otherProducts = categoryProducts
-    .filter((p) => p.slug !== product.slug)
-    .map((p) => ({ slug: p.slug, name: p.name, image: p.image, pricesCents: p.pricesCents }));
-  if (otherProducts.length === 0) {
-    otherProducts = allProducts
+  let related = await getRelatedProducts(product.categoryId, product.slug, 12);
+  if (related.length === 0) {
+    related = (await getAllProducts())
       .filter((p) => p.slug !== product.slug)
-      .slice(0, 12)
-      .map((p) => ({ slug: p.slug, name: p.name, image: p.image, pricesCents: p.pricesCents }));
+      .slice(0, 12);
   }
+  const otherProducts = related.map((p) => ({
+    slug: p.slug,
+    name: p.name,
+    image: p.image,
+    pricesCents: p.pricesCents,
+  }));
   const category = categories.find((c) => c.id === product.categoryId);
   const carouselTitle =
-    otherProducts.length && category && otherProducts.length <= categoryProducts.length - 1
+    category && otherProducts.length > 0
       ? `Weitere ${category.name}-Produkte`
       : "Weitere Produkte";
   const descriptionMode: "raw" = "raw";

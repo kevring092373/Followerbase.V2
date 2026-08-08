@@ -4,10 +4,18 @@
  */
 import { promises as fs } from "fs";
 import path from "path";
-import { supabaseServer, isSupabaseConfigured } from "@/lib/supabase/server";
+import {
+  supabaseServer,
+  supabaseServerFresh,
+  isSupabaseConfigured,
+} from "@/lib/supabase/server";
 import type { Product, ProductTier } from "./products-data";
 
 const PRODUCTS_FILE = path.join(process.cwd(), "content", "products.json");
+
+/** Ohne description – für Listen, Carousel, Category. */
+const LIST_COLUMNS =
+  "slug,name,category_id,quantities,prices_cents,tiers,article_number,bullets,image,meta_title,meta_description";
 
 type ProductRow = {
   slug: string;
@@ -67,15 +75,26 @@ function productToRow(p: Product): Record<string, unknown> {
   };
 }
 
+/** Pro Warm-Instance: Seed-Check nicht bei jedem Request wiederholen. */
+let seedCheckedOk = false;
+
 async function seedFromFileIfNeeded(): Promise<void> {
-  if (!isSupabaseConfigured()) return;
-  const { count } = await supabaseServer.from("products").select("*", { count: "exact", head: true });
-  if (count != null && count > 0) return;
+  if (!isSupabaseConfigured() || seedCheckedOk) return;
+  const { count } = await supabaseServer
+    .from("products")
+    .select("slug", { count: "exact", head: true });
+  if (count != null && count > 0) {
+    seedCheckedOk = true;
+    return;
+  }
   try {
     const raw = await fs.readFile(PRODUCTS_FILE, "utf-8");
     const data = JSON.parse(raw) as { products?: Record<string, unknown>[] };
     const list = Array.isArray(data.products) ? data.products : [];
-    if (list.length === 0) return;
+    if (list.length === 0) {
+      seedCheckedOk = true;
+      return;
+    }
     const rows = list.map((p) => {
       const slug = typeof p.slug === "string" ? p.slug : "";
       const name = typeof p.name === "string" ? p.name : "";
@@ -97,21 +116,79 @@ async function seedFromFileIfNeeded(): Promise<void> {
         meta_description: typeof p.metaDescription === "string" ? p.metaDescription : null,
       };
     });
-    await supabaseServer.from("products").insert(rows);
+    await supabaseServerFresh.from("products").insert(rows);
   } catch (e) {
     console.error("[products-supabase] Seed from file:", e);
+  } finally {
+    seedCheckedOk = true;
   }
 }
 
+/** Liste ohne schwere description-Spalte. */
 export async function getAllProductsSupabase(): Promise<Product[]> {
   if (!isSupabaseConfigured()) return [];
   await seedFromFileIfNeeded();
-  const { data, error } = await supabaseServer.from("products").select("*").order("name");
+  const { data, error } = await supabaseServer
+    .from("products")
+    .select(LIST_COLUMNS)
+    .order("name");
   if (error) {
     console.error("[products-supabase] getAllProducts:", error.message);
     return [];
   }
   return (data ?? []).map((r) => rowToProduct(r as ProductRow));
+}
+
+export async function getProductsByCategoryIdSupabase(
+  categoryId: string
+): Promise<Product[]> {
+  if (!isSupabaseConfigured()) return [];
+  await seedFromFileIfNeeded();
+  const { data, error } = await supabaseServer
+    .from("products")
+    .select(LIST_COLUMNS)
+    .eq("category_id", categoryId)
+    .order("name");
+  if (error) {
+    console.error("[products-supabase] getByCategory:", error.message);
+    return [];
+  }
+  return (data ?? []).map((r) => rowToProduct(r as ProductRow));
+}
+
+/** Weitere Produkte für Carousel – ohne description. */
+export async function getRelatedProductsSupabase(
+  categoryId: string,
+  excludeSlug: string,
+  limit = 12
+): Promise<Product[]> {
+  if (!isSupabaseConfigured()) return [];
+  await seedFromFileIfNeeded();
+  const { data, error } = await supabaseServer
+    .from("products")
+    .select(LIST_COLUMNS)
+    .eq("category_id", categoryId)
+    .neq("slug", excludeSlug)
+    .order("name")
+    .limit(limit);
+  if (error) {
+    console.error("[products-supabase] getRelated:", error.message);
+    return [];
+  }
+  return (data ?? []).map((r) => rowToProduct(r as ProductRow));
+}
+
+export async function getProductCountSupabase(): Promise<number> {
+  if (!isSupabaseConfigured()) return 0;
+  await seedFromFileIfNeeded();
+  const { count, error } = await supabaseServer
+    .from("products")
+    .select("slug", { count: "exact", head: true });
+  if (error) {
+    console.error("[products-supabase] count:", error.message);
+    return 0;
+  }
+  return count ?? 0;
 }
 
 export async function getProductBySlugSupabase(slug: string): Promise<Product | null> {
@@ -129,13 +206,16 @@ export async function getProductBySlugSupabase(slug: string): Promise<Product | 
 
 export async function upsertProductSupabase(product: Product): Promise<void> {
   if (!isSupabaseConfigured()) return;
-  const { error } = await supabaseServer.from("products").upsert(productToRow(product) as Record<string, unknown>, {
-    onConflict: "slug",
-  });
+  const { error } = await supabaseServerFresh
+    .from("products")
+    .upsert(productToRow(product) as Record<string, unknown>, {
+      onConflict: "slug",
+    });
   if (error) console.error("[products-supabase] upsert:", error.message);
+  seedCheckedOk = true;
 }
 
 export async function deleteProductSupabase(slug: string): Promise<void> {
   if (!isSupabaseConfigured()) return;
-  await supabaseServer.from("products").delete().eq("slug", slug);
+  await supabaseServerFresh.from("products").delete().eq("slug", slug);
 }

@@ -27,6 +27,8 @@ export const metadata = {
   alternates: { canonical: absoluteUrl("/products") },
 };
 
+export const revalidate = 300;
+
 /** Kategorie-ID → Dateiname in public/icons/ (wie abgelegt). */
 const CATEGORY_ICONS: Record<string, string> = {
   instagram: "instagram.png",

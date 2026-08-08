@@ -1,22 +1,28 @@
 /**
  * Blog-Beiträge in Supabase (für Netlify read-only Dateisystem).
- * Wenn die Tabelle leer ist, wird einmalig aus content/blog-posts.json gelesen und eingespielt.
- * Tabelle in Supabase anlegen: siehe Kommentar am Ende oder README.
  */
 import { promises as fs } from "fs";
 import path from "path";
-import { supabaseServer, isSupabaseConfigured } from "@/lib/supabase/server";
+import {
+  supabaseServer,
+  supabaseServerFresh,
+  isSupabaseConfigured,
+} from "@/lib/supabase/server";
 import type { BlogPost } from "./blog";
 
 const BLOG_FILE = path.join(process.cwd(), "content", "blog-posts.json");
 
 const TABLE = "blog_posts";
 
+/** Ohne content – für Listen, Sitemap, Home-Teaser. */
+const LIST_COLUMNS =
+  "slug,title,excerpt,date,meta_title,meta_description,image,category";
+
 type BlogPostRow = {
   slug: string;
   title: string;
   excerpt: string | null;
-  content: string;
+  content?: string;
   date: string | null;
   meta_title: string | null;
   meta_description: string | null;
@@ -39,7 +45,7 @@ function rowToPost(r: BlogPostRow): BlogPost {
     slug: cleanSlug(r.slug) || r.slug.trim(),
     title: r.title,
     excerpt: r.excerpt ?? undefined,
-    content: r.content,
+    content: r.content ?? "",
     date: r.date ?? undefined,
     metaTitle: r.meta_title ?? undefined,
     metaDescription: r.meta_description ?? undefined,
@@ -63,15 +69,25 @@ function postToRow(p: BlogPost): Record<string, unknown> {
   };
 }
 
+let seedCheckedOk = false;
+
 async function seedFromFileIfNeeded(): Promise<void> {
-  if (!isSupabaseConfigured()) return;
-  const { count } = await supabaseServer.from(TABLE).select("*", { count: "exact", head: true });
-  if (count != null && count > 0) return;
+  if (!isSupabaseConfigured() || seedCheckedOk) return;
+  const { count } = await supabaseServer
+    .from(TABLE)
+    .select("slug", { count: "exact", head: true });
+  if (count != null && count > 0) {
+    seedCheckedOk = true;
+    return;
+  }
   try {
     const raw = await fs.readFile(BLOG_FILE, "utf-8");
     const data = JSON.parse(raw) as { posts?: Record<string, unknown>[] };
     const list = Array.isArray(data.posts) ? data.posts : [];
-    if (list.length === 0) return;
+    if (list.length === 0) {
+      seedCheckedOk = true;
+      return;
+    }
     const rows = list.map((p) => {
       const slug = typeof p.slug === "string" ? p.slug : "";
       const title = typeof p.title === "string" ? p.title : "";
@@ -88,16 +104,21 @@ async function seedFromFileIfNeeded(): Promise<void> {
         category: typeof p.category === "string" ? p.category : null,
       };
     });
-    await supabaseServer.from(TABLE).insert(rows);
+    await supabaseServerFresh.from(TABLE).insert(rows);
   } catch (e) {
     console.error("[blog-supabase] Seed from file:", e);
+  } finally {
+    seedCheckedOk = true;
   }
 }
 
 export async function getAllPostsSupabase(): Promise<BlogPost[]> {
   if (!isSupabaseConfigured()) return [];
   await seedFromFileIfNeeded();
-  const { data, error } = await supabaseServer.from(TABLE).select("*").order("date", { ascending: false });
+  const { data, error } = await supabaseServer
+    .from(TABLE)
+    .select(LIST_COLUMNS)
+    .order("date", { ascending: false });
   if (error) {
     console.error("[blog-supabase] getAllPosts:", error.message);
     return [];
@@ -116,7 +137,6 @@ export async function getPostBySlugSupabase(slug: string): Promise<BlogPost | nu
     .limit(1)
     .maybeSingle();
   if (!error && data) return rowToPost(data as BlogPostRow);
-  // Fallback: alte Einträge mit Leerzeichen am Slug (z. B. Copy-Paste)
   const { data: loose } = await supabaseServer.from(TABLE).select("*").ilike("slug", clean);
   const match = (loose ?? []).find((r) => cleanSlug((r as BlogPostRow).slug) === clean);
   return match ? rowToPost(match as BlogPostRow) : null;
@@ -124,8 +144,11 @@ export async function getPostBySlugSupabase(slug: string): Promise<BlogPost | nu
 
 export async function createPostSupabase(post: BlogPost): Promise<void> {
   if (!isSupabaseConfigured()) return;
-  const { error } = await supabaseServer.from(TABLE).insert(postToRow(post) as Record<string, unknown>);
+  const { error } = await supabaseServerFresh
+    .from(TABLE)
+    .insert(postToRow(post) as Record<string, unknown>);
   if (error) throw new Error(error.message);
+  seedCheckedOk = true;
 }
 
 export async function updatePostSupabase(slug: string, post: BlogPost): Promise<void> {
@@ -135,7 +158,7 @@ export async function updatePostSupabase(slug: string, post: BlogPost): Promise<
     await createPostSupabase(post);
     return;
   }
-  const { error } = await supabaseServer
+  const { error } = await supabaseServerFresh
     .from(TABLE)
     .update(postToRow(post) as Record<string, unknown>)
     .eq("slug", slug);
@@ -144,6 +167,6 @@ export async function updatePostSupabase(slug: string, post: BlogPost): Promise<
 
 export async function deletePostSupabase(slug: string): Promise<void> {
   if (!isSupabaseConfigured()) return;
-  const { error } = await supabaseServer.from(TABLE).delete().eq("slug", slug);
+  const { error } = await supabaseServerFresh.from(TABLE).delete().eq("slug", slug);
   if (error) throw new Error(error.message);
 }
