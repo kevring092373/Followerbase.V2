@@ -112,11 +112,21 @@ function CheckoutContent() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ paypalOrderId: data.orderID }),
       });
+      const result = await res.json().catch(() => ({}));
       if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err.error || "Zahlung konnte nicht abgeschlossen werden.");
+        const msg =
+          typeof result.error === "string"
+            ? result.error
+            : "Zahlung konnte nicht abgeschlossen werden.";
+        setPaypalError(msg);
+        throw new Error(msg);
       }
-      const result = await res.json();
+      if (!result.orderNumber) {
+        const msg =
+          "Die Zahlung war möglicherweise erfolgreich, aber wir haben keine Bestellnummer erhalten. Bitte melde dich beim Support.";
+        setPaypalError(msg);
+        throw new Error(msg);
+      }
       clearCart();
       router.push(`/bestellung/danke?order=${encodeURIComponent(result.orderNumber)}`);
     },

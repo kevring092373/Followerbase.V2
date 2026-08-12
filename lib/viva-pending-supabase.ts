@@ -1,7 +1,7 @@
 /**
  * Viva-Pending-Checkouts in Supabase (für Netlify read-only Dateisystem).
  */
-import { supabaseServer, isSupabaseConfigured } from "@/lib/supabase/server";
+import { supabaseServerFresh, isSupabaseConfigured } from "@/lib/supabase/server";
 import type { OrderItem } from "./orders";
 import type { PendingCheckoutCustomer } from "./orders-data";
 
@@ -53,7 +53,7 @@ export async function addVivaPendingSupabase(
 ): Promise<boolean> {
   if (!isSupabaseConfigured()) return false;
 
-  const { error } = await supabaseServer.from("viva_pending_checkouts").insert({
+  const { error } = await supabaseServerFresh.from("viva_pending_checkouts").insert({
     viva_order_code: vivaOrderCode,
     items,
     total_cents: totalCents,
@@ -80,7 +80,7 @@ export async function getVivaPendingByOrderCodeSupabase(
 } | null> {
   if (!isSupabaseConfigured()) return null;
 
-  const { data, error } = await supabaseServer
+  const { data, error } = await supabaseServerFresh
     .from("viva_pending_checkouts")
     .select("*")
     .eq("viva_order_code", vivaOrderCode)
@@ -111,7 +111,7 @@ export async function removeVivaPendingByOrderCodeSupabase(
 ): Promise<void> {
   if (!isSupabaseConfigured()) return;
 
-  await supabaseServer
+  await supabaseServerFresh
     .from("viva_pending_checkouts")
     .delete()
     .eq("viva_order_code", vivaOrderCode);

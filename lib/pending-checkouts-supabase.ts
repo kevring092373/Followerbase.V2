@@ -2,7 +2,7 @@
  * Pending Checkouts in Supabase (unbezahlte PayPal-Vorgänge).
  * Ermöglicht Checkout auf Netlify (read-only Dateisystem).
  */
-import { supabaseServer, isSupabaseConfigured } from "@/lib/supabase/server";
+import { supabaseServerFresh, isSupabaseConfigured } from "@/lib/supabase/server";
 import type { OrderItem } from "./orders";
 import type { PendingCheckout, PendingCheckoutCustomer } from "./orders-data";
 
@@ -75,7 +75,7 @@ export async function addPendingCheckoutSupabase(
 ): Promise<void> {
   if (!isSupabaseConfigured()) return;
 
-  const { error } = await supabaseServer.from("pending_checkouts").insert({
+  const { error } = await supabaseServerFresh.from("pending_checkouts").insert({
     paypal_order_id: paypalOrderId,
     items: items,
     total_cents: totalCents,
@@ -83,7 +83,10 @@ export async function addPendingCheckoutSupabase(
     customer: customer ?? null,
   });
 
-  if (error) console.error("Supabase addPendingCheckout:", error.message);
+  if (error) {
+    console.error("Supabase addPendingCheckout:", error.message);
+    throw new Error(`Pending-Checkout konnte nicht gespeichert werden: ${error.message}`);
+  }
 }
 
 export async function getPendingByPaypalOrderIdSupabase(
@@ -91,7 +94,7 @@ export async function getPendingByPaypalOrderIdSupabase(
 ): Promise<PendingCheckout | null> {
   if (!isSupabaseConfigured()) return null;
 
-  const { data, error } = await supabaseServer
+  const { data, error } = await supabaseServerFresh
     .from("pending_checkouts")
     .select("*")
     .eq("paypal_order_id", paypalOrderId)
@@ -105,13 +108,13 @@ export async function getPendingByPaypalOrderIdSupabase(
 export async function removePendingByPaypalOrderIdSupabase(paypalOrderId: string): Promise<void> {
   if (!isSupabaseConfigured()) return;
 
-  await supabaseServer.from("pending_checkouts").delete().eq("paypal_order_id", paypalOrderId);
+  await supabaseServerFresh.from("pending_checkouts").delete().eq("paypal_order_id", paypalOrderId);
 }
 
 export async function getPendingCheckoutsSupabase(): Promise<PendingCheckout[]> {
   if (!isSupabaseConfigured()) return [];
 
-  const { data, error } = await supabaseServer
+  const { data, error } = await supabaseServerFresh
     .from("pending_checkouts")
     .select("*")
     .order("created_at", { ascending: false });

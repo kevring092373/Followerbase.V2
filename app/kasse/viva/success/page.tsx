@@ -40,8 +40,15 @@ export default async function VivaSuccessPage({ searchParams }: Props) {
     redirect("/checkout?error=viva_order");
   }
 
-  sendOrderConfirmationEmail(order).catch(() => {});
-  sendOrderNotificationToOwner(order).catch(() => {});
+  const customerOk = await sendOrderConfirmationEmail(order);
+  if (!customerOk) {
+    console.error("[viva/success] Kunden-Mail fehlgeschlagen für", order.orderNumber);
+  }
+  try {
+    await sendOrderNotificationToOwner(order);
+  } catch (e) {
+    console.error("[viva/success] Owner-Mail fehlgeschlagen für", order.orderNumber, e);
+  }
 
   redirect(`/bestellung/danke?order=${encodeURIComponent(order.orderNumber)}`);
 }

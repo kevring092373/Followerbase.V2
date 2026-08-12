@@ -50,8 +50,15 @@ export async function POST(request: NextRequest) {
       sellerNote
     );
 
-    sendOrderConfirmationEmail(order).catch(() => {});
-    sendOrderNotificationToOwner(order).catch(() => {});
+    const customerOk = await sendOrderConfirmationEmail(order);
+    if (!customerOk) {
+      console.error("[ueberweisung] Kunden-Mail fehlgeschlagen für", order.orderNumber);
+    }
+    try {
+      await sendOrderNotificationToOwner(order);
+    } catch (e) {
+      console.error("[ueberweisung] Owner-Mail fehlgeschlagen für", order.orderNumber, e);
+    }
 
     return NextResponse.json({ orderNumber: order.orderNumber });
   } catch (e) {

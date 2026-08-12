@@ -2,7 +2,7 @@
  * Kundendaten über Supabase.
  * Tabellen: customers (siehe supabase/schema.sql).
  */
-import { supabaseServer, isSupabaseConfigured } from "@/lib/supabase/server";
+import { supabaseServerFresh, isSupabaseConfigured } from "@/lib/supabase/server";
 
 export interface Customer {
   id: string;
@@ -58,7 +58,7 @@ function rowToCustomer(r: Record<string, unknown>): Customer {
 /** Alle Kunden (neueste zuerst). */
 export async function getCustomers(): Promise<Customer[]> {
   if (!isSupabaseConfigured()) return [];
-  const { data, error } = await supabaseServer
+  const { data, error } = await supabaseServerFresh
     .from("customers")
     .select("*")
     .order("created_at", { ascending: false });
@@ -74,7 +74,7 @@ export async function getCustomerByEmail(email: string): Promise<Customer | null
   if (!isSupabaseConfigured()) return null;
   const normalized = email.trim().toLowerCase();
   if (!normalized) return null;
-  const { data, error } = await supabaseServer
+  const { data, error } = await supabaseServerFresh
     .from("customers")
     .select("*")
     .ilike("email", normalized)
@@ -90,7 +90,7 @@ export async function getCustomerByEmail(email: string): Promise<Customer | null
 /** Kunde anhand ID. */
 export async function getCustomerById(id: string): Promise<Customer | null> {
   if (!isSupabaseConfigured()) return null;
-  const { data, error } = await supabaseServer
+  const { data, error } = await supabaseServerFresh
     .from("customers")
     .select("*")
     .eq("id", id)
@@ -112,7 +112,7 @@ export async function createOrGetCustomer(input: CustomerInsert): Promise<Custom
   const existing = await getCustomerByEmail(email);
   if (existing) return existing;
 
-  const { data, error } = await supabaseServer
+  const { data, error } = await supabaseServerFresh
     .from("customers")
     .insert({
       email: email.toLowerCase(),
@@ -146,7 +146,7 @@ export async function updateCustomer(id: string, input: CustomerUpdate): Promise
   if (input.country !== undefined) payload.country = input.country;
   if (Object.keys(payload).length === 0) return getCustomerById(id);
 
-  const { data, error } = await supabaseServer
+  const { data, error } = await supabaseServerFresh
     .from("customers")
     .update(payload)
     .eq("id", id)

@@ -2,7 +2,7 @@
  * Bestellungen in Supabase (orders + order_items).
  * Wird von orders-data.ts genutzt, wenn Supabase konfiguriert ist.
  */
-import { supabaseServer, isSupabaseConfigured } from "@/lib/supabase/server";
+import { supabaseServerFresh, isSupabaseConfigured } from "@/lib/supabase/server";
 import type { Order, OrderItem, OrderStatus, PaymentMethod } from "./orders";
 import { ORDER_STATUSES, getOrderTotalCents } from "./orders";
 
@@ -88,7 +88,7 @@ async function getOrderByNumberDirectSupabase(orderNumber: string): Promise<Orde
   const trimmed = orderNumber?.trim();
   if (!trimmed) return null;
 
-  const { data: orderRow, error: orderError } = await supabaseServer
+  const { data: orderRow, error: orderError } = await supabaseServerFresh
     .from("orders")
     .select("*")
     .eq("order_number", trimmed)
@@ -98,7 +98,7 @@ async function getOrderByNumberDirectSupabase(orderNumber: string): Promise<Orde
   if (orderError || !orderRow) return null;
 
   const r = orderRow as OrderRow;
-  const { data: itemRows } = await supabaseServer
+  const { data: itemRows } = await supabaseServerFresh
     .from("order_items")
     .select("*")
     .eq("order_id", r.id)
@@ -133,7 +133,7 @@ async function selectAllRows<T>(
 ): Promise<T[]> {
   const all: T[] = [];
   for (let from = 0; ; from += PAGE_SIZE) {
-    const { data, error } = await supabaseServer
+    const { data, error } = await supabaseServerFresh
       .from(table)
       .select("*")
       .order(orderColumn, { ascending })
@@ -177,7 +177,7 @@ export async function updateOrderStatusSupabase(
   const trimmed = orderNumber.trim();
   if (!trimmed) return null;
 
-  const { data: row, error: findError } = await supabaseServer
+  const { data: row, error: findError } = await supabaseServerFresh
     .from("orders")
     .select("id, order_number")
     .eq("order_number", trimmed)
@@ -193,7 +193,7 @@ export async function updateOrderStatusSupabase(
   const updatePayload: Record<string, unknown> = { status };
   if (remarks !== undefined) updatePayload.remarks = remarks || null;
 
-  const { error: updateError } = await supabaseServer
+  const { error: updateError } = await supabaseServerFresh
     .from("orders")
     .update(updatePayload)
     .eq("id", id);
@@ -209,7 +209,7 @@ export async function updateOrderStatusSupabase(
 export async function getOrderByPaypalOrderIdSupabase(paypalOrderId: string): Promise<Order | null> {
   if (!isSupabaseConfigured()) return null;
 
-  const { data: row, error } = await supabaseServer
+  const { data: row, error } = await supabaseServerFresh
     .from("orders")
     .select("*")
     .eq("paypal_order_id", paypalOrderId)
@@ -227,7 +227,7 @@ const ORDER_NUMBER_START = 3629;
 async function getNextOrderNumberSupabase(): Promise<string> {
   const prefix = `FB-${ORDER_NUMBER_YEAR}-`;
 
-  const { data: rows, error } = await supabaseServer
+  const { data: rows, error } = await supabaseServerFresh
     .from("orders")
     .select("order_number")
     .like("order_number", `${prefix}%`)
@@ -252,7 +252,7 @@ export async function insertOrderSupabase(order: Order): Promise<boolean> {
         ? getOrderTotalCents(order)
         : null;
 
-  const { data: inserted, error: orderError } = await supabaseServer
+  const { data: inserted, error: orderError } = await supabaseServerFresh
     .from("orders")
     .insert({
       order_number: order.orderNumber,
@@ -289,7 +289,7 @@ export async function insertOrderSupabase(order: Order): Promise<boolean> {
       price_cents: item.priceCents,
       target: item.target,
     }));
-    const { error: itemsError } = await supabaseServer.from("order_items").insert(itemRows);
+    const { error: itemsError } = await supabaseServerFresh.from("order_items").insert(itemRows);
     if (itemsError) {
       console.error("Supabase order_items insert:", itemsError.message);
     }
@@ -298,15 +298,20 @@ export async function insertOrderSupabase(order: Order): Promise<boolean> {
   return true;
 }
 
-/** Bestellung anlegen (orderNumber wird automatisch vergeben). */
+/** Bestellung anlegen (orderNumber wird automatisch vergeben, Unique-Kollisionen werden wiederholt). */
 export async function createOrderAndGetSupabase(
   order: Omit<Order, "orderNumber"> & { orderNumber?: string }
 ): Promise<Order | null> {
-  const nextNumber = await getNextOrderNumberSupabase();
-  const orderWithNumber: Order = {
-    ...order,
-    orderNumber: nextNumber,
-  };
-  const ok = await insertOrderSupabase(orderWithNumber);
-  return ok ? orderWithNumber : null;
+  for (let attempt = 0; attempt < 5; attempt++) {
+    const nextNumber = await getNextOrderNumberSupabase();
+    const orderWithNumber: Order = {
+      ...order,
+      orderNumber: nextNumber,
+    };
+    const ok = await insertOrderSupabase(orderWithNumber);
+    if (ok) return orderWithNumber;
+    // Kurze Pause bei Race/Unique-Konflikt, dann neue Nummer
+    await new Promise((r) => setTimeout(r, 40 * (attempt + 1)));
+  }
+  return null;
 }
