@@ -45,11 +45,63 @@ function orderedCategories() {
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [canScrollMore, setCanScrollMore] = useState(false);
+  const [openCatId, setOpenCatId] = useState<string | null>(null);
   const pathname = usePathname() || "";
   const cats = orderedCategories();
   const catbarRef = useRef<HTMLElement>(null);
+  const closeCatTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const closeMenu = () => setMobileMenuOpen(false);
+
+  const clearCloseCatTimer = () => {
+    if (closeCatTimer.current) {
+      clearTimeout(closeCatTimer.current);
+      closeCatTimer.current = null;
+    }
+  };
+
+  const openCat = (id: string) => {
+    clearCloseCatTimer();
+    setOpenCatId(id);
+  };
+
+  const scheduleCloseCat = () => {
+    clearCloseCatTimer();
+    closeCatTimer.current = setTimeout(() => setOpenCatId(null), 120);
+  };
+
+  const closeCat = () => {
+    clearCloseCatTimer();
+    setOpenCatId(null);
+  };
+
+  // Route-Wechsel: Dropdown schließen
+  useEffect(() => {
+    setOpenCatId(null);
+  }, [pathname]);
+
+  // Klick außerhalb / Escape schließt Dropdown
+  useEffect(() => {
+    if (!openCatId) return;
+    const onPointerDown = (e: PointerEvent) => {
+      const target = e.target as Node | null;
+      if (target && catbarRef.current?.contains(target)) return;
+      setOpenCatId(null);
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpenCatId(null);
+    };
+    document.addEventListener("pointerdown", onPointerDown);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [openCatId]);
+
+  useEffect(() => {
+    return () => clearCloseCatTimer();
+  }, []);
 
   const updateCatScrollHint = useCallback(() => {
     const el = catbarRef.current;
@@ -133,20 +185,39 @@ export function Header() {
                 const active =
                   pathname === href || pathname.startsWith(`${href}/`);
                 const bg = CAT_BG[category.id] ?? "";
+                const isOpen = openCatId === category.id;
                 return (
-                  <div key={category.id} className="cat-item">
+                  <div
+                    key={category.id}
+                    className={`cat-item${isOpen ? " is-open" : ""}`}
+                    onMouseEnter={() => openCat(category.id)}
+                    onMouseLeave={scheduleCloseCat}
+                  >
                     <Link
                       href={href}
                       className={`cat${active ? " active" : ""}`}
+                      aria-expanded={isOpen}
+                      aria-haspopup="menu"
+                      onFocus={() => openCat(category.id)}
+                      onClick={() => openCat(category.id)}
                     >
                       <span className={`pf-mini ${bg}`}>
                         <PlatformMiniIcon id={category.id} />
                       </span>
                       {category.name}
                     </Link>
-                    <div className="cat-dropdown" role="menu" aria-label={`${category.name} Produkte`}>
+                    <div
+                      className="cat-dropdown"
+                      role="menu"
+                      aria-label={`${category.name} Produkte`}
+                      aria-hidden={!isOpen}
+                    >
                       <div className="cat-dropdown-inner">
-                        <Link href={href} className="cat-dropdown-title">
+                        <Link
+                          href={href}
+                          className="cat-dropdown-title"
+                          onClick={closeCat}
+                        >
                           Alle {category.name}-Produkte
                         </Link>
                         <div className="cat-dropdown-list">
@@ -156,6 +227,7 @@ export function Header() {
                               href={`/product/${product.slug}`}
                               className="cat-dropdown-link"
                               role="menuitem"
+                              onClick={closeCat}
                             >
                               {product.name}
                             </Link>

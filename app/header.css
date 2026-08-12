@@ -220,6 +220,7 @@
 }
 
 .cat-item:hover > .cat,
+.cat-item.is-open > .cat,
 .cat:hover,
 .cat.active {
   background: #efe9fb;
@@ -260,8 +261,7 @@
     z-index: 60;
   }
 
-  .cat-item:hover > .cat-dropdown,
-  .cat-item:focus-within > .cat-dropdown {
+  .cat-item.is-open > .cat-dropdown {
     opacity: 1;
     visibility: visible;
     pointer-events: auto;
