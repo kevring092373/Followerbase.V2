@@ -59,17 +59,45 @@ function quantityToSlider(quantity: number, min: number, max: number): number {
   return ((quantity - min) / range) * 100;
 }
 
-/** Preis für individuelle Menge (linear zwischen erster und letzter Standard-Preisstufe) */
+/**
+ * Preis für individuelle Menge anhand der Original-Mengenvarianten.
+ * Trifft der Slider genau eine Standardmenge, gilt deren Preis.
+ * Dazwischen wird zwischen den beiden benachbarten Varianten interpoliert
+ * (nicht zwischen erster und letzter Stufe).
+ */
 function getIndividualPriceCents(quantity: number, quantities: number[], pricesCents: number[]): number {
-  if (quantities.length === 0 || pricesCents.length === 0) return quantity; // Fallback: 1 Cent pro Einheit
-  const qMin = quantities[0];
-  const qMax = quantities[quantities.length - 1];
-  const pMin = pricesCents[0];
-  const pMax = pricesCents[pricesCents.length - 1];
-  if (quantity <= qMin) return pMin;
-  if (quantity >= qMax) return Math.round((pMax / qMax) * quantity);
-  const ratio = (quantity - qMin) / (qMax - qMin);
-  return Math.round(pMin + ratio * (pMax - pMin));
+  const pairs = quantities
+    .map((q, i) => ({ q, p: pricesCents[i] }))
+    .filter((x): x is { q: number; p: number } => Number.isFinite(x.q) && Number.isFinite(x.p) && x.q > 0)
+    .sort((a, b) => a.q - b.q);
+
+  if (pairs.length === 0) return quantity;
+
+  const exact = pairs.find((x) => x.q === quantity);
+  if (exact) return exact.p;
+
+  const first = pairs[0];
+  if (quantity <= first.q) {
+    return Math.round((first.p / first.q) * quantity);
+  }
+
+  const last = pairs[pairs.length - 1];
+  if (quantity >= last.q) {
+    return Math.round((last.p / last.q) * quantity);
+  }
+
+  for (let i = 0; i < pairs.length - 1; i++) {
+    const left = pairs[i];
+    const right = pairs[i + 1];
+    if (quantity >= left.q && quantity <= right.q) {
+      const span = right.q - left.q;
+      if (span <= 0) return left.p;
+      const ratio = (quantity - left.q) / span;
+      return Math.round(left.p + ratio * (right.p - left.p));
+    }
+  }
+
+  return last.p;
 }
 
 export function ProductOrderBlock({
