@@ -298,15 +298,19 @@ export function ProductOrderBlock({
       >
         {added ? "✓ Hinzugefügt" : "In den Warenkorb"}
       </button>
-      <div className="product-delivery-note">
-        <p>
-          Hinweis: Je nach aktuellem Bestellaufkommen kann die Lieferung etwas später starten.
-        </p>
-        {isTikTokFollowerProduct(productSlug) && (
+      <div className="product-delivery-note" role="note">
+        <span className="product-delivery-note-icon" aria-hidden="true">⏱</span>
+        <div className="product-delivery-note-text">
+          <strong>Lieferung</strong>
           <p>
-            TikTok Follower werden langsam und gestaffelt ausgeliefert, damit das Wachstum natürlich und echt wirkt.
+            Je nach aktuellem Bestellaufkommen kann die Lieferung etwas später starten.
           </p>
-        )}
+          {isTikTokFollowerProduct(productSlug) && (
+            <p>
+              TikTok Follower werden langsam und gestaffelt ausgeliefert, damit das Wachstum natürlich und echt wirkt.
+            </p>
+          )}
+        </div>
       </div>
     </div>
   );

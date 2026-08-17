@@ -4089,22 +4089,41 @@ a {
 }
 
 .product-delivery-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
   margin-top: 1rem;
-  padding: 0.75rem 0.9rem;
-  font-size: 0.8125rem;
+  padding: 0.9rem 1rem;
+  font-size: 0.875rem;
   line-height: 1.5;
-  color: var(--text-secondary);
-  background: var(--bg-page);
-  border: 1px solid var(--border);
+  color: var(--text-primary);
+  background: rgba(138, 85, 238, 0.1);
+  border: 1px solid rgba(138, 85, 238, 0.28);
+  border-left: 4px solid var(--brand-primary);
   border-radius: var(--radius-md);
 }
 
-.product-delivery-note p {
-  margin: 0;
+.product-delivery-note-icon {
+  flex-shrink: 0;
+  font-size: 1.15rem;
+  line-height: 1.35;
 }
 
-.product-delivery-note p + p {
-  margin-top: 0.45rem;
+.product-delivery-note-text strong {
+  display: block;
+  margin-bottom: 0.2rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--brand-primary);
+}
+
+.product-delivery-note-text p {
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.product-delivery-note-text p + p {
+  margin-top: 0.4rem;
 }
 
 /* „In den Warenkorb“ auf Produktseiten: immer Akzentfarbe, nicht von Produktbeschreibungs-CSS überschrieben */
