@@ -14,6 +14,11 @@ function isFollowerProduct(slug: string): boolean {
   return s.includes("follower") || s.includes("gruppenmitglieder");
 }
 
+function isTikTokFollowerProduct(slug: string): boolean {
+  const s = slug.toLowerCase();
+  return s.includes("tiktok") && s.includes("follower");
+}
+
 function getTargetLabel(slug: string): string {
   return isFollowerProduct(slug) ? "Profillink oder Nutzername" : "Beitragslink";
 }
@@ -293,6 +298,16 @@ export function ProductOrderBlock({
       >
         {added ? "✓ Hinzugefügt" : "In den Warenkorb"}
       </button>
+      <div className="product-delivery-note">
+        <p>
+          Hinweis: Je nach aktuellem Bestellaufkommen kann die Lieferung etwas später starten.
+        </p>
+        {isTikTokFollowerProduct(productSlug) && (
+          <p>
+            TikTok Follower werden langsam und gestaffelt ausgeliefert, damit das Wachstum natürlich und echt wirkt.
+          </p>
+        )}
+      </div>
     </div>
   );
 }
