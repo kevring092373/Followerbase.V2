@@ -15,7 +15,9 @@ const TRACKING_STATUSES = ORDER_STATUSES.filter(
 
 function TrackingTimeline({ order }: { order: OrderTrackingInfo }) {
   const currentIndex =
-    order.status === "pending_payment" ? -1 : TRACKING_STATUSES.indexOf(order.status);
+    order.status === "pending_payment" || order.status === "storniert"
+      ? -1
+      : TRACKING_STATUSES.indexOf(order.status);
   const steps = currentIndex < 0 ? [] : TRACKING_STATUSES;
 
   return (
