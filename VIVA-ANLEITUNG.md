@@ -15,7 +15,7 @@ Trage in **`.env.local`** (lokal) bzw. in **Netlify → Site settings → Enviro
 | `VIVA_CLIENT_ID` | Client ID aus dem Viva Dashboard (siehe unten) |
 | `VIVA_CLIENT_SECRET` | Client Secret / API Key aus dem Viva Dashboard |
 | `VIVA_DEMO` | Optional: `true` = Demo-Umgebung, weglassen = Live |
-| `VIVA_SOURCE_CODE` | Optional: Source Code deiner „Payment Source“ für Online-Zahlungen |
+| `VIVA_SOURCE_CODE` | **Wichtig:** 4-stelliger Source Code der Payment Source (Sales → Online payments → Websites/Apps). Ohne diesen Code zeigt Viva oft keine Kreditkarte. |
 
 **Wo finde ich Client ID und Secret?**
 
@@ -42,7 +42,21 @@ Trage in **`.env.local`** (lokal) bzw. in **Netlify → Site settings → Enviro
    - **Nur HTTPS**, keine Leerzeichen, kein Slash am Ende.
 4. **Domain Name** in derselben Payment Source muss zu deiner Website passen (z. B. `followerbase.de` ohne https://).
 5. **Failure URL** (optional): `https://DEINE-DOMAIN.de/checkout` – dann landet der Kunde bei Abbruch wieder im Checkout.
-6. Änderungen **speichern**. Bei mehreren Payment Sources: **Source Code** dieser Quelle in `VIVA_SOURCE_CODE` in der .env eintragen.
+6. Änderungen **speichern**. **Source Code** (4 Ziffern oben links in der Payment Source) in Netlify als `VIVA_SOURCE_CODE` eintragen – sonst kann Smart Checkout die Kartenoption ausblenden.
+
+---
+
+## 2b. Supabase: Viva-OrderCode als Text
+
+Im Supabase SQL Editor einmal ausführen:
+
+```sql
+-- supabase/migrations/009_viva_order_code_text.sql
+ALTER TABLE viva_pending_checkouts
+  ALTER COLUMN viva_order_code TYPE TEXT USING viva_order_code::text;
+```
+
+Viva-OrderCodes sind 16-stellig. Als Zahl in JavaScript gehen Stellen verloren; die Zahlungsseite findet die Bestellung dann nicht.
 
 ---
 
@@ -69,8 +83,9 @@ Die E-Mails (an den Kunden und an info@followerbase.de) werden **erst ausgelöst
 - [ ] `VIVA_CLIENT_ID` und `VIVA_CLIENT_SECRET` in .env.local / Netlify gesetzt
 - [ ] **Success URL** im Viva Dashboard = `https://DEINE-DOMAIN.de/kasse/viva/success` (exakt, mit deiner Live-Domain)
 - [ ] **Domain Name** in der Payment Source passt zu deiner Website
-- [ ] Optional: `VIVA_SOURCE_CODE` gesetzt, falls du mehrere Payment Sources nutzt
+- [ ] **`VIVA_SOURCE_CODE`** = 4-stelliger Code der Payment Source für followerbase.de
 - [ ] Für Live: `VIVA_DEMO` weglassen; für Tests: `VIVA_DEMO=true`
+- [ ] Migration `009_viva_order_code_text.sql` in Supabase ausgeführt`
 - [ ] `RESEND_API_KEY` (und ggf. `EMAIL_FROM`) in Netlify für E-Mails gesetzt
 
 ---
@@ -81,7 +96,8 @@ Die E-Mails (an den Kunden und an info@followerbase.de) werden **erst ausgelöst
 |--------|--------|
 | Kunde bleibt nach Zahlung auf der Viva-Seite | Success URL in der **Payment Source** (Sales → Online payments → Websites/Apps) prüfen. Muss **genau** `https://deine-domain.de/kasse/viva/success` sein (mit deiner echten Domain, HTTPS). Nach Änderung speichern. |
 | Keine E-Mails | Erfolgt nur, wenn unsere Success-Seite aufgerufen wird (siehe oben). Zusätzlich: `RESEND_API_KEY` und ggf. `EMAIL_FROM` in Netlify prüfen; Resend-Domain verifizieren. |
+| Kreditkarte erscheint nicht / wird abgelehnt | `VIVA_SOURCE_CODE` muss zum 4-stelligen Code der Website-Payment-Source passen. Im Dashboard: Sales → Online payments → Websites/Apps. Außerdem Live vs. Demo: `VIVA_DEMO` nur bei Tests setzen. |
 | Redirect zu /checkout?error=viva_verify | Transaktion konnte nicht verifiziert werden (z. B. Demo vs. Live vertauscht: `VIVA_DEMO` muss zu der Umgebung passen, in der die Zahlung lief). |
-| Redirect zu /checkout?error=viva_order | Pending-Checkout nicht gefunden – z. B. Migration `003_viva_pending_checkouts.sql` in Supabase ausgeführt? |
+| Redirect zu /checkout?error=viva_order | Pending-Checkout nicht gefunden – Migration `003` und `009_viva_order_code_text.sql` in Supabase ausführen. |
 
 Server-Logs (Netlify Functions / Build-Logs) prüfen; dort erscheinen API-Fehler (ohne Kartendaten).

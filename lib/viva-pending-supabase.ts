@@ -4,6 +4,7 @@
 import { supabaseServerFresh, isSupabaseConfigured } from "@/lib/supabase/server";
 import type { OrderItem } from "./orders";
 import type { PendingCheckoutCustomer } from "./orders-data";
+import { asVivaOrderCode } from "./viva-server";
 
 function parseItems(val: unknown): OrderItem[] {
   if (!Array.isArray(val)) return [];
@@ -45,16 +46,18 @@ function parseCustomer(val: unknown): PendingCheckoutCustomer | undefined {
 }
 
 export async function addVivaPendingSupabase(
-  vivaOrderCode: number,
+  vivaOrderCode: string,
   items: OrderItem[],
   totalCents: number,
   sellerNote?: string,
   customer?: PendingCheckoutCustomer
 ): Promise<boolean> {
   if (!isSupabaseConfigured()) return false;
+  const code = asVivaOrderCode(vivaOrderCode);
+  if (!code) return false;
 
   const { error } = await supabaseServerFresh.from("viva_pending_checkouts").insert({
-    viva_order_code: vivaOrderCode,
+    viva_order_code: code,
     items,
     total_cents: totalCents,
     seller_note: sellerNote ?? null,
@@ -69,9 +72,9 @@ export async function addVivaPendingSupabase(
 }
 
 export async function getVivaPendingByOrderCodeSupabase(
-  vivaOrderCode: number
+  vivaOrderCode: string
 ): Promise<{
-  vivaOrderCode: number;
+  vivaOrderCode: string;
   items: OrderItem[];
   totalCents: number;
   sellerNote?: string;
@@ -79,25 +82,29 @@ export async function getVivaPendingByOrderCodeSupabase(
   createdAt: string;
 } | null> {
   if (!isSupabaseConfigured()) return null;
+  const code = asVivaOrderCode(vivaOrderCode);
+  if (!code) return null;
 
   const { data, error } = await supabaseServerFresh
     .from("viva_pending_checkouts")
     .select("*")
-    .eq("viva_order_code", vivaOrderCode)
+    .eq("viva_order_code", code)
     .limit(1)
     .maybeSingle();
 
   if (error || !data) return null;
   const row = data as {
-    viva_order_code: number;
+    viva_order_code: string | number;
     items: unknown;
     total_cents: number;
     seller_note: string | null;
     customer: unknown;
     created_at: string;
   };
+  const storedCode = asVivaOrderCode(row.viva_order_code);
+  if (!storedCode) return null;
   return {
-    vivaOrderCode: row.viva_order_code,
+    vivaOrderCode: storedCode,
     items: parseItems(row.items),
     totalCents: row.total_cents,
     sellerNote: row.seller_note ?? undefined,
@@ -107,12 +114,14 @@ export async function getVivaPendingByOrderCodeSupabase(
 }
 
 export async function removeVivaPendingByOrderCodeSupabase(
-  vivaOrderCode: number
+  vivaOrderCode: string
 ): Promise<void> {
   if (!isSupabaseConfigured()) return;
+  const code = asVivaOrderCode(vivaOrderCode);
+  if (!code) return;
 
   await supabaseServerFresh
     .from("viva_pending_checkouts")
     .delete()
-    .eq("viva_order_code", vivaOrderCode);
+    .eq("viva_order_code", code);
 }

@@ -53,6 +53,7 @@ export async function POST(request: NextRequest) {
       {
         email: customer.email.trim(),
         fullName: customer.name?.trim() || undefined,
+        phone: customer.phone?.trim() || undefined,
         requestLang: "de-DE",
       }
     );

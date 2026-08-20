@@ -373,7 +373,7 @@ export async function createOrderFromPendingAndRemovePending(
 
 /** Nach erfolgreicher Viva-Zahlung: Bestellung aus Viva-Pending anlegen und Pending entfernen. */
 export async function createOrderFromVivaPendingAndRemove(
-  vivaOrderCode: number
+  vivaOrderCode: string
 ): Promise<Order | null> {
   const {
     getVivaPendingByOrderCode,

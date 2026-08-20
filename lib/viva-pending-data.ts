@@ -10,13 +10,14 @@ import {
   getVivaPendingByOrderCodeSupabase,
   removeVivaPendingByOrderCodeSupabase,
 } from "./viva-pending-supabase";
+import { asVivaOrderCode } from "./viva-server";
 import type { OrderItem } from "./orders";
 import type { PendingCheckoutCustomer } from "./orders-data";
 
 const VIVA_PENDING_FILE = path.join(process.cwd(), "content", "viva-pending.json");
 
 export interface VivaPendingCheckout {
-  vivaOrderCode: number;
+  vivaOrderCode: string;
   items: OrderItem[];
   totalCents: number;
   sellerNote?: string;
@@ -24,17 +25,27 @@ export interface VivaPendingCheckout {
   createdAt: string;
 }
 
+function normalizePending(p: unknown): VivaPendingCheckout | null {
+  if (!p || typeof p !== "object") return null;
+  const row = p as Record<string, unknown>;
+  const vivaOrderCode = asVivaOrderCode(row.vivaOrderCode);
+  if (!vivaOrderCode) return null;
+  return {
+    vivaOrderCode,
+    items: Array.isArray(row.items) ? (row.items as OrderItem[]) : [],
+    totalCents: typeof row.totalCents === "number" ? row.totalCents : 0,
+    sellerNote: typeof row.sellerNote === "string" ? row.sellerNote : undefined,
+    customer: row.customer as PendingCheckoutCustomer | undefined,
+    createdAt: typeof row.createdAt === "string" ? row.createdAt : new Date().toISOString(),
+  };
+}
+
 async function readVivaPending(): Promise<VivaPendingCheckout[]> {
   try {
     const raw = await fs.readFile(VIVA_PENDING_FILE, "utf-8");
     const data = JSON.parse(raw);
-    const list = Array.isArray(data.pending) ? data.pending : [];
-    return list.filter(
-      (p: unknown): p is VivaPendingCheckout =>
-        p != null &&
-        typeof p === "object" &&
-        typeof (p as VivaPendingCheckout).vivaOrderCode === "number"
-    );
+    const list: unknown[] = Array.isArray(data.pending) ? data.pending : [];
+    return list.map(normalizePending).filter((p): p is VivaPendingCheckout => p !== null);
   } catch {
     return [];
   }
@@ -52,18 +63,20 @@ async function writeVivaPending(pending: VivaPendingCheckout[]): Promise<void> {
 
 /** Gibt bei Supabase true zurück, wenn der Pending gespeichert wurde; sonst immer true (Datei). */
 export async function addVivaPending(
-  vivaOrderCode: number,
+  vivaOrderCode: string,
   items: OrderItem[],
   totalCents: number,
   sellerNote?: string,
   customer?: PendingCheckoutCustomer
 ): Promise<boolean> {
+  const code = asVivaOrderCode(vivaOrderCode);
+  if (!code) return false;
   if (isSupabaseConfigured()) {
-    return addVivaPendingSupabase(vivaOrderCode, items, totalCents, sellerNote, customer);
+    return addVivaPendingSupabase(code, items, totalCents, sellerNote, customer);
   }
   const list = await readVivaPending();
   list.push({
-    vivaOrderCode,
+    vivaOrderCode: code,
     items,
     totalCents,
     sellerNote,
@@ -75,23 +88,27 @@ export async function addVivaPending(
 }
 
 export async function getVivaPendingByOrderCode(
-  vivaOrderCode: number
+  vivaOrderCode: string
 ): Promise<VivaPendingCheckout | null> {
+  const code = asVivaOrderCode(vivaOrderCode);
+  if (!code) return null;
   if (isSupabaseConfigured()) {
-    return getVivaPendingByOrderCodeSupabase(vivaOrderCode);
+    return getVivaPendingByOrderCodeSupabase(code);
   }
   const list = await readVivaPending();
-  return list.find((p) => p.vivaOrderCode === vivaOrderCode) ?? null;
+  return list.find((p) => p.vivaOrderCode === code) ?? null;
 }
 
 export async function removeVivaPendingByOrderCode(
-  vivaOrderCode: number
+  vivaOrderCode: string
 ): Promise<void> {
+  const code = asVivaOrderCode(vivaOrderCode);
+  if (!code) return;
   if (isSupabaseConfigured()) {
-    await removeVivaPendingByOrderCodeSupabase(vivaOrderCode);
+    await removeVivaPendingByOrderCodeSupabase(code);
     return;
   }
   const list = await readVivaPending();
-  const filtered = list.filter((p) => p.vivaOrderCode !== vivaOrderCode);
+  const filtered = list.filter((p) => p.vivaOrderCode !== code);
   await writeVivaPending(filtered);
 }

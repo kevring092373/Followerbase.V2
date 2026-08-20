@@ -2,6 +2,9 @@
  * Viva Wallet (Kreditkarte) – Server-API.
  * Create Order (Redirect Checkout), Verify Transaction.
  * Umgebungsvariablen: VIVA_CLIENT_ID, VIVA_CLIENT_SECRET; optional VIVA_DEMO=true, VIVA_SOURCE_CODE.
+ *
+ * OrderCodes sind 16-stellig und müssen als String behandelt werden – sonst gehen
+ * Stellen über Number.MAX_SAFE_INTEGER verloren und die Zahlungsseite findet die Order nicht.
  */
 
 const DEMO = process.env.VIVA_DEMO === "true";
@@ -16,6 +19,24 @@ const CHECKOUT_BASE = DEMO
   : "https://www.vivapayments.com";
 
 const SCOPE = "urn:viva:payments:core:api:redirectcheckout";
+
+export function extractVivaId(raw: string, keys: string[]): string | null {
+  for (const key of keys) {
+    const re = new RegExp(`"${key}"\\s*:\\s*(?:"(\\d+)"|(\\d+))`, "i");
+    const match = raw.match(re);
+    const id = match?.[1] || match?.[2];
+    if (id) return id;
+  }
+  return null;
+}
+
+export function asVivaOrderCode(value: unknown): string {
+  if (typeof value === "string" && /^\d+$/.test(value.trim())) return value.trim();
+  if (typeof value === "number" && Number.isFinite(value) && value >= 0) {
+    return Math.trunc(value).toString();
+  }
+  return "";
+}
 
 async function getAccessToken(): Promise<string> {
   const clientId = process.env.VIVA_CLIENT_ID;
@@ -39,7 +60,8 @@ async function getAccessToken(): Promise<string> {
   });
   if (!res.ok) {
     const text = await res.text();
-    throw new Error(`Viva OAuth fehlgeschlagen: ${res.status} ${text}`);
+    console.error("[viva] OAuth fehlgeschlagen:", res.status, text.slice(0, 300));
+    throw new Error("Viva-Anmeldung fehlgeschlagen. Bitte Zugangsdaten und Umgebung (Live/Demo) prüfen.");
   }
   const data = (await res.json()) as { access_token: string };
   return data.access_token;
@@ -48,32 +70,38 @@ async function getAccessToken(): Promise<string> {
 export interface VivaCustomer {
   email: string;
   fullName?: string;
+  phone?: string;
   requestLang?: string;
 }
 
 /**
  * Payment Order bei Viva anlegen. amountCents = Betrag in Cent (z. B. 1050 = 10,50 €).
- * Gibt die orderCode (number) zurück.
+ * Gibt die orderCode als String zurück (16-stellig, nicht als Number speichern).
  */
 export async function createVivaOrder(
   amountCents: number,
   customerTrns: string,
   customer?: VivaCustomer
-): Promise<number> {
+): Promise<string> {
   const token = await getAccessToken();
-  const sourceCode = process.env.VIVA_SOURCE_CODE?.trim();
+  const sourceCode = process.env.VIVA_SOURCE_CODE?.trim() || "Default";
   const body: Record<string, unknown> = {
     amount: amountCents,
     customerTrns: customerTrns.slice(0, 500),
+    merchantTrns: customerTrns.slice(0, 2048),
     requestLang: "de-DE",
+    sourceCode,
+    paymentTimeout: 1800,
+    disableCash: true,
     ...(customer && {
       customer: {
         email: customer.email,
         fullName: customer.fullName ?? "",
+        phone: customer.phone ?? "",
+        countryCode: "DE",
         requestLang: customer.requestLang ?? "de-DE",
       },
     }),
-    ...(sourceCode ? { sourceCode } : {}),
   };
 
   const res = await fetch(`${API_BASE}/checkout/v2/orders`, {
@@ -84,25 +112,27 @@ export async function createVivaOrder(
     },
     body: JSON.stringify(body),
   });
+  const raw = await res.text();
   if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`Viva Create Order fehlgeschlagen: ${res.status} ${text}`);
+    console.error("[viva] Create Order fehlgeschlagen:", res.status, raw.slice(0, 500));
+    throw new Error("Kartenzahlung konnte bei Viva nicht gestartet werden. Bitte später erneut versuchen.");
   }
-  const data = (await res.json()) as { orderCode?: number; OrderCode?: number };
-  const orderCode = data.orderCode ?? data.OrderCode;
-  if (orderCode == null || typeof orderCode !== "number") {
-    throw new Error("Viva hat keine orderCode zurückgegeben.");
+
+  const orderCode = extractVivaId(raw, ["orderCode", "OrderCode"]);
+  if (!orderCode) {
+    console.error("[viva] Keine orderCode in Antwort:", raw.slice(0, 500));
+    throw new Error("Viva hat keine Bestellreferenz zurückgegeben.");
   }
   return orderCode;
 }
 
 /** URL der Viva-Zahlungsseite (Kunde wird dorthin weitergeleitet). */
-export function getVivaPaymentPageUrl(orderCode: number): string {
-  return `${CHECKOUT_BASE}/web/checkout?ref=${orderCode}`;
+export function getVivaPaymentPageUrl(orderCode: string): string {
+  return `${CHECKOUT_BASE}/web/checkout?ref=${encodeURIComponent(orderCode)}`;
 }
 
 export interface VivaTransaction {
-  orderCode: number;
+  orderCode: string;
   statusId: string;
   amount: number;
   email?: string;
@@ -120,24 +150,32 @@ export async function getVivaTransaction(
       headers: { Authorization: `Bearer ${token}` },
     }
   );
-  if (!res.ok) return null;
-  const data = (await res.json()) as {
-    orderCode?: number;
-    OrderCode?: number;
-    statusId?: string;
-    amount?: number;
-    email?: string;
-    fullName?: string;
-  };
-  const orderCode = data.orderCode ?? data.OrderCode;
-  const statusId = data.statusId ?? "";
-  if (orderCode == null) return null;
+  const raw = await res.text();
+  if (!res.ok) {
+    console.error("[viva] Transaction-Abfrage fehlgeschlagen:", res.status, raw.slice(0, 300));
+    return null;
+  }
+  const orderCode = extractVivaId(raw, ["orderCode", "OrderCode"]);
+  if (!orderCode) return null;
+
+  let parsed: Record<string, unknown> = {};
+  try {
+    parsed = JSON.parse(raw) as Record<string, unknown>;
+  } catch {
+    parsed = {};
+  }
+  const statusId =
+    (typeof parsed.statusId === "string" && parsed.statusId) ||
+    (typeof parsed.StatusId === "string" && parsed.StatusId) ||
+    "";
+  const amount = typeof parsed.amount === "number" ? parsed.amount : 0;
+
   return {
-    orderCode: Number(orderCode),
+    orderCode,
     statusId,
-    amount: typeof data.amount === "number" ? data.amount : 0,
-    email: data.email,
-    fullName: data.fullName,
+    amount,
+    email: typeof parsed.email === "string" ? parsed.email : undefined,
+    fullName: typeof parsed.fullName === "string" ? parsed.fullName : undefined,
   };
 }
 
