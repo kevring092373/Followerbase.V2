@@ -1,17 +1,9 @@
 /**
- * Server-seitige Blog-Daten: Bei Supabase aus DB, sonst aus content/blog-posts.json.
- * Auf Netlify (read-only) wird Supabase verwendet.
+ * Server-seitige Blog-Daten aus content/blog-posts.json (Git).
+ * Beiträge werden nicht mehr aus Supabase gelesen.
  */
 import { promises as fs } from "fs";
 import path from "path";
-import { isSupabaseConfigured } from "@/lib/supabase/server";
-import {
-  getAllPostsSupabase,
-  getPostBySlugSupabase,
-  createPostSupabase,
-  updatePostSupabase,
-  deletePostSupabase,
-} from "./blog-supabase";
 import type { BlogPost } from "./blog";
 
 const BLOG_FILE = path.join(process.cwd(), "content", "blog-posts.json");
@@ -63,7 +55,6 @@ async function writePosts(posts: BlogPost[]): Promise<void> {
 }
 
 export async function getAllPosts(): Promise<BlogPost[]> {
-  if (isSupabaseConfigured()) return getAllPostsSupabase();
   const posts = await readPosts();
   return [...posts].sort((a, b) => {
     const dA = a.date ?? "";
@@ -75,10 +66,6 @@ export async function getAllPosts(): Promise<BlogPost[]> {
 
 export async function getPostBySlug(slug: string): Promise<BlogPost | undefined> {
   const clean = normalizeBlogSlug(slug) || slug.trim();
-  if (isSupabaseConfigured()) {
-    const p = await getPostBySlugSupabase(clean);
-    return p ?? undefined;
-  }
   const posts = await readPosts();
   return posts.find((p) => p.slug === clean || normalizeBlogSlug(p.slug) === clean);
 }
@@ -97,12 +84,6 @@ export async function createPost(input: BlogPost): Promise<BlogPost> {
     metaDescription: input.metaDescription,
     image: input.image,
   };
-  if (isSupabaseConfigured()) {
-    const existing = await getPostBySlugSupabase(post.slug);
-    if (existing) throw new Error(`Ein Beitrag mit der URL "${post.slug}" existiert bereits.`);
-    await createPostSupabase(post);
-    return post;
-  }
   const posts = await readPosts();
   if (posts.some((p) => p.slug === post.slug)) {
     throw new Error(`Ein Beitrag mit der URL "${post.slug}" existiert bereits.`);
@@ -116,17 +97,6 @@ export async function updatePost(slug: string, input: Partial<BlogPost>): Promis
   const cleanSlugParam = normalizeBlogSlug(slug) || slug.trim();
   const nextSlug =
     input.slug !== undefined ? normalizeBlogSlug(input.slug) || input.slug.trim() : undefined;
-  if (isSupabaseConfigured()) {
-    const existing = await getPostBySlugSupabase(cleanSlugParam);
-    if (!existing) throw new Error("Beitrag nicht gefunden.");
-    const updated: BlogPost = {
-      ...existing,
-      ...input,
-      ...(nextSlug ? { slug: nextSlug } : {}),
-    };
-    await updatePostSupabase(existing.slug, updated);
-    return updated;
-  }
   const posts = await readPosts();
   const index = posts.findIndex(
     (p) => p.slug === cleanSlugParam || normalizeBlogSlug(p.slug) === cleanSlugParam
@@ -144,12 +114,6 @@ export async function updatePost(slug: string, input: Partial<BlogPost>): Promis
 
 export async function deletePost(slug: string): Promise<void> {
   const clean = normalizeBlogSlug(slug) || slug.trim();
-  if (isSupabaseConfigured()) {
-    const existing = await getPostBySlugSupabase(clean);
-    if (!existing) throw new Error("Beitrag nicht gefunden.");
-    await deletePostSupabase(existing.slug);
-    return;
-  }
   const posts = await readPosts();
   const filtered = posts.filter(
     (p) => p.slug !== clean && normalizeBlogSlug(p.slug) !== clean

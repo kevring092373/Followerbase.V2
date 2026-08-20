@@ -9,7 +9,8 @@
     "lint": "next lint",
     "test": "node --test tests/product-seo.test.mjs tests/viva-order-code.test.mjs",
     "deploy": "netlify deploy --prod",
-    "sync-product": "node scripts/sync-product-from-supabase.js"
+    "sync-product": "node scripts/sync-product-from-supabase.js",
+    "blog:export": "node scripts/export-blog-from-supabase.js"
   },
   "dependencies": {
     "@paypal/react-paypal-js": "^8.9.2",
