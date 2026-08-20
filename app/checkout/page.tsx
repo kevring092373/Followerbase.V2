@@ -437,8 +437,9 @@ function CheckoutContent() {
             {paymentMethod === "viva" ? (
               <div className="checkout-ueberweisung-wrap">
                 <p className="checkout-ueberweisung-text">
-                  Du wirst zur sicheren Zahlungsseite von Viva weitergeleitet und kannst dort mit
-                  Kreditkarte bezahlen.
+                  Du wirst zur sicheren Zahlungsseite von Viva weitergeleitet. Akzeptiert werden Visa,
+                  Mastercard und Maestro. Eine reine Girocard ohne Visa-/Mastercard-Logo wird nicht
+                  unterstützt.
                 </p>
                 <button
                   type="button"

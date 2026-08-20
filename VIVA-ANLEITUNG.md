@@ -15,7 +15,7 @@ Trage in **`.env.local`** (lokal) bzw. in **Netlify → Site settings → Enviro
 | `VIVA_CLIENT_ID` | Client ID aus dem Viva Dashboard (siehe unten) |
 | `VIVA_CLIENT_SECRET` | Client Secret / API Key aus dem Viva Dashboard |
 | `VIVA_DEMO` | Optional: `true` = Demo-Umgebung, weglassen = Live |
-| `VIVA_SOURCE_CODE` | **Wichtig:** 4-stelliger Source Code der Payment Source (Sales → Online payments → Websites/Apps). Ohne diesen Code zeigt Viva oft keine Kreditkarte. |
+| `VIVA_SOURCE_CODE` | 4-stelliger Source Code der Payment Source. Für followerbase.de: **7889**. |
 
 **Wo finde ich Client ID und Secret?**
 
@@ -96,7 +96,7 @@ Die E-Mails (an den Kunden und an info@followerbase.de) werden **erst ausgelöst
 |--------|--------|
 | Kunde bleibt nach Zahlung auf der Viva-Seite | Success URL in der **Payment Source** (Sales → Online payments → Websites/Apps) prüfen. Muss **genau** `https://deine-domain.de/kasse/viva/success` sein (mit deiner echten Domain, HTTPS). Nach Änderung speichern. |
 | Keine E-Mails | Erfolgt nur, wenn unsere Success-Seite aufgerufen wird (siehe oben). Zusätzlich: `RESEND_API_KEY` und ggf. `EMAIL_FROM` in Netlify prüfen; Resend-Domain verifizieren. |
-| Kreditkarte erscheint nicht / wird abgelehnt | `VIVA_SOURCE_CODE` muss zum 4-stelligen Code der Website-Payment-Source passen. Im Dashboard: Sales → Online payments → Websites/Apps. Außerdem Live vs. Demo: `VIVA_DEMO` nur bei Tests setzen. |
+| Kreditkarte: „Diese Karte wird nicht unterstützt“ | 1) **Visa, Mastercard oder Maestro** verwenden – deutsche Girocard ohne Visa-/Mastercard-Logo nimmt Viva nicht an. 2) In Netlify prüfen: `VIVA_DEMO` darf **nicht** `true` sein (sonst gelten nur Testkarten). 3) `VIVA_SOURCE_CODE` muss der **4-stellige Code der Website-Payment-Source** sein (Sales → Online payments → Websites/Apps), nicht eine Terminal-/Ladenkasse-Source. |
 | Redirect zu /checkout?error=viva_verify | Transaktion konnte nicht verifiziert werden (z. B. Demo vs. Live vertauscht: `VIVA_DEMO` muss zu der Umgebung passen, in der die Zahlung lief). |
 | Redirect zu /checkout?error=viva_order | Pending-Checkout nicht gefunden – Migration `003` und `009_viva_order_code_text.sql` in Supabase ausführen. |
 

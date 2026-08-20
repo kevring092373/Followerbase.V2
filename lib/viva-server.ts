@@ -2,6 +2,7 @@
  * Viva Wallet (Kreditkarte) – Server-API.
  * Create Order (Redirect Checkout), Verify Transaction.
  * Umgebungsvariablen: VIVA_CLIENT_ID, VIVA_CLIENT_SECRET; optional VIVA_DEMO=true, VIVA_SOURCE_CODE.
+ * Standard-Source für followerbase.de: 7889.
  *
  * OrderCodes sind 16-stellig und müssen als String behandelt werden – sonst gehen
  * Stellen über Number.MAX_SAFE_INTEGER verloren und die Zahlungsseite findet die Order nicht.
@@ -84,24 +85,21 @@ export async function createVivaOrder(
   customer?: VivaCustomer
 ): Promise<string> {
   const token = await getAccessToken();
-  const sourceCode = process.env.VIVA_SOURCE_CODE?.trim() || "Default";
+  const sourceCode = process.env.VIVA_SOURCE_CODE?.trim() || "7889";
+  const customerPayload = customer
+    ? {
+        email: customer.email,
+        fullName: customer.fullName ?? "",
+        requestLang: customer.requestLang ?? "de-DE",
+        ...(customer.phone ? { phone: customer.phone, countryCode: "DE" } : { countryCode: "DE" }),
+      }
+    : undefined;
   const body: Record<string, unknown> = {
     amount: amountCents,
     customerTrns: customerTrns.slice(0, 500),
-    merchantTrns: customerTrns.slice(0, 2048),
     requestLang: "de-DE",
     sourceCode,
-    paymentTimeout: 1800,
-    disableCash: true,
-    ...(customer && {
-      customer: {
-        email: customer.email,
-        fullName: customer.fullName ?? "",
-        phone: customer.phone ?? "",
-        countryCode: "DE",
-        requestLang: customer.requestLang ?? "de-DE",
-      },
-    }),
+    ...(customerPayload ? { customer: customerPayload } : {}),
   };
 
   const res = await fetch(`${API_BASE}/checkout/v2/orders`, {
