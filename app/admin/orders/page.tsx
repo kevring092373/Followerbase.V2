@@ -34,9 +34,10 @@ function formatEuro(cents: number) {
 export default async function AdminOrdersPage() {
   const [orders, errors] = await Promise.all([getAllOrders(), getOrderErrors()]);
 
-  const paid = orders.filter((o) => o.status !== "pending_payment");
+  const paid = orders.filter((o) => o.status !== "pending_payment" && o.status !== "storniert");
   const completed = orders.filter((o) => o.status === "abgeschlossen");
   const awaitingPayment = orders.filter((o) => o.status === "pending_payment");
+  const cancelled = orders.filter((o) => o.status === "storniert");
 
   const sum = (list: typeof orders) =>
     list.reduce((total, order) => total + getOrderAmountCents(order), 0);
@@ -44,6 +45,7 @@ export default async function AdminOrdersPage() {
   const totalCents = sum(paid);
   const completedCents = sum(completed);
   const awaitingCents = sum(awaitingPayment);
+  const cancelledCents = sum(cancelled);
 
   return (
     <>
@@ -76,10 +78,25 @@ export default async function AdminOrdersPage() {
             </span>
           </div>
         </div>
-        {awaitingPayment.length > 0 && (
+        {(awaitingPayment.length > 0 || cancelled.length > 0) && (
           <p className="admin-stats-note">
-            Nicht enthalten: {formatEuro(awaitingCents)} aus {awaitingPayment.length}{" "}
-            {awaitingPayment.length === 1 ? "Bestellung" : "Bestellungen"} mit ausstehender Zahlung.
+            Nicht enthalten:
+            {awaitingPayment.length > 0 && (
+              <>
+                {" "}
+                {formatEuro(awaitingCents)} aus {awaitingPayment.length}{" "}
+                {awaitingPayment.length === 1 ? "Bestellung" : "Bestellungen"} mit ausstehender Zahlung
+              </>
+            )}
+            {awaitingPayment.length > 0 && cancelled.length > 0 ? ";" : ""}
+            {cancelled.length > 0 && (
+              <>
+                {" "}
+                {formatEuro(cancelledCents)} aus {cancelled.length}{" "}
+                {cancelled.length === 1 ? "stornierter Bestellung" : "stornierten Bestellungen"}
+              </>
+            )}
+            .
           </p>
         )}
       </section>

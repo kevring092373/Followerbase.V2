@@ -2506,6 +2506,11 @@ a {
   color: #065f46;
 }
 
+.admin-order-status--storniert {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
 .admin-order-status--default {
   background: var(--bg-muted);
   color: var(--text-secondary);
@@ -7684,6 +7689,16 @@ a {
   padding: 0.75rem;
   background: rgba(245, 158, 11, 0.1);
   border-radius: var(--radius);
+}
+
+.tracking-cancelled-note {
+  font-size: 0.9375rem;
+  color: #991b1b;
+  margin-bottom: 0;
+  padding: 0.75rem;
+  background: rgba(220, 38, 38, 0.1);
+  border-radius: var(--radius);
+  font-weight: 600;
 }
 
 /* Timeline */

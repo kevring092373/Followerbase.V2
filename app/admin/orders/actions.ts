@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { updateOrderStatus } from "@/lib/orders-data";
-import type { OrderStatus } from "@/lib/orders";
+import { ORDER_STATUSES, type OrderStatus } from "@/lib/orders";
 
 export type UpdateOrderStatusResult = { error?: string };
 
@@ -21,14 +21,7 @@ export async function updateOrderStatusAction(
     return { error: "Status fehlt." };
   }
 
-  const validStatuses: OrderStatus[] = [
-    "pending_payment",
-    "eingegangen",
-    "gestartet",
-    "in_ausfuehrung",
-    "abgeschlossen",
-  ];
-  if (!validStatuses.includes(status as OrderStatus)) {
+  if (!ORDER_STATUSES.includes(status as OrderStatus)) {
     return { error: "Ungültiger Status." };
   }
 

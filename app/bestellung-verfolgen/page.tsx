@@ -9,7 +9,9 @@ import {
   type OrderTrackingInfo,
 } from "@/lib/orders";
 
-const TRACKING_STATUSES = ORDER_STATUSES.filter((s) => s !== "pending_payment");
+const TRACKING_STATUSES = ORDER_STATUSES.filter(
+  (s) => s !== "pending_payment" && s !== "storniert"
+);
 
 function TrackingTimeline({ order }: { order: OrderTrackingInfo }) {
   const currentIndex =
@@ -130,7 +132,11 @@ function TrackingContent() {
           {result.order.status === "pending_payment" && (
             <p className="tracking-pending-note">Zahlung ausstehend – bitte schließe die Zahlung ab.</p>
           )}
-          <TrackingTimeline order={result.order} />
+          {result.order.status === "storniert" ? (
+            <p className="tracking-cancelled-note">Diese Bestellung wurde storniert.</p>
+          ) : (
+            <TrackingTimeline order={result.order} />
+          )}
         </div>
       )}
     </div>

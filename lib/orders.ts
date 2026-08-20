@@ -7,7 +7,8 @@ export type OrderStatus =
   | "eingegangen"
   | "gestartet"
   | "in_ausfuehrung"
-  | "abgeschlossen";
+  | "abgeschlossen"
+  | "storniert";
 
 export interface OrderItem {
   productSlug: string;
@@ -64,6 +65,7 @@ const STATUS_LABELS: Record<OrderStatus, string> = {
   gestartet: "Bestellung gestartet",
   in_ausfuehrung: "In Ausführung",
   abgeschlossen: "Abgeschlossen",
+  storniert: "Storniert",
 };
 
 export const ORDER_STATUSES: OrderStatus[] = [
@@ -72,6 +74,7 @@ export const ORDER_STATUSES: OrderStatus[] = [
   "gestartet",
   "in_ausfuehrung",
   "abgeschlossen",
+  "storniert",
 ];
 
 export function getStatusLabel(status: OrderStatus): string {

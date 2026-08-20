@@ -34,6 +34,7 @@ function statusColorClass(status: string): string {
     gestartet: "admin-order-status--gestartet",
     in_ausfuehrung: "admin-order-status--ausfuehrung",
     abgeschlossen: "admin-order-status--abgeschlossen",
+    storniert: "admin-order-status--storniert",
   };
   return map[status] ?? "admin-order-status--default";
 }

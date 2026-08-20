@@ -2,15 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { getStatusLabel, type Order, type OrderStatus } from "@/lib/orders";
-
-const ORDER_STATUSES: OrderStatus[] = [
-  "pending_payment",
-  "eingegangen",
-  "gestartet",
-  "in_ausfuehrung",
-  "abgeschlossen",
-];
+import { getStatusLabel, ORDER_STATUSES, type Order } from "@/lib/orders";
 
 const STATUS_FILTER_ALL = "__all__";
 
@@ -33,6 +25,7 @@ function statusColorClass(status: string): string {
     gestartet: "admin-order-status--gestartet",
     in_ausfuehrung: "admin-order-status--ausfuehrung",
     abgeschlossen: "admin-order-status--abgeschlossen",
+    storniert: "admin-order-status--storniert",
   };
   return map[status] ?? "admin-order-status--default";
 }
