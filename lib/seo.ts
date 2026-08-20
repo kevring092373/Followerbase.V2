@@ -28,6 +28,23 @@ export function absoluteUrl(path: string): string {
   return `${base}${p}`;
 }
 
+/**
+ * Indexierbare Canonical-URL: absolut, HTTPS, ohne Query, Hash oder Trailing-Slash
+ * (außer der Startseite).
+ */
+export function canonicalUrl(path: string): string {
+  const base = getBaseUrl().replace(/\/+$/, "");
+  let p = (path || "/").trim();
+  const q = p.indexOf("?");
+  if (q !== -1) p = p.slice(0, q);
+  const h = p.indexOf("#");
+  if (h !== -1) p = p.slice(0, h);
+  if (!p.startsWith("/")) p = `/${p}`;
+  p = p.replace(/\/{2,}/g, "/");
+  if (p.length > 1) p = p.replace(/\/+$/, "");
+  return `${base}${p}`;
+}
+
 /** Meta-Description auf ~158 Zeichen kürzen (SEO-empfohlen). */
 export function truncateDescription(text: string | undefined, max = DESCRIPTION_MAX): string {
   if (!text || !text.trim()) return "";

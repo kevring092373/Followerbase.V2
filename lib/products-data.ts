@@ -47,6 +47,10 @@ export interface Product {
   metaTitle?: string;
   /** Meta-Beschreibung (SEO) */
   metaDescription?: string;
+  /** Echtes Veröffentlichungsdatum aus der Datenbank (ISO), falls vorhanden */
+  createdAt?: string;
+  /** Echtes Änderungsdatum aus der Datenbank (ISO), falls vorhanden */
+  updatedAt?: string;
 }
 
 const PRODUCTS_FILE = path.join(process.cwd(), "content", "products.json");
@@ -169,7 +173,9 @@ function normalizeProduct(p: Record<string, unknown>): Product {
   const image = typeof p.image === "string" ? p.image : undefined;
   const metaTitle = typeof p.metaTitle === "string" ? p.metaTitle : undefined;
   const metaDescription = typeof p.metaDescription === "string" ? p.metaDescription : undefined;
-  return { slug, name, categoryId, quantities, pricesCents, tiers, articleNumber, bullets, description, image, metaTitle, metaDescription };
+  const createdAt = typeof p.createdAt === "string" ? p.createdAt : undefined;
+  const updatedAt = typeof p.updatedAt === "string" ? p.updatedAt : undefined;
+  return { slug, name, categoryId, quantities, pricesCents, tiers, articleNumber, bullets, description, image, metaTitle, metaDescription, createdAt, updatedAt };
 }
 
 export async function updateProduct(slug: string, data: Partial<Product>): Promise<Product> {

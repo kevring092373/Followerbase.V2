@@ -15,7 +15,7 @@ const PRODUCTS_FILE = path.join(process.cwd(), "content", "products.json");
 
 /** Ohne description – für Listen, Carousel, Category. */
 const LIST_COLUMNS =
-  "slug,name,category_id,quantities,prices_cents,tiers,article_number,bullets,image,meta_title,meta_description";
+  "slug,name,category_id,quantities,prices_cents,tiers,article_number,bullets,image,meta_title,meta_description,created_at,updated_at";
 
 type ProductRow = {
   slug: string;
@@ -30,6 +30,8 @@ type ProductRow = {
   image: string | null;
   meta_title: string | null;
   meta_description: string | null;
+  created_at?: string | null;
+  updated_at?: string | null;
 };
 
 function rowToProduct(r: ProductRow): Product {
@@ -55,6 +57,8 @@ function rowToProduct(r: ProductRow): Product {
     image: r.image ?? undefined,
     metaTitle: r.meta_title ?? undefined,
     metaDescription: r.meta_description ?? undefined,
+    createdAt: r.created_at ?? undefined,
+    updatedAt: r.updated_at ?? undefined,
   };
 }
 

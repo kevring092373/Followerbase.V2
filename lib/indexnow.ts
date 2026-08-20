@@ -35,7 +35,13 @@ export function normalizeUrls(input: readonly string[]): string[] {
       const url = new URL(value, base);
       if (url.host !== ownHost) continue;
       url.hash = "";
-      seen.add(url.toString());
+      url.search = "";
+      if (url.pathname.startsWith("/admin") || url.pathname.startsWith("/api")) continue;
+      let href = url.toString();
+      if (url.pathname.length > 1 && href.endsWith("/")) {
+        href = href.replace(/\/+$/, "");
+      }
+      seen.add(href);
     } catch {
       // Unbrauchbare Angabe überspringen
     }

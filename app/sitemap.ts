@@ -3,41 +3,48 @@ import { getAllProducts } from "@/lib/products-data";
 import { categories } from "@/lib/categories";
 import { getAllPosts } from "@/lib/blog-data";
 import { getAllPages } from "@/lib/pages-data";
-import { getBaseUrl } from "@/lib/seo";
+import { canonicalUrl } from "@/lib/seo";
+import { productCanonicalUrl } from "@/lib/product-seo";
 
 /** Sitemap alle 5 Min neu – schneller als force-dynamic bei jedem Hit. */
 export const revalidate = 300;
 
-/** Erzeugt absolute URLs für die Sitemap (Google-konform). */
-function absoluteUrl(path: string): string {
-  const base = getBaseUrl();
-  const p = path.startsWith("/") ? path : `/${path}`;
-  return `${base}${p}`;
+function realLastmod(value: string | undefined): Date | undefined {
+  if (!value?.trim()) return undefined;
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? undefined : date;
+}
+
+function entry(
+  path: string,
+  extra?: Pick<MetadataRoute.Sitemap[number], "changeFrequency" | "priority" | "lastModified">
+): MetadataRoute.Sitemap[number] {
+  return {
+    url: canonicalUrl(path),
+    changeFrequency: extra?.changeFrequency,
+    priority: extra?.priority,
+    ...(extra?.lastModified ? { lastModified: extra.lastModified } : {}),
+  };
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const now = new Date();
-
   const staticPages: MetadataRoute.Sitemap = [
-    { url: absoluteUrl("/"), lastModified: now, changeFrequency: "weekly", priority: 1 },
-    { url: absoluteUrl("/products"), lastModified: now, changeFrequency: "weekly", priority: 0.9 },
-    { url: absoluteUrl("/blog"), lastModified: now, changeFrequency: "weekly", priority: 0.8 },
-    { url: absoluteUrl("/ueber-uns"), lastModified: now, changeFrequency: "monthly", priority: 0.6 },
-    { url: absoluteUrl("/bestellung-verfolgen"), lastModified: now, changeFrequency: "monthly", priority: 0.5 },
-    { url: absoluteUrl("/instagram-profilbild"), lastModified: now, changeFrequency: "monthly", priority: 0.5 },
-    { url: absoluteUrl("/impressum"), lastModified: now, changeFrequency: "monthly", priority: 0.3 },
-    { url: absoluteUrl("/datenschutz"), lastModified: now, changeFrequency: "monthly", priority: 0.3 },
-    { url: absoluteUrl("/agb"), lastModified: now, changeFrequency: "monthly", priority: 0.3 },
-    { url: absoluteUrl("/kontakt"), lastModified: now, changeFrequency: "monthly", priority: 0.5 },
-    { url: absoluteUrl("/widerrufsbelehrung"), lastModified: now, changeFrequency: "monthly", priority: 0.3 },
+    entry("/", { changeFrequency: "weekly", priority: 1 }),
+    entry("/products", { changeFrequency: "weekly", priority: 0.9 }),
+    entry("/blog", { changeFrequency: "weekly", priority: 0.8 }),
+    entry("/ueber-uns", { changeFrequency: "monthly", priority: 0.6 }),
+    entry("/bestellung-verfolgen", { changeFrequency: "monthly", priority: 0.5 }),
+    entry("/instagram-profilbild", { changeFrequency: "monthly", priority: 0.5 }),
+    entry("/impressum", { changeFrequency: "monthly", priority: 0.3 }),
+    entry("/datenschutz", { changeFrequency: "monthly", priority: 0.3 }),
+    entry("/agb", { changeFrequency: "monthly", priority: 0.3 }),
+    entry("/kontakt", { changeFrequency: "monthly", priority: 0.5 }),
+    entry("/widerrufsbelehrung", { changeFrequency: "monthly", priority: 0.3 }),
   ];
 
-  const categoryPages: MetadataRoute.Sitemap = categories.map((cat) => ({
-    url: absoluteUrl(`/products/${cat.slug}`),
-    lastModified: now,
-    changeFrequency: "weekly" as const,
-    priority: 0.8,
-  }));
+  const categoryPages: MetadataRoute.Sitemap = categories.map((cat) =>
+    entry(`/products/${cat.slug}`, { changeFrequency: "weekly", priority: 0.8 })
+  );
 
   let productPages: MetadataRoute.Sitemap = [];
   let blogPages: MetadataRoute.Sitemap = [];
@@ -45,41 +52,39 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   try {
     const products = await getAllProducts();
-    productPages = products.map((p) => ({
-      url: absoluteUrl(`/product/${p.slug}`),
-      lastModified: now,
-      changeFrequency: "weekly" as const,
-      priority: 0.8,
-    }));
+    productPages = products
+      .filter((p) => p.slug && !p.slug.includes("?") && !p.slug.includes("#"))
+      .map((p) => ({
+        url: productCanonicalUrl(p.slug),
+        changeFrequency: "weekly" as const,
+        priority: 0.8,
+        ...(realLastmod(p.updatedAt) ? { lastModified: realLastmod(p.updatedAt) } : {}),
+      }));
   } catch {
     // Bei Fehler (z. B. DB) trotzdem gültige Sitemap mit statischen + Kategorien
   }
 
   try {
     const posts = await getAllPosts();
-    blogPages = posts.map((post) => {
-      const date = post.date ? new Date(post.date) : null;
-      const lastModified =
-        date && !Number.isNaN(date.getTime()) ? date : now;
-      return {
-        url: absoluteUrl(`/blog/${post.slug}`),
-        lastModified,
+    blogPages = posts
+      .filter((post) => post.slug && !post.slug.includes("?"))
+      .map((post) => ({
+        url: canonicalUrl(`/blog/${post.slug}`),
         changeFrequency: "monthly" as const,
         priority: 0.6,
-      };
-    });
+        ...(realLastmod(post.date) ? { lastModified: realLastmod(post.date) } : {}),
+      }));
   } catch {
     // Blog optional
   }
 
   try {
     const pages = await getAllPages();
-    cmsPages = pages.map((p) => ({
-      url: absoluteUrl(`/p/${p.slug}`),
-      lastModified: now,
-      changeFrequency: "monthly" as const,
-      priority: 0.5,
-    }));
+    cmsPages = pages
+      .filter((p) => p.slug && !p.slug.includes("?"))
+      .map((p) =>
+        entry(`/p/${p.slug}`, { changeFrequency: "monthly", priority: 0.5 })
+      );
   } catch {
     // CMS-Seiten optional
   }

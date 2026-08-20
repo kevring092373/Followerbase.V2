@@ -111,7 +111,7 @@ export default async function BlogPostPage({ params }: Props) {
     { name: "Startseite", path: "/" },
     { name: "Blog", path: "/blog" },
     ...(post.category ? [{ name: post.category, path: "/blog" }] : []),
-    { name: postTitle },
+    { name: postTitle, path: `/blog/${post.slug}` },
   ]);
 
   const faqSchema = buildFaqPageSchema(prepared.faqs);

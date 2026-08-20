@@ -1,4 +1,6 @@
 /** @type {import('next').NextConfig} */
+const discontinued = require("./content/discontinued-product-redirects.json");
+
 const nextConfig = {
   poweredByHeader: false,
   images: {
@@ -17,6 +19,12 @@ const nextConfig = {
     ],
   },
   compress: true,
+  async redirects() {
+    return discontinued.flatMap((rule) => [
+      { source: rule.source, destination: rule.destination, permanent: true },
+      { source: `${rule.source}/`, destination: rule.destination, permanent: true },
+    ]);
+  },
 };
 
 module.exports = nextConfig;

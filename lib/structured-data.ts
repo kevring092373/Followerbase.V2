@@ -5,8 +5,9 @@
  * sichtbare Bewertungen verstößt gegen die Google-Richtlinien und kann zu einer
  * manuellen Maßnahme führen. Wird ergänzt, sobald echte Bewertungen vorliegen.
  */
-import { absoluteUrl, truncateDescription, SITE_NAME } from "@/lib/seo";
+import { absoluteUrl, canonicalUrl, truncateDescription, SITE_NAME } from "@/lib/seo";
 import { getProductDisplayName } from "@/lib/product-image-alt";
+import { formatSchemaPrice, getProductPriceStats, productCanonicalUrl } from "@/lib/product-seo";
 import type { Product } from "@/lib/products-data";
 import type { Category } from "@/lib/categories";
 
@@ -51,18 +52,41 @@ export function buildOrganizationSchema(): Record<string, unknown> {
 }
 
 /**
- * Einstiegspreis in Cent – genau der Preis, den die Produktseite beim Laden anzeigt
- * (erste Standardmenge, bei Varianten die der ersten Variante). So stimmen
- * ausgezeichneter und strukturierter Preis immer überein.
+ * Paketpreise aus den echten Produktdaten. Ein Paket → Offer, mehrere → AggregateOffer.
  */
-function getEntryPriceCents(product: Product): number | null {
-  const prices = product.tiers?.length ? product.tiers[0]!.pricesCents : product.pricesCents;
-  const price = prices?.[0];
-  return typeof price === "number" && price >= 0 ? price : null;
-}
+function buildProductOffers(product: Product, url: string): Record<string, unknown> | undefined {
+  const stats = getProductPriceStats(product);
+  if (stats.offerCount === 0 || stats.lowCents === null || stats.highCents === null) {
+    return undefined;
+  }
 
-function formatPrice(cents: number): string {
-  return (cents / 100).toFixed(2);
+  const base = {
+    url,
+    priceCurrency: "EUR",
+    availability: "https://schema.org/InStock",
+    itemCondition: "https://schema.org/NewCondition",
+    seller: {
+      "@type": "Organization",
+      "@id": ORGANIZATION_ID,
+      name: SITE_NAME,
+    },
+  };
+
+  if (stats.offerCount === 1) {
+    return {
+      "@type": "Offer",
+      ...base,
+      price: formatSchemaPrice(stats.lowCents),
+    };
+  }
+
+  return {
+    "@type": "AggregateOffer",
+    ...base,
+    lowPrice: formatSchemaPrice(stats.lowCents),
+    highPrice: formatSchemaPrice(stats.highCents),
+    offerCount: stats.offerCount,
+  };
 }
 
 /**
@@ -89,9 +113,11 @@ export function buildProductSchema(
   product: Product,
   category?: Category
 ): Record<string, unknown> {
-  const url = absoluteUrl(`/product/${product.slug}`);
-  const priceCents = getEntryPriceCents(product);
+  const url = productCanonicalUrl(product.slug);
+  const offers = buildProductOffers(product, url);
   const image = product.image ? absoluteImageUrl(product.image) : undefined;
+  const dateModified = toIsoDateTime(product.updatedAt);
+  const datePublished = toIsoDateTime(product.createdAt);
 
   const description = product.metaDescription?.trim()
     ? truncateDescription(product.metaDescription)
@@ -103,6 +129,7 @@ export function buildProductSchema(
     name: getProductDisplayName(product.name),
     description,
     url,
+    productID: product.slug,
     ...(image && { image: [image] }),
     ...(product.articleNumber && { sku: product.articleNumber }),
     ...(category && { category: category.name }),
@@ -110,21 +137,9 @@ export function buildProductSchema(
       "@type": "Brand",
       name: SITE_NAME,
     },
-    ...(priceCents !== null && {
-      offers: {
-        "@type": "Offer",
-        url,
-        price: formatPrice(priceCents),
-        priceCurrency: "EUR",
-        availability: "https://schema.org/InStock",
-        itemCondition: "https://schema.org/NewCondition",
-        seller: {
-          "@type": "Organization",
-          "@id": ORGANIZATION_ID,
-          name: SITE_NAME,
-        },
-      },
-    }),
+    ...(datePublished && { datePublished }),
+    ...(dateModified && { dateModified }),
+    ...(offers && { offers }),
   };
 }
 
@@ -158,8 +173,7 @@ export function buildPublisherSchema(): Record<string, unknown> {
 
 export type BreadcrumbItem = {
   name: string;
-  /** Pfad wie "/products/instagram". Beim letzten Eintrag (aktuelle Seite) weglassen. */
-  path?: string;
+  path: string;
 };
 
 export function buildBreadcrumbSchema(items: BreadcrumbItem[]): Record<string, unknown> {
@@ -170,7 +184,7 @@ export function buildBreadcrumbSchema(items: BreadcrumbItem[]): Record<string, u
       "@type": "ListItem",
       position: index + 1,
       name: item.name,
-      ...(item.path && { item: absoluteUrl(item.path) }),
+      item: canonicalUrl(item.path),
     })),
   };
 }

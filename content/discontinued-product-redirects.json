@@ -1,0 +1,30 @@
+[
+  {
+    "source": "/product/instagram-follower-blauer-haken-kaufen",
+    "destination": "/product/instagram-follower-kaufen"
+  },
+  {
+    "source": "/product/instagram-likes-tuerkisch-kaufen",
+    "destination": "/product/instagram-likes-kaufen"
+  },
+  {
+    "source": "/product/instagram-kommentare-kaufen",
+    "destination": "/product/instagram-likes-kaufen"
+  },
+  {
+    "source": "/product/instagram-story-views-kaufen",
+    "destination": "/product/instagram-reel-views-kaufen"
+  },
+  {
+    "source": "/product/instagram-bundle-kaufen",
+    "destination": "/products/instagram"
+  },
+  {
+    "source": "/product/snapchat-story-views-kaufen",
+    "destination": "/product/snapchat-follower-kaufen"
+  },
+  {
+    "source": "/product/facebook-follower-kaufen",
+    "destination": "/product/facebook-post-likes-kaufen"
+  }
+]

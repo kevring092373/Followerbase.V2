@@ -92,7 +92,7 @@ Sobald die Verbindung zu GitHub steht, baut Netlify bei jedem **Push auf den ein
 - [ ] Repo auf GitHub, Netlify mit GitHub verbunden
 - [ ] Richtiges Repository und Branch ausgewählt
 - [ ] Build command: `npm run build` (oder über `netlify.toml`)
-- [ ] Alle nötigen **Environment variables** in Netlify gesetzt
+- [ ] Alle nötigen **Environment variables** in Netlify gesetzt (`INDEXNOW_SECRET` siehe [INDEXNOW.md](./INDEXNOW.md))
 - [ ] Ersten Deploy durchgeführt und URL getestet (Checkout, Bestellung verfolgen, etc.)
 
 Wenn du willst, können wir als Nächstes eine eigene Domain oder Subdomain (z. B. `followerbase.de`) einrichten.

@@ -37,16 +37,11 @@ export const categories: Category[] = [
       prod("instagram-follower-kaufen", "Instagram Follower"),
       prod("instagram-follower-tuerkisch-kaufen", "Instagram Follower Türkisch"),
       prod("instagram-follower-deutsch-kaufen", "Instagram Follower Deutsch"),
-      prod("instagram-follower-blauer-haken-kaufen", "Instagram Follower Blauer Haken"),
       prod("instagram-likes-kaufen", "Instagram Likes"),
       prod("instagram-likes-deutsch-kaufen", "Instagram Likes Deutsch"),
-      prod("instagram-likes-tuerkisch-kaufen", "Instagram Likes Türkisch"),
-      prod("instagram-kommentare-kaufen", "Instagram Kommentare"),
-      prod("instagram-story-views-kaufen", "Instagram Story Views"),
       prod("instagram-impressionen-kaufen", "Instagram Impressionen"),
       prod("instagram-saves-kaufen", "Instagram Saves"),
       prod("instagram-reel-views-kaufen", "Instagram Reel Views"),
-      prod("instagram-bundle-kaufen", "Instagram Bundle"),
     ],
   },
   {
@@ -68,7 +63,6 @@ export const categories: Category[] = [
     slug: "snapchat",
     products: [
       prod("snapchat-follower-kaufen", "Snapchat Follower"),
-      prod("snapchat-story-views-kaufen", "Snapchat Story Views"),
     ],
   },
   {
@@ -93,7 +87,6 @@ export const categories: Category[] = [
     name: "Facebook",
     slug: "facebook",
     products: [
-      prod("facebook-follower-kaufen", "Facebook Follower"),
       prod("facebook-post-likes-kaufen", "Facebook Post Likes"),
     ],
   },

@@ -11,10 +11,16 @@ import { ProductCarousel } from "@/components/ProductCarousel";
 import { ShareButtons } from "@/components/ShareButtons";
 import { ProductDescriptionSection } from "@/components/ProductDescriptionSection";
 import { ProductPaymentIcons } from "@/components/ProductPaymentIcons";
-import { absoluteUrl, truncateDescription, truncateTitle, SITE_NAME } from "@/lib/seo";
+import { truncateDescription, truncateTitle, SITE_NAME } from "@/lib/seo";
 import { categories } from "@/lib/categories";
 import { JsonLd } from "@/components/JsonLd";
-import { buildProductSchema, buildBreadcrumbSchema } from "@/lib/structured-data";
+import {
+  absoluteImageUrl,
+  buildProductSchema,
+  buildBreadcrumbSchema,
+  buildFaqPageSchema,
+} from "@/lib/structured-data";
+import { extractProductFaqs, productCanonicalUrl } from "@/lib/product-seo";
 
 type Props = { params: { slug: string } };
 
@@ -37,22 +43,23 @@ function productMetaTitle(name: string, metaTitle?: string): string {
 
 export async function generateMetadata({ params }: Props) {
   const product = await getProductBySlug(params.slug);
-  if (!product) return { title: "Produkt" };
-  // Eigenen Meta-Titel (Supabase) unverändert; nur den selbst erzeugten Titel auf 60 Zeichen kürzen
+  if (!product) return { title: "Produkt", robots: { index: false, follow: true } };
+  const displayName = productMetaTitle(product.name, product.metaTitle);
   const title = product.metaTitle?.trim()
     ? product.metaTitle.trim()
-    : truncateTitle(`${productMetaTitle(product.name, product.metaTitle)} – Followerbase`);
-  const defaultDesc = `${productMetaTitle(product.name, product.metaTitle)} bei Followerbase – faire Preise, schnelle Lieferung. Qualitätsgarantie & sicherer Checkout.`;
-  const rawDesc = product.metaDescription ?? defaultDesc;
+    : truncateTitle(`${displayName} – Followerbase`);
+  const defaultDesc = `${displayName} bei Followerbase – faire Preise, schnelle Lieferung. Qualitätsgarantie & sicherer Checkout.`;
+  const rawDesc = product.metaDescription?.trim() || defaultDesc;
   const description = truncateDescription(rawDesc);
-  const url = absoluteUrl(`/product/${product.slug}`);
-  const image = product.image?.startsWith("/") ? absoluteUrl(product.image) : undefined;
-  const ogImage = image
-    ? { url: image, width: 400, height: 400, alt: product.name }
-    : { url: absoluteUrl("/icons/Followerbase%20Logo.png"), width: 1200, height: 630, alt: SITE_NAME };
+  const url = productCanonicalUrl(product.slug);
+  const imageUrl = product.image ? absoluteImageUrl(product.image) : absoluteImageUrl("/icons/Followerbase Logo.png");
+  const ogImage = product.image
+    ? { url: imageUrl, width: 400, height: 400, alt: displayName }
+    : { url: imageUrl, width: 1200, height: 630, alt: SITE_NAME };
   return {
     title,
     description,
+    robots: { index: true, follow: true },
     openGraph: {
       title,
       description,
@@ -60,7 +67,12 @@ export async function generateMetadata({ params }: Props) {
       type: "website",
       images: [ogImage],
     },
-    twitter: { card: "summary", title, description },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [imageUrl],
+    },
     alternates: { canonical: url },
   };
 }
@@ -91,17 +103,20 @@ export default async function ProductPage({ params }: Props) {
       ? `Weitere ${category.name}-Produkte`
       : "Weitere Produkte";
   const descriptionMode: "raw" = "raw";
-
+  const productUrl = productCanonicalUrl(product.slug);
+  const breadcrumbName = getProductDisplayName(product.name);
   const breadcrumbSchema = buildBreadcrumbSchema([
     { name: "Startseite", path: "/" },
     ...(category ? [{ name: category.name, path: `/products/${category.slug}` }] : []),
-    { name: getProductDisplayName(product.name) },
+    { name: breadcrumbName, path: `/product/${product.slug}` },
   ]);
+  const faqSchema = buildFaqPageSchema(extractProductFaqs(product.description));
 
   return (
     <div className="product-page-wrap">
       <JsonLd data={buildProductSchema(product, category)} />
       <JsonLd data={breadcrumbSchema} />
+      {faqSchema ? <JsonLd data={faqSchema} /> : null}
       <Link href="/products" className="product-back-link">
         ← Alle Produkte
       </Link>
@@ -119,7 +134,7 @@ export default async function ProductPage({ params }: Props) {
           <li>
             <span className="product-breadcrumb-sep" aria-hidden>/</span>
             <span className="product-breadcrumb-current" aria-current="page">
-              {product.name}
+              {breadcrumbName}
             </span>
           </li>
         </ol>
@@ -173,7 +188,7 @@ export default async function ProductPage({ params }: Props) {
             </div>
           )}
           <ShareButtons
-            url={absoluteUrl(`/product/${product.slug}`)}
+            url={productUrl}
             title={productMetaTitle(product.name, product.metaTitle)}
             text={product.metaDescription ?? undefined}
             iconOnly

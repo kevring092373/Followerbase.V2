@@ -24,7 +24,7 @@ export default function UeberUnsPage() {
   const aboutSchema = buildAboutPageSchema({ name: title, description });
   const breadcrumbSchema = buildBreadcrumbSchema([
     { name: "Startseite", path: "/" },
-    { name: "Über uns" },
+    { name: "Über uns", path: "/ueber-uns" },
   ]);
 
   return (
