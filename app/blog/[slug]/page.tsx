@@ -46,6 +46,7 @@ export async function generateMetadata({ params }: Props) {
     "";
   const description = truncateDescription(rawDesc);
   const url = absoluteUrl(`/blog/${post.slug}`);
+  const imageUrl = post.image ? absoluteImageUrl(post.image) : undefined;
   return {
     title,
     description: description || undefined,
@@ -54,8 +55,16 @@ export async function generateMetadata({ params }: Props) {
       description: description || undefined,
       url,
       type: "article",
+      ...(imageUrl
+        ? { images: [{ url: imageUrl, width: 1200, height: 630, alt: post.title || title }] }
+        : {}),
     },
-    twitter: { card: "summary", title, description: description || undefined },
+    twitter: {
+      card: imageUrl ? "summary_large_image" : "summary",
+      title,
+      description: description || undefined,
+      ...(imageUrl ? { images: [imageUrl] } : {}),
+    },
     alternates: { canonical: url },
   };
 }
