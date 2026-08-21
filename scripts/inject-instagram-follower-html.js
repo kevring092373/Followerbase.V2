@@ -59,7 +59,7 @@ const post = {
   metaTitle: "Instagram Follower kaufen: Pakete ab 0,99 € | Followerbase",
   metaDescription:
     "Instagram Follower kaufen: Pakete ab 0,99 €, Normal und Premium vergleichen, ohne Passwort bestellen und Lieferzeiten transparent prüfen.",
-  image: "/icons/instagram-follower-kaufen-thumbnail.webp",
+  image: "/icons/instagram-follower-kaufen-thumbnail-1200x630.webp",
   category: "Instagram Follower",
 };
 const bIdx = blog.posts.findIndex((p) => p.slug === BLOG_SLUG);
