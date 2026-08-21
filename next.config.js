@@ -20,10 +20,22 @@ const nextConfig = {
   },
   compress: true,
   async redirects() {
-    return discontinued.flatMap((rule) => [
-      { source: rule.source, destination: rule.destination, permanent: true },
-      { source: `${rule.source}/`, destination: rule.destination, permanent: true },
-    ]);
+    return [
+      ...discontinued.flatMap((rule) => [
+        { source: rule.source, destination: rule.destination, permanent: true },
+        { source: `${rule.source}/`, destination: rule.destination, permanent: true },
+      ]),
+      {
+        source: "/blog/instagram-follower-kaufen",
+        destination: "/product/instagram-follower-kaufen",
+        permanent: true,
+      },
+      {
+        source: "/blog/instagram-follower-kaufen/",
+        destination: "/product/instagram-follower-kaufen",
+        permanent: true,
+      },
+    ];
   },
 };
 
