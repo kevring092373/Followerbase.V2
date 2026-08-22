@@ -70,16 +70,17 @@
 .hero-trust .pill{display:inline-flex;align-items:center;gap:.4rem;background:#fff;border:1px solid var(--border);border-radius:50px;padding:.35rem .8rem;font-weight:600;color:var(--text-2);box-shadow:var(--shadow-sm)}
 .hero-trust .pill svg{width:14px;height:14px;color:#10b981}
 
-/* Phone-Mockup (pure CSS, ersetzt Hero-Bild) */
-.hero-visual{position:relative;display:flex;justify-content:center}
+/* Phone-Mockup: Visual schrumpft aufs Handy, damit die Chips es überlappen */
+.hero-visual{position:relative;display:flex;justify-content:center;justify-self:center;width:max-content}
 .phone{position:relative;width:300px;height:620px;background:linear-gradient(160deg,#1c1530,#2a1f47);border-radius:44px;padding:12px;box-shadow:var(--shadow-lg),inset 0 0 0 2px rgba(255,255,255,.06)}
 .phone-screen{position:relative;width:100%;height:100%;background:linear-gradient(170deg,#f6f3ff 0%,#ece5fd 60%,#e2d8fb 100%);border-radius:34px;overflow:hidden;display:flex;flex-direction:column;padding:1.1rem .9rem}
 .phone-notch{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:96px;height:24px;background:#1c1530;border-radius:14px;z-index:3}
 .phone-head{text-align:center;font-size:.72rem;font-weight:700;color:var(--text-3);margin:2.2rem 0 .9rem;letter-spacing:.02em}
-.notif{display:flex;gap:.6rem;align-items:flex-start;background:rgba(255,255,255,.92);border:1px solid rgba(138,85,238,.12);border-radius:14px;padding:.7rem .75rem;margin-bottom:.6rem;box-shadow:0 4px 14px -6px rgba(91,33,182,.18);animation:notifIn .6s ease both}
-.notif:nth-child(3){animation-delay:.25s}
-.notif:nth-child(4){animation-delay:.5s}
-.notif:nth-child(5){animation-delay:.75s}
+.notif{display:flex;gap:.6rem;align-items:flex-start;position:relative;background:rgba(255,255,255,.92);border:1px solid rgba(138,85,238,.12);border-radius:14px;padding:.7rem .75rem;margin-bottom:0;box-shadow:0 8px 18px -8px rgba(91,33,182,.28);animation:notifIn .6s ease both}
+.notif + .notif{margin-top:-0.72rem}
+.notif:nth-child(2){z-index:3}
+.notif:nth-child(3){z-index:2;animation-delay:.25s}
+.notif:nth-child(4){z-index:1;animation-delay:.5s}
 @keyframes notifIn{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:none}}
 .notif-av{width:34px;height:34px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.72rem;font-weight:800;font-family:inherit}
 .notif p{font-size:.72rem;line-height:1.45;color:var(--text)}
@@ -89,12 +90,12 @@
 .phone-counter{margin-top:auto;background:rgba(255,255,255,.94);border:1px solid rgba(138,85,238,.14);border-radius:16px;padding:.85rem;text-align:center;box-shadow:0 6px 18px -8px rgba(91,33,182,.22)}
 .phone-counter .num{font-family:inherit;font-size:1.45rem;font-weight:800;background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 .phone-counter .lbl{font-size:.66rem;color:var(--text-3);font-weight:600}
-.float-chip{position:absolute;background:#fff;border:1px solid var(--border);border-radius:50px;padding:.5rem .95rem;font-size:.8rem;font-weight:700;color:var(--ink);box-shadow:var(--shadow-md);display:flex;align-items:center;gap:.45rem;animation:floaty 6.5s ease-in-out infinite;will-change:transform}
+.float-chip{position:absolute;z-index:4;background:#fff;border:1px solid var(--border);border-radius:50px;padding:.5rem .95rem;font-size:.8rem;font-weight:700;color:var(--ink);box-shadow:var(--shadow-md);display:flex;align-items:center;gap:.45rem;animation:floaty 6.5s ease-in-out infinite;will-change:transform}
 .float-chip svg{width:16px;height:16px}
-.chip-1{top:8%;left:-6%;animation-delay:0s}
-.chip-2{top:34%;right:-9%;animation-delay:1.5s}
-.chip-3{bottom:20%;left:-11%;animation-delay:3s}
-.chip-4{bottom:4%;right:-4%;animation-delay:4.5s}
+.chip-1{top:8%;left:-22px;animation-delay:0s}
+.chip-2{top:34%;right:-26px;animation-delay:1.5s}
+.chip-3{bottom:20%;left:-30px;animation-delay:3s}
+.chip-4{bottom:4%;right:-16px;animation-delay:4.5s}
 @keyframes floaty{0%,100%{transform:translate3d(0,0,0)}50%{transform:translate3d(0,-14px,0)}}
 
 /* Plattform-Marquee ? volle Breite, rechts ? links */
@@ -446,9 +447,16 @@ section[id]{scroll-margin-top:86px}
 .home-new .hero::after {
   display: none;
 }
+.home-new .hero {
+  overflow: visible;
+}
 .home-new .hero-grid {
   gap: 4rem;
   min-height: 720px;
+}
+.home-new .hero-visual {
+  justify-self: center;
+  width: max-content;
 }
 @media (max-width: 1020px) {
   .home-new .hero {
