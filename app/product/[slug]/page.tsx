@@ -11,6 +11,7 @@ import { ProductCarousel } from "@/components/ProductCarousel";
 import { ShareButtons } from "@/components/ShareButtons";
 import { ProductDescriptionSection } from "@/components/ProductDescriptionSection";
 import { ProductPaymentIcons } from "@/components/ProductPaymentIcons";
+import { ProductContextualLinks } from "@/components/ProductContextualLinks";
 import { truncateDescription, truncateTitle, SITE_NAME } from "@/lib/seo";
 import { categories } from "@/lib/categories";
 import { JsonLd } from "@/components/JsonLd";
@@ -21,6 +22,16 @@ import {
   buildFaqPageSchema,
 } from "@/lib/structured-data";
 import { extractProductFaqs, productCanonicalUrl } from "@/lib/product-seo";
+import {
+  YOUTUBE_VIEWS_DESCRIPTION,
+  YOUTUBE_VIEWS_IMAGE,
+  YOUTUBE_VIEWS_IMAGE_ALT,
+  YOUTUBE_VIEWS_ORDER_ID,
+  YOUTUBE_VIEWS_TITLE,
+  isYoutubeViewsProduct,
+  prepareYoutubeViewsDescriptionHtml,
+} from "@/lib/youtube-views-seo";
+import type { Product } from "@/lib/products-data";
 
 type Props = { params: { slug: string } };
 
@@ -41,25 +52,50 @@ function productMetaTitle(name: string, metaTitle?: string): string {
   return name.trimEnd().endsWith(" kaufen") ? name : `${name} kaufen`;
 }
 
+function youtubeViewsProduct(product: Product): Product {
+  return {
+    ...product,
+    image: YOUTUBE_VIEWS_IMAGE,
+    metaTitle: YOUTUBE_VIEWS_TITLE,
+    metaDescription: YOUTUBE_VIEWS_DESCRIPTION,
+    description: prepareYoutubeViewsDescriptionHtml(product.description),
+  };
+}
+
+const indexFollowRobots = {
+  index: true,
+  follow: true,
+  nocache: false,
+  googleBot: {
+    index: true,
+    follow: true,
+  },
+};
+
 export async function generateMetadata({ params }: Props) {
-  const product = await getProductBySlug(params.slug);
-  if (!product) return { title: "Produkt", robots: { index: false, follow: true } };
+  const raw = await getProductBySlug(params.slug);
+  if (!raw) return { title: "Produkt", robots: { index: false, follow: true } };
+  const product = isYoutubeViewsProduct(raw.slug) ? youtubeViewsProduct(raw) : raw;
   const displayName = productMetaTitle(product.name, product.metaTitle);
-  const title = product.metaTitle?.trim()
-    ? product.metaTitle.trim()
-    : truncateTitle(`${displayName} – Followerbase`);
+  const title = isYoutubeViewsProduct(product.slug)
+    ? YOUTUBE_VIEWS_TITLE
+    : product.metaTitle?.trim()
+      ? product.metaTitle.trim()
+      : truncateTitle(`${displayName} – Followerbase`);
   const defaultDesc = `${displayName} bei Followerbase – faire Preise, schnelle Lieferung. Qualitätsgarantie & sicherer Checkout.`;
   const rawDesc = product.metaDescription?.trim() || defaultDesc;
-  const description = truncateDescription(rawDesc);
+  const description = isYoutubeViewsProduct(product.slug)
+    ? YOUTUBE_VIEWS_DESCRIPTION
+    : truncateDescription(rawDesc);
   const url = productCanonicalUrl(product.slug);
   const imageUrl = product.image ? absoluteImageUrl(product.image) : absoluteImageUrl("/icons/Followerbase Logo.png");
   const ogImage = product.image
-    ? { url: imageUrl, width: 400, height: 400, alt: displayName }
+    ? { url: imageUrl, width: 400, height: 400, alt: isYoutubeViewsProduct(product.slug) ? YOUTUBE_VIEWS_IMAGE_ALT : displayName }
     : { url: imageUrl, width: 1200, height: 630, alt: SITE_NAME };
   return {
-    title,
+    title: isYoutubeViewsProduct(product.slug) ? { absolute: YOUTUBE_VIEWS_TITLE } : title,
     description,
-    robots: { index: true, follow: true },
+    robots: indexFollowRobots,
     openGraph: {
       title,
       description,
@@ -79,11 +115,17 @@ export async function generateMetadata({ params }: Props) {
 
 export default async function ProductPage({ params }: Props) {
   const slug = params.slug;
-  const product = await getProductBySlug(slug);
+  const raw = await getProductBySlug(slug);
 
-  if (!product) notFound();
+  if (!raw) notFound();
 
+  const product = isYoutubeViewsProduct(raw.slug) ? youtubeViewsProduct(raw) : raw;
   const bullets = product.bullets?.length ? product.bullets : defaultBullets;
+  const viewsPage = isYoutubeViewsProduct(product.slug);
+  const productImage = product.image;
+  const productImageAlt = viewsPage
+    ? YOUTUBE_VIEWS_IMAGE_ALT
+    : getProductImageAlt(productImage, product.name);
 
   let related = await getRelatedProducts(product.categoryId, product.slug, 12);
   if (related.length === 0) {
@@ -157,7 +199,21 @@ export default async function ProductPage({ params }: Props) {
       </header>
 
       <div className="product-order-row">
-        <div className="product-order-section">
+        <div className="product-order-section" id={viewsPage ? YOUTUBE_VIEWS_ORDER_ID : undefined}>
+          {viewsPage ? (
+            <>
+              <p className="product-availability">Verfügbar – Lieferung nach Bestellung</p>
+              <noscript>
+                <ul className="product-packages-ssr">
+                  {product.quantities.map((qty, i) => (
+                    <li key={qty}>
+                      {qty.toLocaleString("de-DE")} – {((product.pricesCents[i] ?? 0) / 100).toFixed(2).replace(".", ",")} €
+                    </li>
+                  ))}
+                </ul>
+              </noscript>
+            </>
+          ) : null}
           <ProductOrderBlock
             productSlug={product.slug}
             quantities={product.quantities}
@@ -165,22 +221,23 @@ export default async function ProductPage({ params }: Props) {
             productName={product.name}
             bullets={[]}
             tiers={product.tiers}
+            showPackagePrices={viewsPage}
           />
         </div>
         <div className="product-order-section-image">
-          {product.image ? (
-            product.image.startsWith("/") ? (
+          {productImage ? (
+            productImage.startsWith("/") ? (
               <Image
-                src={product.image}
-                alt={getProductImageAlt(product.image, product.name)}
-                width={260}
-                height={260}
+                src={productImage}
+                alt={productImageAlt}
+                width={400}
+                height={400}
                 sizes="(max-width: 768px) 220px, 260px"
                 className="product-image-img"
                 priority
               />
             ) : (
-              <img src={product.image} alt={getProductImageAlt(product.image, product.name)} className="product-image-img" decoding="async" />
+              <img src={productImage} alt={productImageAlt} className="product-image-img" width={400} height={400} decoding="async" />
             )
           ) : (
             <div className="product-image-placeholder product-image-placeholder--small" aria-hidden>
@@ -197,6 +254,8 @@ export default async function ProductPage({ params }: Props) {
           <ProductPaymentIcons />
         </div>
       </div>
+
+      <ProductContextualLinks slug={product.slug} />
 
       {otherProducts.length > 0 && (
         <ProductCarousel products={otherProducts} title={carouselTitle} />

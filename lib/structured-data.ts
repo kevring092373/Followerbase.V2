@@ -5,9 +5,14 @@
  * sichtbare Bewertungen verstößt gegen die Google-Richtlinien und kann zu einer
  * manuellen Maßnahme führen. Wird ergänzt, sobald echte Bewertungen vorliegen.
  */
-import { absoluteUrl, canonicalUrl, truncateDescription, SITE_NAME } from "@/lib/seo";
+import { absoluteUrl, canonicalUrl, SITE_NAME } from "@/lib/seo";
 import { getProductDisplayName } from "@/lib/product-image-alt";
-import { formatSchemaPrice, getProductPriceStats, productCanonicalUrl } from "@/lib/product-seo";
+import {
+  formatSchemaPrice,
+  getProductPackages,
+  getProductPriceStats,
+  productCanonicalUrl,
+} from "@/lib/product-seo";
 import type { Product } from "@/lib/products-data";
 import type { Category } from "@/lib/categories";
 
@@ -54,22 +59,50 @@ export function buildOrganizationSchema(): Record<string, unknown> {
 /**
  * Paketpreise aus den echten Produktdaten. Ein Paket → Offer, mehrere → AggregateOffer.
  */
+function buildSeller(): Record<string, unknown> {
+  return {
+    "@type": "Organization",
+    "@id": ORGANIZATION_ID,
+    name: SITE_NAME,
+  };
+}
+
+function buildOfferList(product: Product, url: string): Record<string, unknown>[] {
+  const displayName = getProductDisplayName(product.name);
+  return getProductPackages(product).map((pkg) => {
+    const qtyLabel = pkg.quantity.toLocaleString("de-DE");
+    const name = pkg.variantName
+      ? `${qtyLabel} ${displayName} (${pkg.variantName})`
+      : `${qtyLabel} ${displayName}`;
+    return {
+      "@type": "Offer",
+      name,
+      url,
+      price: formatSchemaPrice(pkg.priceCents),
+      priceCurrency: "EUR",
+      availability: "https://schema.org/InStock",
+      itemCondition: "https://schema.org/NewCondition",
+      seller: buildSeller(),
+      ...(product.articleNumber
+        ? { sku: `${product.articleNumber}-${pkg.quantity}` }
+        : {}),
+    };
+  });
+}
+
 function buildProductOffers(product: Product, url: string): Record<string, unknown> | undefined {
   const stats = getProductPriceStats(product);
   if (stats.offerCount === 0 || stats.lowCents === null || stats.highCents === null) {
     return undefined;
   }
 
+  const offerList = buildOfferList(product, url);
   const base = {
     url,
     priceCurrency: "EUR",
     availability: "https://schema.org/InStock",
     itemCondition: "https://schema.org/NewCondition",
-    seller: {
-      "@type": "Organization",
-      "@id": ORGANIZATION_ID,
-      name: SITE_NAME,
-    },
+    seller: buildSeller(),
   };
 
   if (stats.offerCount === 1) {
@@ -77,6 +110,8 @@ function buildProductOffers(product: Product, url: string): Record<string, unkno
       "@type": "Offer",
       ...base,
       price: formatSchemaPrice(stats.lowCents),
+      ...(offerList[0]?.name ? { name: offerList[0].name } : {}),
+      ...(product.articleNumber && { sku: product.articleNumber }),
     };
   }
 
@@ -86,6 +121,7 @@ function buildProductOffers(product: Product, url: string): Record<string, unkno
     lowPrice: formatSchemaPrice(stats.lowCents),
     highPrice: formatSchemaPrice(stats.highCents),
     offerCount: stats.offerCount,
+    offers: offerList,
   };
 }
 
@@ -120,7 +156,7 @@ export function buildProductSchema(
   const datePublished = toIsoDateTime(product.createdAt);
 
   const description = product.metaDescription?.trim()
-    ? truncateDescription(product.metaDescription)
+    ? product.metaDescription.trim().replace(/\s+/g, " ")
     : `${getProductDisplayName(product.name)} bei ${SITE_NAME} – faire Preise, schnelle Lieferung und sicherer Checkout.`;
 
   return {
@@ -130,8 +166,8 @@ export function buildProductSchema(
     description,
     url,
     productID: product.slug,
-    ...(image && { image: [image] }),
-    ...(product.articleNumber && { sku: product.articleNumber }),
+    ...(image && { image }),
+    sku: product.articleNumber?.trim() || product.slug,
     ...(category && { category: category.name }),
     brand: {
       "@type": "Brand",

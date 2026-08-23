@@ -233,6 +233,13 @@ export default async function BlogPostPage({ params }: Props) {
             <h1 className="blog-article-title">{postTitle}</h1>
           ) : null}
 
+          {post.slug === "youtube-abonnenten-bekommen" ? (
+            <p className="blog-inline-related">
+              Wer zusätzlich einzelne Videos sichtbarer machen will, findet{" "}
+              <Link href="/product/youtube-views-kaufen">verfügbare Pakete für YouTube-Aufrufe</Link>.
+            </p>
+          ) : null}
+
           {(dateLabel || post.category) && !/<div[^>]*class=["'][^"']*\barticle-meta\b/i.test(prepared.htmlContent) ? (
             <p className="blog-article-meta-line">
               {dateLabel ? <>Veröffentlicht: {dateLabel}</> : null}

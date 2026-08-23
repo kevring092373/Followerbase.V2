@@ -58,6 +58,12 @@ export default async function CategoryPage({ params }: Props) {
         <p className="category-subtitle">
           {products.length} {products.length === 1 ? "Produkt" : "Produkte"} – wähle dein gewünschtes Paket.
         </p>
+        {category.slug === "youtube" ? (
+          <p className="category-intro">
+            Neben Abonnenten, Likes und Watchtime findest du hier auch{" "}
+            <Link href="/product/youtube-views-kaufen">YouTube-Views-Pakete</Link>.
+          </p>
+        ) : null}
       </header>
 
       <div className="category-grid">

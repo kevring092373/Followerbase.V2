@@ -46,6 +46,7 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 8.75rem;
   /* clip statt hidden: verhindert horizontales Scrollen, ohne sticky Header zu brechen */
   overflow-x: clip;
   /* Verhindert horizontales „Zucken“, wenn die Scrollbar erst nach Layout/Fonts erscheint (Windows). */
@@ -55,6 +56,7 @@ html {
 @media (max-width: 768px) {
   html {
     scroll-behavior: auto;
+    scroll-padding-top: 7.5rem;
   }
 }
 
@@ -551,6 +553,14 @@ a {
   margin: 0;
   font-size: 1.0625rem;
   color: var(--text-secondary);
+}
+
+.category-intro {
+  margin: 0.75rem 0 0;
+  font-size: 1rem;
+  line-height: 1.55;
+  color: var(--text-secondary);
+  max-width: 42rem;
 }
 
 .category-grid {
@@ -1454,6 +1464,13 @@ a {
   line-height: 1.18;
   margin: 0 0 0.75rem;
   color: var(--text-primary);
+}
+
+.blog-inline-related {
+  margin: 0 0 1.25rem;
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--text-secondary);
 }
 
 .blog-article-meta-line {
@@ -3862,12 +3879,40 @@ a {
   background: var(--brand-primary);
 }
 
+#produkt-auswahl {
+  scroll-margin-top: 8.75rem;
+  max-width: 100%;
+}
+
+.product-availability {
+  margin: 0 0 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.product-packages-ssr {
+  margin: 0 0 0.75rem;
+  padding-left: 1.1rem;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.product-contextual-links {
+  margin: 0 0 1.5rem;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
 .product-order-block {
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);
   padding: 1.5rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 .product-order-bullets {
@@ -4029,8 +4074,13 @@ a {
 }
 
 .product-quantity-label {
-  display: inline-block;
-  padding: 0.5rem 1rem;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.1rem;
+  min-height: 44px;
+  padding: 0.5rem 0.85rem;
   font-size: 0.9375rem;
   font-weight: 500;
   color: var(--text-secondary);
@@ -4038,6 +4088,17 @@ a {
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   transition: border-color var(--transition-fast), background-color var(--transition-fast);
+}
+
+.product-quantity-amount {
+  line-height: 1.2;
+}
+
+.product-quantity-price {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
 }
 
 .product-quantity-option input:checked + .product-quantity-label {
@@ -4090,6 +4151,7 @@ a {
 .product-add-btn {
   width: 100%;
   margin-top: 1rem;
+  min-height: 44px;
   padding: 0.75rem 1.25rem;
 }
 
@@ -4160,8 +4222,10 @@ a {
     gap: 0.5rem;
   }
   .product-quantity-option .product-quantity-label {
-    padding: 0.5rem 0.65rem;
-    font-size: 0.875rem;
+    min-width: 4.75rem;
+    min-height: 44px;
+    padding: 0.45rem 0.55rem;
+    font-size: 0.8125rem;
   }
   .product-tier-label {
     padding: 0.5rem 0.65rem;
@@ -4244,12 +4308,57 @@ a {
   overflow-wrap: break-word;
 }
 
-.product-description-raw-html {
+.product-description-raw-html .table-scroll-wrap {
+  margin: 1.5rem 0;
+  max-width: 100%;
+}
+
+.product-description-raw-html .table-scroll-hint {
+  display: none;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin: 0 0 0.5rem;
+}
+
+.product-description-raw-html .table-scroll {
   width: 100%;
   max-width: 100%;
-  overflow-x: visible;
-  word-break: break-word;
-  overflow-wrap: break-word;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.product-description-raw-html details.faq-item > .faq-answer,
+.product-description-raw-html details.faq-item[open] > .faq-answer {
+  max-height: none;
+  overflow: visible;
+}
+
+.product-description-raw-html details.faq-item summary.faq-question {
+  list-style: none;
+}
+
+.product-description-raw-html details.faq-item summary.faq-question::-webkit-details-marker {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .product-description-raw-html .table-scroll-hint {
+    display: block;
+  }
+
+  .product-description-html,
+  .product-description-raw-html,
+  .product-order-block,
+  .product-order-section,
+  .product-order-row {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  .product-description-raw-html .table-scroll-wrap,
+  .product-description-raw-html .table-scroll {
+    overflow-x: auto;
+  }
 }
 
 /* Für Raw-Content (Supabase "1:1"): Reset gegen embedded styles */

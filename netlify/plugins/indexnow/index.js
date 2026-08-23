@@ -38,6 +38,22 @@ function productSlugsFromJson(raw) {
   }
 }
 
+function productsBySlug(raw) {
+  try {
+    const data = JSON.parse(raw);
+    const list = Array.isArray(data.products) ? data.products : [];
+    const out = {};
+    for (const product of list) {
+      if (product && typeof product.slug === "string" && product.slug.trim()) {
+        out[product.slug.trim()] = JSON.stringify(product);
+      }
+    }
+    return out;
+  } catch {
+    return {};
+  }
+}
+
 function readFileAt(cwd, ref, file) {
   if (!ref) return "";
   return git(["show", `${ref}:${file}`], cwd);
@@ -69,44 +85,55 @@ function fileToUrls(file, cwd, prevRef) {
   };
 
   if (file === "content/products.json") {
-    const prev = new Set(productSlugsFromJson(readFileAt(cwd, prevRef, file)));
-    const next = new Set(productSlugsFromJson(readFileNow(cwd, file)));
-    for (const slug of next) add(`/product/${slug}`);
-    for (const slug of prev) {
-      if (!next.has(slug)) add(`/product/${slug}`);
+    const prev = productsBySlug(readFileAt(cwd, prevRef, file));
+    const next = productsBySlug(readFileNow(cwd, file));
+    for (const slug of Object.keys(next)) {
+      if (prev[slug] !== next[slug]) add(`/product/${slug}`);
+    }
+    for (const slug of Object.keys(prev)) {
+      if (!(slug in next)) add(`/product/${slug}`);
     }
     add("/products");
     return urls;
   }
 
-  if (file.startsWith("app/product/") || file === "lib/structured-data.ts" || file === "lib/product-seo.ts") {
-    for (const slug of productSlugsFromJson(readFileNow(cwd, "content/products.json"))) {
-      add(`/product/${slug}`);
-    }
+  if (
+    file === "app/product/[slug]/page.tsx" ||
+    file === "components/ProductContextualLinks.tsx" ||
+    file === "lib/youtube-views-seo.ts"
+  ) {
+    add("/product/youtube-views-kaufen");
+    add("/product/youtube-likes-kaufen");
+    add("/product/youtube-watchtime-kaufen");
+    add("/product/youtube-follower-kaufen");
     return urls;
   }
 
-  if (file.startsWith("app/products/") || file === "lib/categories.ts") {
+  if (file === "lib/structured-data.ts" || file === "lib/product-seo.ts") {
+    add("/product/youtube-views-kaufen");
+    return urls;
+  }
+
+  if (file.startsWith("content/product-html/youtube-views")) {
+    add("/product/youtube-views-kaufen");
+    return urls;
+  }
+
+  if (file.startsWith("app/products/")) {
     add("/products");
-    try {
-      const cats = require(path.join(cwd, "lib/categories.ts"));
-      void cats;
-    } catch {
-      // TS nicht per require – Kategorien aus products.json ableiten
-    }
-    add("/products/instagram");
-    add("/products/tiktok");
     add("/products/youtube");
-    add("/products/snapchat");
-    add("/products/telegram");
-    add("/products/facebook");
-    add("/products/reddit");
-    add("/products/threads");
     return urls;
   }
 
   if (file === "app/page.tsx") add("/");
-  if (file.startsWith("app/blog/") || file.startsWith("content/blog")) add("/blog");
+  if (file === "lib/categories.ts") {
+    add("/products");
+    return urls;
+  }
+  if (file.startsWith("app/blog/") || file.startsWith("content/blog")) {
+    add("/blog");
+    add("/blog/youtube-abonnenten-bekommen");
+  }
   if (file.startsWith("app/ueber-uns/")) add("/ueber-uns");
   if (file.startsWith("app/sitemap.ts")) {
     add("/");

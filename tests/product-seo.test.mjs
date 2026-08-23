@@ -129,7 +129,9 @@ test("Produktseite hat genau eine H1-Vorlage und Canonical-Metadaten", () => {
   assert.equal(h1.length, 1);
   assert.match(productPage, /alternates:\s*\{\s*canonical:\s*url/);
   assert.match(productPage, /card:\s*"summary_large_image"/);
-  assert.match(productPage, /robots:\s*\{\s*index:\s*true,\s*follow:\s*true/);
+  assert.match(productPage, /index:\s*true/);
+  assert.match(productPage, /follow:\s*true/);
+  assert.match(productPage, /id=\{viewsPage \? YOUTUBE_VIEWS_ORDER_ID/);
 });
 
 test("Product-Schema enthält keine erfundenen AggregateRatings", () => {
@@ -156,6 +158,23 @@ test("FAQ-Extraktion nimmt nur sichtbare Fragen", () => {
   assert.equal(faqs.length, 1);
   assert.equal(faqs[0].question, "Frage A?");
   assert.equal(faqs[0].answer, "Antwort A");
+});
+
+test("YouTube-Views-Produkt nutzt die vorgegebenen SEO-Felder und Paketpreise", () => {
+  const product = products.find((p) => p.slug === "youtube-views-kaufen");
+  assert.ok(product);
+  assert.equal(product.metaTitle, "YouTube Views kaufen: 1.000 Aufrufe ab 5,23 €");
+  assert.equal(
+    product.metaDescription,
+    "YouTube Views kaufen: 1.000–25.000 Aufrufe, Lieferung in 1–5 Tagen und kein Passwort nötig. Pakete, Preise und Bedingungen transparent ansehen."
+  );
+  assert.equal(product.image, "/icons/youtube-views-kaufen.webp");
+  const prices = collectPrices(product);
+  assert.equal(prices.length, 5);
+  assert.equal(formatPrice(Math.min(...prices)), "5.23");
+  assert.equal(formatPrice(Math.max(...prices)), "99.50");
+  assert.match(productPage, /absolute:\s*YOUTUBE_VIEWS_TITLE/);
+  assert.match(productPage, /YOUTUBE_VIEWS_DESCRIPTION/);
 });
 
 test("Sitemap und IndexNow-Key-Datei sind vorhanden", () => {

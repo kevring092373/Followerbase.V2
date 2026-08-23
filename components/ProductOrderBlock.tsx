@@ -48,6 +48,8 @@ type ProductOrderBlockProps = {
   bullets?: string[];
   /** Optionale Stufen (z. B. Normal / Premium) – Auswahl + eigene Mengen/Preise/Slider-Max */
   tiers?: ProductTier[];
+  /** Preise direkt auf den Mengen-Chips (für lesbare Mobile-Auswahl). */
+  showPackagePrices?: boolean;
 };
 
 /** Individuelle Menge: Slider-Wert (0–100) in Menge umrechnen (Schritt 50, min/max aus Parametern) */
@@ -112,6 +114,7 @@ export function ProductOrderBlock({
   productName,
   bullets,
   tiers,
+  showPackagePrices = false,
 }: ProductOrderBlockProps) {
   const { addItem } = useCart();
 
@@ -235,7 +238,14 @@ export function ProductOrderBlock({
                 onChange={() => handleStandardSelect(i)}
                 className="product-quantity-radio"
               />
-              <span className="product-quantity-label">{qty}</span>
+              <span className="product-quantity-label">
+                <span className="product-quantity-amount">{qty.toLocaleString("de-DE")}</span>
+                {showPackagePrices && typeof p[i] === "number" ? (
+                  <span className="product-quantity-price">
+                    {(p[i] / 100).toFixed(2).replace(".", ",")} €
+                  </span>
+                ) : null}
+              </span>
             </label>
           ))}
         </div>

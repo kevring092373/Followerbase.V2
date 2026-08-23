@@ -5,8 +5,9 @@
 import { canonicalUrl } from "@/lib/seo";
 
 export type ProductPriceSource = {
+  quantities?: number[];
   pricesCents: number[];
-  tiers?: { pricesCents: number[] }[];
+  tiers?: { name?: string; quantities?: number[]; pricesCents: number[] }[];
 };
 
 export type ProductPriceStats = {
@@ -20,6 +21,46 @@ export type ProductFaq = {
   question: string;
   answer: string;
 };
+
+export type ProductPackageOffer = {
+  quantity: number;
+  priceCents: number;
+  variantName?: string;
+};
+
+/** Sichtbare Standardpakete (ohne individuellen Slider). */
+export function getProductPackages(product: ProductPriceSource): ProductPackageOffer[] {
+  const packages: ProductPackageOffer[] = [];
+  if (product.tiers?.length) {
+    for (const tier of product.tiers) {
+      const quantities = Array.isArray(tier.quantities) ? tier.quantities : [];
+      for (let i = 0; i < tier.pricesCents.length; i++) {
+        const priceCents = tier.pricesCents[i];
+        const quantity = quantities[i];
+        if (typeof priceCents !== "number" || !Number.isFinite(priceCents) || priceCents < 0) continue;
+        packages.push({
+          quantity: typeof quantity === "number" ? quantity : i + 1,
+          priceCents,
+          variantName: tier.name,
+        });
+      }
+    }
+    return packages;
+  }
+
+  const quantities = product.quantities;
+  const prices = product.pricesCents;
+  if (!Array.isArray(prices)) return packages;
+  for (let i = 0; i < prices.length; i++) {
+    const priceCents = prices[i];
+    if (typeof priceCents !== "number" || !Number.isFinite(priceCents) || priceCents < 0) continue;
+    packages.push({
+      quantity: Array.isArray(quantities) && typeof quantities[i] === "number" ? quantities[i] : i + 1,
+      priceCents,
+    });
+  }
+  return packages;
+}
 
 /** Alle sichtbaren Paketpreise (Standardliste oder alle Varianten). */
 export function getProductPriceStats(product: ProductPriceSource): ProductPriceStats {
@@ -62,6 +103,7 @@ export function htmlToPlainText(html: string): string {
   return html
     .replace(/<script[\s\S]*?<\/script>/gi, " ")
     .replace(/<style[\s\S]*?<\/style>/gi, " ")
+    .replace(/<svg[\s\S]*?<\/svg>/gi, " ")
     .replace(/<br\s*\/?>/gi, " ")
     .replace(/<\/(p|div|li|h[1-6])>/gi, " ")
     .replace(/<[^>]+>/g, " ")
@@ -103,7 +145,7 @@ export function extractProductFaqs(html: string | undefined): ProductFaq[] {
   }
 
   const faqRe =
-    /<div\b[^>]*class=["'][^"']*\bfaq-item\b[^"']*["'][^>]*>\s*<button\b[^>]*class=["'][^"']*\bfaq-question\b[^"']*["'][^>]*>([\s\S]*?)<\/button>\s*<div\b[^>]*class=["'][^"']*\bfaq-answer\b[^"']*["'][^>]*>([\s\S]*?)<\/div>\s*<\/div>/gi;
+    /<(?:div|details)\b[^>]*class=["'][^"']*\bfaq-item\b[^"']*["'][^>]*>\s*<(?:button|summary)\b[^>]*>([\s\S]*?)<\/(?:button|summary)>\s*<div\b[^>]*class=["'][^"']*\bfaq-answer\b[^"']*["'][^>]*>([\s\S]*?)<\/div>\s*<\/(?:div|details)>/gi;
   while ((match = faqRe.exec(html)) !== null) {
     add(match[1], match[2]);
   }

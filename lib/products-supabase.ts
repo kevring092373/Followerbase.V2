@@ -76,6 +76,7 @@ function productToRow(p: Product): Record<string, unknown> {
     image: p.image ?? null,
     meta_title: p.metaTitle ?? null,
     meta_description: p.metaDescription ?? null,
+    updated_at: p.updatedAt?.trim() || new Date().toISOString(),
   };
 }
 
