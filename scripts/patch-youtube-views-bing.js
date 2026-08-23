@@ -34,6 +34,9 @@ function htmlToPlainText(html) {
 
 function isBadFaq(block) {
   const text = htmlToPlainText(block);
+  if (/nicht garantiert|nicht zugesichert/.test(text) && !/4\.?000\s*-?\s*stunden/.test(text)) {
+    return false;
+  }
   if (text.includes("erkennt youtube gekaufte views")) return true;
   if (text.includes("zählen gekaufte views zur watchtime")) return true;
   if (/4\.?000\s*-?\s*stunden/.test(text)) return true;
@@ -78,7 +81,7 @@ details.faq-item summary.faq-question::-webkit-details-marker { display: none; }
   .table-scroll-hint { display: block; }
 }
 `;
-  if (!out.includes("details.faq-item .faq-answer") && out.includes("</style>")) {
+  if (!out.includes("yt-views-content") && !out.includes("details.faq-item .faq-answer") && out.includes("</style>")) {
     out = out.replace("</style>", `${extraCss}</style>`);
   }
   return out;
@@ -92,13 +95,12 @@ async function main() {
   fs.writeFileSync(htmlPath, patched, "utf8");
   console.log("HTML gepatcht:", htmlPath);
 
-  const badLeft = /erkennt youtube gekaufte views|zählen gekaufte views zur watchtime|4\.000-Stunden-Ziel/i.test(
-    patched
-  );
-  const ctaOk = patched.includes('href="#produkt-auswahl"') && patched.includes("YouTube Views bestellen");
-  console.log("Problematische FAQ entfernt:", !/Zählen gekaufte Views zur Watchtime\?/.test(patched));
+  const ctaOk = patched.includes('href="#produkt-auswahl"');
+  const hasOldGuarantee = /4\.000-Stunden-Ziel|monetarisierung ermöglichen/i.test(patched);
+  console.log("Problematische Garantie-FAQ (faq-item) entfernt:", !/class=["'][^"']*\bfaq-item\b[^"']*["'][^>]*>[\s\S]*?Zählen gekaufte Views zur Watchtime\?/i.test(patched));
   console.log("CTA auf #produkt-auswahl:", ctaOk);
-  if (badLeft) console.warn("Hinweis: 4.000-Stunden-Formulierung steht noch im Fließtext (absichtlich nicht umgeschrieben).");
+  console.log("Neues Layout vorhanden:", patched.includes("yt-views-content"));
+  if (hasOldGuarantee) console.warn("Hinweis: alte Garantie-Formulierung steht noch im Fließtext.");
 
   if (!process.argv.includes("--upsert")) return;
 
@@ -118,7 +120,7 @@ async function main() {
       description: patched,
       meta_title: "YouTube Views kaufen: 1.000 Aufrufe ab 5,23 €",
       meta_description:
-        "YouTube Views kaufen: 1.000–25.000 Aufrufe, Lieferung in 1–5 Tagen und kein Passwort nötig. Pakete, Preise und Bedingungen transparent ansehen.",
+        "YouTube Views kaufen: Pakete mit 1.000 bis 25.000 Aufrufen ab 5,23 €. Kein Passwort nötig, transparente Preise und Bestellung per Videolink.",
       image: "/icons/youtube-views-kaufen.webp",
       prices_cents: [523, 1195, 2345, 4450, 9950],
       updated_at: now,

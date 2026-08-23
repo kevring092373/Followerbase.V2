@@ -10,7 +10,7 @@ export const YOUTUBE_VIEWS_TITLE =
   "YouTube Views kaufen: 1.000 Aufrufe ab 5,23 €";
 
 export const YOUTUBE_VIEWS_DESCRIPTION =
-  "YouTube Views kaufen: 1.000–25.000 Aufrufe, Lieferung in 1–5 Tagen und kein Passwort nötig. Pakete, Preise und Bedingungen transparent ansehen.";
+  "YouTube Views kaufen: Pakete mit 1.000 bis 25.000 Aufrufen ab 5,23 €. Kein Passwort nötig, transparente Preise und Bestellung per Videolink.";
 
 export const YOUTUBE_VIEWS_IMAGE = "/icons/youtube-views-kaufen.webp";
 
@@ -30,6 +30,9 @@ const PROBLEMATIC_FAQ_CLAIM =
 function isProblematicYoutubeViewsFaq(block: string): boolean {
   const text = htmlToPlainText(block).toLowerCase();
   if (!text) return false;
+  if (/nicht garantiert|nicht zugesichert/.test(text) && !PROBLEMATIC_FAQ_CLAIM.test(text)) {
+    return false;
+  }
   if (PROBLEMATIC_FAQ_QUESTIONS.some((q) => text.includes(q))) return true;
   return PROBLEMATIC_FAQ_CLAIM.test(text);
 }
@@ -104,8 +107,10 @@ export function prepareYoutubeViewsDescriptionHtml(html: string | undefined): st
   out = stripProblematicYoutubeViewsFaqs(out);
   out = rewriteCtaHref(out);
   out = wrapOverflowTables(out);
-  out = faqsToDetails(out);
-  out = ensureFaqAndTableCss(out);
+  if (!out.includes("yt-views-content")) {
+    out = faqsToDetails(out);
+    out = ensureFaqAndTableCss(out);
+  }
   return out;
 }
 

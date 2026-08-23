@@ -63,6 +63,11 @@ function extractFaqs(html) {
     /<div\b[^>]*class=["'][^"']*\bfaq-item\b[^"']*["'][^>]*>\s*<button\b[^>]*class=["'][^"']*\bfaq-question\b[^"']*["'][^>]*>([\s\S]*?)<\/button>\s*<div\b[^>]*class=["'][^"']*\bfaq-answer\b[^"']*["'][^>]*>([\s\S]*?)<\/div>\s*<\/div>/gi;
   let m;
   while ((m = faqRe.exec(html))) add(m[1], m[2]);
+  const faqSection = html.match(/<section\b[^>]*aria-labelledby=["']faq["'][^>]*>([\s\S]*?)<\/section>/i);
+  if (faqSection) {
+    const itemRe = /<h3\b[^>]*>([\s\S]*?)<\/h3>\s*<p\b[^>]*>([\s\S]*?)<\/p>/gi;
+    while ((m = itemRe.exec(faqSection[1]))) add(m[1], m[2]);
+  }
   return pairs;
 }
 
@@ -160,13 +165,25 @@ test("FAQ-Extraktion nimmt nur sichtbare Fragen", () => {
   assert.equal(faqs[0].answer, "Antwort A");
 });
 
+test("YouTube-Views-FAQs werden aus sichtbaren H3-Blöcken gelesen", () => {
+  const html = read("content/product-html/youtube-views-kaufen.html");
+  const faqs = extractFaqs(html);
+  assert.ok(faqs.length >= 10);
+  assert.ok(faqs.some((f) => f.question.includes("YouTube-Passwort")));
+  assert.ok(faqs.some((f) => /nicht garantiert/i.test(f.answer)));
+  assert.equal(html.includes('href="#produkt-auswahl"'), true);
+  assert.equal(/10,45 €/.test(html), false);
+  assert.match(html, /5,23 €/);
+  assert.match(html, /yt-views-content/);
+});
+
 test("YouTube-Views-Produkt nutzt die vorgegebenen SEO-Felder und Paketpreise", () => {
   const product = products.find((p) => p.slug === "youtube-views-kaufen");
   assert.ok(product);
   assert.equal(product.metaTitle, "YouTube Views kaufen: 1.000 Aufrufe ab 5,23 €");
   assert.equal(
     product.metaDescription,
-    "YouTube Views kaufen: 1.000–25.000 Aufrufe, Lieferung in 1–5 Tagen und kein Passwort nötig. Pakete, Preise und Bedingungen transparent ansehen."
+    "YouTube Views kaufen: Pakete mit 1.000 bis 25.000 Aufrufen ab 5,23 €. Kein Passwort nötig, transparente Preise und Bestellung per Videolink."
   );
   assert.equal(product.image, "/icons/youtube-views-kaufen.webp");
   const prices = collectPrices(product);

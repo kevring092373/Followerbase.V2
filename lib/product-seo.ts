@@ -119,7 +119,7 @@ export function htmlToPlainText(html: string): string {
 
 /**
  * Sichtbare FAQ-Paare aus der Produktbeschreibung.
- * Nur vorhandene faq-item / details-Blöcke – keine zusätzlichen SEO-Fragen.
+ * Unterstützt faq-item, details und den FAQ-Abschnitt mit H3/P – keine zusätzlichen SEO-Fragen.
  */
 export function extractProductFaqs(html: string | undefined): ProductFaq[] {
   if (!html || !html.trim()) return [];
@@ -148,6 +148,14 @@ export function extractProductFaqs(html: string | undefined): ProductFaq[] {
     /<(?:div|details)\b[^>]*class=["'][^"']*\bfaq-item\b[^"']*["'][^>]*>\s*<(?:button|summary)\b[^>]*>([\s\S]*?)<\/(?:button|summary)>\s*<div\b[^>]*class=["'][^"']*\bfaq-answer\b[^"']*["'][^>]*>([\s\S]*?)<\/div>\s*<\/(?:div|details)>/gi;
   while ((match = faqRe.exec(html)) !== null) {
     add(match[1], match[2]);
+  }
+
+  const faqSection = html.match(/<section\b[^>]*aria-labelledby=["']faq["'][^>]*>([\s\S]*?)<\/section>/i);
+  if (faqSection) {
+    const itemRe = /<h3\b[^>]*>([\s\S]*?)<\/h3>\s*<p\b[^>]*>([\s\S]*?)<\/p>/gi;
+    while ((match = itemRe.exec(faqSection[1])) !== null) {
+      add(match[1], match[2]);
+    }
   }
 
   return pairs;
