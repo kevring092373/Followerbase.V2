@@ -19,6 +19,26 @@ export function normalizeBlogSlug(raw: string): string {
     .replace(/^-|-$/g, "");
 }
 
+export function blogCategorySlug(name: string): string {
+  return normalizeBlogSlug(name);
+}
+
+export function blogCategoryPath(name: string): string {
+  return `/blog/kategorie/${blogCategorySlug(name)}`;
+}
+
+export function findBlogCategoryName(posts: BlogPost[], slug: string): string | undefined {
+  const clean = normalizeBlogSlug(slug);
+  const names = [
+    ...new Set(
+      posts
+        .map((p) => p.category?.trim())
+        .filter((name): name is string => Boolean(name))
+    ),
+  ];
+  return names.find((name) => blogCategorySlug(name) === clean);
+}
+
 function normalizePost(p: Record<string, unknown>): BlogPost {
   const rawSlug = typeof p.slug === "string" ? p.slug : "";
   const slug = normalizeBlogSlug(rawSlug) || rawSlug.trim();

@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { getAllProducts } from "@/lib/products-data";
 import { categories } from "@/lib/categories";
-import { getAllPosts } from "@/lib/blog-data";
+import { getAllPosts, blogCategoryPath } from "@/lib/blog-data";
 import { getAllPages } from "@/lib/pages-data";
 import { canonicalUrl } from "@/lib/seo";
 import { productCanonicalUrl } from "@/lib/product-seo";
@@ -74,6 +74,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.6,
         ...(realLastmod(post.date) ? { lastModified: realLastmod(post.date) } : {}),
       }));
+    const blogCats = [
+      ...new Set(
+        posts
+          .map((post) => post.category?.trim())
+          .filter((name): name is string => Boolean(name))
+      ),
+    ];
+    blogPages.push(
+      ...blogCats.map((name) =>
+        entry(blogCategoryPath(name), { changeFrequency: "weekly", priority: 0.65 })
+      )
+    );
   } catch {
     // Blog optional
   }

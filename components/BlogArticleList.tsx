@@ -1,44 +1,46 @@
-"use client";
-
-import { useMemo, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import type { BlogPost } from "@/lib/blog";
+import { blogCategoryPath } from "@/lib/blog-data";
 
-type Props = { posts: BlogPost[] };
+type Props = { posts: BlogPost[]; activeCategory?: string };
 
-export function BlogArticleList({ posts }: Props) {
-  const [selectedCategory, setSelectedCategory] = useState<string>("Alle");
+export function BlogArticleList({ posts, activeCategory }: Props) {
+  const categories = [
+    "Alle",
+    ...Array.from(
+      new Set(
+        posts
+          .map((p) => p.category?.trim())
+          .filter((name): name is string => Boolean(name))
+      )
+    ).sort(),
+  ];
 
-  const categories = useMemo(() => {
-    const set = new Set<string>();
-    posts.forEach((p) => {
-      if (p.category?.trim()) set.add(p.category.trim());
-    });
-    return ["Alle", ...Array.from(set).sort()];
-  }, [posts]);
-
-  const filteredPosts = useMemo(() => {
-    if (selectedCategory === "Alle") return posts;
-    return posts.filter((p) => (p.category ?? "").trim() === selectedCategory);
-  }, [posts, selectedCategory]);
+  const filteredPosts = activeCategory
+    ? posts.filter((p) => (p.category ?? "").trim() === activeCategory)
+    : posts;
 
   return (
     <section className="blog-articles-section">
       <h2 className="blog-articles-heading">Blog-Artikel</h2>
       <p className="blog-articles-filter-label">Kategorie filtern</p>
       <div className="blog-articles-filters" role="tablist" aria-label="Kategorie filter">
-        {categories.map((cat) => (
-          <button
-            key={cat}
-            type="button"
-            role="tab"
-            aria-selected={selectedCategory === cat}
-            className={`blog-articles-filter-chip ${selectedCategory === cat ? "blog-articles-filter-chip--active" : ""}`}
-            onClick={() => setSelectedCategory(cat)}
-          >
-            {cat}
-          </button>
-        ))}
+        {categories.map((cat) => {
+          const href = cat === "Alle" ? "/blog" : blogCategoryPath(cat);
+          const isActive = cat === "Alle" ? !activeCategory : cat === activeCategory;
+          return (
+            <Link
+              key={cat}
+              href={href}
+              role="tab"
+              aria-selected={isActive}
+              className={`blog-articles-filter-chip${isActive ? " blog-articles-filter-chip--active" : ""}`}
+            >
+              {cat}
+            </Link>
+          );
+        })}
       </div>
       <div className="blog-list blog-list--articles">
         {filteredPosts.map((post) => (

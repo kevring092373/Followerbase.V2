@@ -4,7 +4,7 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { getPostBySlug } from "@/lib/blog-data";
+import { blogCategoryPath, getPostBySlug } from "@/lib/blog-data";
 import { absoluteUrl, truncateDescription } from "@/lib/seo";
 import { BLOG_AUTHOR, getAuthorPagePath } from "@/lib/blog-author";
 import {
@@ -119,7 +119,7 @@ export default async function BlogPostPage({ params }: Props) {
   const breadcrumbSchema = buildBreadcrumbSchema([
     { name: "Startseite", path: "/" },
     { name: "Blog", path: "/blog" },
-    ...(post.category ? [{ name: post.category, path: "/blog" }] : []),
+    ...(post.category ? [{ name: post.category, path: blogCategoryPath(post.category) }] : []),
     { name: postTitle, path: `/blog/${post.slug}` },
   ]);
 
@@ -169,7 +169,7 @@ export default async function BlogPostPage({ params }: Props) {
               </li>
               {post.category ? (
                 <li>
-                  <Link href="/blog">{post.category}</Link>
+                  <Link href={blogCategoryPath(post.category)}>{post.category}</Link>
                 </li>
               ) : null}
               <li aria-current="page">
