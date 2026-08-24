@@ -74,13 +74,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.6,
         ...(realLastmod(post.date) ? { lastModified: realLastmod(post.date) } : {}),
       }));
-    const blogCats = [
-      ...new Set(
+    const blogCats = Array.from(
+      new Set(
         posts
           .map((post) => post.category?.trim())
           .filter((name): name is string => Boolean(name))
-      ),
-    ];
+      )
+    );
     blogPages.push(
       ...blogCats.map((name) =>
         entry(blogCategoryPath(name), { changeFrequency: "weekly", priority: 0.65 })

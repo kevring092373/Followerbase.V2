@@ -29,13 +29,13 @@ export function blogCategoryPath(name: string): string {
 
 export function findBlogCategoryName(posts: BlogPost[], slug: string): string | undefined {
   const clean = normalizeBlogSlug(slug);
-  const names = [
-    ...new Set(
+  const names = Array.from(
+    new Set(
       posts
         .map((p) => p.category?.trim())
         .filter((name): name is string => Boolean(name))
-    ),
-  ];
+    )
+  );
   return names.find((name) => blogCategorySlug(name) === clean);
 }
 
