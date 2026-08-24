@@ -14,54 +14,19 @@ export type BlogFaqItem = { question: string; answer: string };
 
 const BLOG_SCOPE = ".blog-page-html";
 
-function escapeHtmlAttr(value: string): string {
-  return value
-    .replace(/&/g, "&amp;")
-    .replace(/"/g, "&quot;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
-}
-
 function wrapInlineToc(tocHtml: string): string {
   if (!tocHtml.trim()) return "";
   if (/class=["'][^"']*\bblog-inline-toc\b/i.test(tocHtml)) return tocHtml;
-  return `<details class="blog-inline-toc"><summary class="blog-inline-toc-summary"><span class="blog-inline-toc-show">Inhaltsverzeichnis anzeigen</span><span class="blog-inline-toc-hide">Inhaltsverzeichnis ausblenden</span></summary>${tocHtml}</details>`;
+  const desktopToc = tocHtml.replace(/\s+id=["']toc-title["']/i, "");
+  return `<div class="blog-toc-desktop">${desktopToc}</div><details class="blog-inline-toc"><summary class="blog-inline-toc-summary"><span class="blog-inline-toc-show">Inhaltsverzeichnis anzeigen</span><span class="blog-inline-toc-hide">Inhaltsverzeichnis ausblenden</span></summary>${tocHtml}</details>`;
 }
 
-/** Tabellen mit data-label versehen, damit sie mobil als Karten lesbar sind. */
+/** Tabellen in einen horizontal scrollbareren Wrapper legen. */
 export function enhanceBlogTables(html: string): string {
   if (!html) return html;
   return html.replace(/<table\b[^>]*>[\s\S]*?<\/table>/gi, (tableHtml) => {
-    const wrapped = /class=["'][^"']*\bblog-table-wrap\b/i.test(tableHtml);
-    const thead = tableHtml.match(/<thead\b[^>]*>([\s\S]*?)<\/thead>/i);
-    const headers: string[] = [];
-    const thRe = /<th\b[^>]*>([\s\S]*?)<\/th>/gi;
-    let thm: RegExpExecArray | null;
-    const headerSource = thead?.[1] ?? "";
-    while ((thm = thRe.exec(headerSource)) !== null) {
-      headers.push(stripHtmlToText(thm[1]));
-    }
-
-    let labeled = tableHtml;
-    if (headers.length && !/data-label=/.test(tableHtml)) {
-      let col = 0;
-      labeled = tableHtml.replace(/<tbody\b[^>]*>([\s\S]*?)<\/tbody>/i, (full, inner: string) => {
-        const next = inner.replace(/<\/tr>|<td\b([^>]*)>/gi, (token: string, attrs?: string) => {
-          if (/^<\/tr/i.test(token)) {
-            col = 0;
-            return token;
-          }
-          const label = headers[col] || "";
-          col += 1;
-          if (/data-label\s*=/.test(attrs || "")) return token;
-          return `<td data-label="${escapeHtmlAttr(label)}"${attrs}>`;
-        });
-        return full.replace(inner, next);
-      });
-    }
-
-    if (wrapped) return labeled;
-    return `<div class="blog-table-wrap">${labeled}</div>`;
+    if (/class=["'][^"']*\bblog-table-wrap\b/i.test(tableHtml)) return tableHtml;
+    return `<div class="blog-table-wrap">${tableHtml}</div>`;
   });
 }
 
