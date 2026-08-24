@@ -180,10 +180,10 @@ test("YouTube-Views-FAQs werden aus sichtbaren H3-Blöcken gelesen", () => {
 test("YouTube-Views-Produkt nutzt die vorgegebenen SEO-Felder und Paketpreise", () => {
   const product = products.find((p) => p.slug === "youtube-views-kaufen");
   assert.ok(product);
-  assert.equal(product.metaTitle, "YouTube Views kaufen: 1.000 Aufrufe ab 5,23 €");
+  assert.equal(product.metaTitle, "YouTube Views kaufen: 100 Aufrufe ab 0,52 €");
   assert.equal(
     product.metaDescription,
-    "YouTube Views kaufen: Pakete mit 1.000 bis 25.000 Aufrufen ab 5,23 €. Kein Passwort nötig, transparente Preise und Bestellung per Videolink."
+    "YouTube Views kaufen: Pakete mit 100 bis 25.000 Aufrufen ab 0,52 €. Kein Passwort nötig, transparente Preise und Bestellung per Videolink."
   );
   assert.equal(product.image, "/icons/youtube-views-kaufen.webp");
   const prices = collectPrices(product);

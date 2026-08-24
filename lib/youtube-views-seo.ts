@@ -7,10 +7,10 @@ import { htmlToPlainText } from "@/lib/product-seo";
 export const YOUTUBE_VIEWS_SLUG = "youtube-views-kaufen";
 
 export const YOUTUBE_VIEWS_TITLE =
-  "YouTube Views kaufen: 1.000 Aufrufe ab 5,23 €";
+  "YouTube Views kaufen: 100 Aufrufe ab 0,52 €";
 
 export const YOUTUBE_VIEWS_DESCRIPTION =
-  "YouTube Views kaufen: Pakete mit 1.000 bis 25.000 Aufrufen ab 5,23 €. Kein Passwort nötig, transparente Preise und Bestellung per Videolink.";
+  "YouTube Views kaufen: Pakete mit 100 bis 25.000 Aufrufen ab 0,52 €. Kein Passwort nötig, transparente Preise und Bestellung per Videolink.";
 
 export const YOUTUBE_VIEWS_IMAGE = "/icons/youtube-views-kaufen.webp";
 

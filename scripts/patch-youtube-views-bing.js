@@ -118,9 +118,9 @@ async function main() {
     .from("products")
     .update({
       description: patched,
-      meta_title: "YouTube Views kaufen: 1.000 Aufrufe ab 5,23 €",
+      meta_title: "YouTube Views kaufen: 100 Aufrufe ab 0,52 €",
       meta_description:
-        "YouTube Views kaufen: Pakete mit 1.000 bis 25.000 Aufrufen ab 5,23 €. Kein Passwort nötig, transparente Preise und Bestellung per Videolink.",
+        "YouTube Views kaufen: Pakete mit 100 bis 25.000 Aufrufen ab 0,52 €. Kein Passwort nötig, transparente Preise und Bestellung per Videolink.",
       image: "/icons/youtube-views-kaufen.webp",
       prices_cents: [523, 1195, 2345, 4450, 9950],
       updated_at: now,
