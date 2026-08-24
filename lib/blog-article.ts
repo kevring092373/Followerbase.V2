@@ -25,8 +25,8 @@ function wrapInlineToc(tocHtml: string): string {
 export function enhanceBlogTables(html: string): string {
   if (!html) return html;
   return html.replace(/<table\b[^>]*>[\s\S]*?<\/table>/gi, (tableHtml) => {
-    if (/class=["'][^"']*\bblog-table-wrap\b/i.test(tableHtml)) return tableHtml;
-    return `<div class="blog-table-wrap">${tableHtml}</div>`;
+    if (/class=["'][^"']*\bblog-table-(?:wrap|block)\b/i.test(tableHtml)) return tableHtml;
+    return `<div class="blog-table-block"><p class="blog-table-hint">Tabelle seitlich scrollen →</p><div class="blog-table-wrap">${tableHtml}</div></div>`;
   });
 }
 

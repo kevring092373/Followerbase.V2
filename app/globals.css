@@ -1646,8 +1646,17 @@ a.blog-articles-filter-chip.blog-articles-filter-chip--active {
   color: var(--brand-primary);
 }
 
-.blog-article .blog-page-html .blog-table-wrap {
+.blog-article .blog-page-html .blog-table-block {
   margin: 1.5rem 0 1.75rem;
+  max-width: 100%;
+}
+
+.blog-article .blog-page-html .blog-table-hint {
+  display: none;
+}
+
+.blog-article .blog-page-html .blog-table-wrap {
+  margin: 0;
   max-width: 100%;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
@@ -1738,6 +1747,15 @@ a.blog-articles-filter-chip.blog-articles-filter-chip--active {
 
   .blog-article .blog-page-html .blog-inline-toc .toc-title {
     display: none;
+  }
+
+  .blog-article .blog-page-html .blog-table-hint {
+    display: flex;
+    align-items: center;
+    margin: 0 0 0.45rem;
+    font-size: 0.8rem;
+    font-weight: 650;
+    color: var(--text-muted);
   }
 
   .blog-article .blog-page-html .blog-table-wrap table {
