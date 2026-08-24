@@ -142,7 +142,7 @@ export default async function BlogPostPage({ params }: Props) {
         <style dangerouslySetInnerHTML={{ __html: prepared.styleContent }} />
       ) : null}
 
-      <div className="blog-article-layout">
+      <div className={`blog-article-layout${prepared.toc.length > 0 ? "" : " blog-article-layout--solo"}`}>
         {prepared.toc.length > 0 ? (
           <aside className="blog-toc-rail" aria-label="Inhaltsverzeichnis">
             <p className="blog-toc-rail-label">Inhaltsverzeichnis</p>
@@ -156,9 +156,7 @@ export default async function BlogPostPage({ params }: Props) {
               </ol>
             </nav>
           </aside>
-        ) : (
-          <div className="blog-toc-rail blog-toc-rail--empty" aria-hidden />
-        )}
+        ) : null}
 
         <article className="blog-article-main">
           <nav className="blog-breadcrumb" aria-label="Brotkrumen">
@@ -191,10 +189,11 @@ export default async function BlogPostPage({ params }: Props) {
                 <Image
                   src={imageSrc}
                   alt={postTitle}
-                  width={1200}
-                  height={630}
-                  sizes="(max-width: 900px) 100vw, 760px"
+                  width={1600}
+                  height={900}
+                  sizes="(max-width: 960px) 100vw, 720px"
                   className="blog-article-hero-img"
+                  style={{ width: "100%", height: "auto" }}
                   priority
                 />
               ) : (

@@ -78,14 +78,34 @@ export function formatBlogDateDe(dateIso?: string): string | null {
   }).format(d);
 }
 
-/** TOC aus .toc-Links oder aus section[id] / h2. */
+/** Entfernt verschachtelte Listen, damit nur Hauptpunkte im Inhaltsverzeichnis bleiben. */
+function stripNestedLists(html: string): string {
+  let out = html;
+  for (let i = 0; i < 10; i += 1) {
+    const next = out.replace(
+      /<(ol|ul)[^>]*>((?:(?!<(?:ol|ul)\b)[\s\S])*?)<\/\1>/gi,
+      (full, _tag: string, _inner: string, offset: number) => {
+        const before = out.slice(0, offset);
+        const depth =
+          (before.match(/<(ol|ul)\b/gi) || []).length - (before.match(/<\/(ol|ul)>/gi) || []).length;
+        return depth > 0 ? "" : full;
+      }
+    );
+    if (next === out) break;
+    out = next;
+  }
+  return out;
+}
+
+/** TOC aus .toc-Links (nur Hauptebene) oder aus section[id] / h2. */
 export function extractBlogToc(html: string): BlogTocItem[] {
   const fromToc: BlogTocItem[] = [];
   const tocBlock = html.match(/<nav[^>]*class=["'][^"']*\btoc\b[^"']*["'][^>]*>([\s\S]*?)<\/nav>/i);
   if (tocBlock) {
+    const tocInner = stripNestedLists(tocBlock[1]);
     const re = /<a[^>]*href=["']#([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi;
     let m: RegExpExecArray | null;
-    while ((m = re.exec(tocBlock[1])) !== null) {
+    while ((m = re.exec(tocInner)) !== null) {
       const label = m[2].replace(/<[^>]+>/g, "").trim();
       if (m[1] && label) fromToc.push({ id: m[1], label });
     }
@@ -140,14 +160,7 @@ function reshapeBlogArticleHtml(html: string): string {
     pull(/<p[^>]*class=["'][^"']*\barticle-lead\b[^"']*["'][^>]*>[\s\S]*?<\/p>/i) ||
     pull(/<div[^>]*class=["'][^"']*\barticle-lead\b[^"']*["'][^>]*>[\s\S]*?<\/div>/i);
   const image = pull(/<div[^>]*class=["'][^"']*\barticle-image\b[^"']*["'][^>]*>[\s\S]*?<\/div>/i);
-  // Inline-TOC aus dem Body ziehen (wird nicht wieder eingefügt – sticky Rail übernimmt)
   pull(/<(nav|div)[^>]*class=["'][^"']*\btoc\b[^"']*["'][^>]*>[\s\S]*?<\/\1>/i);
-
-  // h2 ohne id in section ohne id → id vergeben
-  body = body.replace(/<h2(?![^>]*\bid=)([^>]*)>/gi, (_full, attrs: string) => {
-    // id später aus Text – hier Platzhalter, wird unten gesetzt
-    return `<h2${attrs}>`;
-  });
 
   body = body.replace(/<h2([^>]*)>([\s\S]*?)<\/h2>/gi, (full, attrs: string, inner: string) => {
     if (/\bid\s*=/.test(attrs)) return full;
@@ -173,7 +186,6 @@ export function prepareBlogArticleHtml(rawHtml: string): {
   let htmlContent = transformFaqToDetailsSummary(prepared.htmlContent);
   htmlContent = fixBlogCtaLinks(htmlContent);
 
-  // TOC vor reshape (dort wird das Inline-TOC entfernt)
   const toc = extractBlogToc(htmlContent);
   htmlContent = reshapeBlogArticleHtml(htmlContent);
 
@@ -187,7 +199,6 @@ export function prepareBlogArticleHtml(rawHtml: string): {
     htmlContent = htmlContent.replace(heroMatch[0], "");
   }
 
-  // Fallback: falls reshape das TOC nicht erwischt hat
   htmlContent = htmlContent.replace(
     /<(nav|div)[^>]*class=["'][^"']*\btoc\b[^"']*["'][^>]*>[\s\S]*?<\/\1>/gi,
     ""

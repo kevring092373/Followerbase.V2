@@ -1267,6 +1267,10 @@ a {
   align-items: start;
 }
 
+.blog-article-layout--solo {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .blog-toc-rail {
   position: sticky;
   top: 6.5rem;
@@ -1377,10 +1381,22 @@ a {
 
 .blog-article-hero {
   margin: 0 0 1.35rem;
+  width: 100%;
+  max-width: 100%;
   border-radius: 14px;
   overflow: hidden;
-  background: var(--border);
+  background: #fff;
   box-shadow: var(--shadow-sm);
+}
+
+.blog-article-hero-img,
+.blog-article-hero img {
+  width: 100%;
+  max-width: 100%;
+  height: auto !important;
+  display: block;
+  object-fit: contain;
+  object-position: center top;
 }
 
 .blog-article-hero--embedded .article-image {
@@ -1597,7 +1613,8 @@ a {
 }
 
 @media (max-width: 960px) {
-  .blog-article-layout {
+  .blog-article-layout,
+  .blog-article-layout--solo {
     grid-template-columns: 1fr;
     gap: 1.25rem;
   }

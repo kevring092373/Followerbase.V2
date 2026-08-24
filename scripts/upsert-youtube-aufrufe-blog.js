@@ -12,7 +12,7 @@ const post = {
   slug: "youtube-aufrufe-erhoehen",
   title: "YouTube-Aufrufe erhöhen: 15 organische Strategien",
   excerpt:
-    "YouTube-Aufrufe organisch erhöhen: 15 konkrete Strategien für Themen, Titel, Thumbnails, Zuschauerbindung, Shorts und Analytics – plus Diagnose, 30-Tage-Plan und Checkliste.",
+    "YouTube-Aufrufe organisch erhöhen: 15 konkrete Strategien für Themen, Titel, Thumbnails, Zuschauerbindung, Shorts und Analytics – plus Diagnose und 30-Tage-Plan.",
   content,
   date: "2026-08-24",
   metaTitle: "YouTube-Aufrufe erhöhen: 15 organische Strategien",
