@@ -38,6 +38,21 @@ function productSlugsFromJson(raw) {
   }
 }
 
+function postsBySlug(raw) {
+  try {
+    const data = JSON.parse(raw);
+    const list = Array.isArray(data.posts) ? data.posts : [];
+    const out = {};
+    for (const post of list) {
+      if (post && typeof post.slug === "string" && post.slug.trim()) {
+        out[post.slug.trim()] = JSON.stringify(post);
+      }
+    }
+    return out;
+  } catch {
+    return {};
+  }
+}
 function productsBySlug(raw) {
   try {
     const data = JSON.parse(raw);
@@ -130,9 +145,30 @@ function fileToUrls(file, cwd, prevRef) {
     add("/products");
     return urls;
   }
+
+  if (file === "content/blog-posts.json") {
+    const prev = postsBySlug(readFileAt(cwd, prevRef, file));
+    const next = postsBySlug(readFileNow(cwd, file));
+    for (const slug of Object.keys(next)) {
+      if (prev[slug] !== next[slug]) add(`/blog/${slug}`);
+    }
+    for (const slug of Object.keys(prev)) {
+      if (!(slug in next)) add(`/blog/${slug}`);
+    }
+    add("/blog");
+    return urls;
+  }
+
+  if (file.startsWith("content/blog-html/")) {
+    const slug = path.basename(file, path.extname(file));
+    if (slug) add(`/blog/${slug}`);
+    add("/blog");
+    return urls;
+  }
+
   if (file.startsWith("app/blog/") || file.startsWith("content/blog")) {
     add("/blog");
-    add("/blog/youtube-abonnenten-bekommen");
+    return urls;
   }
   if (file.startsWith("app/ueber-uns/")) add("/ueber-uns");
   if (file.startsWith("app/sitemap.ts")) {
@@ -183,14 +219,11 @@ module.exports = {
 
       let urls = [];
       if (files.length === 0) {
-        for (const slug of productSlugsFromJson(readFileNow(repo, "content/products.json"))) {
-          urls.push(canonical(`/product/${slug}`));
-        }
-        urls.push(canonical("/"), canonical("/products"));
-      } else {
-        for (const file of files) {
-          urls.push(...fileToUrls(file, repo, prevRef));
-        }
+        log("Kein Git-Diff – keine IndexNow-Massenübermittlung.");
+        return;
+      }
+      for (const file of files) {
+        urls.push(...fileToUrls(file, repo, prevRef));
       }
 
       urls = unique(urls).filter((u) => u.startsWith(SITE) && !u.includes("?"));

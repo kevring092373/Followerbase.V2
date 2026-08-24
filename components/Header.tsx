@@ -32,6 +32,10 @@ const CAT_ORDER = [
   "threads",
 ] as const;
 
+function isBlogPath(pathname: string) {
+  return pathname === "/blog" || pathname.startsWith("/blog/");
+}
+
 function orderedCategories() {
   return CAT_ORDER.map((id) => categories.find((c) => c.id === id)).filter(
     (c): c is (typeof categories)[number] => Boolean(c)
@@ -47,6 +51,7 @@ export function Header() {
   const [canScrollMore, setCanScrollMore] = useState(false);
   const [openCatId, setOpenCatId] = useState<string | null>(null);
   const pathname = usePathname() || "";
+  const blogNav = isBlogPath(pathname);
   const cats = orderedCategories();
   const catbarRef = useRef<HTMLElement>(null);
   const closeCatTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -185,56 +190,62 @@ export function Header() {
                 const active =
                   pathname === href || pathname.startsWith(`${href}/`);
                 const bg = CAT_BG[category.id] ?? "";
-                const isOpen = openCatId === category.id;
+                const isOpen = !blogNav && openCatId === category.id;
                 return (
                   <div
                     key={category.id}
                     className={`cat-item${isOpen ? " is-open" : ""}`}
-                    onMouseEnter={() => openCat(category.id)}
-                    onMouseLeave={scheduleCloseCat}
+                    onMouseEnter={blogNav ? undefined : () => openCat(category.id)}
+                    onMouseLeave={blogNav ? undefined : scheduleCloseCat}
                   >
                     <Link
                       href={href}
                       className={`cat${active ? " active" : ""}`}
-                      aria-expanded={isOpen}
-                      aria-haspopup="menu"
-                      onFocus={() => openCat(category.id)}
-                      onClick={() => openCat(category.id)}
+                      {...(blogNav
+                        ? {}
+                        : {
+                            "aria-expanded": isOpen,
+                            "aria-haspopup": "menu" as const,
+                            onFocus: () => openCat(category.id),
+                            onClick: () => openCat(category.id),
+                          })}
                     >
                       <span className={`pf-mini ${bg}`}>
                         <PlatformMiniIcon id={category.id} />
                       </span>
                       {category.name}
                     </Link>
-                    <div
-                      className="cat-dropdown"
-                      role="menu"
-                      aria-label={`${category.name} Produkte`}
-                      aria-hidden={!isOpen}
-                    >
-                      <div className="cat-dropdown-inner">
-                        <Link
-                          href={href}
-                          className="cat-dropdown-title"
-                          onClick={closeCat}
-                        >
-                          Alle {category.name}-Produkte
-                        </Link>
-                        <div className="cat-dropdown-list">
-                          {category.products.map((product) => (
-                            <Link
-                              key={product.slug}
-                              href={`/product/${product.slug}`}
-                              className="cat-dropdown-link"
-                              role="menuitem"
-                              onClick={closeCat}
-                            >
-                              {product.name}
-                            </Link>
-                          ))}
+                    {blogNav ? null : (
+                      <div
+                        className="cat-dropdown"
+                        role="menu"
+                        aria-label={`${category.name} Produkte`}
+                        aria-hidden={!isOpen}
+                      >
+                        <div className="cat-dropdown-inner">
+                          <Link
+                            href={href}
+                            className="cat-dropdown-title"
+                            onClick={closeCat}
+                          >
+                            Alle {category.name}-Produkte
+                          </Link>
+                          <div className="cat-dropdown-list">
+                            {category.products.map((product) => (
+                              <Link
+                                key={product.slug}
+                                href={`/product/${product.slug}`}
+                                className="cat-dropdown-link"
+                                role="menuitem"
+                                onClick={closeCat}
+                              >
+                                {product.name}
+                              </Link>
+                            ))}
+                          </div>
                         </div>
                       </div>
-                    </div>
+                    )}
                   </div>
                 );
               })}
@@ -269,16 +280,20 @@ export function Header() {
           className={`site-mobile-menu${mobileMenuOpen ? " open" : ""}`}
           aria-hidden={!mobileMenuOpen}
         >
-          <span className="mm-label">Bestseller</span>
-          {headerQuickLinks.map(({ label, productSlug }) => (
-            <Link
-              key={productSlug}
-              href={`/product/${productSlug}`}
-              onClick={closeMenu}
-            >
-              {label}
-            </Link>
-          ))}
+          {!blogNav ? (
+            <>
+              <span className="mm-label">Bestseller</span>
+              {headerQuickLinks.map(({ label, productSlug }) => (
+                <Link
+                  key={productSlug}
+                  href={`/product/${productSlug}`}
+                  onClick={closeMenu}
+                >
+                  {label}
+                </Link>
+              ))}
+            </>
+          ) : null}
 
           <span className="mm-label">Kategorien</span>
           {cats.map((category) => {

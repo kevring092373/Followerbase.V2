@@ -1,8 +1,13 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { categories, headerQuickLinks } from "@/lib/categories";
 
 export function Footer() {
   const year = new Date().getFullYear();
+  const pathname = usePathname() || "";
+  const blogNav = pathname === "/blog" || pathname.startsWith("/blog/");
 
   return (
     <footer className="site-footer">
@@ -31,11 +36,13 @@ export function Footer() {
           <div>
             <h4>Produkte</h4>
             <ul>
-              {headerQuickLinks.map(({ label, productSlug }) => (
-                <li key={productSlug}>
-                  <Link href={`/product/${productSlug}`}>{label}</Link>
-                </li>
-              ))}
+              {blogNav
+                ? null
+                : headerQuickLinks.map(({ label, productSlug }) => (
+                    <li key={productSlug}>
+                      <Link href={`/product/${productSlug}`}>{label}</Link>
+                    </li>
+                  ))}
               <li>
                 <Link href="/products">Alle Produkte</Link>
               </li>

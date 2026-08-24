@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { getAllProducts } from "@/lib/products-data";
 import { categories } from "@/lib/categories";
-import { getAllPosts, blogCategoryPath } from "@/lib/blog-data";
+import { getAllPosts, blogCategoryPath, blogPostLastmod } from "@/lib/blog-data";
 import { getAllPages } from "@/lib/pages-data";
 import { canonicalUrl } from "@/lib/seo";
 import { productCanonicalUrl } from "@/lib/product-seo";
@@ -72,7 +72,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         url: canonicalUrl(`/blog/${post.slug}`),
         changeFrequency: "monthly" as const,
         priority: 0.6,
-        ...(realLastmod(post.date) ? { lastModified: realLastmod(post.date) } : {}),
+        ...(realLastmod(blogPostLastmod(post)) ? { lastModified: realLastmod(blogPostLastmod(post)) } : {}),
       }));
     const blogCats = Array.from(
       new Set(

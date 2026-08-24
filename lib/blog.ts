@@ -13,6 +13,8 @@ export interface BlogPost {
   content: string;
   /** Optional: für Sortierung in der Liste (YYYY-MM-DD) */
   date?: string;
+  /** Letzte inhaltliche Änderung (YYYY-MM-DD), unabhängig vom Aufrufdatum */
+  dateModified?: string;
   /** Meta-Titel (SEO), z. B. für <title> */
   metaTitle?: string;
   /** Meta-Beschreibung (SEO), z. B. für <meta name="description"> */

@@ -7,7 +7,7 @@ import { buildBreadcrumbSchema } from "@/lib/structured-data";
 
 type Props = { params: { slug: string } };
 
-export const revalidate = 300;
+export const revalidate = 3600;
 
 function resolveSlug(params: Props["params"]): string {
   return decodeURIComponent(params.slug ?? "").trim();
@@ -25,6 +25,8 @@ export async function generateMetadata({ params }: Props) {
   return {
     title,
     description,
+    keywords: [],
+    robots: { index: true, follow: true },
     openGraph: {
       title,
       description,

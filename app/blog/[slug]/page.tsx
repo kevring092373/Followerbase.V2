@@ -4,7 +4,7 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { blogCategoryPath, getPostBySlug } from "@/lib/blog-data";
+import { blogCategoryPath, getAllPosts, getPostBySlug, blogPostLastmod } from "@/lib/blog-data";
 import { absoluteUrl, truncateDescription } from "@/lib/seo";
 import { BLOG_AUTHOR, getAuthorPagePath } from "@/lib/blog-author";
 import {
@@ -26,11 +26,19 @@ import {
 
 type Props = { params: { slug: string } };
 
-/** ISR: Beitrag max. 5 Min alt – schneller als force-dynamic. */
-export const revalidate = 300;
+/** ISR: Blogartikel stündlich neu, öffentlich cachebar. */
+export const revalidate = 3600;
+export const dynamic = "force-static";
 
 function resolveSlug(params: Props["params"]): string {
   return decodeURIComponent(params.slug ?? "").trim();
+}
+
+export async function generateStaticParams() {
+  const posts = await getAllPosts();
+  return posts
+    .filter((post) => post.slug && !post.slug.includes("?"))
+    .map((post) => ({ slug: post.slug }));
 }
 
 export async function generateMetadata({ params }: Props) {
@@ -50,6 +58,8 @@ export async function generateMetadata({ params }: Props) {
   return {
     title,
     description: description || undefined,
+    keywords: [],
+    robots: { index: true, follow: true },
     openGraph: {
       title,
       description: description || undefined,
@@ -85,6 +95,7 @@ export default async function BlogPostPage({ params }: Props) {
   const dateLabel = formatBlogDateDe(post.date);
 
   const datePublished = toIsoDateTime(post.date);
+  const dateModified = toIsoDateTime(blogPostLastmod(post));
   const articleImage = post.image ? absoluteImageUrl(post.image) : undefined;
 
   const articleSchema = {
@@ -94,6 +105,7 @@ export default async function BlogPostPage({ params }: Props) {
     ...(post.excerpt?.trim() && { description: post.excerpt.trim() }),
     ...(articleImage && { image: [articleImage] }),
     ...(datePublished && { datePublished }),
+    ...(dateModified && { dateModified }),
     author: {
       "@type": "Person",
       name: BLOG_AUTHOR.name,

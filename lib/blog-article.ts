@@ -16,9 +16,30 @@ const BLOG_SCOPE = ".blog-page-html";
 
 function wrapInlineToc(tocHtml: string): string {
   if (!tocHtml.trim()) return "";
-  if (/class=["'][^"']*\bblog-inline-toc\b/i.test(tocHtml)) return tocHtml;
-  const desktopToc = tocHtml.replace(/\s+id=["']toc-title["']/i, "");
-  return `<div class="blog-toc-desktop">${desktopToc}</div><details class="blog-inline-toc"><summary class="blog-inline-toc-summary"><span class="blog-inline-toc-show">Inhaltsverzeichnis anzeigen</span><span class="blog-inline-toc-hide">Inhaltsverzeichnis ausblenden</span></summary>${tocHtml}</details>`;
+  let html = tocHtml
+    .replace(/<div[^>]*class=["'][^"']*\bblog-toc-desktop\b[^"']*["'][^>]*>[\s\S]*?<\/div>/i, "")
+    .replace(/<details[^>]*class=["'][^"']*\bblog-inline-toc\b[^"']*["'][^>]*>[\s\S]*?<\/details>/i, "")
+    .trim();
+  if (!html) html = tocHtml.trim();
+  if (/class=["'][^"']*\bblog-toc-toggle\b/i.test(html)) return html;
+
+  html = html.replace(
+    /<nav([^>]*class=["'][^"']*\btoc\b[^"']*["'][^>]*)>/i,
+    (_full, attrs: string) => {
+      let next = String(attrs)
+        .replace(/\s+aria-labelledby=["'][^"']*["']/i, "")
+        .replace(/\s+aria-label=["'][^"']*["']/i, "");
+      return `<nav${next} aria-label="Inhaltsverzeichnis">`;
+    }
+  );
+
+  if (!/class=["'][^"']*\bblog-toc-toggle\b/i.test(html)) {
+    html = html.replace(
+      /(<nav[^>]*class=["'][^"']*\btoc\b[^"']*["'][^>]*>)/i,
+      `$1<input type="checkbox" id="blog-toc-toggle" class="blog-toc-toggle" /><label for="blog-toc-toggle" class="blog-toc-toggle-label"><span class="blog-toc-toggle-show">Inhaltsverzeichnis anzeigen</span><span class="blog-toc-toggle-hide">Inhaltsverzeichnis ausblenden</span></label>`
+    );
+  }
+  return html;
 }
 
 /** Tabellen in einen horizontal scrollbareren Wrapper legen. */

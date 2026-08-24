@@ -46,11 +46,15 @@ function normalizePost(p: Record<string, unknown>): BlogPost {
   const excerpt = typeof p.excerpt === "string" ? p.excerpt : undefined;
   const content = typeof p.content === "string" ? p.content : "";
   const date = typeof p.date === "string" ? p.date : undefined;
+  const dateModified =
+    typeof p.dateModified === "string" && p.dateModified.trim()
+      ? p.dateModified.trim()
+      : undefined;
   const metaTitle = typeof p.metaTitle === "string" ? p.metaTitle : undefined;
   const metaDescription = typeof p.metaDescription === "string" ? p.metaDescription : undefined;
   const image = typeof p.image === "string" ? p.image.trim() || undefined : undefined;
   const category = typeof p.category === "string" ? p.category.trim() || undefined : undefined;
-  return { slug, title, excerpt, content, date, metaTitle, metaDescription, image, category };
+  return { slug, title, excerpt, content, date, dateModified, metaTitle, metaDescription, image, category };
 }
 
 async function readPosts(): Promise<BlogPost[]> {
@@ -74,6 +78,24 @@ async function writePosts(posts: BlogPost[]): Promise<void> {
   );
 }
 
+export function blogPostLastmod(post: BlogPost): string | undefined {
+  return post.dateModified || post.date;
+}
+
+function pingBlogIndexNow(slug: string) {
+  const path = `/blog/${slug}`;
+  void import("@/lib/indexnow")
+    .then(({ submitToIndexNow }) => submitToIndexNow([path]))
+    .then((result) => {
+      if (!result.ok) {
+        console.error("[indexnow] Blog-Ping fehlgeschlagen:", result.error || result.statuses.join(", "));
+      }
+    })
+    .catch((err) => {
+      console.error("[indexnow] Blog-Ping fehlgeschlagen:", err);
+    });
+}
+
 export async function getAllPosts(): Promise<BlogPost[]> {
   const posts = await readPosts();
   return [...posts].sort((a, b) => {
@@ -93,11 +115,13 @@ export async function getPostBySlug(slug: string): Promise<BlogPost | undefined>
 export async function createPost(input: BlogPost): Promise<BlogPost> {
   const slug = normalizeBlogSlug(input.slug);
   if (!slug) throw new Error("Bitte eine gültige URL (Slug) angeben.");
+  const today = new Date().toISOString().slice(0, 10);
   const post: BlogPost = {
     slug,
     title: input.title,
     content: input.content,
-    date: input.date ?? new Date().toISOString().slice(0, 10),
+    date: input.date ?? today,
+    dateModified: input.dateModified ?? input.date ?? today,
     excerpt: input.excerpt,
     category: input.category,
     metaTitle: input.metaTitle,
@@ -110,6 +134,7 @@ export async function createPost(input: BlogPost): Promise<BlogPost> {
   }
   posts.push(post);
   await writePosts(posts);
+  pingBlogIndexNow(post.slug);
   return post;
 }
 
@@ -122,13 +147,18 @@ export async function updatePost(slug: string, input: Partial<BlogPost>): Promis
     (p) => p.slug === cleanSlugParam || normalizeBlogSlug(p.slug) === cleanSlugParam
   );
   if (index === -1) throw new Error("Beitrag nicht gefunden.");
+  const today = new Date().toISOString().slice(0, 10);
+  const previous = posts[index];
   const updated: BlogPost = {
-    ...posts[index],
+    ...previous,
     ...input,
     ...(nextSlug ? { slug: nextSlug } : {}),
+    dateModified: input.dateModified ?? today,
   };
   posts[index] = updated;
   await writePosts(posts);
+  pingBlogIndexNow(updated.slug);
+  if (previous.slug !== updated.slug) pingBlogIndexNow(previous.slug);
   return updated;
 }
 
@@ -140,4 +170,5 @@ export async function deletePost(slug: string): Promise<void> {
   );
   if (filtered.length === posts.length) throw new Error("Beitrag nicht gefunden.");
   await writePosts(filtered);
+  pingBlogIndexNow(clean);
 }

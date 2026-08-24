@@ -5,12 +5,14 @@ import { getAllPosts } from "@/lib/blog-data";
 import { absoluteUrl } from "@/lib/seo";
 import { BlogArticleList } from "@/components/BlogArticleList";
 
-export const revalidate = 300;
+export const revalidate = 3600;
 
 export const metadata = {
   title: "Blog – Followerbase",
   description:
     "Tipps, Anleitungen und News zu Followern, Likes und Reichweite für Instagram, TikTok & mehr.",
+  keywords: [],
+  robots: { index: true, follow: true },
   openGraph: {
     title: "Blog – Followerbase",
     description: "Tipps und Anleitungen zu Reichweite und Social Media.",
