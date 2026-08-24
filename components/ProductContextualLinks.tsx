@@ -6,7 +6,8 @@ const VIEWS_PAGE_LINKS: { href: string; label: string }[] = [
   { href: "/product/youtube-likes-kaufen", label: "YouTube Likes" },
   { href: "/product/youtube-watchtime-kaufen", label: "YouTube Watchtime" },
   { href: "/products/youtube", label: "YouTube-Kategorieseite" },
-  { href: "/blog/youtube-abonnenten-bekommen", label: "YouTube-Ratgeber" },
+  { href: "/blog/youtube-aufrufe-erhoehen", label: "YouTube-Aufrufe erhöhen" },
+  { href: "/blog/youtube-abonnenten-bekommen", label: "YouTube-Abonnenten bekommen" },
 ];
 
 const INBOUND_LINKS: Record<string, { before: string; text: string; after: string }> = {
