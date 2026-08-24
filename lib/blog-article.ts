@@ -138,7 +138,7 @@ export function extractBlogToc(html: string): BlogTocItem[] {
  * Stellt sicher, dass Ziel-IDs existieren (section oder h2),
  * und ordnet den Artikelkopf wie bei seomuenchen: Bild → H1 → Meta → Lead → TOC → Rest.
  */
-function reshapeBlogArticleHtml(html: string): string {
+function reshapeBlogArticleHtml(html: string, keepInlineToc = false): string {
   let body = html;
 
   // Äußeren article-container auspacken, falls vorhanden
@@ -160,7 +160,7 @@ function reshapeBlogArticleHtml(html: string): string {
     pull(/<p[^>]*class=["'][^"']*\barticle-lead\b[^"']*["'][^>]*>[\s\S]*?<\/p>/i) ||
     pull(/<div[^>]*class=["'][^"']*\barticle-lead\b[^"']*["'][^>]*>[\s\S]*?<\/div>/i);
   const image = pull(/<div[^>]*class=["'][^"']*\barticle-image\b[^"']*["'][^>]*>[\s\S]*?<\/div>/i);
-  pull(/<(nav|div)[^>]*class=["'][^"']*\btoc\b[^"']*["'][^>]*>[\s\S]*?<\/\1>/i);
+  const tocHtml = pull(/<(nav|div)[^>]*class=["'][^"']*\btoc\b[^"']*["'][^>]*>[\s\S]*?<\/\1>/i);
 
   body = body.replace(/<h2([^>]*)>([\s\S]*?)<\/h2>/gi, (full, attrs: string, inner: string) => {
     if (/\bid\s*=/.test(attrs)) return full;
@@ -169,7 +169,7 @@ function reshapeBlogArticleHtml(html: string): string {
     return `<h2 id="${id}"${attrs}>${inner}</h2>`;
   });
 
-  const head = [image, h1, meta, lead].filter(Boolean).join("\n");
+  const head = [image, h1, meta, lead, keepInlineToc ? tocHtml : ""].filter(Boolean).join("\n");
   return `<div class="article-container">${head}\n${body.trim()}</div>`;
 }
 
@@ -186,8 +186,9 @@ export function prepareBlogArticleHtml(rawHtml: string): {
   let htmlContent = transformFaqToDetailsSummary(prepared.htmlContent);
   htmlContent = fixBlogCtaLinks(htmlContent);
 
-  const toc = extractBlogToc(htmlContent);
-  htmlContent = reshapeBlogArticleHtml(htmlContent);
+  const hasInlineToc = /<(nav|div)[^>]*class=["'][^"']*\btoc\b/i.test(htmlContent);
+  const toc = hasInlineToc ? [] : extractBlogToc(htmlContent);
+  htmlContent = reshapeBlogArticleHtml(htmlContent, hasInlineToc);
 
   // Hero aus dem Artikel ziehen und im Seiten-Chrome rendern (Reihenfolge wie seomuenchen)
   let heroHtml: string | null = null;
@@ -199,10 +200,12 @@ export function prepareBlogArticleHtml(rawHtml: string): {
     htmlContent = htmlContent.replace(heroMatch[0], "");
   }
 
-  htmlContent = htmlContent.replace(
-    /<(nav|div)[^>]*class=["'][^"']*\btoc\b[^"']*["'][^>]*>[\s\S]*?<\/\1>/gi,
-    ""
-  );
+  if (!hasInlineToc) {
+    htmlContent = htmlContent.replace(
+      /<(nav|div)[^>]*class=["'][^"']*\btoc\b[^"']*["'][^>]*>[\s\S]*?<\/\1>/gi,
+      ""
+    );
+  }
 
   const faqs = extractBlogFaqItems(htmlContent);
 
