@@ -60,6 +60,13 @@ export async function createPayPalOrder(
         description: "Bestellung Followerbase",
       },
     ],
+    // Digitale Leistungen: keine Lieferadresse. Die Rechnungsadresse im
+    // Kreditkartenformular verlangt PayPal weiterhin für die Kartenzahlung.
+    application_context: {
+      shipping_preference: "NO_SHIPPING",
+      user_action: "PAY_NOW",
+      brand_name: "Followerbase",
+    },
   };
 
   const res = await fetch(`${PAYPAL_API_BASE}/v2/checkout/orders`, {
