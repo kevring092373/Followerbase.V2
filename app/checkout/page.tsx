@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCart } from "@/context/CartContext";
 import { formatEuroFromCents } from "@/lib/format";
-import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
+import { PayPalScriptProvider, PayPalButtons, FUNDING } from "@paypal/react-paypal-js";
 
 const PAYPAL_CLIENT_ID = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID ?? "";
 
@@ -32,9 +32,8 @@ function CheckoutContent() {
   const [city, setCity] = useState("");
   const [country, setCountry] = useState("Deutschland");
   const [agbAccepted, setAgbAccepted] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState<"paypal" | "ueberweisung" | "viva">("paypal");
+  const [paymentMethod, setPaymentMethod] = useState<"paypal" | "ueberweisung" | "card">("paypal");
   const [ueberweisungLoading, setUeberweisungLoading] = useState(false);
-  const [vivaLoading, setVivaLoading] = useState(false);
 
   const totalCents = useMemo(() => items.reduce((sum, i) => sum + i.priceCents, 0), [items]);
 
@@ -176,48 +175,14 @@ function CheckoutContent() {
     }
   }, [email, agbAccepted, customerPayload, totalCents, orderItems, sellerNote, clearCart, router]);
 
-  const submitViva = useCallback(async () => {
-    setPaypalError(null);
-    if (!email.trim()) {
-      setPaypalError("Bitte gib deine E-Mail-Adresse ein.");
-      return;
-    }
-    if (!email.includes("@")) {
-      setPaypalError("Die E-Mail-Adresse muss ein @ enthalten.");
-      return;
-    }
-    if (!agbAccepted) {
-      setPaypalError("Bitte akzeptiere die AGB (links), um fortzufahren.");
-      return;
-    }
-    if (!customerPayload) return;
-    setVivaLoading(true);
-    try {
-      const res = await fetch("/api/viva/create-order", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          amountCents: totalCents,
-          items: orderItems,
-          sellerNote: sellerNote || undefined,
-          customer: customerPayload,
-        }),
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) {
-        throw new Error(data.error || "Kartenzahlung konnte nicht gestartet werden.");
-      }
-      const paymentUrl = data.paymentUrl;
-      if (!paymentUrl || typeof paymentUrl !== "string") {
-        throw new Error("Keine Zahlungs-URL erhalten.");
-      }
-      clearCart();
-      window.location.href = paymentUrl;
-    } catch (e) {
-      setPaypalError(e instanceof Error ? e.message : "Unbekannter Fehler");
-      setVivaLoading(false);
-    }
-  }, [email, agbAccepted, customerPayload, totalCents, orderItems, sellerNote, clearCart]);
+  const paypalButtonError = useCallback((err: Record<string, unknown>) => {
+    console.error("PayPal Fehler:", err);
+    const msg =
+      err && typeof err === "object" && "message" in err && typeof err.message === "string"
+        ? err.message
+        : "PayPal-Fehler. Bitte erneut versuchen.";
+    setPaypalError(msg);
+  }, []);
 
   if (itemCount === 0) {
     return (
@@ -417,11 +382,11 @@ function CheckoutContent() {
                 <input
                   type="radio"
                   name="paymentMethod"
-                  checked={paymentMethod === "viva"}
-                  onChange={() => setPaymentMethod("viva")}
+                  checked={paymentMethod === "card"}
+                  onChange={() => setPaymentMethod("card")}
                   className="checkout-payment-radio"
                 />
-                <span>Kreditkarte (Viva)</span>
+                <span>Kreditkarte</span>
               </label>
               <label className="checkout-payment-option">
                 <input
@@ -435,23 +400,7 @@ function CheckoutContent() {
               </label>
             </div>
 
-            {paymentMethod === "viva" ? (
-              <div className="checkout-ueberweisung-wrap">
-                <p className="checkout-ueberweisung-text">
-                  Du wirst zur sicheren Zahlungsseite von Viva weitergeleitet. Akzeptiert werden Visa,
-                  Mastercard und Maestro. Eine reine Girocard ohne Visa-/Mastercard-Logo wird nicht
-                  unterstützt.
-                </p>
-                <button
-                  type="button"
-                  onClick={submitViva}
-                  disabled={vivaLoading}
-                  className="btn btn-primary"
-                >
-                  {vivaLoading ? "Wird vorbereitet …" : "Zur Kartenzahlung (Viva)"}
-                </button>
-              </div>
-            ) : paymentMethod === "ueberweisung" ? (
+            {paymentMethod === "ueberweisung" ? (
               <div className="checkout-ueberweisung-wrap">
                 <p className="checkout-ueberweisung-text">
                   Nach dem Abschluss erhältst du unsere Bankdaten und den Verwendungszweck (deine
@@ -466,20 +415,20 @@ function CheckoutContent() {
                   {ueberweisungLoading ? "Wird erstellt …" : "Bestellung per Überweisung abschließen"}
                 </button>
               </div>
-            ) : paymentMethod === "paypal" && PAYPAL_CLIENT_ID ? (
+            ) : PAYPAL_CLIENT_ID ? (
               <div className="checkout-paypal-wrap">
+                {paymentMethod === "card" ? (
+                  <p className="checkout-ueberweisung-text">
+                    Zahle mit Debit- oder Kreditkarte. Ein PayPal-Konto ist nicht nötig.
+                  </p>
+                ) : null}
                 <PayPalButtons
+                  key={paymentMethod}
+                  fundingSource={paymentMethod === "card" ? FUNDING.CARD : FUNDING.PAYPAL}
                   style={{ layout: "vertical" }}
                   createOrder={createOrder}
                   onApprove={onApprove}
-                  onError={(err) => {
-                    console.error("PayPal Fehler:", err);
-                    const msg =
-                      err && typeof err === "object" && "message" in err && typeof (err as { message: unknown }).message === "string"
-                        ? (err as { message: string }).message
-                        : "PayPal-Fehler. Bitte erneut versuchen.";
-                    setPaypalError(msg);
-                  }}
+                  onError={paypalButtonError}
                 />
               </div>
             ) : (
@@ -505,6 +454,7 @@ export default function CheckoutPage() {
         currency: "EUR",
         intent: "capture",
         "disable-funding": "sepa",
+        "enable-funding": "card",
       }}
       deferLoading={!clientId}
     >
