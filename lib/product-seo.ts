@@ -4,6 +4,9 @@
  */
 import { canonicalUrl } from "@/lib/seo";
 
+/** Sprungziel der Paketauswahl; CTA-Links in Produktbeschreibungen zeigen darauf. */
+export const PRODUCT_ORDER_ANCHOR_ID = "produkt-auswahl";
+
 export type ProductPriceSource = {
   quantities?: number[];
   pricesCents: number[];

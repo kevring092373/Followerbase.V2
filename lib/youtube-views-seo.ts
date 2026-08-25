@@ -2,7 +2,7 @@
  * Technische SEO-Angaben nur für /product/youtube-views-kaufen.
  * Produktfließtext bleibt unangetastet; hier werden Markup, CTA und FAQ-Blöcke bereinigt.
  */
-import { htmlToPlainText } from "@/lib/product-seo";
+import { htmlToPlainText, PRODUCT_ORDER_ANCHOR_ID } from "@/lib/product-seo";
 
 export const YOUTUBE_VIEWS_SLUG = "youtube-views-kaufen";
 
@@ -17,7 +17,7 @@ export const YOUTUBE_VIEWS_IMAGE = "/icons/youtube-views-kaufen.webp";
 export const YOUTUBE_VIEWS_IMAGE_ALT =
   "YouTube Views kaufen – verfügbare Aufruf-Pakete";
 
-export const YOUTUBE_VIEWS_ORDER_ID = "produkt-auswahl";
+export const YOUTUBE_VIEWS_ORDER_ID = PRODUCT_ORDER_ANCHOR_ID;
 
 const PROBLEMATIC_FAQ_QUESTIONS = [
   "erkennt youtube gekaufte views",

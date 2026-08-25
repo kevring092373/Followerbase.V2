@@ -21,12 +21,11 @@ import {
   buildBreadcrumbSchema,
   buildFaqPageSchema,
 } from "@/lib/structured-data";
-import { extractProductFaqs, productCanonicalUrl } from "@/lib/product-seo";
+import { extractProductFaqs, productCanonicalUrl, PRODUCT_ORDER_ANCHOR_ID } from "@/lib/product-seo";
 import {
   YOUTUBE_VIEWS_DESCRIPTION,
   YOUTUBE_VIEWS_IMAGE,
   YOUTUBE_VIEWS_IMAGE_ALT,
-  YOUTUBE_VIEWS_ORDER_ID,
   YOUTUBE_VIEWS_TITLE,
   isYoutubeViewsProduct,
   prepareYoutubeViewsDescriptionHtml,
@@ -199,7 +198,7 @@ export default async function ProductPage({ params }: Props) {
       </header>
 
       <div className="product-order-row">
-        <div className="product-order-section" id={viewsPage ? YOUTUBE_VIEWS_ORDER_ID : undefined}>
+        <div className="product-order-section" id={PRODUCT_ORDER_ANCHOR_ID}>
           {viewsPage ? (
             <>
               <p className="product-availability">Verfügbar – Lieferung nach Bestellung</p>
