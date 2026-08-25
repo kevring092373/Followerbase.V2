@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
+import { formatEuroFromCents } from "@/lib/format";
 import { useEffect, useRef } from "react";
 
 /**
@@ -99,7 +100,7 @@ export function CartDrawer() {
                     </div>
                     <div className="cart-item-side">
                       <span className="cart-item-price">
-                        {(item.priceCents / 100).toFixed(2)} €
+                        {formatEuroFromCents(item.priceCents)}
                       </span>
                       <button
                         type="button"
@@ -135,7 +136,7 @@ export function CartDrawer() {
                 <div className="cart-total-row">
                   <span className="cart-total-label">Gesamt</span>
                   <span className="cart-total-value">
-                    {(totalCentsComputed / 100).toFixed(2)} €
+                    {formatEuroFromCents(totalCentsComputed)}
                   </span>
                 </div>
                 <div className="cart-drawer-actions">

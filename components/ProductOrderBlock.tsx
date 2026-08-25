@@ -1,7 +1,9 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { useCart } from "@/context/CartContext";
+import { formatEuroFromCents, formatQuantity } from "@/lib/format";
+import { PRODUCT_ORDER_ANCHOR_ID } from "@/lib/product-seo";
 import type { ProductTier } from "@/lib/products-data";
 
 const INDIVIDUAL_MIN = 100;
@@ -52,18 +54,13 @@ type ProductOrderBlockProps = {
   showPackagePrices?: boolean;
 };
 
-/** Individuelle Menge: Slider-Wert (0–100) in Menge umrechnen (Schritt 50, min/max aus Parametern) */
-function sliderToQuantity(sliderValue: number, min: number, max: number): number {
-  const range = max - min;
-  const raw = min + (sliderValue / 100) * range;
-  const qty = Math.round(raw / INDIVIDUAL_STEP) * INDIVIDUAL_STEP;
+/**
+ * Der Slider läuft in echten Mengen statt in Prozent. Nur so melden Screenreader
+ * die tatsächliche Followerzahl und die Pfeiltasten springen in 50er-Schritten.
+ */
+function snapQuantity(value: number, min: number, max: number): number {
+  const qty = Math.round(value / INDIVIDUAL_STEP) * INDIVIDUAL_STEP;
   return Math.min(max, Math.max(min, qty));
-}
-
-/** Menge in Slider-Wert (0–100) umrechnen */
-function quantityToSlider(quantity: number, min: number, max: number): number {
-  const range = max - min;
-  return ((quantity - min) / range) * 100;
 }
 
 /**
@@ -121,10 +118,12 @@ export function ProductOrderBlock({
   const [tierIndex, setTierIndex] = useState(0);
   const [useIndividual, setUseIndividual] = useState(false);
   const [standardIndex, setStandardIndex] = useState(0);
-  const [sliderValue, setSliderValue] = useState(0);
+  const [sliderQuantity, setSliderQuantity] = useState(INDIVIDUAL_MIN);
   const [targetInput, setTargetInput] = useState("");
   const [targetError, setTargetError] = useState<string | null>(null);
   const [added, setAdded] = useState(false);
+  const blockRef = useRef<HTMLDivElement>(null);
+  const [showBuyBar, setShowBuyBar] = useState(false);
 
   const currentTier = tiers && tiers.length > 0 ? tiers[tierIndex]! : null;
   const q = currentTier ? currentTier.quantities : quantities;
@@ -134,7 +133,7 @@ export function ProductOrderBlock({
   const standardQuantity = q[standardIndex] ?? 100;
   const standardPriceCents = p[standardIndex] ?? 100;
 
-  const individualQuantity = sliderToQuantity(sliderValue, INDIVIDUAL_MIN, maxForSlider);
+  const individualQuantity = snapQuantity(sliderQuantity, INDIVIDUAL_MIN, maxForSlider);
   const individualPriceCents = getIndividualPriceCents(individualQuantity, q, p);
 
   const quantity = useIndividual ? individualQuantity : standardQuantity;
@@ -149,27 +148,26 @@ export function ProductOrderBlock({
       setStandardIndex(0);
       setUseIndividual(false);
       const newQ = tiers[index]!.quantities;
-      const newMax = tiers[index]!.sliderMax ?? Math.max(...newQ);
-      setSliderValue(quantityToSlider(newQ[0] ?? 100, INDIVIDUAL_MIN, newMax));
+      setSliderQuantity(newQ[0] ?? INDIVIDUAL_MIN);
     },
     [tiers, tierIndex]
   );
 
   const handleSliderChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      setSliderValue(Number(e.target.value));
+      setSliderQuantity(snapQuantity(Number(e.target.value), INDIVIDUAL_MIN, maxForSlider));
       setUseIndividual(true);
     },
-    []
+    [maxForSlider]
   );
 
   const handleStandardSelect = useCallback(
     (index: number) => {
       setStandardIndex(index);
       setUseIndividual(false);
-      setSliderValue(quantityToSlider(q[index] ?? 100, INDIVIDUAL_MIN, maxForSlider));
+      setSliderQuantity(q[index] ?? INDIVIDUAL_MIN);
     },
-    [q, maxForSlider]
+    [q]
   );
 
   const handleAddToCart = useCallback(() => {
@@ -190,10 +188,35 @@ export function ProductOrderBlock({
     setTimeout(() => setAdded(false), 2000);
   }, [targetInput, addItem, productSlug, displayName, quantity, priceCents]);
 
-  const effectiveSliderValue = useIndividual ? sliderValue : quantityToSlider(standardQuantity, INDIVIDUAL_MIN, maxForSlider);
+  const effectiveSliderQuantity = useIndividual
+    ? individualQuantity
+    : snapQuantity(standardQuantity, INDIVIDUAL_MIN, maxForSlider);
+
+  /** Kaufleiste erst zeigen, wenn das Produktmodul aus dem Blickfeld gescrollt ist. */
+  useEffect(() => {
+    const node = blockRef.current;
+    if (!node || typeof IntersectionObserver === "undefined") return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setShowBuyBar(!entry.isIntersecting),
+      { rootMargin: "-80px 0px 0px 0px" }
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    document.body.classList.toggle("has-mobile-buy-bar", showBuyBar);
+    return () => document.body.classList.remove("has-mobile-buy-bar");
+  }, [showBuyBar]);
+
+  const scrollToOrderBlock = useCallback(() => {
+    document
+      .getElementById(PRODUCT_ORDER_ANCHOR_ID)
+      ?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, []);
 
   return (
-    <div className="product-order-block">
+    <div className="product-order-block" ref={blockRef}>
       {bullets && bullets.length > 0 && (
         <div className="product-order-bullets">
           <ul className="product-bullets">
@@ -239,11 +262,9 @@ export function ProductOrderBlock({
                 className="product-quantity-radio"
               />
               <span className="product-quantity-label">
-                <span className="product-quantity-amount">{qty.toLocaleString("de-DE")}</span>
+                <span className="product-quantity-amount">{formatQuantity(qty)}</span>
                 {showPackagePrices && typeof p[i] === "number" ? (
-                  <span className="product-quantity-price">
-                    {(p[i] / 100).toFixed(2).replace(".", ",")} €
-                  </span>
+                  <span className="product-quantity-price">{formatEuroFromCents(p[i])}</span>
                 ) : null}
               </span>
             </label>
@@ -253,25 +274,30 @@ export function ProductOrderBlock({
 
       {/* Bereich 2: Individuelle Menge (Slider) */}
       <div className="product-order-row product-order-row-individual">
-        <label className="product-order-label">
-          Individuelle Menge: <span className="product-quantity-value">{quantity}</span>
+        <label className="product-order-label" htmlFor="product-quantity-slider">
+          Individuelle Menge: <span className="product-quantity-value">{formatQuantity(quantity)}</span>
         </label>
         <input
+          id="product-quantity-slider"
           type="range"
-          min={0}
-          max={100}
-          step={0.1}
-          value={effectiveSliderValue}
+          min={INDIVIDUAL_MIN}
+          max={maxForSlider}
+          step={INDIVIDUAL_STEP}
+          value={effectiveSliderQuantity}
           onChange={handleSliderChange}
           onPointerDown={() => setUseIndividual(true)}
           className="product-quantity-slider"
-          aria-label={`Menge zwischen ${INDIVIDUAL_MIN} und ${maxForSlider} in 50er-Schritten`}
+          aria-label={`Menge zwischen ${INDIVIDUAL_MIN} und ${maxForSlider} in ${INDIVIDUAL_STEP}er-Schritten`}
+          aria-valuemin={INDIVIDUAL_MIN}
+          aria-valuemax={maxForSlider}
+          aria-valuenow={quantity}
+          aria-valuetext={`${formatQuantity(quantity)} ${productName}`}
         />
       </div>
 
       <div className="product-order-row product-price-row">
         <span className="product-order-label">Preis:</span>
-        <span className="product-price">{(priceCents / 100).toFixed(2)} €</span>
+        <span className="product-price">{formatEuroFromCents(priceCents)}</span>
       </div>
 
       <div className="product-order-row">
@@ -321,6 +347,23 @@ export function ProductOrderBlock({
             </p>
           )}
         </div>
+      </div>
+      <div
+        className={`product-mobile-buy-bar${showBuyBar ? " is-visible" : ""}`}
+        aria-hidden={!showBuyBar}
+      >
+        <div className="product-mobile-buy-bar-price">
+          <span className="product-mobile-buy-bar-amount">{formatEuroFromCents(priceCents)}</span>
+          <span className="product-mobile-buy-bar-meta">{formatQuantity(quantity)}</span>
+        </div>
+        <button
+          type="button"
+          className="btn btn-primary product-mobile-buy-bar-btn"
+          onClick={scrollToOrderBlock}
+          tabIndex={showBuyBar ? 0 : -1}
+        >
+          Paket auswählen
+        </button>
       </div>
     </div>
   );

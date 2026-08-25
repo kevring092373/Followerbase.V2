@@ -5,6 +5,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getOrderByNumber } from "@/lib/orders-data";
 import { getOrderTotalCents, getPaymentMethodLabel } from "@/lib/orders";
+import { formatEuroFromCents } from "@/lib/format";
 
 type Props = {
   searchParams: Promise<{ order?: string; success?: string }>;
@@ -60,14 +61,14 @@ export default async function BestellungDankePage({ searchParams }: Props) {
                 <li key={i} className="danke-item">
                   <span className="danke-item-name">{item.productName}</span>
                   <span className="danke-item-meta">
-                    {item.quantity} × {(item.priceCents / 100).toFixed(2)} €
+                    {item.quantity} × {formatEuroFromCents(item.priceCents)}
                     {item.target ? ` · ${item.target}` : ""}
                   </span>
                 </li>
               ))}
             </ul>
             <p className="danke-total">
-              Gesamtbetrag: <strong>{(totalCents / 100).toFixed(2)} €</strong>
+              Gesamtbetrag: <strong>{formatEuroFromCents(totalCents)}</strong>
             </p>
           </>
         )}

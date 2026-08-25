@@ -97,6 +97,44 @@ export function formatSchemaPrice(cents: number): string {
   return (cents / 100).toFixed(2);
 }
 
+/**
+ * Trennt die einleitende Hero-Sektion vom restlichen Produkttext, damit die
+ * Kurzzusammenfassung direkt unter dem Bestellmodul stehen kann und Inhaltsübersicht,
+ * Fließtext, FAQ und Abschluss-CTA erst nach den verwandten Produkten folgen.
+ * Ohne passende Struktur wird nichts getrennt – der Text bleibt dann ein Block.
+ */
+export function splitProductDescription(
+  html: string
+): { summary: string; rest: string } | null {
+  if (!html || !html.trim()) return null;
+
+  const articleMatch = /<article\b[^>]*>/i.exec(html);
+  if (!articleMatch) return null;
+
+  const articleOpen = articleMatch[0];
+  const bodyStart = articleMatch.index + articleOpen.length;
+  const articleClose = html.lastIndexOf("</article>");
+  if (articleClose <= bodyStart) return null;
+
+  const head = html.slice(0, articleMatch.index);
+  const body = html.slice(bodyStart, articleClose);
+
+  const headerEnd = body.search(/<\/header\s*>/i);
+  if (headerEnd === -1) return null;
+  const headerCloseMatch = /<\/header\s*>/i.exec(body);
+  if (!headerCloseMatch) return null;
+
+  const splitAt = headerEnd + headerCloseMatch[0].length;
+  const summaryBody = body.slice(0, splitAt).trim();
+  const restBody = body.slice(splitAt).replace(/^\s*(?:<hr\s*\/?>)?\s*/i, "").trim();
+  if (!summaryBody || !restBody) return null;
+
+  return {
+    summary: `${head}${articleOpen}${summaryBody}</article>`,
+    rest: `${articleOpen}${restBody}</article>`,
+  };
+}
+
 export function productCanonicalUrl(slug: string): string {
   const clean = slug.trim().replace(/^\/+/, "").split("?")[0].split("#")[0];
   return canonicalUrl(`/product/${clean}`);

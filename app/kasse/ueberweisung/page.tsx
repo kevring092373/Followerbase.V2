@@ -5,6 +5,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getOrderByNumber } from "@/lib/orders-data";
 import { getOrderTotalCents } from "@/lib/orders";
+import { formatEuroFromCents } from "@/lib/format";
 import { getBankDetails, getVerwendungszweck } from "@/lib/bank-data";
 
 type Props = {
@@ -37,7 +38,7 @@ export default async function UeberweisungPage({ searchParams }: Props) {
           Bestellnummer: <strong>{order.orderNumber}</strong>
         </p>
         <p className="ueberweisung-amount">
-          Betrag: <strong>{(totalCents / 100).toFixed(2)} €</strong>
+          Betrag: <strong>{formatEuroFromCents(totalCents)}</strong>
         </p>
 
         <h2 className="ueberweisung-heading">Bankverbindung</h2>

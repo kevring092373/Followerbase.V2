@@ -21,7 +21,13 @@ import {
   buildBreadcrumbSchema,
   buildFaqPageSchema,
 } from "@/lib/structured-data";
-import { extractProductFaqs, productCanonicalUrl, PRODUCT_ORDER_ANCHOR_ID } from "@/lib/product-seo";
+import {
+  extractProductFaqs,
+  productCanonicalUrl,
+  splitProductDescription,
+  PRODUCT_ORDER_ANCHOR_ID,
+} from "@/lib/product-seo";
+import { formatEuroFromCents, formatQuantity } from "@/lib/format";
 import {
   YOUTUBE_VIEWS_DESCRIPTION,
   YOUTUBE_VIEWS_IMAGE,
@@ -144,6 +150,7 @@ export default async function ProductPage({ params }: Props) {
       ? `Weitere ${category.name}-Produkte`
       : "Weitere Produkte";
   const descriptionMode: "raw" = "raw";
+  const descriptionParts = product.description ? splitProductDescription(product.description) : null;
   const productUrl = productCanonicalUrl(product.slug);
   const breadcrumbName = getProductDisplayName(product.name);
   const breadcrumbSchema = buildBreadcrumbSchema([
@@ -206,7 +213,7 @@ export default async function ProductPage({ params }: Props) {
                 <ul className="product-packages-ssr">
                   {product.quantities.map((qty, i) => (
                     <li key={qty}>
-                      {qty.toLocaleString("de-DE")} – {((product.pricesCents[i] ?? 0) / 100).toFixed(2).replace(".", ",")} €
+                      {formatQuantity(qty)} – {formatEuroFromCents(product.pricesCents[i] ?? 0)}
                     </li>
                   ))}
                 </ul>
@@ -243,26 +250,41 @@ export default async function ProductPage({ params }: Props) {
               <span className="product-image-placeholder-text">Bild</span>
             </div>
           )}
-          <ShareButtons
-            url={productUrl}
-            title={productMetaTitle(product.name, product.metaTitle)}
-            text={product.metaDescription ?? undefined}
-            iconOnly
-            className="share-buttons--product"
-          />
-          <ProductPaymentIcons />
         </div>
       </div>
 
+      <section className="product-assurance" aria-label="Zahlungsarten und Vorteile">
+        <ProductPaymentIcons />
+        <ul className="product-assurance-list">
+          {bullets.map((text, i) => (
+            <li key={i}>{text}</li>
+          ))}
+        </ul>
+      </section>
+
       <ProductContextualLinks slug={product.slug} />
+
+      {descriptionParts ? (
+        <ProductDescriptionSection html={descriptionParts.summary} mode={descriptionMode} />
+      ) : null}
 
       {otherProducts.length > 0 && (
         <ProductCarousel products={otherProducts} title={carouselTitle} />
       )}
 
-      {product.description ? (
+      {descriptionParts ? (
+        <ProductDescriptionSection html={descriptionParts.rest} mode={descriptionMode} />
+      ) : product.description ? (
         <ProductDescriptionSection html={product.description} mode={descriptionMode} />
       ) : null}
+
+      <ShareButtons
+        url={productUrl}
+        title={productMetaTitle(product.name, product.metaTitle)}
+        text={product.metaDescription ?? undefined}
+        iconOnly
+        className="share-buttons--product"
+      />
     </div>
   );
 }

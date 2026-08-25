@@ -4,6 +4,7 @@ import { useCallback, useMemo, useState, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCart } from "@/context/CartContext";
+import { formatEuroFromCents } from "@/lib/format";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 
 const PAYPAL_CLIENT_ID = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID ?? "";
@@ -389,13 +390,13 @@ function CheckoutContent() {
                   <span className="checkout-item-detail">
                     {item.quantity} · {item.target}
                   </span>
-                  <span className="checkout-item-price">{(item.priceCents / 100).toFixed(2)} €</span>
+                  <span className="checkout-item-price">{formatEuroFromCents(item.priceCents)}</span>
                 </li>
               ))}
             </ul>
             <div className="checkout-total-row">
               <span className="checkout-total-label">Gesamt</span>
-              <span className="checkout-total-value">{(totalCents / 100).toFixed(2)} €</span>
+              <span className="checkout-total-value">{formatEuroFromCents(totalCents)}</span>
             </div>
           </div>
 

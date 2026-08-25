@@ -4,6 +4,7 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { getProductImageAlt } from "@/lib/product-image-alt";
+import { formatFromPriceFromCents } from "@/lib/format";
 
 export type ProductCarouselItem = {
   slug: string;
@@ -12,10 +13,7 @@ export type ProductCarouselItem = {
   pricesCents: number[];
 };
 
-function formatAbPrice(cents: number): string {
-  const euros = cents / 100;
-  return euros % 1 === 0 ? `ab ${euros} €` : `ab ${euros.toFixed(2)} €`;
-}
+const formatAbPrice = formatFromPriceFromCents;
 
 type ProductCarouselProps = {
   products: ProductCarouselItem[];

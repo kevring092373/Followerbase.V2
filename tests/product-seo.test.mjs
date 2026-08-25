@@ -136,7 +136,33 @@ test("Produktseite hat genau eine H1-Vorlage und Canonical-Metadaten", () => {
   assert.match(productPage, /card:\s*"summary_large_image"/);
   assert.match(productPage, /index:\s*true/);
   assert.match(productPage, /follow:\s*true/);
-  assert.match(productPage, /id=\{viewsPage \? YOUTUBE_VIEWS_ORDER_ID/);
+  assert.match(productPage, /id=\{PRODUCT_ORDER_ANCHOR_ID\}/);
+});
+
+test("Offer-SKUs sind je Variante eindeutig", () => {
+  const product = products.find((p) => p.slug === "instagram-follower-kaufen");
+  assert.ok(product);
+  const skus = [];
+  for (const tier of product.tiers) {
+    for (const quantity of tier.quantities) {
+      skus.push(`${product.articleNumber}-${quantity}-${tier.name.toUpperCase()}`);
+    }
+  }
+  assert.equal(skus.length, 15);
+  assert.equal(new Set(skus).size, skus.length);
+  assert.ok(skus.includes("FC-001-100-NORMAL"));
+  assert.ok(skus.includes("FC-001-100-PREMIUM"));
+  assert.ok(skus.includes("FC-001-25000-NORMAL"));
+  assert.equal(skus.includes("FC-001-25000-PREMIUM"), false);
+});
+
+test("Sichtbare Preise nutzen deutsches Format, Schema-Preise den Dezimalpunkt", () => {
+  const euro = new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" });
+  assert.match(euro.format(0.99), /^0,99\s\u00a0?€$|^0,99\u00a0€$/);
+  assert.equal(euro.format(15.9).replace(/\u00a0/g, " "), "15,90 €");
+  assert.equal(formatPrice(1590), "15.90");
+  assert.match(read("lib/format.ts"), /Intl\.NumberFormat\("de-DE"/);
+  assert.equal(productPage.includes('.toFixed(2)} €'), false);
 });
 
 test("Product-Schema enthält keine erfundenen AggregateRatings", () => {

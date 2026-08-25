@@ -67,6 +67,21 @@ function buildSeller(): Record<string, unknown> {
   };
 }
 
+/**
+ * Normal und Premium teilen sich dieselbe Menge, deshalb muss die Variante Teil der SKU
+ * sein – sonst meldet die Rich-Results-Prüfung doppelte Angebotskennungen.
+ */
+function buildOfferSku(articleNumber: string, quantity: number, variantName?: string): string {
+  const variant = variantName
+    ?.trim()
+    .toUpperCase()
+    .replace(/[^A-Z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+  return variant
+    ? `${articleNumber}-${quantity}-${variant}`
+    : `${articleNumber}-${quantity}`;
+}
+
 function buildOfferList(product: Product, url: string): Record<string, unknown>[] {
   const displayName = getProductDisplayName(product.name);
   return getProductPackages(product).map((pkg) => {
@@ -84,7 +99,7 @@ function buildOfferList(product: Product, url: string): Record<string, unknown>[
       itemCondition: "https://schema.org/NewCondition",
       seller: buildSeller(),
       ...(product.articleNumber
-        ? { sku: `${product.articleNumber}-${pkg.quantity}` }
+        ? { sku: buildOfferSku(product.articleNumber, pkg.quantity, pkg.variantName) }
         : {}),
     };
   });

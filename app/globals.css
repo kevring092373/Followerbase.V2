@@ -384,8 +384,10 @@ a {
 }
 
 .share-buttons--product {
-  margin-top: 1rem;
+  margin-top: 2rem;
   margin-bottom: 0;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
   justify-content: center;
 }
 
@@ -3876,9 +3878,138 @@ a.blog-articles-filter-chip.blog-articles-filter-chip--active {
   }
   .product-trust-badge {
     font-size: 0.6875rem;
-    padding: 0.3rem 0.45rem;
+    padding: 0.3rem 0.5rem;
+    /* Konkrete Signale sind länger als "Sichere Zahlung" und müssen umbrechen dürfen. */
+    white-space: normal;
+    text-align: center;
+  }
+}
+
+/* Zahlungsarten und wichtigste Vorteile direkt unter dem Bestellmodul. */
+.product-assurance {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem 1.5rem;
+  margin-bottom: 2rem;
+  padding: 1rem 1.25rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+}
+
+.product-assurance .product-payment-icons {
+  margin: 0;
+}
+
+.product-assurance-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.product-assurance-list li {
+  position: relative;
+  padding-left: 1.35rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.product-assurance-list li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  color: var(--brand-primary);
+  font-weight: 700;
+}
+
+@media (max-width: 768px) {
+  .product-assurance {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.85rem;
+    padding: 0.9rem 1rem;
+  }
+  .product-assurance-list {
+    gap: 0.4rem 1rem;
+  }
+  .product-assurance-list li {
+    font-size: 0.8125rem;
+  }
+}
+
+/* Mobile Kaufleiste: erscheint, sobald das Produktmodul weggescrollt ist. */
+.product-mobile-buy-bar {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .product-mobile-buy-bar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 950;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.55rem 1rem;
+    padding-bottom: calc(0.55rem + env(safe-area-inset-bottom));
+    background: var(--bg-card);
+    border-top: 1px solid var(--border);
+    box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.08);
+    transform: translateY(110%);
+    opacity: 0;
+    visibility: hidden;
+    transition: transform 0.25s ease, opacity 0.25s ease, visibility 0.25s;
+  }
+
+  .product-mobile-buy-bar.is-visible {
+    transform: none;
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .product-mobile-buy-bar-price {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+    min-width: 0;
+  }
+
+  .product-mobile-buy-bar-amount {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .product-mobile-buy-bar-meta {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+  }
+
+  .product-mobile-buy-bar-btn {
     flex-shrink: 0;
+    padding: 0.65rem 1.1rem;
+    font-size: 0.9rem;
     white-space: nowrap;
+  }
+
+  /* Platz schaffen, damit die Leiste Tabellen, FAQ oder Cookie-Hinweis nicht verdeckt. */
+  body.has-mobile-buy-bar {
+    padding-bottom: calc(64px + env(safe-area-inset-bottom));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .product-mobile-buy-bar {
+    transition: none;
   }
 }
 

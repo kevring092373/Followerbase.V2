@@ -2,7 +2,7 @@
  * Spielt eine Produktbeschreibung aus content/product-html/<slug>.html ein:
  * nach content/products.json und – falls .env.local Supabase enthält – in die Tabelle products.
  *
- * Aufruf: node scripts/upsert-product-description.js <slug> [--dry]
+ * Aufruf: node scripts/upsert-product-description.js <slug> [--dry] [--bullets "A|B|C"]
  * z. B.:  node scripts/upsert-product-description.js instagram-follower-kaufen
  */
 const fs = require("fs");
@@ -30,6 +30,14 @@ function loadEnvLocal() {
 
 const slug = process.argv[2];
 const dryRun = process.argv.includes("--dry");
+const bulletsArgIndex = process.argv.indexOf("--bullets");
+const bullets =
+  bulletsArgIndex > -1 && process.argv[bulletsArgIndex + 1]
+    ? process.argv[bulletsArgIndex + 1]
+        .split("|")
+        .map((s) => s.trim())
+        .filter(Boolean)
+    : null;
 if (!slug) {
   console.error("Aufruf: node scripts/upsert-product-description.js <slug> [--dry]");
   process.exit(1);
@@ -51,14 +59,16 @@ if (index === -1) {
 }
 
 console.log("HTML: %d Zeichen", html.length);
+if (bullets) console.log("Bullets: %s", bullets.join(" | "));
 if (dryRun) {
   console.log("Probelauf – nichts geschrieben.");
   process.exit(0);
 }
 
 data.products[index].description = html;
+if (bullets) data.products[index].bullets = bullets;
 fs.writeFileSync(productsPath, JSON.stringify(data, null, 2), "utf-8");
-console.log("OK: description in products.json gesetzt (%s).", slug);
+console.log("OK: products.json aktualisiert (%s).", slug);
 
 loadEnvLocal();
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -71,7 +81,8 @@ if (!url || !key) {
 (async () => {
   const { createClient } = await import("@supabase/supabase-js");
   const supabase = createClient(url, key, { auth: { persistSession: false } });
-  const { error } = await supabase.from("products").update({ description: html }).eq("slug", slug);
+  const payload = bullets ? { description: html, bullets } : { description: html };
+  const { error } = await supabase.from("products").update(payload).eq("slug", slug);
   if (error) {
     console.error("Supabase:", error.message);
     process.exit(1);

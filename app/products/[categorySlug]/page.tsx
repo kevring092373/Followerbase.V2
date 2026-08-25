@@ -7,6 +7,7 @@ import { notFound } from "next/navigation";
 import { categories } from "@/lib/categories";
 import { getProductsByCategoryId, getProductImageAlt } from "@/lib/products-data";
 import { absoluteUrl, truncateDescription } from "@/lib/seo";
+import { formatFromPriceFromCents } from "@/lib/format";
 
 type Props = { params: { categorySlug: string } };
 
@@ -34,10 +35,7 @@ export function generateMetadata({ params }: Props) {
   };
 }
 
-function formatAbPrice(cents: number): string {
-  const euros = cents / 100;
-  return euros % 1 === 0 ? `ab ${euros} €` : `ab ${euros.toFixed(2)} €`;
-}
+const formatAbPrice = formatFromPriceFromCents;
 
 export default async function CategoryPage({ params }: Props) {
   const slug = params.categorySlug;
