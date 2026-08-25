@@ -7779,7 +7779,22 @@ a.blog-articles-filter-chip.blog-articles-filter-chip--active {
 }
 
 .checkout-paypal-wrap {
-  min-height: 150px;
+  min-height: 0;
+}
+
+.checkout-paypal-wrap--paypal {
+  height: 45px;
+  overflow: hidden;
+}
+
+.checkout-paypal-wrap--paypal .paypal-buttons {
+  /* PayPal reserviert sonst Platz für den zweiten (Karten-)Button. */
+  min-height: 0 !important;
+  height: 45px !important;
+}
+
+.checkout-paypal-wrap--card {
+  min-height: 0;
 }
 
 .checkout-pay-missing {

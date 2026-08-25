@@ -416,7 +416,7 @@ function CheckoutContent() {
                 </button>
               </div>
             ) : PAYPAL_CLIENT_ID ? (
-              <div className="checkout-paypal-wrap">
+              <div className={`checkout-paypal-wrap${paymentMethod === "card" ? " checkout-paypal-wrap--card" : " checkout-paypal-wrap--paypal"}`}>
                 {paymentMethod === "card" ? (
                   <p className="checkout-ueberweisung-text">
                     Zahle mit Debit- oder Kreditkarte. Ein PayPal-Konto ist nicht nötig.
@@ -425,7 +425,12 @@ function CheckoutContent() {
                 <PayPalButtons
                   key={paymentMethod}
                   fundingSource={paymentMethod === "card" ? FUNDING.CARD : FUNDING.PAYPAL}
-                  style={{ layout: "vertical" }}
+                  style={{
+                    layout: "vertical",
+                    height: 45,
+                    shape: "rect",
+                    label: paymentMethod === "card" ? "pay" : "paypal",
+                  }}
                   createOrder={createOrder}
                   onApprove={onApprove}
                   onError={paypalButtonError}
