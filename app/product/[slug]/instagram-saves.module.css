@@ -1,0 +1,70 @@
+/* Nur auf /product/instagram-saves-kaufen über die CSS-Module-Klasse aktiv. */
+.page {
+  max-width: 100%;
+  min-width: 0;
+}
+
+.page :global(#produkt-auswahl) {
+  scroll-margin-top: 120px;
+}
+
+.page :global(.product-breadcrumb),
+.page :global(.product-page-header),
+.page :global(.product-order-row),
+.page :global(.product-assurance),
+.page :global(.product-carousel),
+.page :global(.product-description-section) {
+  max-width: 100%;
+  min-width: 0;
+}
+
+.page :global(.product-order-row),
+.page :global(.product-order-section) {
+  overflow: visible;
+}
+
+.page :global(.product-breadcrumb-list) {
+  flex-wrap: wrap;
+  overflow-wrap: anywhere;
+}
+
+.page :global(.product-target-input) {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.page :global(.product-quantity-options) {
+  flex-wrap: wrap;
+}
+
+.page :global(.product-quantity-slider):focus-visible {
+  outline: 2px solid var(--brand-primary, #8a55ee);
+  outline-offset: 3px;
+}
+
+.page :global(.product-carousel-viewport) {
+  max-width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+}
+
+@media (max-width: 768px) {
+  .page :global(.product-add-btn) {
+    width: 100%;
+  }
+
+  .page :global(.product-quantity-options) {
+    gap: 0.6rem;
+  }
+
+  .page :global(.product-quantity-option .product-quantity-label) {
+    min-width: 4.5rem;
+    min-height: 44px;
+  }
+
+  .page :global(.product-order-section-image) {
+    max-width: 180px;
+    margin-inline: auto;
+  }
+}

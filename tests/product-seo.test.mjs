@@ -236,8 +236,8 @@ test("Instagram-Likes-Seite nutzt feste SEO-Felder und Paketpreise", () => {
   assert.match(productPage, /id=\{PRODUCT_ORDER_ANCHOR_ID\}/);
   assert.match(productPage, /instagram-likes-beitragslink/);
   assert.match(productPage, /instagram-likes-quantity-slider/);
-  assert.match(productPage, /validateInstagramMediaUrl=\{likesPage\}/);
-  assert.match(productPage, /likesPage \? "section" : "div"/);
+  assert.match(productPage, /validateInstagramMediaUrl=\{likesPage \|\| savesPage\}/);
+  assert.match(productPage, /structuredProductPage \? "section" : "div"/);
   const likesSeo = read("lib/instagram-likes-seo.ts");
   assert.match(likesSeo, /data-fblikes-packages/);
   assert.match(likesSeo, /aria-controls/);
@@ -252,6 +252,36 @@ test("Instagram-Likes-Seite nutzt feste SEO-Felder und Paketpreise", () => {
   assert.match(html, /\/product\/instagram-likes-deutsch-kaufen/);
   assert.match(html, /\/blog\/mehr-instagram-likes-guide/);
   assert.equal((html.match(/<details>/g) || []).length, 6);
+});
+
+test("Instagram-Saves-Seite nutzt feste SEO-Felder und Paketpreise", () => {
+  const product = products.find((p) => p.slug === "instagram-saves-kaufen");
+  assert.ok(product);
+  assert.equal(product.articleNumber, "FC-012");
+  assert.equal(product.metaTitle, "Instagram Saves kaufen ab 0,85 € | Followerbase");
+  assert.equal(
+    product.metaDescription,
+    "Instagram Saves kaufen ab 0,85 €. Paket wählen, Beitragslink eingeben und ohne Passwort bestellen. Einmalzahlung bei Followerbase."
+  );
+  assert.deepEqual(product.quantities, [100, 250, 500, 1000, 2500, 5000, 10000]);
+  assert.deepEqual(product.pricesCents, [85, 145, 245, 445, 990, 1790, 3290]);
+  assert.match(productPage, /INSTAGRAM_SAVES_TITLE/);
+  assert.match(productPage, /INSTAGRAM_SAVES_DESCRIPTION/);
+  assert.match(productPage, /instagram-saves-beitragslink/);
+  assert.match(productPage, /isInstagramSavesProduct/);
+  const savesSeo = read("lib/instagram-saves-seo.ts");
+  assert.match(savesSeo, /data-fbsaves-packages/);
+  assert.match(savesSeo, /aria-controls/);
+  const html = read("content/product-html/instagram-saves-kaufen.html");
+  assert.match(html, /Was Instagram Saves leisten/);
+  assert.match(html, /fbsaves-button/);
+  assert.match(html, /href="#produkt-auswahl"/);
+  assert.match(html, /\/product\/instagram-likes-kaufen/);
+  assert.match(html, /\/products\/instagram/);
+  assert.match(html, /\/blog\/mehr-instagram-likes-guide/);
+  assert.equal((html.match(/stärkstes Signal|Algorithmus-Push|Power-Tool/gi) || []).length, 0);
+  assert.equal((html.match(/<details>/g) || []).length, 6);
+  assert.equal((html.match(/<h1\b/gi) || []).length, 0);
 });
 
 test("Sitemap und IndexNow-Key-Datei sind vorhanden", () => {

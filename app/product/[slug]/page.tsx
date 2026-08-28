@@ -43,8 +43,17 @@ import {
   isInstagramLikesProduct,
   prepareInstagramLikesDescriptionHtml,
 } from "@/lib/instagram-likes-seo";
+import {
+  INSTAGRAM_SAVES_DESCRIPTION,
+  INSTAGRAM_SAVES_IMAGE_ALT,
+  INSTAGRAM_SAVES_TITLE,
+  isInstagramSavesProduct,
+  prepareInstagramSavesDescriptionHtml,
+} from "@/lib/instagram-saves-seo";
 import { InstagramLikesAnchorScroll } from "@/components/InstagramLikesAnchorScroll";
+import { InstagramSavesAnchorScroll } from "@/components/InstagramSavesAnchorScroll";
 import likesStyles from "./instagram-likes.module.css";
+import savesStyles from "./instagram-saves.module.css";
 import type { Product } from "@/lib/products-data";
 
 type Props = { params: { slug: string } };
@@ -85,9 +94,19 @@ function instagramLikesProduct(product: Product): Product {
   };
 }
 
+function instagramSavesProduct(product: Product): Product {
+  return {
+    ...product,
+    metaTitle: INSTAGRAM_SAVES_TITLE,
+    metaDescription: INSTAGRAM_SAVES_DESCRIPTION,
+    description: prepareInstagramSavesDescriptionHtml(product.description, product),
+  };
+}
+
 function withPageSeo(product: Product): Product {
   if (isYoutubeViewsProduct(product.slug)) return youtubeViewsProduct(product);
   if (isInstagramLikesProduct(product.slug)) return instagramLikesProduct(product);
+  if (isInstagramSavesProduct(product.slug)) return instagramSavesProduct(product);
   return product;
 }
 
@@ -107,10 +126,13 @@ export async function generateMetadata({ params }: Props) {
   const product = withPageSeo(raw);
   const displayName = productMetaTitle(product.name, product.metaTitle);
   const likesPage = isInstagramLikesProduct(product.slug);
+  const savesPage = isInstagramSavesProduct(product.slug);
   const title = isYoutubeViewsProduct(product.slug)
     ? YOUTUBE_VIEWS_TITLE
     : likesPage
       ? INSTAGRAM_LIKES_TITLE
+      : savesPage
+        ? INSTAGRAM_SAVES_TITLE
     : product.metaTitle?.trim()
       ? product.metaTitle.trim()
       : truncateTitle(`${displayName} – Followerbase`);
@@ -120,14 +142,27 @@ export async function generateMetadata({ params }: Props) {
     ? YOUTUBE_VIEWS_DESCRIPTION
     : likesPage
       ? INSTAGRAM_LIKES_DESCRIPTION
+      : savesPage
+        ? INSTAGRAM_SAVES_DESCRIPTION
     : truncateDescription(rawDesc);
   const url = productCanonicalUrl(product.slug);
   const imageUrl = product.image ? absoluteImageUrl(product.image) : absoluteImageUrl("/icons/Followerbase Logo.png");
   const ogImage = product.image
-    ? { url: imageUrl, width: 400, height: 400, alt: isYoutubeViewsProduct(product.slug) ? YOUTUBE_VIEWS_IMAGE_ALT : likesPage ? INSTAGRAM_LIKES_IMAGE_ALT : displayName }
+    ? {
+        url: imageUrl,
+        width: 400,
+        height: 400,
+        alt: isYoutubeViewsProduct(product.slug)
+          ? YOUTUBE_VIEWS_IMAGE_ALT
+          : likesPage
+            ? INSTAGRAM_LIKES_IMAGE_ALT
+            : savesPage
+              ? INSTAGRAM_SAVES_IMAGE_ALT
+              : displayName,
+      }
     : { url: imageUrl, width: 1200, height: 630, alt: SITE_NAME };
   return {
-    title: isYoutubeViewsProduct(product.slug) || likesPage ? { absolute: title } : title,
+    title: isYoutubeViewsProduct(product.slug) || likesPage || savesPage ? { absolute: title } : title,
     description,
     robots: indexFollowRobots,
     openGraph: {
@@ -157,12 +192,16 @@ export default async function ProductPage({ params }: Props) {
   const bullets = product.bullets?.length ? product.bullets : defaultBullets;
   const viewsPage = isYoutubeViewsProduct(product.slug);
   const likesPage = isInstagramLikesProduct(product.slug);
-  const OrderSectionTag = likesPage ? "section" : "div";
+  const savesPage = isInstagramSavesProduct(product.slug);
+  const structuredProductPage = likesPage || savesPage;
+  const OrderSectionTag = structuredProductPage ? "section" : "div";
   const productImage = product.image;
   const productImageAlt = viewsPage
     ? YOUTUBE_VIEWS_IMAGE_ALT
     : likesPage
       ? INSTAGRAM_LIKES_IMAGE_ALT
+      : savesPage
+        ? INSTAGRAM_SAVES_IMAGE_ALT
       : getProductImageAlt(productImage, product.name);
 
   let related = await getRelatedProducts(product.categoryId, product.slug, 12);
@@ -183,7 +222,7 @@ export default async function ProductPage({ params }: Props) {
       ? `Weitere ${category.name}-Produkte`
       : "Weitere Produkte";
   const descriptionMode: "raw" = "raw";
-  const descriptionParts = likesPage
+  const descriptionParts = structuredProductPage
     ? null
     : product.description
       ? splitProductDescription(product.description)
@@ -197,9 +236,18 @@ export default async function ProductPage({ params }: Props) {
   ]);
   const faqSchema = buildFaqPageSchema(extractProductFaqs(product.description));
 
+  const pageClassName = [
+    "product-page-wrap",
+    likesPage ? `${likesStyles.page} instagram-likes-page` : "",
+    savesPage ? `${savesStyles.page} instagram-saves-page` : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   return (
-    <div className={`product-page-wrap${likesPage ? ` ${likesStyles.page} instagram-likes-page` : ""}`}>
+    <div className={pageClassName}>
       {likesPage ? <InstagramLikesAnchorScroll /> : null}
+      {savesPage ? <InstagramSavesAnchorScroll /> : null}
       <JsonLd data={buildProductSchema(product, category)} />
       <JsonLd data={breadcrumbSchema} />
       {faqSchema ? <JsonLd data={faqSchema} /> : null}
@@ -229,7 +277,13 @@ export default async function ProductPage({ params }: Props) {
       <header className="product-page-header">
         <h1
           className="product-title product-title-page"
-          id={likesPage ? "instagram-likes-titel" : undefined}
+          id={
+            likesPage
+              ? "instagram-likes-titel"
+              : savesPage
+                ? "instagram-saves-titel"
+                : undefined
+          }
         >
           {getProductDisplayName(product.name)}
         </h1>
@@ -251,9 +305,13 @@ export default async function ProductPage({ params }: Props) {
         <OrderSectionTag
           className="product-order-section"
           id={PRODUCT_ORDER_ANCHOR_ID}
-          {...(likesPage ? { "aria-labelledby": "instagram-likes-titel" } : {})}
+          {...(likesPage
+            ? { "aria-labelledby": "instagram-likes-titel" }
+            : savesPage
+              ? { "aria-labelledby": "instagram-saves-titel" }
+              : {})}
         >
-          {viewsPage || likesPage ? (
+          {viewsPage || likesPage || savesPage ? (
             <>
               <p className="product-availability">Verfügbar – Lieferung nach Bestellung</p>
               <noscript>
@@ -274,11 +332,23 @@ export default async function ProductPage({ params }: Props) {
             productName={product.name}
             bullets={[]}
             tiers={product.tiers}
-            showPackagePrices={viewsPage || likesPage}
-            targetAsUrl={likesPage}
-            validateInstagramMediaUrl={likesPage}
-            targetInputId={likesPage ? "instagram-likes-beitragslink" : "product-target"}
-            quantitySliderId={likesPage ? "instagram-likes-quantity-slider" : "product-quantity-slider"}
+            showPackagePrices={viewsPage || likesPage || savesPage}
+            targetAsUrl={likesPage || savesPage}
+            validateInstagramMediaUrl={likesPage || savesPage}
+            targetInputId={
+              likesPage
+                ? "instagram-likes-beitragslink"
+                : savesPage
+                  ? "instagram-saves-beitragslink"
+                  : "product-target"
+            }
+            quantitySliderId={
+              likesPage
+                ? "instagram-likes-quantity-slider"
+                : savesPage
+                  ? "instagram-saves-quantity-slider"
+                  : "product-quantity-slider"
+            }
           />
         </OrderSectionTag>
         <div className="product-order-section-image">
@@ -315,7 +385,7 @@ export default async function ProductPage({ params }: Props) {
 
       <ProductContextualLinks slug={product.slug} />
 
-      {likesPage && product.description ? (
+      {structuredProductPage && product.description ? (
         <ProductDescriptionSection html={product.description} mode={descriptionMode} />
       ) : descriptionParts ? (
         <ProductDescriptionSection html={descriptionParts.summary} mode={descriptionMode} />
@@ -325,13 +395,15 @@ export default async function ProductPage({ params }: Props) {
         <ProductCarousel
           products={otherProducts}
           title={carouselTitle}
-          prevLabel={likesPage ? "Weitere Instagram-Produkte: vorherige" : undefined}
-          nextLabel={likesPage ? "Weitere Instagram-Produkte: nächste" : undefined}
-          respectReducedMotion={likesPage}
+          prevLabel={
+            likesPage || savesPage ? "Weitere Instagram-Produkte: vorherige" : undefined
+          }
+          nextLabel={likesPage || savesPage ? "Weitere Instagram-Produkte: nächste" : undefined}
+          respectReducedMotion={likesPage || savesPage}
         />
       )}
 
-      {likesPage ? null : descriptionParts ? (
+      {structuredProductPage ? null : descriptionParts ? (
         <ProductDescriptionSection html={descriptionParts.rest} mode={descriptionMode} />
       ) : product.description ? (
         <ProductDescriptionSection html={product.description} mode={descriptionMode} />
