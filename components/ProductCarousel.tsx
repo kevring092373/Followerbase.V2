@@ -18,16 +18,29 @@ const formatAbPrice = formatFromPriceFromCents;
 type ProductCarouselProps = {
   products: ProductCarouselItem[];
   title?: string;
+  prevLabel?: string;
+  nextLabel?: string;
+  respectReducedMotion?: boolean;
 };
 
-export function ProductCarousel({ products, title = "Weitere Produkte" }: ProductCarouselProps) {
+export function ProductCarousel({
+  products,
+  title = "Weitere Produkte",
+  prevLabel = "Zurück",
+  nextLabel = "Weiter",
+  respectReducedMotion = false,
+}: ProductCarouselProps) {
   const viewportRef = React.useRef<HTMLDivElement>(null);
 
   const scroll = (dir: "left" | "right") => {
     const el = viewportRef.current;
     if (!el) return;
     const step = el.clientWidth;
-    el.scrollBy({ left: dir === "left" ? -step : step, behavior: "smooth" });
+    const reduce =
+      respectReducedMotion &&
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    el.scrollBy({ left: dir === "left" ? -step : step, behavior: reduce ? "auto" : "smooth" });
   };
 
   if (!products.length) return null;
@@ -38,8 +51,8 @@ export function ProductCarousel({ products, title = "Weitere Produkte" }: Produc
         <h2 className="product-carousel-title">{title}</h2>
       </div>
       <div className="product-carousel-row">
-        <button type="button" className="product-carousel-arrow product-carousel-arrow-prev" onClick={() => scroll("left")} aria-label="Zurück">
-          ‹
+        <button type="button" className="product-carousel-arrow product-carousel-arrow-prev" onClick={() => scroll("left")} aria-label={prevLabel}>
+          <span aria-hidden="true">‹</span>
         </button>
         <div className="product-carousel-viewport" ref={viewportRef}>
           <div className="product-carousel-track">
@@ -68,8 +81,8 @@ export function ProductCarousel({ products, title = "Weitere Produkte" }: Produc
             })}
           </div>
         </div>
-        <button type="button" className="product-carousel-arrow product-carousel-arrow-next" onClick={() => scroll("right")} aria-label="Weiter">
-          ›
+        <button type="button" className="product-carousel-arrow product-carousel-arrow-next" onClick={() => scroll("right")} aria-label={nextLabel}>
+          <span aria-hidden="true">›</span>
         </button>
       </div>
     </section>

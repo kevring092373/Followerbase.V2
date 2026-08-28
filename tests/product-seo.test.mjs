@@ -216,8 +216,42 @@ test("YouTube-Views-Produkt nutzt die vorgegebenen SEO-Felder und Paketpreise", 
   assert.equal(prices.length, 5);
   assert.equal(formatPrice(Math.min(...prices)), "5.23");
   assert.equal(formatPrice(Math.max(...prices)), "99.50");
-  assert.match(productPage, /absolute:\s*YOUTUBE_VIEWS_TITLE/);
+  assert.match(productPage, /absolute:\s*title/);
   assert.match(productPage, /YOUTUBE_VIEWS_DESCRIPTION/);
+});
+
+test("Instagram-Likes-Seite nutzt feste SEO-Felder und Paketpreise", () => {
+  const product = products.find((p) => p.slug === "instagram-likes-kaufen");
+  assert.ok(product);
+  assert.equal(product.articleNumber, "FC-006");
+  assert.equal(product.metaTitle, "Instagram Likes kaufen ab 0,85 € | Followerbase");
+  assert.equal(
+    product.metaDescription,
+    "Instagram Likes ab 0,85 € bestellen. Flexible Pakete für Posts, Reels und Karussells. Ohne Passwort und mit transparenter Lieferung."
+  );
+  assert.deepEqual(product.quantities, [100, 250, 500, 1000, 2500, 5000, 10000]);
+  assert.deepEqual(product.pricesCents, [85, 149, 245, 445, 990, 1690, 2990]);
+  assert.match(productPage, /INSTAGRAM_LIKES_TITLE/);
+  assert.match(productPage, /INSTAGRAM_LIKES_DESCRIPTION/);
+  assert.match(productPage, /id=\{PRODUCT_ORDER_ANCHOR_ID\}/);
+  assert.match(productPage, /instagram-likes-beitragslink/);
+  assert.match(productPage, /instagram-likes-quantity-slider/);
+  assert.match(productPage, /validateInstagramMediaUrl=\{likesPage\}/);
+  assert.match(productPage, /likesPage \? "section" : "div"/);
+  const likesSeo = read("lib/instagram-likes-seo.ts");
+  assert.match(likesSeo, /data-fblikes-packages/);
+  assert.match(likesSeo, /aria-controls/);
+  assert.match(likesSeo, /#\$\{INSTAGRAM_LIKES_ORDER_ID\}/);
+  const urlHelper = read("lib/instagram-url.ts");
+  assert.match(urlHelper, /p\|reel\|reels\|tv/);
+  const html = read("content/product-html/instagram-likes-kaufen.html");
+  assert.equal((html.match(/<table\b/g) || []).length, 3);
+  assert.match(html, /Häufige Fragen vor dem Kauf/);
+  assert.match(html, /fblikes-button/);
+  assert.match(html, /href="#produkt-auswahl"/);
+  assert.match(html, /\/product\/instagram-likes-deutsch-kaufen/);
+  assert.match(html, /\/blog\/mehr-instagram-likes-guide/);
+  assert.equal((html.match(/<details>/g) || []).length, 6);
 });
 
 test("Sitemap und IndexNow-Key-Datei sind vorhanden", () => {

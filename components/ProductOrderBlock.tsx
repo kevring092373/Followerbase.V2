@@ -4,6 +4,7 @@ import { useState, useCallback, useEffect, useRef } from "react";
 import { useCart } from "@/context/CartContext";
 import { formatEuroFromCents, formatQuantity } from "@/lib/format";
 import { PRODUCT_ORDER_ANCHOR_ID } from "@/lib/product-seo";
+import { isInstagramMediaUrl } from "@/lib/instagram-url";
 import type { ProductTier } from "@/lib/products-data";
 
 const INDIVIDUAL_MIN = 100;
@@ -52,6 +53,14 @@ type ProductOrderBlockProps = {
   tiers?: ProductTier[];
   /** Preise direkt auf den Mengen-Chips (für lesbare Mobile-Auswahl). */
   showPackagePrices?: boolean;
+  /** Beitragslink als URL-Feld (nur Seiten, die das explizit setzen). */
+  targetAsUrl?: boolean;
+  /** Instagram-Beitrags-URL prüfen (Posts, Reels, Karussells). */
+  validateInstagramMediaUrl?: boolean;
+  /** ID des Ziel-Eingabefelds, falls die Seite eine eigene braucht. */
+  targetInputId?: string;
+  /** ID des Mengensliders, falls die Seite eine eigene braucht. */
+  quantitySliderId?: string;
 };
 
 /**
@@ -112,6 +121,10 @@ export function ProductOrderBlock({
   bullets,
   tiers,
   showPackagePrices = false,
+  targetAsUrl = false,
+  validateInstagramMediaUrl = false,
+  targetInputId = "product-target",
+  quantitySliderId = "product-quantity-slider",
 }: ProductOrderBlockProps) {
   const { addItem } = useCart();
 
@@ -173,7 +186,17 @@ export function ProductOrderBlock({
   const handleAddToCart = useCallback(() => {
     const value = targetInput.trim();
     if (!value) {
-      setTargetError("Bitte hier noch einfügen – gib deinen Nutzernamen oder Profil-Link ein.");
+      setTargetError(
+        validateInstagramMediaUrl
+          ? "Bitte den Link zu deinem Instagram-Beitrag, Reel oder Karussell einfügen."
+          : "Bitte hier noch einfügen – gib deinen Nutzernamen oder Profil-Link ein."
+      );
+      return;
+    }
+    if (validateInstagramMediaUrl && !isInstagramMediaUrl(value)) {
+      setTargetError(
+        "Bitte einen gültigen Instagram-Link zu einem Beitrag, Reel oder Karussell einfügen."
+      );
       return;
     }
     setTargetError(null);
@@ -186,7 +209,15 @@ export function ProductOrderBlock({
     });
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
-  }, [targetInput, addItem, productSlug, displayName, quantity, priceCents]);
+  }, [
+    targetInput,
+    addItem,
+    productSlug,
+    displayName,
+    quantity,
+    priceCents,
+    validateInstagramMediaUrl,
+  ]);
 
   const effectiveSliderQuantity = useIndividual
     ? individualQuantity
@@ -210,9 +241,10 @@ export function ProductOrderBlock({
   }, [showBuyBar]);
 
   const scrollToOrderBlock = useCallback(() => {
-    document
-      .getElementById(PRODUCT_ORDER_ANCHOR_ID)
-      ?.scrollIntoView({ behavior: "smooth", block: "start" });
+    const destination = document.getElementById(PRODUCT_ORDER_ANCHOR_ID);
+    if (!destination) return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    destination.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
   }, []);
 
   return (
@@ -274,11 +306,11 @@ export function ProductOrderBlock({
 
       {/* Bereich 2: Individuelle Menge (Slider) */}
       <div className="product-order-row product-order-row-individual">
-        <label className="product-order-label" htmlFor="product-quantity-slider">
+        <label className="product-order-label" htmlFor={quantitySliderId}>
           Individuelle Menge: <span className="product-quantity-value">{formatQuantity(quantity)}</span>
         </label>
         <input
-          id="product-quantity-slider"
+          id={quantitySliderId}
           type="range"
           min={INDIVIDUAL_MIN}
           max={maxForSlider}
@@ -301,29 +333,32 @@ export function ProductOrderBlock({
       </div>
 
       <div className="product-order-row">
-        <label htmlFor="product-target" className="product-order-label">
+        <label htmlFor={targetInputId} className="product-order-label">
           {getTargetLabel(productSlug)}: <span className="product-input-required" aria-hidden>*</span>
         </label>
         <input
-          id="product-target"
-          type="text"
+          id={targetInputId}
+          type={targetAsUrl ? "url" : "text"}
+          inputMode={targetAsUrl ? "url" : undefined}
+          autoComplete={targetAsUrl ? "url" : undefined}
           placeholder={getTargetPlaceholder(productSlug)}
           value={targetInput}
+          required={targetAsUrl}
           onChange={(e) => {
             setTargetInput(e.target.value);
             if (targetError) setTargetError(null);
           }}
           className={`product-target-input${targetError ? " product-target-input-error" : ""}`}
-          aria-describedby={targetError ? "product-target-error product-target-hint" : "product-target-hint"}
+          aria-describedby={targetError ? `${targetInputId}-error ${targetInputId}-hint` : `${targetInputId}-hint`}
           aria-required="true"
-          aria-invalid={!!targetError}
+          aria-invalid={targetError ? true : undefined}
         />
         {targetError && (
-          <span id="product-target-error" className="product-target-error" role="alert">
+          <span id={`${targetInputId}-error`} className="product-target-error" role="alert">
             {targetError}
           </span>
         )}
-        <span id="product-target-hint" className="product-input-hint">
+        <span id={`${targetInputId}-hint`} className="product-input-hint">
           {getTargetHint(productSlug)}
         </span>
       </div>

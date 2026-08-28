@@ -36,6 +36,15 @@ import {
   isYoutubeViewsProduct,
   prepareYoutubeViewsDescriptionHtml,
 } from "@/lib/youtube-views-seo";
+import {
+  INSTAGRAM_LIKES_DESCRIPTION,
+  INSTAGRAM_LIKES_IMAGE_ALT,
+  INSTAGRAM_LIKES_TITLE,
+  isInstagramLikesProduct,
+  prepareInstagramLikesDescriptionHtml,
+} from "@/lib/instagram-likes-seo";
+import { InstagramLikesAnchorScroll } from "@/components/InstagramLikesAnchorScroll";
+import likesStyles from "./instagram-likes.module.css";
 import type { Product } from "@/lib/products-data";
 
 type Props = { params: { slug: string } };
@@ -67,6 +76,21 @@ function youtubeViewsProduct(product: Product): Product {
   };
 }
 
+function instagramLikesProduct(product: Product): Product {
+  return {
+    ...product,
+    metaTitle: INSTAGRAM_LIKES_TITLE,
+    metaDescription: INSTAGRAM_LIKES_DESCRIPTION,
+    description: prepareInstagramLikesDescriptionHtml(product.description, product),
+  };
+}
+
+function withPageSeo(product: Product): Product {
+  if (isYoutubeViewsProduct(product.slug)) return youtubeViewsProduct(product);
+  if (isInstagramLikesProduct(product.slug)) return instagramLikesProduct(product);
+  return product;
+}
+
 const indexFollowRobots = {
   index: true,
   follow: true,
@@ -80,10 +104,13 @@ const indexFollowRobots = {
 export async function generateMetadata({ params }: Props) {
   const raw = await getProductBySlug(params.slug);
   if (!raw) return { title: "Produkt", robots: { index: false, follow: true } };
-  const product = isYoutubeViewsProduct(raw.slug) ? youtubeViewsProduct(raw) : raw;
+  const product = withPageSeo(raw);
   const displayName = productMetaTitle(product.name, product.metaTitle);
+  const likesPage = isInstagramLikesProduct(product.slug);
   const title = isYoutubeViewsProduct(product.slug)
     ? YOUTUBE_VIEWS_TITLE
+    : likesPage
+      ? INSTAGRAM_LIKES_TITLE
     : product.metaTitle?.trim()
       ? product.metaTitle.trim()
       : truncateTitle(`${displayName} – Followerbase`);
@@ -91,14 +118,16 @@ export async function generateMetadata({ params }: Props) {
   const rawDesc = product.metaDescription?.trim() || defaultDesc;
   const description = isYoutubeViewsProduct(product.slug)
     ? YOUTUBE_VIEWS_DESCRIPTION
+    : likesPage
+      ? INSTAGRAM_LIKES_DESCRIPTION
     : truncateDescription(rawDesc);
   const url = productCanonicalUrl(product.slug);
   const imageUrl = product.image ? absoluteImageUrl(product.image) : absoluteImageUrl("/icons/Followerbase Logo.png");
   const ogImage = product.image
-    ? { url: imageUrl, width: 400, height: 400, alt: isYoutubeViewsProduct(product.slug) ? YOUTUBE_VIEWS_IMAGE_ALT : displayName }
+    ? { url: imageUrl, width: 400, height: 400, alt: isYoutubeViewsProduct(product.slug) ? YOUTUBE_VIEWS_IMAGE_ALT : likesPage ? INSTAGRAM_LIKES_IMAGE_ALT : displayName }
     : { url: imageUrl, width: 1200, height: 630, alt: SITE_NAME };
   return {
-    title: isYoutubeViewsProduct(product.slug) ? { absolute: YOUTUBE_VIEWS_TITLE } : title,
+    title: isYoutubeViewsProduct(product.slug) || likesPage ? { absolute: title } : title,
     description,
     robots: indexFollowRobots,
     openGraph: {
@@ -124,13 +153,17 @@ export default async function ProductPage({ params }: Props) {
 
   if (!raw) notFound();
 
-  const product = isYoutubeViewsProduct(raw.slug) ? youtubeViewsProduct(raw) : raw;
+  const product = withPageSeo(raw);
   const bullets = product.bullets?.length ? product.bullets : defaultBullets;
   const viewsPage = isYoutubeViewsProduct(product.slug);
+  const likesPage = isInstagramLikesProduct(product.slug);
+  const OrderSectionTag = likesPage ? "section" : "div";
   const productImage = product.image;
   const productImageAlt = viewsPage
     ? YOUTUBE_VIEWS_IMAGE_ALT
-    : getProductImageAlt(productImage, product.name);
+    : likesPage
+      ? INSTAGRAM_LIKES_IMAGE_ALT
+      : getProductImageAlt(productImage, product.name);
 
   let related = await getRelatedProducts(product.categoryId, product.slug, 12);
   if (related.length === 0) {
@@ -150,7 +183,11 @@ export default async function ProductPage({ params }: Props) {
       ? `Weitere ${category.name}-Produkte`
       : "Weitere Produkte";
   const descriptionMode: "raw" = "raw";
-  const descriptionParts = product.description ? splitProductDescription(product.description) : null;
+  const descriptionParts = likesPage
+    ? null
+    : product.description
+      ? splitProductDescription(product.description)
+      : null;
   const productUrl = productCanonicalUrl(product.slug);
   const breadcrumbName = getProductDisplayName(product.name);
   const breadcrumbSchema = buildBreadcrumbSchema([
@@ -161,7 +198,8 @@ export default async function ProductPage({ params }: Props) {
   const faqSchema = buildFaqPageSchema(extractProductFaqs(product.description));
 
   return (
-    <div className="product-page-wrap">
+    <div className={`product-page-wrap${likesPage ? ` ${likesStyles.page} instagram-likes-page` : ""}`}>
+      {likesPage ? <InstagramLikesAnchorScroll /> : null}
       <JsonLd data={buildProductSchema(product, category)} />
       <JsonLd data={breadcrumbSchema} />
       {faqSchema ? <JsonLd data={faqSchema} /> : null}
@@ -189,7 +227,12 @@ export default async function ProductPage({ params }: Props) {
       </nav>
 
       <header className="product-page-header">
-        <h1 className="product-title product-title-page">{getProductDisplayName(product.name)}</h1>
+        <h1
+          className="product-title product-title-page"
+          id={likesPage ? "instagram-likes-titel" : undefined}
+        >
+          {getProductDisplayName(product.name)}
+        </h1>
         {product.articleNumber && (
           <p className="product-article-number" aria-label="Artikelnummer">
             Artikelnummer: {product.articleNumber}
@@ -205,8 +248,12 @@ export default async function ProductPage({ params }: Props) {
       </header>
 
       <div className="product-order-row">
-        <div className="product-order-section" id={PRODUCT_ORDER_ANCHOR_ID}>
-          {viewsPage ? (
+        <OrderSectionTag
+          className="product-order-section"
+          id={PRODUCT_ORDER_ANCHOR_ID}
+          {...(likesPage ? { "aria-labelledby": "instagram-likes-titel" } : {})}
+        >
+          {viewsPage || likesPage ? (
             <>
               <p className="product-availability">Verfügbar – Lieferung nach Bestellung</p>
               <noscript>
@@ -227,9 +274,13 @@ export default async function ProductPage({ params }: Props) {
             productName={product.name}
             bullets={[]}
             tiers={product.tiers}
-            showPackagePrices={viewsPage}
+            showPackagePrices={viewsPage || likesPage}
+            targetAsUrl={likesPage}
+            validateInstagramMediaUrl={likesPage}
+            targetInputId={likesPage ? "instagram-likes-beitragslink" : "product-target"}
+            quantitySliderId={likesPage ? "instagram-likes-quantity-slider" : "product-quantity-slider"}
           />
-        </div>
+        </OrderSectionTag>
         <div className="product-order-section-image">
           {productImage ? (
             productImage.startsWith("/") ? (
@@ -264,15 +315,23 @@ export default async function ProductPage({ params }: Props) {
 
       <ProductContextualLinks slug={product.slug} />
 
-      {descriptionParts ? (
+      {likesPage && product.description ? (
+        <ProductDescriptionSection html={product.description} mode={descriptionMode} />
+      ) : descriptionParts ? (
         <ProductDescriptionSection html={descriptionParts.summary} mode={descriptionMode} />
       ) : null}
 
       {otherProducts.length > 0 && (
-        <ProductCarousel products={otherProducts} title={carouselTitle} />
+        <ProductCarousel
+          products={otherProducts}
+          title={carouselTitle}
+          prevLabel={likesPage ? "Weitere Instagram-Produkte: vorherige" : undefined}
+          nextLabel={likesPage ? "Weitere Instagram-Produkte: nächste" : undefined}
+          respectReducedMotion={likesPage}
+        />
       )}
 
-      {descriptionParts ? (
+      {likesPage ? null : descriptionParts ? (
         <ProductDescriptionSection html={descriptionParts.rest} mode={descriptionMode} />
       ) : product.description ? (
         <ProductDescriptionSection html={product.description} mode={descriptionMode} />
