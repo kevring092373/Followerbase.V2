@@ -1,0 +1,4 @@
+/* Nur auf /product/tiktok-saves-kaufen. Kaufmodul bleibt unverändert. */
+.page :global(#produkt-auswahl) {
+  scroll-margin-top: 120px;
+}

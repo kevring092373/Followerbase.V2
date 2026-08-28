@@ -1,0 +1,487 @@
+<!--
+  Konservativer Followerbase Contentblock für /product/tiktok-saves-kaufen
+  Unterhalb des vorhandenen Produktmoduls einfügen.
+  Enthält keine H1, kein JSON-LD, kein JavaScript und keine Shoplogik.
+
+  BING-SCHUTZ: URL, H1, Produktmodul, Pakete, Preise, interne Links,
+  Canonical und Kaufprozess nicht verändern.
+
+  SEO-METADATEN FÜR CURSOR / SEITEN-HEAD
+  Title: TikTok Saves kaufen ab 0,90 € | Followerbase
+  Meta Description: TikTok Saves kaufen ab 0,90 €. Sechs Pakete wählen, Videolink eingeben und ohne Passwort bestellen. Einmalzahlung bei Followerbase.
+  Canonical: https://followerbase.de/product/tiktok-saves-kaufen
+  Robots: index, follow
+
+  Paketpreise in der Tabelle werden zur Laufzeit aus derselben
+  Produktdatenquelle wie das Bestellmodul eingefügt (data-fbtsaves-packages).
+-->
+
+<style>
+.fbtsaves-copy {
+  --fbts-primary: #8a55ee;
+  --fbts-accent: #6d28d9;
+  --fbts-heading: #342d4b;
+  --fbts-text: #414651;
+  --fbts-muted: #6c6775;
+  --fbts-border: #e7e1ef;
+  --fbts-soft: #f8f6fc;
+  --fbts-green: #147a45;
+  --fbts-warning: #805100;
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: clamp(28px, 5vw, 60px) clamp(14px, 4vw, 34px) 70px;
+  color: var(--fbts-text);
+  font-family: "DM Sans", Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.7;
+  box-sizing: border-box;
+}
+.fbtsaves-copy *,
+.fbtsaves-copy *::before,
+.fbtsaves-copy *::after { box-sizing: border-box; }
+.fbtsaves-copy h2,
+.fbtsaves-copy h3 {
+  color: var(--fbts-heading);
+  line-height: 1.2;
+  letter-spacing: -.02em;
+}
+.fbtsaves-copy h2 { margin: 0 0 18px; font-size: clamp(1.6rem, 3vw, 2.2rem); }
+.fbtsaves-copy h3 { margin: 24px 0 10px; font-size: clamp(1.1rem, 2vw, 1.32rem); }
+.fbtsaves-copy p { margin: 0 0 16px; }
+.fbtsaves-copy ul,
+.fbtsaves-copy ol { margin: 0; }
+.fbtsaves-copy a { color: var(--fbts-accent); font-weight: 700; text-underline-offset: 3px; }
+.fbtsaves-copy a:hover { color: var(--fbts-heading); }
+.fbtsaves-copy a:focus-visible,
+.fbtsaves-copy summary:focus-visible {
+  outline: 3px solid rgba(138, 85, 238, .42);
+  outline-offset: 3px;
+}
+.fbtsaves-copy section { margin-top: clamp(42px, 7vw, 70px); scroll-margin-top: 120px; }
+.fbtsaves-copy .fbtsaves-intro {
+  padding: clamp(24px, 5vw, 42px);
+  border: 1px solid #ddd5e9;
+  border-radius: 22px;
+  background: #faf8fe;
+}
+.fbtsaves-copy .fbtsaves-kicker {
+  display: inline-flex;
+  margin-bottom: 11px;
+  color: var(--fbts-accent);
+  font-size: .78rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.fbtsaves-copy .fbtsaves-lead { max-width: 850px; font-size: clamp(1.02rem, 1.8vw, 1.16rem); }
+.fbtsaves-copy .fbtsaves-facts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 22px 0;
+}
+.fbtsaves-copy .fbtsaves-fact {
+  padding: 14px 16px;
+  border: 1px solid var(--fbts-border);
+  border-radius: 14px;
+  background: #fff;
+}
+.fbtsaves-copy .fbtsaves-fact small { display: block; color: var(--fbts-muted); font-size: .76rem; }
+.fbtsaves-copy .fbtsaves-fact strong { color: var(--fbts-heading); }
+.fbtsaves-copy .fbtsaves-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 13px 22px;
+  border-radius: 999px;
+  background: var(--fbts-accent);
+  color: #fff !important;
+  font-weight: 800;
+  text-decoration: none;
+  transition: transform .18s ease, background .18s ease;
+}
+.fbtsaves-copy .fbtsaves-button:hover { transform: translateY(-1px); background: #5b21b6; }
+.fbtsaves-copy .fbtsaves-nav {
+  margin-top: 20px;
+  padding: 17px;
+  border: 1px solid var(--fbts-border);
+  border-radius: 16px;
+  background: #fff;
+}
+.fbtsaves-copy .fbtsaves-nav strong { display: block; margin-bottom: 9px; color: var(--fbts-heading); }
+.fbtsaves-copy .fbtsaves-nav-links { display: flex; flex-wrap: wrap; gap: 8px; }
+.fbtsaves-copy .fbtsaves-nav a {
+  min-height: 40px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: var(--fbts-soft);
+  font-size: .88rem;
+  text-decoration: none;
+}
+.fbtsaves-copy .fbtsaves-table-shell { margin: 22px 0; }
+.fbtsaves-copy .fbtsaves-scroll-hint {
+  display: none;
+  margin-bottom: 6px;
+  color: var(--fbts-accent);
+  font-size: .78rem;
+  font-weight: 800;
+  text-align: right;
+}
+.fbtsaves-copy .fbtsaves-table-wrap {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border: 1px solid var(--fbts-border);
+  border-radius: 15px;
+  background: #fff;
+}
+.fbtsaves-copy table { width: 100%; min-width: 680px; border-collapse: collapse; }
+.fbtsaves-copy caption { padding: 12px 15px; color: var(--fbts-muted); font-size: .84rem; text-align: left; }
+.fbtsaves-copy th,
+.fbtsaves-copy td { padding: 13px 15px; border-bottom: 1px solid #eeeaf3; text-align: left; vertical-align: top; }
+.fbtsaves-copy thead th { background: var(--fbts-heading); color: #fff; font-size: .84rem; }
+.fbtsaves-copy tbody th { background: #fff; color: var(--fbts-heading); font-size: 1em; font-weight: 700; }
+.fbtsaves-copy tbody tr:last-child td,
+.fbtsaves-copy tbody tr:last-child th { border-bottom: 0; }
+.fbtsaves-copy tbody tr:hover td,
+.fbtsaves-copy tbody tr:hover th { background: #fbfaff; }
+.fbtsaves-copy .fbtsaves-price { color: var(--fbts-heading); font-weight: 800; white-space: nowrap; }
+.fbtsaves-copy .fbtsaves-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 17px;
+  margin: 22px 0;
+}
+.fbtsaves-copy .fbtsaves-card {
+  padding: 21px;
+  border: 1px solid var(--fbts-border);
+  border-radius: 17px;
+  background: #fff;
+}
+.fbtsaves-copy .fbtsaves-card h3 { margin-top: 0; }
+.fbtsaves-copy .fbtsaves-card ul { padding-left: 20px; }
+.fbtsaves-copy .fbtsaves-card li { margin: 7px 0; }
+.fbtsaves-copy .fbtsaves-card--yes { border-top: 4px solid var(--fbts-green); }
+.fbtsaves-copy .fbtsaves-card--no { border-top: 4px solid var(--fbts-primary); }
+.fbtsaves-copy .fbtsaves-steps {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 13px;
+  margin-top: 22px;
+  counter-reset: fbtsaves-step;
+}
+.fbtsaves-copy .fbtsaves-step {
+  position: relative;
+  padding: 52px 17px 19px;
+  border: 1px solid var(--fbts-border);
+  border-radius: 17px;
+  background: #fff;
+}
+.fbtsaves-copy .fbtsaves-step::before {
+  counter-increment: fbtsaves-step;
+  content: counter(fbtsaves-step);
+  position: absolute;
+  top: 14px;
+  left: 17px;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--fbts-accent);
+  color: #fff;
+  font-weight: 800;
+}
+.fbtsaves-copy .fbtsaves-step strong { display: block; margin-bottom: 6px; color: var(--fbts-heading); }
+.fbtsaves-copy .fbtsaves-note {
+  padding: 20px 22px;
+  border-left: 5px solid var(--fbts-primary);
+  border-radius: 0 16px 16px 0;
+  background: var(--fbts-soft);
+}
+.fbtsaves-copy .fbtsaves-choice {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 13px;
+  margin-top: 21px;
+}
+.fbtsaves-copy .fbtsaves-choice article {
+  padding: 19px;
+  border: 1px solid var(--fbts-border);
+  border-radius: 16px;
+  background: #fff;
+}
+.fbtsaves-copy .fbtsaves-choice strong { display: block; margin-bottom: 6px; color: var(--fbts-heading); }
+.fbtsaves-copy .fbtsaves-faq details {
+  margin: 10px 0;
+  border: 1px solid var(--fbts-border);
+  border-radius: 14px;
+  background: #fff;
+}
+.fbtsaves-copy .fbtsaves-faq summary {
+  min-height: 48px;
+  padding: 17px 20px;
+  color: var(--fbts-heading);
+  font-weight: 800;
+  cursor: pointer;
+}
+.fbtsaves-copy .fbtsaves-faq details div { padding: 0 20px 18px; }
+.fbtsaves-copy .fbtsaves-final {
+  padding: clamp(26px, 5vw, 44px);
+  border-radius: 22px;
+  background: var(--fbts-heading);
+  color: #fff;
+  text-align: center;
+}
+.fbtsaves-copy .fbtsaves-final h2 { color: #fff; }
+.fbtsaves-copy .fbtsaves-final p { max-width: 720px; margin: 0 auto 20px; color: rgba(255,255,255,.9); }
+.fbtsaves-copy .fbtsaves-final .fbtsaves-button { background: #fff; color: var(--fbts-accent) !important; }
+@media (max-width: 820px) {
+  .fbtsaves-copy .fbtsaves-facts,
+  .fbtsaves-copy .fbtsaves-grid,
+  .fbtsaves-copy .fbtsaves-choice { grid-template-columns: 1fr; }
+  .fbtsaves-copy .fbtsaves-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 560px) {
+  .fbtsaves-copy .fbtsaves-intro { padding: 22px 18px; }
+  .fbtsaves-copy .fbtsaves-button { width: 100%; }
+  .fbtsaves-copy .fbtsaves-nav-links { display: grid; grid-template-columns: 1fr; }
+  .fbtsaves-copy .fbtsaves-steps { grid-template-columns: 1fr; }
+  .fbtsaves-copy .fbtsaves-scroll-hint { display: block; }
+  .fbtsaves-copy table { min-width: 640px; font-size: .86rem; }
+  .fbtsaves-copy th,
+  .fbtsaves-copy td { padding: 11px 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fbtsaves-copy .fbtsaves-button { transition: none; }
+  .fbtsaves-copy .fbtsaves-button:hover { transform: none; }
+}
+</style>
+
+<article class="fbtsaves-copy" aria-label="Produktinformationen zu TikTok Saves">
+  <div class="fbtsaves-intro">
+    <span class="fbtsaves-kicker">TikTok Videos speichern lassen</span>
+    <h2>TikTok Saves kaufen bei Followerbase</h2>
+    <p class="fbtsaves-lead">
+      TikTok Saves kaufen bedeutet, eine feste Anzahl von Speicheraktionen für ein ausgewähltes TikTok-Video zu bestellen. Bei Followerbase stehen <span data-fbtsaves-package-count>6 Pakete</span> zwischen <span data-fbtsaves-qty-range>100 und 10.000</span> Saves zur Auswahl. Du benötigst den direkten Videolink, aber kein TikTok-Passwort.
+    </p>
+
+    <div class="fbtsaves-facts" aria-label="Wichtige Produktinformationen">
+      <div class="fbtsaves-fact"><small>Einstiegspreis</small><strong data-fbtsaves-from-price>ab 0,90&nbsp;€</strong></div>
+      <div class="fbtsaves-fact"><small>Paketgrößen</small><strong data-fbtsaves-qty-span>100 bis 10.000 Saves</strong></div>
+      <div class="fbtsaves-fact"><small>Kontozugang</small><strong>Kein Passwort nötig</strong></div>
+    </div>
+
+    <a class="fbtsaves-button" href="#produkt-auswahl">TikTok Saves auswählen</a>
+  </div>
+
+  <nav class="fbtsaves-nav" aria-label="Inhalt der Produktinformationen">
+    <strong>Direkt zum Abschnitt</strong>
+    <div class="fbtsaves-nav-links">
+      <a href="#fbtsaves-preise">Pakete und Preise</a>
+      <a href="#fbtsaves-umfang">Produktumfang</a>
+      <a href="#fbtsaves-vergleich">Saves im Vergleich</a>
+      <a href="#fbtsaves-ablauf">Bestellablauf</a>
+      <a href="#fbtsaves-faq">Häufige Fragen</a>
+    </div>
+  </nav>
+
+  <section id="fbtsaves-preise">
+    <h2>TikTok-Saves-Pakete und Preise</h2>
+    <p data-fbtsaves-price-lead>
+      Das kleinste Paket enthält 100 Saves und kostet 0,90 Euro. Für größere Mengen stehen fünf weitere Stufen zur Verfügung. Der rechnerische Preis je 100 Saves sinkt mit zunehmender Paketgröße. Wähle trotzdem nicht allein nach dem Stückpreis, sondern auch danach, welche Größenordnung zu deinem Video und deinem bisherigen Profil passt.
+    </p>
+
+    <div class="fbtsaves-table-shell">
+      <div class="fbtsaves-scroll-hint" aria-hidden="true">Tabelle seitlich verschieben</div>
+      <div class="fbtsaves-table-wrap" tabindex="0" role="region" aria-label="Preise für TikTok Saves">
+        <table>
+          <caption>Pakete laut aktueller Produktdaten. Der Endpreis im Bestellmodul ist verbindlich.</caption>
+          <thead>
+            <tr><th scope="col">Paket</th><th scope="col">Preis</th><th scope="col">Je 100 Saves</th><th scope="col">Auswahl</th></tr>
+          </thead>
+          <tbody data-fbtsaves-packages>
+            <tr><td>100 Saves</td><td class="fbtsaves-price">0,90&nbsp;€</td><td>0,90&nbsp;€</td><td><a class="fbtsaves-mini-link" href="#produkt-auswahl">Paket wählen</a></td></tr>
+            <tr><td>500 Saves</td><td class="fbtsaves-price">2,85&nbsp;€</td><td>0,57&nbsp;€</td><td><a class="fbtsaves-mini-link" href="#produkt-auswahl">Paket wählen</a></td></tr>
+            <tr><td>1.000 Saves</td><td class="fbtsaves-price">4,90&nbsp;€</td><td>0,49&nbsp;€</td><td><a class="fbtsaves-mini-link" href="#produkt-auswahl">Paket wählen</a></td></tr>
+            <tr><td>2.500 Saves</td><td class="fbtsaves-price">10,90&nbsp;€</td><td>0,44&nbsp;€</td><td><a class="fbtsaves-mini-link" href="#produkt-auswahl">Paket wählen</a></td></tr>
+            <tr><td>5.000 Saves</td><td class="fbtsaves-price">18,90&nbsp;€</td><td>0,38&nbsp;€</td><td><a class="fbtsaves-mini-link" href="#produkt-auswahl">Paket wählen</a></td></tr>
+            <tr><td>10.000 Saves</td><td class="fbtsaves-price">34,90&nbsp;€</td><td>0,35&nbsp;€</td><td><a class="fbtsaves-mini-link" href="#produkt-auswahl">Paket wählen</a></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section id="fbtsaves-umfang">
+    <h2>Was du mit einem TikTok-Saves-Paket bestellst</h2>
+    <p>
+      Das Produkt bezieht sich auf die Speicher- beziehungsweise Favoritenfunktion für ein einzelnes TikTok-Video. Du wählst eine Menge und ordnest sie über den Videolink zu. Likes, Views, Shares oder Follower sind nicht automatisch Bestandteil der Bestellung.
+    </p>
+
+    <div class="fbtsaves-grid">
+      <article class="fbtsaves-card fbtsaves-card--yes">
+        <h3>Im Paket enthalten</h3>
+        <ul>
+          <li>die ausgewählte Anzahl TikTok Saves</li>
+          <li>Zuordnung zum angegebenen Video</li>
+          <li>Bestellung ohne TikTok-Passwort</li>
+          <li>eine einmalig gewählte Paketmenge</li>
+        </ul>
+      </article>
+      <article class="fbtsaves-card fbtsaves-card--no">
+        <h3>Nicht Teil des Pakets</h3>
+        <ul>
+          <li>keine garantierte For-You-Platzierung</li>
+          <li>keine garantierte zusätzliche Reichweite</li>
+          <li>keine zusätzlichen Likes, Views oder Shares</li>
+          <li>keine garantierten Follower oder Verkäufe</li>
+        </ul>
+      </article>
+    </div>
+
+    <div class="fbtsaves-note">
+      <strong>Wichtig:</strong> TikTok bestimmt selbst, wie Kennzahlen dargestellt und in Analytics ausgewiesen werden. Ein Saves-Paket ergänzt die bestellte Speicheraktion. Es verspricht kein bestimmtes Ergebnis im Empfehlungssystem.
+    </div>
+  </section>
+
+  <section id="fbtsaves-videos">
+    <h2>Welcher TikTok-Link für die Bestellung benötigt wird</h2>
+    <p>
+      Verwende den direkten Link zum Video, für das du Saves ausgewählt hast. Ein Profil-, Live-, Such- oder Login-Link reicht nicht aus. Öffne die URL am besten vor der Bestellung in einem privaten Browserfenster. So erkennst du, ob sie direkt zum richtigen Video führt und ohne deinen persönlichen Kontozugang erreichbar ist.
+    </p>
+    <p>
+      Ändere oder lösche das Video während der Bearbeitung nicht. Auch Sichtbarkeitseinstellungen können die Zuordnung beeinflussen. Wenn du mehrere Pakete für dasselbe Video planst, warte zunächst den Abschluss der laufenden Bestellung ab oder kläre die Reihenfolge mit dem Support.
+    </p>
+
+    <h3>Inhalte, die Nutzer häufig für später vormerken</h3>
+    <p>
+      Tutorials, Rezepte, Trainingsabläufe, Checklisten, Routen, Produkttipps und kompakte Erklärvideos werden oft so gestaltet, dass Nutzer sie später erneut öffnen können. Das ist eine redaktionelle Beobachtung und keine Leistungszusage für gekaufte Saves. Entscheidend für organisches Speichern bleiben Inhalt, Verständlichkeit und tatsächlicher Nutzen des Videos.
+    </p>
+  </section>
+
+  <section id="fbtsaves-einsatz">
+    <h2>Für wen eignet sich der Kauf von TikTok Saves?</h2>
+    <p>
+      Das Produkt richtet sich an Personen und Unternehmen, die für ein bestimmtes TikTok-Video eine klar definierte Anzahl von Speicheraktionen auswählen möchten. Es ersetzt weder eine Contentstrategie noch die Auswertung der eigenen Zielgruppe. Vor dem Kauf sollte deshalb feststehen, für welches Video das Paket gedacht ist und welche Menge zum bisherigen Profil passt.
+    </p>
+
+    <div class="fbtsaves-grid">
+      <article class="fbtsaves-card">
+        <h3>Creator und öffentliche Profile</h3>
+        <p>Für einzelne Tutorials, Erklärvideos oder andere Inhalte, deren Saves getrennt von Likes und Views betrachtet werden sollen. Beginne bei kleineren Profilen eher mit einer überschaubaren Paketgröße.</p>
+      </article>
+      <article class="fbtsaves-card">
+        <h3>Marken, Shops und Agenturen</h3>
+        <p>Für ausgewählte Kampagnenvideos, wenn der direkte Videolink und die gewünschte Menge eindeutig festgelegt sind. Ergebnisse wie Reichweite, Verkäufe oder organische Interaktionen bleiben davon getrennt.</p>
+      </article>
+    </div>
+  </section>
+
+  <section id="fbtsaves-vergleich">
+    <h2>TikTok Saves im Vergleich zu Likes, Views und Shares</h2>
+    <p>
+      TikTok bietet mehrere voneinander getrennte Interaktionen. Deshalb solltest du vor dem Kauf prüfen, welche Kennzahl du für dein Video auswählen möchtest.
+    </p>
+
+    <div class="fbtsaves-table-shell">
+      <div class="fbtsaves-scroll-hint" aria-hidden="true">Tabelle seitlich verschieben</div>
+      <div class="fbtsaves-table-wrap" tabindex="0" role="region" aria-label="Vergleich der TikTok-Interaktionen">
+        <table>
+          <caption>Die Produkte ergänzen unterschiedliche Aktionen und sind nicht gegenseitig enthalten.</caption>
+          <thead>
+            <tr><th scope="col">Produkt</th><th scope="col">Bezieht sich auf</th><th scope="col">Bei Saves enthalten?</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>TikTok Saves</td><td>Speichern beziehungsweise Favorisieren eines Videos</td><td>Ja, entsprechend dem gewählten Paket</td></tr>
+            <tr><td>TikTok Likes</td><td>Gefällt-mir-Angabe für ein Video</td><td>Nein</td></tr>
+            <tr><td>TikTok Views</td><td>Aufrufe eines Videos</td><td>Nein</td></tr>
+            <tr><td>TikTok Shares</td><td>Teilen eines Videos</td><td>Nein</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <p>
+      Die getrennten Pakete findest du unter <a href="/product/tiktok-likes-kaufen">TikTok Likes</a>, <a href="/product/tiktok-views-kaufen">TikTok Views</a> und <a href="/product/tiktok-shares-kaufen">TikTok Shares</a>. Eine Übersicht aller Varianten bietet die Seite <a href="/products/tiktok">TikTok-Produkte</a>.
+    </p>
+  </section>
+
+  <section id="fbtsaves-ablauf">
+    <h2>So funktioniert die Bestellung bei Followerbase</h2>
+    <p>
+      Der Ablauf bleibt bewusst einfach. Kontrolliere besonders den Videolink, weil er die Bestellung dem richtigen Inhalt zuordnet.
+    </p>
+
+    <div class="fbtsaves-steps">
+      <article class="fbtsaves-step"><strong>Paket auswählen</strong>Wähle zwischen <span data-fbtsaves-qty-range>100 und 10.000</span> TikTok Saves.</article>
+      <article class="fbtsaves-step"><strong>Videolink eintragen</strong>Kopiere die direkte URL des gewünschten TikTok-Videos.</article>
+      <article class="fbtsaves-step"><strong>Bestellung prüfen</strong>Kontrolliere Paket, Link und Zahlungsangaben.</article>
+      <article class="fbtsaves-step"><strong>Bearbeitung abwarten</strong>Die Lieferung erfolgt nach den beim Kauf angezeigten Bedingungen.</article>
+    </div>
+  </section>
+
+  <section id="fbtsaves-lieferung">
+    <h2>Lieferung, Voraussetzungen und Nachfüllbedingungen</h2>
+    <p>
+      Die konkrete Bearbeitungsdauer kann von Paketgröße, Auslastung und Erreichbarkeit des Videos abhängen. Verbindlich sind die Angaben im Produktmodul und im Bestellprozess. Deshalb enthält dieser Text keine erfundene Minuten- oder Stundengarantie.
+    </p>
+    <p>
+      Wenn im Shop eine Nachfüllleistung angeboten wird, prüfe vor dem Kauf deren Dauer, Voraussetzungen, Ausschlüsse und Antragsweg. Eine solche Regelung kann sich nur auf die konkret bestellte Leistung beziehen. Sie ist keine Garantie für Reichweite, Ranking, Views oder andere Interaktionen.
+    </p>
+
+    <div class="fbtsaves-choice">
+      <article><strong>100 bis 500 Saves</strong>Für einen kleinen Einstieg und einzelne Videos.</article>
+      <article><strong>1.000 bis 2.500 Saves</strong>Für eine mittlere, klar abgegrenzte Paketgröße.</article>
+      <article><strong>5.000 bis 10.000 Saves</strong>Für größere Mengen, die besonders sorgfältig zum Profil passen sollten.</article>
+    </div>
+  </section>
+
+  <section id="fbtsaves-organisch">
+    <h2>Organische Saves zusätzlich über den Inhalt fördern</h2>
+    <p>
+      Ein gekauftes Paket ersetzt keine redaktionelle Arbeit. Wenn Nutzer ein Video freiwillig speichern sollen, muss es auch später noch nützlich sein. Zeige das Ergebnis früh, strukturiere einzelne Schritte klar und sage konkret, warum sich das spätere Wiederöffnen lohnt. Bei Anleitungen kann eine kurze Zusammenfassung am Ende helfen.
+    </p>
+    <p>
+      Beobachte in deinen TikTok-Analytics, welche Themen, Einstiege und Videolängen bei deiner Zielgruppe funktionieren. Behandle organische Optimierung und das hier angebotene Saves-Paket als zwei getrennte Maßnahmen.
+    </p>
+  </section>
+
+  <section class="fbtsaves-faq" id="fbtsaves-faq">
+    <h2>Häufige Fragen zu TikTok Saves</h2>
+
+    <details>
+      <summary>Was sind TikTok Saves?</summary>
+      <div><p>Mit der Speicher- beziehungsweise Favoritenfunktion können Nutzer ein TikTok-Video für später vormerken. Auf dieser Produktseite wählst du eine feste Anzahl solcher Aktionen für ein bestimmtes Video.</p></div>
+    </details>
+    <details>
+      <summary>Braucht Followerbase mein TikTok-Passwort?</summary>
+      <div><p>Nein. Für die Bestellung wird der direkte Link zum Video benötigt. Teile niemals dein TikTok-Passwort über das Bestellformular.</p></div>
+    </details>
+    <details>
+      <summary>Welchen Link muss ich eintragen?</summary>
+      <div><p>Verwende die direkte URL des TikTok-Videos. Prüfe vor dem Kauf, ob der Link ohne deinen persönlichen Kontozugang zum richtigen Video führt.</p></div>
+    </details>
+    <details>
+      <summary>Sind Likes oder Views im Paket enthalten?</summary>
+      <div><p>Nein. Saves, Likes, Views und Shares sind getrennte Produkte. Das gewählte Saves-Paket enthält nur die ausgewiesene Speicheraktion.</p></div>
+    </details>
+    <details>
+      <summary>Garantieren TikTok Saves eine For-You-Platzierung?</summary>
+      <div><p>Nein. Eine Platzierung, zusätzliche Reichweite, Follower oder Verkäufe werden nicht garantiert. TikTok entscheidet selbst über Empfehlungen und die Darstellung von Kennzahlen.</p></div>
+    </details>
+    <details>
+      <summary>Was kann die Bearbeitung verzögern?</summary>
+      <div><p>Ein falscher oder nicht erreichbarer Videolink, geänderte Sichtbarkeitseinstellungen, ein gelöschtes Video oder parallel laufende Bestellungen können die Zuordnung beeinflussen.</p></div>
+    </details>
+  </section>
+
+  <section class="fbtsaves-final" id="fbtsaves-bestellen">
+    <h2>Jetzt TikTok Saves auswählen</h2>
+    <p>Wähle die passende Paketgröße, kopiere den direkten Videolink und prüfe deine Angaben vor der einmaligen Bestellung. Ein TikTok-Passwort ist nicht erforderlich.</p>
+    <a class="fbtsaves-button" href="#produkt-auswahl">Zu den TikTok-Saves-Paketen</a>
+  </section>
+</article>

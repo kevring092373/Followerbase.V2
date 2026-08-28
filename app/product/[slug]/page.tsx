@@ -50,10 +50,18 @@ import {
   isInstagramSavesProduct,
   prepareInstagramSavesDescriptionHtml,
 } from "@/lib/instagram-saves-seo";
+import {
+  TIKTOK_SAVES_DESCRIPTION,
+  TIKTOK_SAVES_TITLE,
+  isTiktokSavesProduct,
+  prepareTiktokSavesDescriptionHtml,
+} from "@/lib/tiktok-saves-seo";
 import { InstagramLikesAnchorScroll } from "@/components/InstagramLikesAnchorScroll";
 import { InstagramSavesAnchorScroll } from "@/components/InstagramSavesAnchorScroll";
+import { TiktokSavesAnchorScroll } from "@/components/TiktokSavesAnchorScroll";
 import likesStyles from "./instagram-likes.module.css";
 import savesStyles from "./instagram-saves.module.css";
+import tiktokSavesStyles from "./tiktok-saves.module.css";
 import type { Product } from "@/lib/products-data";
 
 type Props = { params: { slug: string } };
@@ -103,10 +111,20 @@ function instagramSavesProduct(product: Product): Product {
   };
 }
 
+function tiktokSavesProduct(product: Product): Product {
+  return {
+    ...product,
+    metaTitle: TIKTOK_SAVES_TITLE,
+    metaDescription: TIKTOK_SAVES_DESCRIPTION,
+    description: prepareTiktokSavesDescriptionHtml(product.description, product),
+  };
+}
+
 function withPageSeo(product: Product): Product {
   if (isYoutubeViewsProduct(product.slug)) return youtubeViewsProduct(product);
   if (isInstagramLikesProduct(product.slug)) return instagramLikesProduct(product);
   if (isInstagramSavesProduct(product.slug)) return instagramSavesProduct(product);
+  if (isTiktokSavesProduct(product.slug)) return tiktokSavesProduct(product);
   return product;
 }
 
@@ -127,12 +145,15 @@ export async function generateMetadata({ params }: Props) {
   const displayName = productMetaTitle(product.name, product.metaTitle);
   const likesPage = isInstagramLikesProduct(product.slug);
   const savesPage = isInstagramSavesProduct(product.slug);
+  const tiktokSavesPage = isTiktokSavesProduct(product.slug);
   const title = isYoutubeViewsProduct(product.slug)
     ? YOUTUBE_VIEWS_TITLE
     : likesPage
       ? INSTAGRAM_LIKES_TITLE
       : savesPage
         ? INSTAGRAM_SAVES_TITLE
+        : tiktokSavesPage
+          ? TIKTOK_SAVES_TITLE
     : product.metaTitle?.trim()
       ? product.metaTitle.trim()
       : truncateTitle(`${displayName} – Followerbase`);
@@ -144,6 +165,8 @@ export async function generateMetadata({ params }: Props) {
       ? INSTAGRAM_LIKES_DESCRIPTION
       : savesPage
         ? INSTAGRAM_SAVES_DESCRIPTION
+        : tiktokSavesPage
+          ? TIKTOK_SAVES_DESCRIPTION
     : truncateDescription(rawDesc);
   const url = productCanonicalUrl(product.slug);
   const imageUrl = product.image ? absoluteImageUrl(product.image) : absoluteImageUrl("/icons/Followerbase Logo.png");
@@ -162,7 +185,7 @@ export async function generateMetadata({ params }: Props) {
       }
     : { url: imageUrl, width: 1200, height: 630, alt: SITE_NAME };
   return {
-    title: isYoutubeViewsProduct(product.slug) || likesPage || savesPage ? { absolute: title } : title,
+    title: isYoutubeViewsProduct(product.slug) || likesPage || savesPage || tiktokSavesPage ? { absolute: title } : title,
     description,
     robots: indexFollowRobots,
     openGraph: {
@@ -193,7 +216,9 @@ export default async function ProductPage({ params }: Props) {
   const viewsPage = isYoutubeViewsProduct(product.slug);
   const likesPage = isInstagramLikesProduct(product.slug);
   const savesPage = isInstagramSavesProduct(product.slug);
+  const tiktokSavesPage = isTiktokSavesProduct(product.slug);
   const structuredProductPage = likesPage || savesPage;
+  const editorialBlockPage = structuredProductPage || tiktokSavesPage;
   const OrderSectionTag = structuredProductPage ? "section" : "div";
   const productImage = product.image;
   const productImageAlt = viewsPage
@@ -222,7 +247,7 @@ export default async function ProductPage({ params }: Props) {
       ? `Weitere ${category.name}-Produkte`
       : "Weitere Produkte";
   const descriptionMode: "raw" = "raw";
-  const descriptionParts = structuredProductPage
+  const descriptionParts = editorialBlockPage
     ? null
     : product.description
       ? splitProductDescription(product.description)
@@ -240,6 +265,7 @@ export default async function ProductPage({ params }: Props) {
     "product-page-wrap",
     likesPage ? `${likesStyles.page} instagram-likes-page` : "",
     savesPage ? `${savesStyles.page} instagram-saves-page` : "",
+    tiktokSavesPage ? `${tiktokSavesStyles.page} tiktok-saves-page` : "",
   ]
     .filter(Boolean)
     .join(" ");
@@ -248,6 +274,7 @@ export default async function ProductPage({ params }: Props) {
     <div className={pageClassName}>
       {likesPage ? <InstagramLikesAnchorScroll /> : null}
       {savesPage ? <InstagramSavesAnchorScroll /> : null}
+      {tiktokSavesPage ? <TiktokSavesAnchorScroll /> : null}
       <JsonLd data={buildProductSchema(product, category)} />
       <JsonLd data={breadcrumbSchema} />
       {faqSchema ? <JsonLd data={faqSchema} /> : null}
@@ -385,7 +412,7 @@ export default async function ProductPage({ params }: Props) {
 
       <ProductContextualLinks slug={product.slug} />
 
-      {structuredProductPage && product.description ? (
+      {editorialBlockPage && product.description ? (
         <ProductDescriptionSection html={product.description} mode={descriptionMode} />
       ) : descriptionParts ? (
         <ProductDescriptionSection html={descriptionParts.summary} mode={descriptionMode} />
@@ -403,7 +430,7 @@ export default async function ProductPage({ params }: Props) {
         />
       )}
 
-      {structuredProductPage ? null : descriptionParts ? (
+      {editorialBlockPage ? null : descriptionParts ? (
         <ProductDescriptionSection html={descriptionParts.rest} mode={descriptionMode} />
       ) : product.description ? (
         <ProductDescriptionSection html={product.description} mode={descriptionMode} />

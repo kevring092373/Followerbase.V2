@@ -285,6 +285,34 @@ test("Instagram-Saves-Seite nutzt feste SEO-Felder und Paketpreise", () => {
   assert.equal((html.match(/<h1\b/gi) || []).length, 0);
 });
 
+test("TikTok-Saves-Seite nutzt konservativen Contentblock und Live-Preise", () => {
+  const product = products.find((p) => p.slug === "tiktok-saves-kaufen");
+  assert.ok(product);
+  assert.equal(product.articleNumber, "FC-016");
+  assert.equal(product.metaTitle, "TikTok Saves kaufen ab 0,90 € | Followerbase");
+  assert.equal(
+    product.metaDescription,
+    "TikTok Saves kaufen ab 0,90 €. Sechs Pakete wählen, Videolink eingeben und ohne Passwort bestellen. Einmalzahlung bei Followerbase."
+  );
+  assert.deepEqual(product.quantities, [100, 500, 1000, 2500, 5000, 10000]);
+  assert.deepEqual(product.pricesCents, [90, 285, 490, 1090, 1890, 3490]);
+  assert.match(productPage, /TIKTOK_SAVES_TITLE/);
+  assert.match(productPage, /isTiktokSavesProduct/);
+  assert.match(productPage, /validateInstagramMediaUrl=\{likesPage \|\| savesPage\}/);
+  assert.doesNotMatch(productPage, /validateInstagramMediaUrl=\{likesPage \|\| savesPage \|\| tiktokSavesPage\}/);
+  const seo = read("lib/tiktok-saves-seo.ts");
+  assert.match(seo, /data-fbtsaves-packages/);
+  const html = read("content/product-html/tiktok-saves-kaufen.html");
+  assert.match(html, /TikTok Saves kaufen bei Followerbase/);
+  assert.match(html, /fbtsaves-button/);
+  assert.match(html, /href="#produkt-auswahl"/);
+  assert.match(html, /\/product\/tiktok-likes-kaufen/);
+  assert.match(html, /\/products\/tiktok/);
+  assert.equal((html.match(/<details>/g) || []).length, 6);
+  assert.equal((html.match(/<h1\b/gi) || []).length, 0);
+  assert.equal((html.match(/For You Page push|Algorithmus-Push|stärkstes Signal/gi) || []).length, 0);
+});
+
 test("Sitemap und IndexNow-Key-Datei sind vorhanden", () => {
   assert.match(read("app/sitemap.ts"), /productCanonicalUrl/);
   assert.match(read("app/sitemap.ts"), /canonicalUrl/);
