@@ -1,22 +1,38 @@
 <!--
-  Followerbase Content-Block für /product/instagram-saves-kaufen
-  Unterhalb des Produktmoduls. Keine H1, kein Schema, kein JavaScript, keine Shoplogik.
+  Followerbase Contentblock für /product/instagram-saves-kaufen
+  Unterhalb des vorhandenen Produktmoduls einfügen.
+  Enthält keine H1, kein JSON-LD, kein JavaScript und keine Shoplogik.
+
+  SEO-METADATEN FÜR CURSOR / SEITEN-HEAD
+  Title: Instagram Saves kaufen ab 0,85 € | Followerbase
+  Meta Description: Instagram Saves kaufen ab 0,85 €. Paket wählen, Beitragslink eingeben und ohne Passwort bestellen. Einmalzahlung bei Followerbase.
+  Canonical: https://followerbase.de/product/instagram-saves-kaufen
+  Robots: index, follow
+
+  Open Graph und Social Sharing dürfen den alten Claim
+  „Stärkstes Algorithmus-Signal“ nicht mehr enthalten.
+
+  Paketpreise in der Tabelle werden zur Laufzeit aus derselben
+  Produktdatenquelle wie das Bestellmodul eingefügt (data-fbsaves-packages).
 -->
+
 <style>
 .fbsaves-copy {
   --fbs-primary: #8a55ee;
   --fbs-accent: #6d28d9;
-  --fbs-heading: #3a3355;
-  --fbs-text: #3a4150;
-  --fbs-muted: #686276;
-  --fbs-border: #e8e2f3;
+  --fbs-heading: #332b4d;
+  --fbs-text: #3f4450;
+  --fbs-muted: #6d6878;
+  --fbs-border: #e7e0f1;
   --fbs-soft: #f8f5ff;
   --fbs-green: #147a45;
-  --fbs-limit: #7c3aed;
+  --fbs-green-bg: #eefaf3;
+  --fbs-warning: #805100;
+  --fbs-warning-bg: #fff8e8;
   width: 100%;
   max-width: 1120px;
   margin: 0 auto;
-  padding: clamp(28px, 5vw, 56px) clamp(14px, 4vw, 28px) 64px;
+  padding: clamp(28px, 5vw, 64px) clamp(14px, 4vw, 34px) 72px;
   color: var(--fbs-text);
   font-family: "DM Sans", Arial, sans-serif;
   font-size: 16px;
@@ -27,90 +43,143 @@
 .fbsaves-copy *::before,
 .fbsaves-copy *::after { box-sizing: border-box; }
 .fbsaves-copy h2,
-.fbsaves-copy h3 { color: var(--fbs-heading); line-height: 1.25; letter-spacing: -.02em; }
-.fbsaves-copy h2 { margin: 0 0 16px; font-size: clamp(1.45rem, 2.8vw, 2rem); }
-.fbsaves-copy h3 { margin: 22px 0 10px; font-size: clamp(1.05rem, 2vw, 1.25rem); }
-.fbsaves-copy p { margin: 0 0 14px; }
+.fbsaves-copy h3 {
+  color: var(--fbs-heading);
+  line-height: 1.2;
+  letter-spacing: -.02em;
+}
+.fbsaves-copy h2 {
+  margin: 0 0 18px;
+  font-size: clamp(1.65rem, 3vw, 2.3rem);
+}
+.fbsaves-copy h3 {
+  margin: 26px 0 10px;
+  font-size: clamp(1.12rem, 2vw, 1.35rem);
+}
+.fbsaves-copy p { margin: 0 0 16px; }
 .fbsaves-copy ul,
 .fbsaves-copy ol { margin: 0; }
-.fbsaves-copy a { color: var(--fbs-accent); font-weight: 700; text-underline-offset: 3px; }
+.fbsaves-copy a {
+  color: var(--fbs-accent);
+  font-weight: 700;
+  text-underline-offset: 3px;
+}
 .fbsaves-copy a:hover { color: var(--fbs-heading); }
 .fbsaves-copy a:focus-visible,
-.fbsaves-copy summary:focus-visible,
-.fbsaves-copy [tabindex="0"]:focus-visible {
+.fbsaves-copy summary:focus-visible {
   outline: 3px solid rgba(138, 85, 238, .42);
   outline-offset: 3px;
 }
-.fbsaves-copy section { margin-top: clamp(40px, 6vw, 68px); scroll-margin-top: 120px; }
+.fbsaves-copy section {
+  margin-top: clamp(44px, 7vw, 76px);
+  scroll-margin-top: 120px;
+}
 .fbsaves-copy .fbsaves-intro {
-  padding: clamp(22px, 4vw, 40px);
+  position: relative;
+  overflow: hidden;
+  padding: clamp(24px, 5vw, 46px);
   border: 1px solid #ded3f2;
-  border-radius: 22px;
-  background: linear-gradient(145deg, #fcfaff 0%, #f4efff 100%);
-  box-shadow: 0 16px 40px rgba(58, 51, 85, .07);
+  border-radius: 26px;
+  background: linear-gradient(135deg, #fdfbff 0%, #f1eaff 100%);
+  box-shadow: 0 20px 48px rgba(51, 43, 77, .09);
+}
+.fbsaves-copy .fbsaves-intro::after {
+  content: "";
+  position: absolute;
+  top: -120px;
+  right: -90px;
+  width: 250px;
+  height: 250px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(138, 85, 238, .24), rgba(138, 85, 238, 0) 70%);
+  pointer-events: none;
 }
 .fbsaves-copy .fbsaves-kicker {
   display: inline-flex;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   color: var(--fbs-accent);
-  font-size: .76rem;
+  font-size: .78rem;
   font-weight: 800;
-  letter-spacing: .08em;
+  letter-spacing: .09em;
   text-transform: uppercase;
 }
-.fbsaves-copy .fbsaves-lead { max-width: 780px; font-size: clamp(1rem, 1.7vw, 1.12rem); }
+.fbsaves-copy .fbsaves-lead {
+  position: relative;
+  z-index: 1;
+  max-width: 830px;
+  font-size: clamp(1.03rem, 1.8vw, 1.18rem);
+}
 .fbsaves-copy .fbsaves-facts {
+  position: relative;
+  z-index: 1;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
-  margin: 20px 0;
+  margin: 24px 0;
 }
 .fbsaves-copy .fbsaves-fact {
-  padding: 14px 15px;
-  border: 1px solid rgba(138, 85, 238, .16);
-  border-radius: 14px;
-  background: rgba(255, 255, 255, .9);
+  padding: 15px 16px;
+  border: 1px solid rgba(138, 85, 238, .18);
+  border-radius: 15px;
+  background: rgba(255, 255, 255, .86);
 }
-.fbsaves-copy .fbsaves-fact small { display: block; color: var(--fbs-muted); font-size: .74rem; }
+.fbsaves-copy .fbsaves-fact small {
+  display: block;
+  color: var(--fbs-muted);
+  font-size: .76rem;
+}
 .fbsaves-copy .fbsaves-fact strong { color: var(--fbs-heading); }
 .fbsaves-copy .fbsaves-button {
+  position: relative;
+  z-index: 1;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   min-height: 48px;
-  padding: 12px 20px;
+  padding: 13px 22px;
   border-radius: 999px;
   background: linear-gradient(135deg, var(--fbs-primary), var(--fbs-accent));
   color: #fff !important;
   font-weight: 800;
   text-decoration: none;
-  box-shadow: 0 10px 22px rgba(109, 40, 217, .22);
+  box-shadow: 0 10px 24px rgba(109, 40, 217, .24);
   transition: transform .18s ease, box-shadow .18s ease;
 }
-.fbsaves-copy .fbsaves-button:hover { transform: translateY(-2px); box-shadow: 0 12px 26px rgba(109, 40, 217, .28); }
+.fbsaves-copy .fbsaves-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px rgba(109, 40, 217, .3);
+}
 .fbsaves-copy .fbsaves-nav {
-  margin-top: 18px;
-  padding: 16px;
+  margin-top: 22px;
+  padding: 18px;
   border: 1px solid var(--fbs-border);
-  border-radius: 16px;
+  border-radius: 18px;
   background: #fff;
 }
-.fbsaves-copy .fbsaves-nav strong { display: block; margin-bottom: 10px; color: var(--fbs-heading); }
-.fbsaves-copy .fbsaves-nav-links { display: flex; flex-wrap: wrap; gap: 8px; }
+.fbsaves-copy .fbsaves-nav strong {
+  display: block;
+  margin-bottom: 10px;
+  color: var(--fbs-heading);
+}
+.fbsaves-copy .fbsaves-nav-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
 .fbsaves-copy .fbsaves-nav a {
   min-height: 42px;
-  padding: 8px 12px;
+  padding: 9px 13px;
   border-radius: 999px;
   background: var(--fbs-soft);
-  font-size: .86rem;
+  font-size: .88rem;
   text-decoration: none;
 }
-.fbsaves-copy .fbsaves-table-shell { margin: 20px 0; }
+.fbsaves-copy .fbsaves-table-shell { margin: 22px 0; }
 .fbsaves-copy .fbsaves-scroll-hint {
   display: none;
   margin-bottom: 6px;
   color: var(--fbs-accent);
-  font-size: .76rem;
+  font-size: .78rem;
   font-weight: 800;
   text-align: right;
 }
@@ -121,96 +190,141 @@
   overscroll-behavior-inline: contain;
   -webkit-overflow-scrolling: touch;
   border: 1px solid var(--fbs-border);
-  border-radius: 14px;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 8px 26px rgba(51, 43, 77, .06);
+}
+.fbsaves-copy table {
+  width: 100%;
+  min-width: 680px;
+  border-collapse: collapse;
   background: #fff;
 }
-.fbsaves-copy table { width: 100%; min-width: 640px; border-collapse: collapse; }
-.fbsaves-copy caption { padding: 12px 14px; color: var(--fbs-muted); font-size: .84rem; text-align: left; }
+.fbsaves-copy caption {
+  padding: 13px 16px;
+  color: var(--fbs-muted);
+  font-size: .84rem;
+  text-align: left;
+}
 .fbsaves-copy th,
-.fbsaves-copy td { padding: 12px 14px; border-bottom: 1px solid #eeeaf5; text-align: left; vertical-align: top; }
-.fbsaves-copy thead th { background: var(--fbs-heading); color: #fff; font-size: .84rem; }
-.fbsaves-copy tbody th { background: #fff; color: var(--fbs-heading); font-size: 1em; font-weight: 700; }
+.fbsaves-copy td {
+  padding: 13px 16px;
+  border-bottom: 1px solid #eeeaf5;
+  text-align: left;
+  vertical-align: top;
+}
+.fbsaves-copy thead th {
+  background: var(--fbs-heading);
+  color: #fff;
+  font-size: .84rem;
+}
+.fbsaves-copy tbody th {
+  background: #fff;
+  color: var(--fbs-heading);
+  font-size: 1em;
+  font-weight: 700;
+}
 .fbsaves-copy tbody tr:last-child td,
 .fbsaves-copy tbody tr:last-child th { border-bottom: 0; }
-.fbsaves-copy .fbsaves-price { color: var(--fbs-heading); font-weight: 800; white-space: nowrap; }
-.fbsaves-copy .fbsaves-mini-link { white-space: nowrap; }
-.fbsaves-copy .fbsaves-limits {
+.fbsaves-copy tbody tr:hover td,
+.fbsaves-copy tbody tr:hover th { background: #fbf9ff; }
+.fbsaves-copy .fbsaves-price {
+  color: var(--fbs-heading);
+  font-weight: 800;
+  white-space: nowrap;
+}
+.fbsaves-copy .fbsaves-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
-  margin: 18px 0;
+  gap: 18px;
+  margin: 24px 0;
 }
-.fbsaves-copy .fbsaves-limit-card {
-  padding: 18px 18px 16px;
+.fbsaves-copy .fbsaves-card {
+  padding: 22px;
   border: 1px solid var(--fbs-border);
-  border-radius: 16px;
+  border-radius: 18px;
   background: #fff;
+  box-shadow: 0 10px 30px rgba(51, 43, 77, .06);
 }
-.fbsaves-copy .fbsaves-limit-card--yes { border-top: 4px solid var(--fbs-green); }
-.fbsaves-copy .fbsaves-limit-card--no { border-top: 4px solid var(--fbs-limit); }
-.fbsaves-copy .fbsaves-limit-card h3 { margin-top: 0; }
-.fbsaves-copy .fbsaves-limit-card ul { padding-left: 1.15rem; }
-.fbsaves-copy .fbsaves-limit-card li { margin: 6px 0; }
-.fbsaves-copy .fbsaves-info {
-  margin: 18px 0;
-  padding: 18px 20px;
-  border-left: 5px solid var(--fbs-primary);
-  border-radius: 0 14px 14px 0;
-  background: var(--fbs-soft);
+.fbsaves-copy .fbsaves-card h3 { margin-top: 0; }
+.fbsaves-copy .fbsaves-card ul { padding-left: 20px; }
+.fbsaves-copy .fbsaves-card li { margin: 7px 0; }
+.fbsaves-copy .fbsaves-card--yes { border-top: 4px solid var(--fbs-green); }
+.fbsaves-copy .fbsaves-card--no { border-top: 4px solid var(--fbs-primary); }
+.fbsaves-copy .fbsaves-truth {
+  padding: clamp(22px, 4vw, 34px);
+  border: 1px solid #d8cdec;
+  border-radius: 22px;
+  background: linear-gradient(135deg, #fbf9ff, #f4efff);
 }
-.fbsaves-copy .fbsaves-info strong { display: block; margin-bottom: 6px; color: var(--fbs-heading); }
-.fbsaves-copy .fbsaves-compare {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
-  margin: 18px 0;
-}
-.fbsaves-copy .fbsaves-compare-card {
-  padding: 18px;
-  border: 1px solid var(--fbs-border);
-  border-radius: 16px;
-  background: #fff;
-}
-.fbsaves-copy .fbsaves-compare-card h3 { margin-top: 0; }
+.fbsaves-copy .fbsaves-truth > p { max-width: 840px; }
 .fbsaves-copy .fbsaves-steps {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 12px;
-  margin-top: 18px;
+  gap: 14px;
+  margin-top: 24px;
   counter-reset: fbsaves-step;
 }
 .fbsaves-copy .fbsaves-step {
   position: relative;
-  padding: 48px 14px 16px;
+  padding: 54px 18px 20px;
   border: 1px solid var(--fbs-border);
-  border-radius: 16px;
+  border-radius: 18px;
   background: #fff;
 }
 .fbsaves-copy .fbsaves-step::before {
   counter-increment: fbsaves-step;
   content: counter(fbsaves-step);
   position: absolute;
-  top: 14px;
-  left: 14px;
+  top: 15px;
+  left: 18px;
   display: grid;
   place-items: center;
-  width: 26px;
-  height: 26px;
+  width: 29px;
+  height: 29px;
   border-radius: 50%;
   background: var(--fbs-accent);
   color: #fff;
-  font-size: .85rem;
   font-weight: 800;
 }
-.fbsaves-copy .fbsaves-step strong { display: block; margin-bottom: 4px; color: var(--fbs-heading); }
+.fbsaves-copy .fbsaves-step strong {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--fbs-heading);
+}
 .fbsaves-copy .fbsaves-checklist {
-  padding: 16px 18px;
+  padding: 22px 24px;
+  border-left: 5px solid var(--fbs-primary);
+  border-radius: 0 18px 18px 0;
+  background: var(--fbs-soft);
+}
+.fbsaves-copy .fbsaves-checklist ul { padding-left: 21px; }
+.fbsaves-copy .fbsaves-checklist li { margin: 8px 0; }
+.fbsaves-copy .fbsaves-note {
+  padding: 20px 22px;
+  border-radius: 16px;
+  background: var(--fbs-warning-bg);
+  color: #5d3d00;
+}
+.fbsaves-copy .fbsaves-note strong { color: var(--fbs-warning); }
+.fbsaves-copy .fbsaves-choice {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 22px;
+}
+.fbsaves-copy .fbsaves-choice article {
+  padding: 20px;
   border: 1px solid var(--fbs-border);
-  border-radius: 14px;
+  border-radius: 18px;
   background: #fff;
 }
-.fbsaves-copy .fbsaves-checklist ol { padding-left: 1.2rem; }
-.fbsaves-copy .fbsaves-checklist li { margin: 7px 0; }
+.fbsaves-copy .fbsaves-choice strong {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--fbs-heading);
+  font-size: 1.07rem;
+}
 .fbsaves-copy .fbsaves-faq details {
   margin: 10px 0;
   border: 1px solid var(--fbs-border);
@@ -219,34 +333,44 @@
 }
 .fbsaves-copy .fbsaves-faq summary {
   min-height: 48px;
-  padding: 15px 18px;
+  padding: 17px 20px;
   color: var(--fbs-heading);
   font-weight: 800;
   cursor: pointer;
 }
-.fbsaves-copy .fbsaves-faq details > div { padding: 0 18px 16px; }
+.fbsaves-copy .fbsaves-faq details div { padding: 0 20px 18px; }
 .fbsaves-copy .fbsaves-final {
-  padding: clamp(24px, 4vw, 42px);
-  border-radius: 22px;
+  padding: clamp(26px, 5vw, 48px);
+  border-radius: 24px;
   background: linear-gradient(135deg, #33274e, #6d28d9);
   color: #fff;
   text-align: center;
 }
 .fbsaves-copy .fbsaves-final h2 { color: #fff; }
-.fbsaves-copy .fbsaves-final p { max-width: 680px; margin: 0 auto 18px; color: rgba(255,255,255,.9); }
-.fbsaves-copy .fbsaves-final .fbsaves-button { background: #fff; color: var(--fbs-accent) !important; }
+.fbsaves-copy .fbsaves-final p {
+  max-width: 720px;
+  margin: 0 auto 20px;
+  color: rgba(255, 255, 255, .9);
+}
+.fbsaves-copy .fbsaves-final .fbsaves-button {
+  background: #fff;
+  color: var(--fbs-accent) !important;
+}
 @media (max-width: 820px) {
   .fbsaves-copy .fbsaves-facts,
-  .fbsaves-copy .fbsaves-limits,
-  .fbsaves-copy .fbsaves-compare { grid-template-columns: 1fr; }
+  .fbsaves-copy .fbsaves-grid,
+  .fbsaves-copy .fbsaves-choice { grid-template-columns: 1fr; }
   .fbsaves-copy .fbsaves-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 560px) {
+  .fbsaves-copy .fbsaves-intro { padding: 22px 18px; border-radius: 20px; }
   .fbsaves-copy .fbsaves-button { width: 100%; }
   .fbsaves-copy .fbsaves-nav-links { display: grid; grid-template-columns: 1fr; }
   .fbsaves-copy .fbsaves-steps { grid-template-columns: 1fr; }
   .fbsaves-copy .fbsaves-scroll-hint { display: block; }
-  .fbsaves-copy table { min-width: 560px; font-size: .88rem; }
+  .fbsaves-copy table { min-width: 640px; font-size: .86rem; }
+  .fbsaves-copy th,
+  .fbsaves-copy td { padding: 11px 12px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .fbsaves-copy .fbsaves-button { transition: none; }
@@ -255,181 +379,329 @@
 </style>
 
 <article class="fbsaves-copy" aria-label="Produktinformationen zu Instagram Saves">
-  <header class="fbsaves-intro">
-    <span class="fbsaves-kicker">Instagram Saves · Pakete <span data-fbsaves-from-price>ab 0,85 €</span></span>
+  <div class="fbsaves-intro">
+    <span class="fbsaves-kicker">Instagram Speicherungen</span>
     <h2>Instagram Saves bestellen: Pakete und Ablauf im Überblick</h2>
-    <p class="fbsaves-lead">Du möchtest Instagram Saves kaufen und vorher genau wissen, was bestellt wird? Bei Followerbase wählst du zwischen <span data-fbsaves-qty-range>100 und 10.000 Saves</span>, gibst den Link zum gewünschten Beitrag ein und schließt die Bestellung ohne Instagram-Passwort ab. Saves sind die Speicheraktion unter einem Beitrag – nicht mehr und nicht weniger.</p>
-    <div class="fbsaves-facts" aria-label="Wichtige Produktdaten">
-      <div class="fbsaves-fact"><small>Einstiegspreis</small><strong data-fbsaves-from-price>ab 0,85 €</strong></div>
-      <div class="fbsaves-fact"><small>Benötigte Angabe</small><strong>Beitragslink</strong></div>
-      <div class="fbsaves-fact"><small>Zugangsdaten</small><strong>kein Passwort</strong></div>
-    </div>
-    <a class="fbsaves-button" href="#produkt-auswahl">Saves-Paket auswählen</a>
-  </header>
+    <p class="fbsaves-lead">
+      Wenn du Instagram Saves kaufen möchtest, wählst du bei Followerbase ein Paket zwischen <span data-fbsaves-qty-range>100 und 10.000</span> Speicherungen. Für die Bestellung wird der direkte Link zum gewünschten Instagram-Beitrag benötigt. Dein Instagram-Passwort musst du nicht angeben.
+    </p>
 
-  <nav class="fbsaves-nav" aria-label="Inhaltsübersicht">
-    <strong>Direkt zum Thema</strong>
+    <div class="fbsaves-facts" aria-label="Wichtige Produktinformationen">
+      <div class="fbsaves-fact">
+        <small>Einstiegspreis</small>
+        <strong data-fbsaves-from-price>ab 0,85&nbsp;€</strong>
+      </div>
+      <div class="fbsaves-fact">
+        <small>Auswahl</small>
+        <strong data-fbsaves-package-count>7 Paketgrößen</strong>
+      </div>
+      <div class="fbsaves-fact">
+        <small>Zugang</small>
+        <strong>Kein Passwort nötig</strong>
+      </div>
+    </div>
+
+    <a class="fbsaves-button" href="#produkt-auswahl">Instagram Saves auswählen</a>
+  </div>
+
+  <nav class="fbsaves-nav" aria-label="Inhalt der Produktinformationen">
+    <strong>Direkt zum Abschnitt</strong>
     <div class="fbsaves-nav-links">
       <a href="#fbsaves-preise">Pakete und Preise</a>
-      <a href="#fbsaves-lieferung-was">Was geliefert wird</a>
-      <a href="#fbsaves-grenzen">Leistung und Grenzen</a>
-      <a href="#fbsaves-formate">Beitragsformate</a>
-      <a href="#fbsaves-vergleich">Saves oder Likes</a>
-      <a href="#fbsaves-fragen">Häufige Fragen</a>
+      <a href="#fbsaves-umfang">Produktumfang</a>
+      <a href="#fbsaves-vergleich">Saves oder Likes?</a>
+      <a href="#fbsaves-ablauf">Bestellablauf</a>
+      <a href="#fbsaves-faq">Häufige Fragen</a>
     </div>
   </nav>
 
   <section id="fbsaves-preise">
-    <h2>Pakete und Preise für Instagram Saves</h2>
-    <p data-fbsaves-price-lead>Aktuell kannst du zwischen 100 und 10.000 Instagram Saves wählen. Das Einstiegspaket kostet 0,85 €, das größte Standardpaket 32,90 €. Maßgeblich ist immer der im Produktmodul angezeigte Endpreis.</p>
+    <h2>Instagram-Saves-Pakete von 100 bis 10.000</h2>
+    <p data-fbsaves-price-lead>
+      Mit sieben Mengen kannst du das Paket an deinen einzelnen Beitrag anpassen. Kleine Pakete eignen sich zum Einstieg. Größere Mengen senken den rechnerischen Preis je 100 Saves. Entscheidend ist nicht, möglichst groß zu bestellen, sondern eine Menge zu wählen, die zu deinem Beitrag und deiner bisherigen Kontogröße passt.
+    </p>
+
     <div class="fbsaves-table-shell">
-      <div class="fbsaves-scroll-hint" aria-hidden="true">Tabelle seitlich wischen ↔</div>
-      <div class="fbsaves-table-wrap" role="region" tabindex="0" aria-label="Preistabelle Instagram Saves horizontal scrollen">
+      <div class="fbsaves-scroll-hint" aria-hidden="true">Tabelle seitlich verschieben</div>
+      <div class="fbsaves-table-wrap" tabindex="0" role="region" aria-label="Preise für Instagram Saves">
         <table>
-          <caption>Standardpakete. Der Endpreis im Produktmodul ist verbindlich.</caption>
+          <caption>Aktuelle Pakete laut Produktdaten. Der Endpreis im Bestellmodul ist verbindlich.</caption>
           <thead>
             <tr>
               <th scope="col">Paket</th>
               <th scope="col">Preis</th>
+              <th scope="col">Preis je 100 Saves</th>
               <th scope="col">Auswahl</th>
             </tr>
           </thead>
           <tbody data-fbsaves-packages>
-            <tr><td>100 Saves</td><td class="fbsaves-price">0,85 €</td><td><a class="fbsaves-mini-link" href="#produkt-auswahl">Zur Auswahl</a></td></tr>
-            <tr><td>250 Saves</td><td class="fbsaves-price">1,45 €</td><td><a class="fbsaves-mini-link" href="#produkt-auswahl">Zur Auswahl</a></td></tr>
-            <tr><td>500 Saves</td><td class="fbsaves-price">2,45 €</td><td><a class="fbsaves-mini-link" href="#produkt-auswahl">Zur Auswahl</a></td></tr>
-            <tr><td>1.000 Saves</td><td class="fbsaves-price">4,45 €</td><td><a class="fbsaves-mini-link" href="#produkt-auswahl">Zur Auswahl</a></td></tr>
-            <tr><td>2.500 Saves</td><td class="fbsaves-price">9,90 €</td><td><a class="fbsaves-mini-link" href="#produkt-auswahl">Zur Auswahl</a></td></tr>
-            <tr><td>5.000 Saves</td><td class="fbsaves-price">17,90 €</td><td><a class="fbsaves-mini-link" href="#produkt-auswahl">Zur Auswahl</a></td></tr>
-            <tr><td>10.000 Saves</td><td class="fbsaves-price">32,90 €</td><td><a class="fbsaves-mini-link" href="#produkt-auswahl">Zur Auswahl</a></td></tr>
+            <tr><td>100 Saves</td><td class="fbsaves-price">0,85&nbsp;€</td><td>0,85&nbsp;€</td><td><a class="fbsaves-mini-link" href="#produkt-auswahl">Paket wählen</a></td></tr>
+            <tr><td>250 Saves</td><td class="fbsaves-price">1,45&nbsp;€</td><td>0,58&nbsp;€</td><td><a class="fbsaves-mini-link" href="#produkt-auswahl">Paket wählen</a></td></tr>
+            <tr><td>500 Saves</td><td class="fbsaves-price">2,45&nbsp;€</td><td>0,49&nbsp;€</td><td><a class="fbsaves-mini-link" href="#produkt-auswahl">Paket wählen</a></td></tr>
+            <tr><td>1.000 Saves</td><td class="fbsaves-price">4,45&nbsp;€</td><td>0,45&nbsp;€</td><td><a class="fbsaves-mini-link" href="#produkt-auswahl">Paket wählen</a></td></tr>
+            <tr><td>2.500 Saves</td><td class="fbsaves-price">9,90&nbsp;€</td><td>0,40&nbsp;€</td><td><a class="fbsaves-mini-link" href="#produkt-auswahl">Paket wählen</a></td></tr>
+            <tr><td>5.000 Saves</td><td class="fbsaves-price">17,90&nbsp;€</td><td>0,36&nbsp;€</td><td><a class="fbsaves-mini-link" href="#produkt-auswahl">Paket wählen</a></td></tr>
+            <tr><td>10.000 Saves</td><td class="fbsaves-price">32,90&nbsp;€</td><td>0,33&nbsp;€</td><td><a class="fbsaves-mini-link" href="#produkt-auswahl">Paket wählen</a></td></tr>
           </tbody>
         </table>
       </div>
     </div>
-    <p>Zusätzlich kannst du im Mengenregler eine individuelle Menge wählen. Der dort angezeigte Preis gilt für die Bestellung. Die Zahlung erfolgt einmalig – es gibt kein Abo.</p>
+
+    <p>
+      Du suchst eine andere Instagram-Kennzahl? In der Übersicht findest du <a href="/products/instagram">weitere Instagram-Produkte</a>. Die Bestellung von Saves bleibt ein eigenes Produkt und enthält keine Likes oder Follower.
+    </p>
   </section>
 
-  <section id="fbsaves-lieferung-was">
-    <h2>Was bei dieser Bestellung geliefert wird</h2>
-    <p>Du bestellst eine festgelegte Anzahl Instagram Saves für einen konkreten Beitrag. Dafür brauchst du den vollständigen Link zu diesem Beitrag. Dein Instagram-Passwort, ein Wiederherstellungscode oder ein Kontozugriff sind nicht erforderlich und sollten nicht übermittelt werden.</p>
-    <p>Nach der Zahlung wird die Bestellung bearbeitet. Die Auslieferung startet nach der Bearbeitung; der genaue Beginn hängt vom aktuellen Bestellaufkommen ab. Die Saves werden gestaffelt ausgeliefert, damit der Zuwachs nicht auf einmal erscheint.</p>
-    <div class="fbsaves-info" role="note">
-      <strong>Vor der Bestellung prüfen</strong>
-      Öffne den Beitragslink in einem privaten Browserfenster. Der Inhalt muss öffentlich erreichbar sein und bis zum Abschluss der Lieferung öffentlich bleiben.
-    </div>
-  </section>
+  <section id="fbsaves-umfang">
+    <h2>Was bei einer Saves-Bestellung enthalten ist</h2>
+    <p>
+      Instagram Saves sind Speicheraktionen für den von dir angegebenen Beitrag. Dafür übermittelst du den direkten Beitragslink und wählst eine feste Menge. Zugangsdaten zu deinem Konto gehören nicht in das Bestellformular.
+    </p>
 
-  <section id="fbsaves-grenzen">
-    <h2>Was Instagram Saves leisten – und was nicht</h2>
-    <p>Ein Save ist die Speicheraktion unter einem Instagram-Beitrag. Andere Nutzer sehen diese Zahl in der Regel nicht öffentlich; du findest sie in den Insights des Beitrags, sofern Instagram sie dort anzeigt.</p>
-    <div class="fbsaves-limits">
-      <div class="fbsaves-limit-card fbsaves-limit-card--yes">
-        <h3>Dieses Paket leistet</h3>
+    <div class="fbsaves-grid">
+      <article class="fbsaves-card">
+        <h3>Das wird benötigt</h3>
         <ul>
-          <li>die gewählte Menge Saves für den angegebenen Beitragslink</li>
-          <li>Bestellung ohne Übergabe deines Instagram-Passworts</li>
-          <li>einmalige Zahlung zum im Modul angezeigten Endpreis</li>
-          <li>Bearbeitung nach den Produktbedingungen dieses Angebots</li>
+          <li>ein korrekt kopierter Instagram-Beitragslink</li>
+          <li>ein während der Bearbeitung erreichbarer Beitrag</li>
+          <li>die gewünschte Paketgröße</li>
+          <li>korrekte Angaben für Bestellung und Zahlung</li>
         </ul>
-      </div>
-      <div class="fbsaves-limit-card fbsaves-limit-card--no">
-        <h3>Dieses Paket leistet nicht</h3>
-        <ul>
-          <li>keine Garantie für zusätzliche Reichweite oder Impressionen</li>
-          <li>keine Explore- oder Reels-Platzierung</li>
-          <li>keine Likes, Kommentare, Follower oder geteilten Inhalte</li>
-          <li>keine Verkäufe, Anfragen oder Kooperationen</li>
-          <li>kein automatisches organisches Wachstum</li>
-        </ul>
-      </div>
-    </div>
-    <p>Eine höhere Speicherzahl ist eine einzelne Kennzahl. Ob und wie Besucher oder Instagram damit umgehen, lässt sich nicht zusichern.</p>
-  </section>
+      </article>
 
-  <section id="fbsaves-formate">
-    <h2>Für welche Beiträge Saves ausgewählt werden können</h2>
-    <p>Im Bestellfeld trägst du einen Instagram-Beitragslink ein. Unterstützt werden öffentlich erreichbare Feed-Beiträge, Karussell-Beiträge und Reels – also Links mit den Pfaden <code>/p/</code>, <code>/reel/</code> oder vergleichbaren Beitrags-URLs. Stories gehören nicht dazu.</p>
+      <article class="fbsaves-card">
+        <h3>Das wird nicht benötigt</h3>
+        <ul>
+          <li>kein Instagram-Passwort</li>
+          <li>keine Weitergabe des Kontozugangs</li>
+          <li>keine Installation einer zusätzlichen App</li>
+          <li>kein laufendes Abonnement</li>
+        </ul>
+      </article>
+    </div>
+
     <div class="fbsaves-checklist">
-      <ol>
-        <li>Der Link führt zum richtigen Beitrag.</li>
-        <li>Der Beitrag ist öffentlich sichtbar.</li>
-        <li>Der Beitrag bleibt während der Lieferung erreichbar.</li>
-        <li>Du bestellst Saves für genau diesen einen Link.</li>
-      </ol>
+      <strong>Beitragslink vor dem Kauf prüfen</strong>
+      <ul>
+        <li>Öffne den Link testweise in einem privaten Browserfenster.</li>
+        <li>Stelle sicher, dass er direkt zum gewünschten Beitrag führt.</li>
+        <li>Ändere oder lösche den Beitrag während der Bearbeitung nicht.</li>
+        <li>Verwende nicht versehentlich einen Profil-, Story- oder Login-Link.</li>
+      </ul>
     </div>
-    <p>Private, gelöschte oder nicht erreichbare Beiträge können die Lieferung verhindern oder abbrechen. Ändere den Beitragslink oder die Sichtbarkeit nicht während einer laufenden Bestellung.</p>
+  </section>
+
+  <section class="fbsaves-truth" id="fbsaves-grenzen">
+    <h2>Was Instagram Saves leisten und was nicht</h2>
+    <p>
+      Eine klare Leistungsbeschreibung hilft dir, das Produkt richtig einzuordnen. Du bestellst eine festgelegte Anzahl von Speicheraktionen für einen ausgewählten Beitrag. Eine bestimmte Wirkung außerhalb dieser Kennzahl ist nicht Bestandteil des Pakets.
+    </p>
+
+    <div class="fbsaves-grid">
+      <article class="fbsaves-card fbsaves-card--yes">
+        <h3>Teil der Bestellung</h3>
+        <ul>
+          <li>die ausgewählte Anzahl Instagram Saves</li>
+          <li>Zuordnung zum angegebenen Beitrag</li>
+          <li>Bestellung ohne Instagram-Passwort</li>
+          <li>eine einmalige, ausgewählte Paketmenge</li>
+        </ul>
+      </article>
+
+      <article class="fbsaves-card fbsaves-card--no">
+        <h3>Nicht zugesichert</h3>
+        <ul>
+          <li>keine garantierte zusätzliche Reichweite</li>
+          <li>keine garantierte Explore-Platzierung</li>
+          <li>keine zusätzlichen Likes oder Follower</li>
+          <li>keine garantierten Verkäufe oder Folgeinteraktionen</li>
+        </ul>
+      </article>
+    </div>
+
+    <p>
+      Saves sind außerdem nicht mit einer öffentlich sichtbaren Like-Zahl gleichzusetzen. Je nach Kontotyp und aktueller Instagram-Oberfläche können Kontoinhaber entsprechende Beitragsinteraktionen in ihren Insights prüfen. Darstellung und Verfügbarkeit einzelner Kennzahlen werden von Instagram bestimmt.
+    </p>
   </section>
 
   <section id="fbsaves-vergleich">
-    <h2>Instagram Saves oder Instagram Likes?</h2>
-    <p>Beide Kennzahlen sind unterschiedliche Interaktionen. Keine der beiden ist „besser“ oder algorithmisch überlegen – sie erfüllen unterschiedliche Zwecke.</p>
-    <div class="fbsaves-compare">
-      <div class="fbsaves-compare-card">
-        <h3>Instagram Saves</h3>
-        <p>Speicheraktion unter dem Beitrag. Die Gesamtzahl ist für andere Nutzer meist nicht öffentlich sichtbar. Du bestellst sie über diese Seite für einen konkreten Beitragslink.</p>
-      </div>
-      <div class="fbsaves-compare-card">
-        <h3>Instagram Likes</h3>
-        <p>Gefällt-mir-Angabe. Die Like-Zahl ist in der Regel öffentlich sichtbar. Wenn du sichtbaren Social Proof suchst, vergleiche die <a href="/product/instagram-likes-kaufen">Pakete für Instagram Likes</a>.</p>
+    <h2>Instagram Saves oder Instagram Likes kaufen?</h2>
+    <p>
+      Beide Produkte beziehen sich auf einen Beitrag, bilden aber unterschiedliche Aktionen ab. Die passende Wahl hängt davon ab, welche Kennzahl du für den ausgewählten Inhalt ergänzen möchtest.
+    </p>
+
+    <div class="fbsaves-table-shell">
+      <div class="fbsaves-scroll-hint" aria-hidden="true">Tabelle seitlich verschieben</div>
+      <div class="fbsaves-table-wrap" tabindex="0" role="region" aria-label="Vergleich zwischen Instagram Saves und Likes">
+        <table>
+          <caption>Neutraler Produktvergleich ohne Ranking- oder Reichweitenversprechen.</caption>
+          <thead>
+            <tr>
+              <th scope="col">Prüffrage</th>
+              <th scope="col">Instagram Saves</th>
+              <th scope="col">Instagram Likes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Welche Aktion wird ergänzt?</td>
+              <td>Speichern des ausgewählten Beitrags</td>
+              <td>Gefällt-mir-Angabe für den ausgewählten Beitrag</td>
+            </tr>
+            <tr>
+              <td>Ist die Kennzahl allgemein am Beitrag sichtbar?</td>
+              <td>Nicht wie eine öffentliche Like-Zahl</td>
+              <td>Abhängig von den Anzeigeeinstellungen sichtbar</td>
+            </tr>
+            <tr>
+              <td>Wer kann die Kennzahl prüfen?</td>
+              <td>Kontoinhaber, soweit Instagram sie in Insights ausweist</td>
+              <td>Kontoinhaber und abhängig von Einstellungen weitere Nutzer</td>
+            </tr>
+            <tr>
+              <td>Enthält das Paket die jeweils andere Aktion?</td>
+              <td>Nein, Likes sind nicht enthalten</td>
+              <td>Nein, Saves sind nicht enthalten</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
-    <p>Weitere Leistungen findest du bei den <a href="/products/instagram">Instagram-Produkten im Überblick</a>. Für die sichtbare Followerzahl gibt es eine eigene Seite zum <a href="/product/instagram-follower-kaufen">Bestellen von Instagram Followern</a>.</p>
+
+    <p>
+      Wenn du stattdessen Gefällt-mir-Angaben für einen Beitrag auswählen möchtest, findest du die Pakete auf der Seite <a href="/product/instagram-likes-kaufen">Instagram Likes kaufen</a>. Für profilbezogene Pakete gibt es eine getrennte Seite zum Thema <a href="/product/instagram-follower-kaufen">Instagram Follower</a>.
+    </p>
   </section>
 
   <section id="fbsaves-ablauf">
     <h2>So funktioniert die Bestellung</h2>
+    <p>
+      Der Ablauf ist auf eine einzelne Paketwahl und den dazugehörigen Beitragslink ausgelegt. Prüfe deine Angaben vor dem Abschluss, da ein falscher Link die Zuordnung verzögern oder verhindern kann.
+    </p>
+
     <div class="fbsaves-steps">
-      <div class="fbsaves-step"><strong>Paket wählen</strong><span>Menge und Endpreis im Produktmodul kontrollieren.</span></div>
-      <div class="fbsaves-step"><strong>Link einfügen</strong><span>Den vollständigen Beitragslink eintragen.</span></div>
-      <div class="fbsaves-step"><strong>Prüfen und zahlen</strong><span>Angaben kontrollieren und einmalig bezahlen.</span></div>
-      <div class="fbsaves-step"><strong>Lieferung abwarten</strong><span>Nach der Bearbeitung startet die gestaffelte Auslieferung.</span></div>
+      <article class="fbsaves-step">
+        <strong>Paket auswählen</strong>
+        Entscheide dich für eine Menge zwischen <span data-fbsaves-qty-range>100 und 10.000</span> Saves.
+      </article>
+      <article class="fbsaves-step">
+        <strong>Beitragslink eintragen</strong>
+        Kopiere die direkte URL des gewünschten Instagram-Beitrags.
+      </article>
+      <article class="fbsaves-step">
+        <strong>Angaben prüfen</strong>
+        Kontrolliere Link, Paket und Bestelldaten vor der Zahlung.
+      </article>
+      <article class="fbsaves-step">
+        <strong>Bearbeitung abwarten</strong>
+        Die Bestellung wird anhand der beim Kauf angezeigten Bedingungen bearbeitet.
+      </article>
     </div>
-    <p>Im Checkout siehst du die verfügbaren Zahlungsarten. Es handelt sich um eine Einmalzahlung ohne Abonnement.</p>
   </section>
 
-  <section id="fbsaves-nachfuellung">
-    <h2>Lieferung, Nachfüllung und wichtige Voraussetzungen</h2>
-    <p>Die Bearbeitung beginnt nach Zahlungseingang. Der Lieferstart richtet sich nach dem aktuellen Aufkommen; eine pauschale Minutenangabe wäre nicht verlässlich. Die Saves werden gestaffelt zugestellt.</p>
-    <p>Sinkt die gelieferte Speichermenge innerhalb von 30 Tagen nach Lieferung wieder, kannst du eine Nachfüllung anfragen. Voraussetzung ist, dass der Beitrag weiterhin öffentlich erreichbar ist und die Bestellnummer vorliegt.</p>
-    <p>Keine Nachfüllung gilt unter anderem, wenn der Beitrag privat geschaltet, gelöscht oder anderweitig unerreichbar gemacht wurde, der Link falsch war oder du den Beitrag selbst verändert hast, sodass die Zuordnung nicht mehr möglich ist. Anfragen erreichst du über den Support mit Bestellnummer und Beitragslink.</p>
+  <section id="fbsaves-lieferung">
+    <h2>Lieferung und Nachfüllbedingungen transparent prüfen</h2>
+    <p>
+      Lieferbeginn und Bearbeitungsdauer können von Paketgröße, Auslastung und Erreichbarkeit des Beitrags abhängen. Deshalb nennen wir an dieser Stelle keine pauschale Minutenzahl. Maßgeblich sind die Angaben, die dir im Produkt- und Bestellbereich vor dem Kauf angezeigt werden.
+    </p>
+
+    <div class="fbsaves-note">
+      <strong>Wichtig bei einer Nachfüllleistung:</strong>
+      Prüfe vor der Bestellung, welche Dauer, Voraussetzungen und Ausschlüsse im Shop genannt werden. Eine Nachfüllung ist kein allgemeines Versprechen für Reichweite oder andere Instagram-Kennzahlen. Sie kann sich nur auf die konkret bestellte Leistung und die dafür ausgewiesenen Bedingungen beziehen.
+    </div>
+
+    <h3>Diese Punkte können die Bearbeitung beeinflussen</h3>
+    <ul>
+      <li>Der Beitragslink ist falsch, unvollständig oder nicht mehr erreichbar.</li>
+      <li>Der Beitrag wird während der Bearbeitung gelöscht oder verändert.</li>
+      <li>Die Sichtbarkeit des Beitrags verhindert den Zugriff über den angegebenen Link.</li>
+      <li>Für denselben Beitrag laufen gleichzeitig mehrere nicht abgestimmte Bestellungen.</li>
+    </ul>
+  </section>
+
+  <section id="fbsaves-auswahl">
+    <h2>Welche Paketgröße passt zu deinem Beitrag?</h2>
+    <p>
+      Die Paketwahl ist eine Mengenentscheidung, keine Prognose über die spätere Performance. Orientiere dich an deinem bisherigen Niveau und starte im Zweifel mit einer kleineren Menge.
+    </p>
+
+    <div class="fbsaves-choice">
+      <article>
+        <strong>100 bis 500 Saves</strong>
+        Für einen kleinen Test oder einzelne Beiträge, wenn du zunächst den Bestellablauf kennenlernen möchtest.
+      </article>
+      <article>
+        <strong>1.000 bis 2.500 Saves</strong>
+        Für Beiträge, bei denen du eine mittlere feste Paketgröße auswählen möchtest.
+      </article>
+      <article>
+        <strong>5.000 bis 10.000 Saves</strong>
+        Für größere Mengen. Prüfe besonders sorgfältig, ob die Größenordnung zu deinem Konto und Beitrag passt.
+      </article>
+    </div>
   </section>
 
   <section id="fbsaves-organisch">
-    <h2>Saves und echte Beitragsinteraktion</h2>
-    <p>Gekaufte Saves ersetzen keine Inhalte, die Nutzer tatsächlich speichern möchten. Tutorials, Listen und nachvollziehbare Tipps erzeugen organisch oft mehr Speicheraktionen als reine Aufmerksamkeits-Posts. Praktische Hinweise zu Beitragsinteraktionen findest du im Ratgeber, wie du <a href="/blog/mehr-instagram-likes-guide">organisch mehr Instagram-Interaktion aufbaust</a>.</p>
+    <h2>Saves als Kennzahl und organische Inhalte getrennt betrachten</h2>
+    <p>
+      Gekaufte Saves ersetzen keine Contentstrategie. Wenn Nutzer einen Beitrag aus eigenem Interesse speichern sollen, braucht der Inhalt einen praktischen Grund dafür. Checklisten, kurze Anleitungen, Vorher-Nachher-Beispiele, Rezepte, Vorlagen oder kompakte Zusammenfassungen werden häufig mit einer klaren Aufforderung zum späteren Speichern kombiniert.
+    </p>
+    <p>
+      Für die organische Weiterentwicklung solltest du Themenwahl, Einstieg, Bildgestaltung, Wiedergabedauer und Reaktionen deiner Zielgruppe separat auswerten. Weitere Ideen findest du im Ratgeber zur <a href="/blog/instagram-reels-reichweite-erhoehen">organischen Instagram-Reels-Reichweite</a>. Dort geht es um Inhalte und Optimierung, nicht um das hier angebotene Saves-Paket.
+    </p>
   </section>
 
-  <section id="fbsaves-fragen" class="fbsaves-faq">
+  <section class="fbsaves-faq" id="fbsaves-faq">
     <h2>Häufige Fragen zu Instagram Saves</h2>
+
     <details>
       <summary>Was sind Instagram Saves?</summary>
-      <div>Ein Save ist die Speicheraktion unter einem Instagram-Beitrag (Lesezeichen-Symbol). Die Bestellung betrifft diese sichtbare Kennzahl für den angegebenen Beitrag – nicht Likes, Kommentare oder Follower.</div>
+      <div>
+        <p>Mit der Speicherfunktion können Instagram-Nutzer einen Beitrag für später ablegen. Bei dieser Produktseite wählst du eine feste Anzahl solcher Speicheraktionen für den angegebenen Beitrag.</p>
+      </div>
     </details>
+
     <details>
-      <summary>Brauche ich mein Instagram-Passwort?</summary>
-      <div>Nein. Für die Bestellung reicht der Beitragslink. Gib kein Passwort und keinen Wiederherstellungscode weiter.</div>
+      <summary>Braucht Followerbase mein Instagram-Passwort?</summary>
+      <div>
+        <p>Nein. Für die Bestellung wird der direkte Link zum gewünschten Beitrag benötigt, nicht dein Passwort oder der Zugang zu deinem Instagram-Konto.</p>
+      </div>
     </details>
+
     <details>
-      <summary>Für welche Beiträge kann ich Saves bestellen?</summary>
-      <div>Für öffentlich erreichbare Feed-Beiträge, Karussells und Reels. Stories werden nicht unterstützt. Der Link muss während der Lieferung erreichbar bleiben.</div>
+      <summary>Welchen Link muss ich bei der Bestellung eintragen?</summary>
+      <div>
+        <p>Trage die direkte URL des Beitrags ein, für den du Saves bestellt hast. Prüfe den Link vorher in einem privaten Browserfenster. Ein Profil-, Story- oder Login-Link ist nicht dasselbe wie ein Beitragslink.</p>
+      </div>
     </details>
+
     <details>
-      <summary>Erhöhen Saves automatisch meine Reichweite?</summary>
-      <div>Nein. Dieses Produkt ändert die Speichermenge des gewählten Beitrags. Reichweite, Explore-Platzierung, Verkäufe oder organisches Wachstum werden nicht garantiert.</div>
+      <summary>Sind bei einem Saves-Paket auch Likes enthalten?</summary>
+      <div>
+        <p>Nein. Saves und Likes sind getrennte Produkte. Wenn du Likes möchtest, wähle ein entsprechendes Paket auf der Instagram-Likes-Seite.</p>
+      </div>
     </details>
+
     <details>
-      <summary>Wie läuft die Lieferung ab?</summary>
-      <div>Nach Zahlungseingang wird die Bestellung bearbeitet. Anschließend startet die gestaffelte Auslieferung. Der genaue Beginn hängt vom Bestellaufkommen ab.</div>
+      <summary>Garantieren Instagram Saves mehr Reichweite?</summary>
+      <div>
+        <p>Nein. Das Paket bezieht sich auf die bestellte Anzahl Saves. Reichweite, Explore-Platzierungen, Follower, Verkäufe und organische Folgeinteraktionen werden nicht garantiert.</p>
+      </div>
     </details>
+
     <details>
-      <summary>Gibt es eine Nachfüllung?</summary>
-      <div>Ja, innerhalb von 30 Tagen nach Lieferung bei berechtigtem Rückgang der gelieferten Menge. Der Beitrag muss öffentlich erreichbar bleiben. Private, gelöschte oder unerreichbare Beiträge sind ausgeschlossen. Melde dich mit Bestellnummer und Beitragslink beim Support.</div>
+      <summary>Wann ist eine Bestellung abgeschlossen?</summary>
+      <div>
+        <p>Die Bearbeitung richtet sich nach Paketgröße, Auslastung, Erreichbarkeit des Beitrags und den beim Kauf angezeigten Bedingungen. Verwende den Link zur Bestellverfolgung oder den Support, wenn eine Bestellung außerhalb des angegebenen Rahmens offen bleibt.</p>
+      </div>
     </details>
   </section>
 
-  <section class="fbsaves-final" aria-labelledby="fbsaves-final-title" id="fbsaves-auswahl">
-    <h2 id="fbsaves-final-title">Instagram Saves auswählen</h2>
-    <p>Wähle die gewünschte Menge, prüfe den Beitragslink und den Endpreis im Produktmodul. Du brauchst kein Instagram-Passwort.</p>
-    <a class="fbsaves-button" href="#produkt-auswahl">Zum Saves-Paket</a>
+  <section class="fbsaves-final" id="fbsaves-bestellen">
+    <h2>Instagram Saves passend zum Beitrag auswählen</h2>
+    <p>
+      Wähle die gewünschte Menge, kontrolliere deinen Beitragslink und prüfe vor dem Abschluss noch einmal alle Bestelldaten. Dein Instagram-Passwort ist dafür nicht erforderlich.
+    </p>
+    <a class="fbsaves-button" href="#produkt-auswahl">Zu den Instagram-Saves-Paketen</a>
   </section>
 </article>

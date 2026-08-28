@@ -28,7 +28,13 @@ ${SCOPE} .fbsaves-table-wrap {
   overscroll-behavior-inline: contain;
   -webkit-overflow-scrolling: touch;
 }
-${SCOPE} .fbsaves-table-wrap table { width: 100%; min-width: 640px; border-collapse: collapse; }
+${SCOPE} .fbsaves-table-wrap table { width: 100%; min-width: 680px; border-collapse: collapse; }
+${SCOPE} tbody th {
+  background: #fff;
+  color: var(--fbs-heading, #332b4d);
+  font-size: 1em;
+  font-weight: 700;
+}
 ${SCOPE} .fbsaves-faq summary { list-style: none; }
 ${SCOPE} .fbsaves-faq summary::-webkit-details-marker { display: none; }
 ${SCOPE} .fbsaves-button:focus-visible,
@@ -129,13 +135,20 @@ function rewriteCtas(html: string): string {
   );
 }
 
+function perHundredLabel(quantity: number, priceCents: number): string {
+  const raw = (priceCents / quantity) * 100;
+  const rounded = Math.round(raw);
+  const prefix = Math.abs(raw - rounded) < 0.05 ? "" : "ca. ";
+  return `${prefix}${formatEuroFromCents(rounded)}`;
+}
+
 function buildPackageRows(quantities: number[], pricesCents: number[]): string {
   const target = `#${INSTAGRAM_SAVES_ORDER_ID}`;
   return quantities
     .map((qty, i) => {
       const cents = pricesCents[i];
       if (typeof cents !== "number" || !Number.isFinite(cents)) return "";
-      return `<tr><th scope="row">${formatQuantity(qty)} Saves</th><td class="fbsaves-price">${formatEuroFromCents(cents)}</td><td><a class="fbsaves-mini-link" href="${target}">Zur Auswahl</a></td></tr>`;
+      return `<tr><th scope="row">${formatQuantity(qty)} Saves</th><td class="fbsaves-price">${formatEuroFromCents(cents)}</td><td>${perHundredLabel(qty, cents)}</td><td><a class="fbsaves-mini-link" href="${target}">Paket wählen</a></td></tr>`;
     })
     .join("");
 }
@@ -161,11 +174,15 @@ function injectPackagePrices(html: string, source: PriceSource): string {
   );
   next = next.replace(
     /(<[^>]*data-fbsaves-qty-range[^>]*>)[\s\S]*?(<\/span>)/gi,
-    `$1${formatQuantity(minQty)} und ${formatQuantity(maxQty)} Saves$2`
+    `$1${formatQuantity(minQty)} und ${formatQuantity(maxQty)}$2`
+  );
+  next = next.replace(
+    /(<[^>]*data-fbsaves-package-count[^>]*>)[\s\S]*?(<\/strong>)/gi,
+    `$1${quantities.length} Paketgrößen$2`
   );
   next = next.replace(
     /(<p[^>]*data-fbsaves-price-lead[^>]*>)[\s\S]*?(<\/p>)/i,
-    `$1Aktuell kannst du zwischen ${formatQuantity(minQty)} und ${formatQuantity(maxQty)} Instagram Saves wählen. Das Einstiegspaket kostet ${formatEuroFromCents(minCents)}, das größte Standardpaket ${formatEuroFromCents(maxCents)}. Maßgeblich ist immer der im Produktmodul angezeigte Endpreis.$2`
+    `$1Mit ${quantities.length} Mengen kannst du das Paket an deinen einzelnen Beitrag anpassen. Kleine Pakete eignen sich zum Einstieg. Größere Mengen senken den rechnerischen Preis je 100 Saves. Das Einstiegspaket umfasst ${formatQuantity(minQty)} Saves für ${formatEuroFromCents(minCents)}, das größte Standardpaket ${formatQuantity(maxQty)} Saves für ${formatEuroFromCents(maxCents)}. Entscheidend ist nicht, möglichst groß zu bestellen, sondern eine Menge zu wählen, die zu deinem Beitrag und deiner bisherigen Kontogröße passt.$2`
   );
   next = next.replace(/<span data-fbsaves-price="(\d+)">[\s\S]*?<\/span>/gi, (_m, qtyRaw: string) => {
     const qty = Number(qtyRaw);

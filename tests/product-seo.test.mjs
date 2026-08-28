@@ -278,7 +278,8 @@ test("Instagram-Saves-Seite nutzt feste SEO-Felder und Paketpreise", () => {
   assert.match(html, /href="#produkt-auswahl"/);
   assert.match(html, /\/product\/instagram-likes-kaufen/);
   assert.match(html, /\/products\/instagram/);
-  assert.match(html, /\/blog\/mehr-instagram-likes-guide/);
+  assert.match(html, /\/blog\/instagram-reels-reichweite-erhoehen/);
+  assert.match(html, /data-fbsaves-packages/);
   assert.equal((html.match(/stärkstes Signal|Algorithmus-Push|Power-Tool/gi) || []).length, 0);
   assert.equal((html.match(/<details>/g) || []).length, 6);
   assert.equal((html.match(/<h1\b/gi) || []).length, 0);
