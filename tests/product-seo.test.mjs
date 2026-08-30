@@ -252,6 +252,8 @@ test("Instagram-Likes-Seite nutzt feste SEO-Felder und Paketpreise", () => {
   assert.match(html, /\/product\/instagram-likes-deutsch-kaufen/);
   assert.match(html, /\/blog\/mehr-instagram-likes-guide/);
   assert.equal((html.match(/<details>/g) || []).length, 6);
+  assert.equal((html.match(/DATEN VOR VERÖFFENTLICHUNG|data-editorial-placeholder|fblikes-editorial/gi) || []).length, 0);
+  assert.doesNotMatch(html, /Vor Veröffentlichung/);
 });
 
 test("Instagram-Saves-Seite nutzt feste SEO-Felder und Paketpreise", () => {

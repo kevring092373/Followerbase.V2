@@ -217,7 +217,6 @@ function firstColumnRowHeaders(html: string): string {
 
 /**
  * Scoping, Preiszeilen aus Produktdaten, eindeutige FAQ-IDs, CTA-Anker.
- * Orange Platzhalter bleiben sichtbar, bis die Geschäftsdaten bestätigt sind.
  */
 export function prepareInstagramLikesDescriptionHtml(
   html: string | undefined,
