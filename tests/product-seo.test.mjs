@@ -315,6 +315,39 @@ test("TikTok-Saves-Seite nutzt konservativen Contentblock und Live-Preise", () =
   assert.equal((html.match(/For You Page push|Algorithmus-Push|stärkstes Signal/gi) || []).length, 0);
 });
 
+test("Instagram-Follower-Deutsch-Seite nutzt eigene Definition und Live-Preise", () => {
+  const product = products.find((p) => p.slug === "instagram-follower-deutsch-kaufen");
+  assert.ok(product);
+  assert.equal(product.articleNumber, "FC-003");
+  assert.equal(product.metaTitle, "Deutsche Instagram Follower kaufen ab 7,90 € | Followerbase");
+  assert.equal(
+    product.metaDescription,
+    "Deutsche Instagram Follower ab 7,90 € bestellen. Sechs Pakete, kein Passwort und klare Produktdetails bei Followerbase."
+  );
+  assert.deepEqual(product.quantities, [50, 100, 250, 500, 1000, 2500]);
+  assert.deepEqual(product.pricesCents, [790, 1290, 2490, 4490, 7900, 17900]);
+  assert.match(productPage, /INSTAGRAM_FOLLOWER_DEUTSCH_TITLE/);
+  assert.match(productPage, /INSTAGRAM_FOLLOWER_DEUTSCH_H1/);
+  assert.match(productPage, /isInstagramFollowerDeutschProduct/);
+  assert.match(productPage, /instagram-follower-deutsch-ziel/);
+  const seo = read("lib/instagram-follower-deutsch-seo.ts");
+  assert.match(seo, /data-fbdef-packages/);
+  assert.match(seo, /Keine Lieferanten-API/);
+  const html = read("content/product-html/instagram-follower-deutsch-kaufen.html");
+  assert.match(html, /Was „deutsche Instagram Follower“ hier bedeutet/);
+  assert.match(html, /Bestellung in vier Schritten/);
+  assert.match(html, /\/product\/instagram-follower-kaufen/);
+  assert.match(html, /\/product\/instagram-follower-tuerkisch-kaufen/);
+  assert.match(html, /\/product\/instagram-likes-deutsch-kaufen/);
+  assert.match(html, /\/products\/instagram/);
+  assert.match(html, /fbdef-button/);
+  assert.match(html, /data-fbdef-packages/);
+  assert.match(html, /href="#produkt-auswahl"/);
+  assert.equal((html.match(/<h1\b/gi) || []).length, 0);
+  assert.equal((html.match(/<details>/g) || []).length, 6);
+  assert.equal((html.match(/DACH-Reichweite aufbauen|echte Profile|aktive deutsche Nutzer|risikofrei|diskret/gi) || []).length, 0);
+});
+
 test("Sitemap und IndexNow-Key-Datei sind vorhanden", () => {
   assert.match(read("app/sitemap.ts"), /productCanonicalUrl/);
   assert.match(read("app/sitemap.ts"), /canonicalUrl/);

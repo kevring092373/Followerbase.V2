@@ -56,12 +56,23 @@ import {
   isTiktokSavesProduct,
   prepareTiktokSavesDescriptionHtml,
 } from "@/lib/tiktok-saves-seo";
+import {
+  INSTAGRAM_FOLLOWER_DEUTSCH_BULLETS,
+  INSTAGRAM_FOLLOWER_DEUTSCH_DESCRIPTION,
+  INSTAGRAM_FOLLOWER_DEUTSCH_H1,
+  INSTAGRAM_FOLLOWER_DEUTSCH_IMAGE_ALT,
+  INSTAGRAM_FOLLOWER_DEUTSCH_TITLE,
+  isInstagramFollowerDeutschProduct,
+  prepareInstagramFollowerDeutschDescriptionHtml,
+} from "@/lib/instagram-follower-deutsch-seo";
 import { InstagramLikesAnchorScroll } from "@/components/InstagramLikesAnchorScroll";
 import { InstagramSavesAnchorScroll } from "@/components/InstagramSavesAnchorScroll";
 import { TiktokSavesAnchorScroll } from "@/components/TiktokSavesAnchorScroll";
+import { InstagramFollowerDeutschAnchorScroll } from "@/components/InstagramFollowerDeutschAnchorScroll";
 import likesStyles from "./instagram-likes.module.css";
 import savesStyles from "./instagram-saves.module.css";
 import tiktokSavesStyles from "./tiktok-saves.module.css";
+import deutschStyles from "./instagram-follower-deutsch.module.css";
 import type { Product } from "@/lib/products-data";
 
 type Props = { params: { slug: string } };
@@ -120,11 +131,22 @@ function tiktokSavesProduct(product: Product): Product {
   };
 }
 
+function instagramFollowerDeutschProduct(product: Product): Product {
+  return {
+    ...product,
+    metaTitle: INSTAGRAM_FOLLOWER_DEUTSCH_TITLE,
+    metaDescription: INSTAGRAM_FOLLOWER_DEUTSCH_DESCRIPTION,
+    bullets: [...INSTAGRAM_FOLLOWER_DEUTSCH_BULLETS],
+    description: prepareInstagramFollowerDeutschDescriptionHtml(product.description, product),
+  };
+}
+
 function withPageSeo(product: Product): Product {
   if (isYoutubeViewsProduct(product.slug)) return youtubeViewsProduct(product);
   if (isInstagramLikesProduct(product.slug)) return instagramLikesProduct(product);
   if (isInstagramSavesProduct(product.slug)) return instagramSavesProduct(product);
   if (isTiktokSavesProduct(product.slug)) return tiktokSavesProduct(product);
+  if (isInstagramFollowerDeutschProduct(product.slug)) return instagramFollowerDeutschProduct(product);
   return product;
 }
 
@@ -146,6 +168,9 @@ export async function generateMetadata({ params }: Props) {
   const likesPage = isInstagramLikesProduct(product.slug);
   const savesPage = isInstagramSavesProduct(product.slug);
   const tiktokSavesPage = isTiktokSavesProduct(product.slug);
+  const deutschPage = isInstagramFollowerDeutschProduct(product.slug);
+  const pinnedTitlePage =
+    isYoutubeViewsProduct(product.slug) || likesPage || savesPage || tiktokSavesPage || deutschPage;
   const title = isYoutubeViewsProduct(product.slug)
     ? YOUTUBE_VIEWS_TITLE
     : likesPage
@@ -154,6 +179,8 @@ export async function generateMetadata({ params }: Props) {
         ? INSTAGRAM_SAVES_TITLE
         : tiktokSavesPage
           ? TIKTOK_SAVES_TITLE
+          : deutschPage
+            ? INSTAGRAM_FOLLOWER_DEUTSCH_TITLE
     : product.metaTitle?.trim()
       ? product.metaTitle.trim()
       : truncateTitle(`${displayName} – Followerbase`);
@@ -167,6 +194,8 @@ export async function generateMetadata({ params }: Props) {
         ? INSTAGRAM_SAVES_DESCRIPTION
         : tiktokSavesPage
           ? TIKTOK_SAVES_DESCRIPTION
+          : deutschPage
+            ? INSTAGRAM_FOLLOWER_DEUTSCH_DESCRIPTION
     : truncateDescription(rawDesc);
   const url = productCanonicalUrl(product.slug);
   const imageUrl = product.image ? absoluteImageUrl(product.image) : absoluteImageUrl("/icons/Followerbase Logo.png");
@@ -181,11 +210,13 @@ export async function generateMetadata({ params }: Props) {
             ? INSTAGRAM_LIKES_IMAGE_ALT
             : savesPage
               ? INSTAGRAM_SAVES_IMAGE_ALT
+              : deutschPage
+                ? INSTAGRAM_FOLLOWER_DEUTSCH_IMAGE_ALT
               : displayName,
       }
     : { url: imageUrl, width: 1200, height: 630, alt: SITE_NAME };
   return {
-    title: isYoutubeViewsProduct(product.slug) || likesPage || savesPage || tiktokSavesPage ? { absolute: title } : title,
+    title: pinnedTitlePage ? { absolute: title } : title,
     description,
     robots: indexFollowRobots,
     openGraph: {
@@ -217,7 +248,8 @@ export default async function ProductPage({ params }: Props) {
   const likesPage = isInstagramLikesProduct(product.slug);
   const savesPage = isInstagramSavesProduct(product.slug);
   const tiktokSavesPage = isTiktokSavesProduct(product.slug);
-  const structuredProductPage = likesPage || savesPage;
+  const deutschPage = isInstagramFollowerDeutschProduct(product.slug);
+  const structuredProductPage = likesPage || savesPage || deutschPage;
   const editorialBlockPage = structuredProductPage || tiktokSavesPage;
   const OrderSectionTag = structuredProductPage ? "section" : "div";
   const productImage = product.image;
@@ -227,6 +259,8 @@ export default async function ProductPage({ params }: Props) {
       ? INSTAGRAM_LIKES_IMAGE_ALT
       : savesPage
         ? INSTAGRAM_SAVES_IMAGE_ALT
+        : deutschPage
+          ? INSTAGRAM_FOLLOWER_DEUTSCH_IMAGE_ALT
       : getProductImageAlt(productImage, product.name);
 
   let related = await getRelatedProducts(product.categoryId, product.slug, 12);
@@ -266,6 +300,7 @@ export default async function ProductPage({ params }: Props) {
     likesPage ? `${likesStyles.page} instagram-likes-page` : "",
     savesPage ? `${savesStyles.page} instagram-saves-page` : "",
     tiktokSavesPage ? `${tiktokSavesStyles.page} tiktok-saves-page` : "",
+    deutschPage ? `${deutschStyles.page} instagram-follower-deutsch-page` : "",
   ]
     .filter(Boolean)
     .join(" ");
@@ -275,6 +310,7 @@ export default async function ProductPage({ params }: Props) {
       {likesPage ? <InstagramLikesAnchorScroll /> : null}
       {savesPage ? <InstagramSavesAnchorScroll /> : null}
       {tiktokSavesPage ? <TiktokSavesAnchorScroll /> : null}
+      {deutschPage ? <InstagramFollowerDeutschAnchorScroll /> : null}
       <JsonLd data={buildProductSchema(product, category)} />
       <JsonLd data={breadcrumbSchema} />
       {faqSchema ? <JsonLd data={faqSchema} /> : null}
@@ -309,10 +345,12 @@ export default async function ProductPage({ params }: Props) {
               ? "instagram-likes-titel"
               : savesPage
                 ? "instagram-saves-titel"
+                : deutschPage
+                  ? "instagram-follower-deutsch-titel"
                 : undefined
           }
         >
-          {getProductDisplayName(product.name)}
+          {deutschPage ? INSTAGRAM_FOLLOWER_DEUTSCH_H1 : getProductDisplayName(product.name)}
         </h1>
         {product.articleNumber && (
           <p className="product-article-number" aria-label="Artikelnummer">
@@ -336,9 +374,11 @@ export default async function ProductPage({ params }: Props) {
             ? { "aria-labelledby": "instagram-likes-titel" }
             : savesPage
               ? { "aria-labelledby": "instagram-saves-titel" }
+              : deutschPage
+                ? { "aria-labelledby": "instagram-follower-deutsch-titel" }
               : {})}
         >
-          {viewsPage || likesPage || savesPage ? (
+          {viewsPage || likesPage || savesPage || deutschPage ? (
             <>
               <p className="product-availability">Verfügbar – Lieferung nach Bestellung</p>
               <noscript>
@@ -359,7 +399,7 @@ export default async function ProductPage({ params }: Props) {
             productName={product.name}
             bullets={[]}
             tiers={product.tiers}
-            showPackagePrices={viewsPage || likesPage || savesPage}
+            showPackagePrices={viewsPage || likesPage || savesPage || deutschPage}
             targetAsUrl={likesPage || savesPage}
             validateInstagramMediaUrl={likesPage || savesPage}
             targetInputId={
@@ -367,6 +407,8 @@ export default async function ProductPage({ params }: Props) {
                 ? "instagram-likes-beitragslink"
                 : savesPage
                   ? "instagram-saves-beitragslink"
+                  : deutschPage
+                    ? "instagram-follower-deutsch-ziel"
                   : "product-target"
             }
             quantitySliderId={
@@ -374,6 +416,8 @@ export default async function ProductPage({ params }: Props) {
                 ? "instagram-likes-quantity-slider"
                 : savesPage
                   ? "instagram-saves-quantity-slider"
+                  : deutschPage
+                    ? "instagram-follower-deutsch-quantity-slider"
                   : "product-quantity-slider"
             }
           />
@@ -423,10 +467,12 @@ export default async function ProductPage({ params }: Props) {
           products={otherProducts}
           title={carouselTitle}
           prevLabel={
-            likesPage || savesPage ? "Weitere Instagram-Produkte: vorherige" : undefined
+            likesPage || savesPage || deutschPage ? "Weitere Instagram-Produkte: vorherige" : undefined
           }
-          nextLabel={likesPage || savesPage ? "Weitere Instagram-Produkte: nächste" : undefined}
-          respectReducedMotion={likesPage || savesPage}
+          nextLabel={
+            likesPage || savesPage || deutschPage ? "Weitere Instagram-Produkte: nächste" : undefined
+          }
+          respectReducedMotion={likesPage || savesPage || deutschPage}
         />
       )}
 
