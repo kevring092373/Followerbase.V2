@@ -348,6 +348,45 @@ test("Instagram-Follower-Deutsch-Seite nutzt eigene Definition und Live-Preise",
   assert.equal((html.match(/DACH-Reichweite aufbauen|echte Profile|aktive deutsche Nutzer|risikofrei|diskret/gi) || []).length, 0);
 });
 
+test("Instagram-Follower-Türkisch-Seite nutzt eigene Definition und Live-Preise", () => {
+  const product = products.find((p) => p.slug === "instagram-follower-tuerkisch-kaufen");
+  assert.ok(product);
+  assert.equal(product.articleNumber, "FC-002");
+  assert.equal(product.metaTitle, "Türkische Instagram Follower kaufen | Followerbase");
+  assert.equal(
+    product.metaDescription,
+    "Türkische Instagram Follower ab 2,49 € bestellen. Sechs Pakete, kein Passwort und transparente Produktdetails bei Followerbase."
+  );
+  assert.ok(product.metaTitle.length <= 60);
+  assert.deepEqual(product.quantities, [100, 250, 500, 1000, 2500, 5000]);
+  assert.deepEqual(product.pricesCents, [249, 490, 845, 1490, 3290, 5990]);
+  assert.match(productPage, /INSTAGRAM_FOLLOWER_TUERKISCH_TITLE/);
+  assert.match(productPage, /INSTAGRAM_FOLLOWER_TUERKISCH_H1/);
+  assert.match(productPage, /isInstagramFollowerTuerkischProduct/);
+  assert.match(productPage, /instagram-follower-tuerkisch-ziel/);
+  const seo = read("lib/instagram-follower-tuerkisch-seo.ts");
+  assert.match(seo, /data-fbtr-packages/);
+  assert.match(seo, /Keine Lieferanten-API/);
+  const html = read("content/product-html/instagram-follower-tuerkisch-kaufen.html");
+  assert.match(html, /Passt der türkischsprachige Schwerpunkt zu deinem Profil\?/);
+  assert.match(html, /Was mit dem türkischen Profil-Schwerpunkt gemeint ist/);
+  assert.match(html, /Türkische Instagram Follower: Pakete und Preise/);
+  assert.match(html, /\/product\/instagram-follower-kaufen/);
+  assert.match(html, /\/product\/instagram-follower-deutsch-kaufen/);
+  assert.match(html, /\/product\/instagram-likes-kaufen/);
+  assert.match(html, /\/products\/instagram/);
+  assert.doesNotMatch(html, /tiktok-follower-tuerkisch-kaufen/);
+  assert.match(html, /fbtr-button/);
+  assert.match(html, /data-fbtr-packages/);
+  assert.match(html, /href="#produkt-auswahl"/);
+  assert.equal((html.match(/<h1\b/gi) || []).length, 0);
+  assert.equal((html.match(/<details>/g) || []).length, 6);
+  assert.equal(
+    (html.match(/65 Mio|65 Millionen|größten Instagram-Markt|echte türkische Profile|aktive türkische Nutzer|risikofrei|diskret|30-Tage-Nachfüll/gi) || []).length,
+    0
+  );
+});
+
 test("Sitemap und IndexNow-Key-Datei sind vorhanden", () => {
   assert.match(read("app/sitemap.ts"), /productCanonicalUrl/);
   assert.match(read("app/sitemap.ts"), /canonicalUrl/);
