@@ -45,8 +45,10 @@ function wrapInlineToc(tocHtml: string): string {
 /** Tabellen in einen horizontal scrollbareren Wrapper legen. */
 export function enhanceBlogTables(html: string): string {
   if (!html) return html;
-  return html.replace(/<table\b[^>]*>[\s\S]*?<\/table>/gi, (tableHtml) => {
+  return html.replace(/<table\b[^>]*>[\s\S]*?<\/table>/gi, (tableHtml, offset: number) => {
     if (/class=["'][^"']*\bblog-table-(?:wrap|block)\b/i.test(tableHtml)) return tableHtml;
+    const before = html.slice(Math.max(0, offset - 400), offset);
+    if (/<div\b[^>]*class=["'][^"']*\bfb-table\b[^"']*["'][^>]*>\s*$/i.test(before)) return tableHtml;
     return `<div class="blog-table-block"><p class="blog-table-hint">Tabelle seitlich scrollen →</p><div class="blog-table-wrap">${tableHtml}</div></div>`;
   });
 }
@@ -72,7 +74,7 @@ export function extractBlogFaqItems(html: string): BlogFaqItem[] {
   if (!html) return [];
   const items: BlogFaqItem[] = [];
   const re =
-    /<details[^>]*class=["'][^"']*\bfaq-item\b[^"']*["'][^>]*>[\s\S]*?<summary[^>]*>([\s\S]*?)<\/summary>([\s\S]*?)<\/details>/gi;
+    /<details[^>]*class=["'][^"']*\b(?:faq-item|fb-faq)\b[^"']*["'][^>]*>[\s\S]*?<summary[^>]*>([\s\S]*?)<\/summary>([\s\S]*?)<\/details>/gi;
   let m: RegExpExecArray | null;
   while ((m = re.exec(html)) !== null) {
     const question = stripHtmlToText(m[1]);
@@ -225,7 +227,9 @@ export function prepareBlogArticleHtml(rawHtml: string): {
   let htmlContent = transformFaqToDetailsSummary(prepared.htmlContent);
   htmlContent = fixBlogCtaLinks(htmlContent);
 
-  const hasInlineToc = /<(nav|div)[^>]*class=["'][^"']*\btoc\b/i.test(htmlContent);
+  const hasInlineToc =
+    /<(nav|div)[^>]*class=["'][^"']*\btoc\b/i.test(htmlContent) ||
+    /<details[^>]*class=["'][^"']*\bfb-toc\b/i.test(htmlContent);
   const toc = hasInlineToc ? [] : extractBlogToc(htmlContent);
   htmlContent = reshapeBlogArticleHtml(htmlContent, hasInlineToc);
 
