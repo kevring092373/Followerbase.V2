@@ -236,7 +236,7 @@ test("Instagram-Likes-Seite nutzt feste SEO-Felder und Paketpreise", () => {
   assert.match(productPage, /id=\{PRODUCT_ORDER_ANCHOR_ID\}/);
   assert.match(productPage, /instagram-likes-beitragslink/);
   assert.match(productPage, /instagram-likes-quantity-slider/);
-  assert.match(productPage, /validateInstagramMediaUrl=\{likesPage \|\| savesPage\}/);
+  assert.match(productPage, /validateInstagramMediaUrl=\{likesPage \|\| savesPage \|\| likesDeutschPage\}/);
   assert.match(productPage, /structuredProductPage \? "section" : "div"/);
   const likesSeo = read("lib/instagram-likes-seo.ts");
   assert.match(likesSeo, /data-fblikes-packages/);
@@ -300,7 +300,7 @@ test("TikTok-Saves-Seite nutzt konservativen Contentblock und Live-Preise", () =
   assert.deepEqual(product.pricesCents, [90, 285, 490, 1090, 1890, 3490]);
   assert.match(productPage, /TIKTOK_SAVES_TITLE/);
   assert.match(productPage, /isTiktokSavesProduct/);
-  assert.match(productPage, /validateInstagramMediaUrl=\{likesPage \|\| savesPage\}/);
+  assert.match(productPage, /validateInstagramMediaUrl=\{likesPage \|\| savesPage \|\| likesDeutschPage\}/);
   assert.doesNotMatch(productPage, /validateInstagramMediaUrl=\{likesPage \|\| savesPage \|\| tiktokSavesPage\}/);
   const seo = read("lib/tiktok-saves-seo.ts");
   assert.match(seo, /data-fbtsaves-packages/);
@@ -385,6 +385,55 @@ test("Instagram-Follower-Türkisch-Seite nutzt eigene Definition und Live-Preise
     (html.match(/65 Mio|65 Millionen|größten Instagram-Markt|echte türkische Profile|aktive türkische Nutzer|risikofrei|diskret|30-Tage-Nachfüll/gi) || []).length,
     0
   );
+});
+
+test("Instagram-Likes-Deutsch-Seite bereinigt Claims und nutzt Live-Pakete", () => {
+  const product = products.find((p) => p.slug === "instagram-likes-deutsch-kaufen");
+  assert.ok(product);
+  assert.equal(product.articleNumber, "FC-007");
+  assert.equal(product.metaTitle, "Deutsche Instagram Likes kaufen | Followerbase");
+  assert.equal(
+    product.metaDescription,
+    "Deutsche Instagram Likes ab 3,90 €: Accounts mit deutschsprachigen Profilmerkmalen. Paket auswählen und per Beitragslink bestellen. Ohne Instagram-Passwort."
+  );
+  assert.ok(product.metaTitle.length <= 60);
+  assert.ok(product.metaDescription.length <= 160);
+  assert.deepEqual(product.quantities, [50, 100, 250, 500, 1000, 2500]);
+  assert.deepEqual(product.pricesCents, [390, 690, 1290, 2190, 3890, 8900]);
+  assert.match(productPage, /INSTAGRAM_LIKES_DEUTSCH_TITLE/);
+  assert.match(productPage, /INSTAGRAM_LIKES_DEUTSCH_H1/);
+  assert.match(productPage, /isInstagramLikesDeutschProduct/);
+  assert.match(productPage, /instagram-likes-deutsch-beitragslink/);
+  assert.match(productPage, /restrictToListedQuantities=\{likesDeutschPage\}/);
+  assert.match(productPage, /sliderMinFromPackages=\{likesDeutschPage\}/);
+  assert.match(productPage, /defaultPackageOffer: true/);
+  assert.match(structured, /defaultPackageOffer/);
+  const seo = read("lib/instagram-likes-deutsch-seo.ts");
+  assert.match(seo, /data-fbdl-price-for/);
+  assert.match(seo, /data-fbdl-unit-for/);
+  assert.match(seo, /deutschsprachige Accountmerkmale/);
+  const html = read("content/product-html/instagram-likes-deutsch-kaufen.html");
+  assert.match(html, /fbde-likes-copy/);
+  assert.match(html, /Dein Beitrag/);
+  assert.match(html, /Likes mit Sprachbezug/);
+  assert.match(html, /href="#produkt-auswahl"/);
+  assert.match(html, /data-fbdl-price-for="50"/);
+  assert.match(html, /\/product\/instagram-likes-kaufen/);
+  assert.match(html, /fbdl-faq/);
+  assert.doesNotMatch(html, /href=["']\/products["']/);
+  assert.equal((html.match(/<h1\b/gi) || []).length, 0);
+  assert.equal((html.match(/<!DOCTYPE|<html\b|<head\b|<body\b/gi) || []).length, 0);
+  assert.equal((html.match(/:root\b|\bfonts\.google|\bhtml\s*\{|\bbody\s*\{/gi) || []).length, 0);
+  assert.equal((html.match(/<details>/g) || []).length, 6);
+  assert.equal(
+    (html.match(/Explore München|Explore Delhi|88\s*%|60\s*% der Marketer|6,81\s*%|bis zu 79\s*%|Audit-Tools|Brand Deal|Klarna|Drip-Feed|6–24 Stunden|Für Privatpersonen ja|garantiert aus Deutschland|echte deutsche Nutzer/gi) || []).length,
+    0
+  );
+  const orderBlock = read("components/ProductOrderBlock.tsx");
+  assert.match(orderBlock, /restrictToListedQuantities/);
+  assert.match(orderBlock, /snapToListedQuantity/);
+  const paypal = read("app/api/paypal/create-order/route.ts");
+  assert.match(paypal, /authorizeCheckoutPrices/);
 });
 
 test("Sitemap und IndexNow-Key-Datei sind vorhanden", () => {

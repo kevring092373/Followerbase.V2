@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createPayPalOrder } from "@/lib/paypal-server";
 import { addPendingCheckout } from "@/lib/orders-data";
+import { authorizeCheckoutPrices } from "@/lib/authorize-checkout-prices";
 import type { OrderItem } from "@/lib/orders";
 import type { PendingCheckoutCustomer } from "@/lib/orders-data";
 
@@ -19,19 +20,25 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (!Number.isFinite(amountCents) || amountCents <= 0) {
+    const authorized = await authorizeCheckoutPrices(items, amountCents);
+    if (!authorized.ok) {
+      return NextResponse.json({ error: authorized.error }, { status: 400 });
+    }
+    const pricedItems = authorized.items;
+    const totalCents = authorized.totalCents;
+    if (!Number.isFinite(totalCents) || totalCents <= 0) {
       return NextResponse.json({ error: "Ungültiger Betrag" }, { status: 400 });
     }
 
-    const amountEur = (amountCents / 100).toFixed(2);
-    const paypalItems = items.map((i) => ({
+    const amountEur = (totalCents / 100).toFixed(2);
+    const paypalItems = pricedItems.map((i) => ({
       name: i.productName,
       quantity: i.quantity,
       priceCents: i.priceCents,
       sku: i.productSlug,
     }));
     const paypalOrderId = await createPayPalOrder(amountEur, paypalItems);
-    await addPendingCheckout(paypalOrderId, items, amountCents, sellerNote, customer);
+    await addPendingCheckout(paypalOrderId, pricedItems, totalCents, sellerNote, customer);
 
     return NextResponse.json({ paypalOrderId });
   } catch (e) {

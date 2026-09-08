@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createOrderForUeberweisung } from "@/lib/orders-data";
+import { authorizeCheckoutPrices } from "@/lib/authorize-checkout-prices";
 import type { OrderItem } from "@/lib/orders";
 import type { PendingCheckoutCustomer } from "@/lib/orders-data";
 import { sendOrderConfirmationEmail, sendOrderNotificationToOwner } from "@/lib/email-order-confirmation";
@@ -26,10 +27,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const totalCents =
-      amountCents > 0 && Number.isFinite(amountCents)
-        ? amountCents
-        : items.reduce((sum, i) => sum + i.priceCents, 0);
+    const authorized = await authorizeCheckoutPrices(items, amountCents);
+    if (!authorized.ok) {
+      return NextResponse.json({ error: authorized.error }, { status: 400 });
+    }
+    const pricedItems = authorized.items;
+    const totalCents = authorized.totalCents;
     if (totalCents <= 0) {
       return NextResponse.json({ error: "Ungültiger Betrag." }, { status: 400 });
     }
@@ -45,7 +48,7 @@ export async function POST(request: NextRequest) {
         postalCode: customer.postalCode ?? undefined,
         country: customer.country ?? undefined,
       },
-      items,
+      pricedItems,
       totalCents,
       sellerNote
     );

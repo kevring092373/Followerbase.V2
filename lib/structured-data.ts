@@ -160,12 +160,43 @@ export function absoluteImageUrl(imagePath: string): string {
   return absoluteUrl(encoded);
 }
 
+export type ProductSchemaOptions = {
+  /**
+   * Ein konkretes Offer für das vorausgewählte Standardpaket.
+   * Nicht für Produktvarianten mit eigenen URLs verwenden; AggregateOffer bleibt der Default.
+   */
+  defaultPackageOffer?: boolean;
+};
+
+function buildDefaultPackageOffer(product: Product, url: string): Record<string, unknown> | undefined {
+  const pkg = getProductPackages(product)[0];
+  if (!pkg) return undefined;
+  const displayName = getProductDisplayName(product.name);
+  const qtyLabel = pkg.quantity.toLocaleString("de-DE");
+  return {
+    "@type": "Offer",
+    name: `${qtyLabel} ${displayName}`,
+    url,
+    price: formatSchemaPrice(pkg.priceCents),
+    priceCurrency: "EUR",
+    availability: "https://schema.org/InStock",
+    itemCondition: "https://schema.org/NewCondition",
+    seller: buildSeller(),
+    ...(product.articleNumber
+      ? { sku: buildOfferSku(product.articleNumber, pkg.quantity, pkg.variantName) }
+      : {}),
+  };
+}
+
 export function buildProductSchema(
   product: Product,
-  category?: Category
+  category?: Category,
+  options?: ProductSchemaOptions
 ): Record<string, unknown> {
   const url = productCanonicalUrl(product.slug);
-  const offers = buildProductOffers(product, url);
+  const offers = options?.defaultPackageOffer
+    ? buildDefaultPackageOffer(product, url)
+    : buildProductOffers(product, url);
   const image = product.image ? absoluteImageUrl(product.image) : undefined;
   const dateModified = toIsoDateTime(product.updatedAt);
   const datePublished = toIsoDateTime(product.createdAt);

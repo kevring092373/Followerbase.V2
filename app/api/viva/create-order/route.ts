@@ -7,6 +7,7 @@ import {
   getVivaPaymentPageUrl,
 } from "@/lib/viva-server";
 import { addVivaPending } from "@/lib/viva-pending-data";
+import { authorizeCheckoutPrices } from "@/lib/authorize-checkout-prices";
 import type { OrderItem } from "@/lib/orders";
 import type { PendingCheckoutCustomer } from "@/lib/orders-data";
 
@@ -31,10 +32,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const totalCents =
-      amountCents > 0 && Number.isFinite(amountCents)
-        ? amountCents
-        : items.reduce((sum, i) => sum + i.priceCents, 0);
+    const authorized = await authorizeCheckoutPrices(items, amountCents);
+    if (!authorized.ok) {
+      return NextResponse.json({ error: authorized.error }, { status: 400 });
+    }
+    const pricedItems = authorized.items;
+    const totalCents = authorized.totalCents;
     if (totalCents <= 0) {
       return NextResponse.json(
         { error: "Ungültiger Betrag." },
@@ -43,8 +46,8 @@ export async function POST(request: NextRequest) {
     }
 
     const customerTrns =
-      items.length > 0
-        ? items.map((i) => `${i.productName} × ${i.quantity}`).join(", ")
+      pricedItems.length > 0
+        ? pricedItems.map((i) => `${i.productName} × ${i.quantity}`).join(", ")
         : `Bestellung ${(totalCents / 100).toFixed(2)} €`;
 
     const orderCode = await createVivaOrder(
@@ -60,7 +63,7 @@ export async function POST(request: NextRequest) {
 
     const pendingSaved = await addVivaPending(
       orderCode,
-      items,
+      pricedItems,
       totalCents,
       sellerNote,
       {

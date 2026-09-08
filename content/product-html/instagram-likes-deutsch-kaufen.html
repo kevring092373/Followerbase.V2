@@ -1,0 +1,211 @@
+<!-- Only this fragment belongs in the product description. Metadata is in seo.json. -->
+<style>
+.fbde-likes-copy {
+  --fbdl-purple: #7c3aed;
+  --fbdl-deep: #251d42;
+  --fbdl-ink: #3a3355;
+  --fbdl-muted: #645c76;
+  --fbdl-border: #e5dfef;
+  --fbdl-wash: #f8f5fd;
+  width: 100%; max-width: 1060px; margin: 0 auto; color: var(--fbdl-ink);
+  font-family: inherit; font-size: 17px; line-height: 1.75; overflow-wrap: break-word;
+}
+.fbde-likes-copy *, .fbde-likes-copy *::before, .fbde-likes-copy *::after { box-sizing: border-box; }
+.fbde-likes-copy :where(h2,h3,p,ul,ol) { margin: 0; }
+.fbde-likes-copy h2, .fbde-likes-copy h3 { color: var(--fbdl-deep); font-family: inherit; text-wrap: balance; }
+.fbde-likes-copy h2 { font-size: clamp(1.65rem, 3vw, 2.1rem); font-weight: 800; line-height: 1.22; letter-spacing: -.035em; margin: 0 0 22px; }
+.fbde-likes-copy h3 { font-size: 1.12rem; line-height: 1.35; font-weight: 750; letter-spacing: -.02em; margin: 0 0 10px; }
+.fbde-likes-copy p { margin: 0 0 18px; }
+.fbde-likes-copy p:last-child { margin-bottom: 0; }
+.fbde-likes-copy a { color: #6530c4; text-decoration: underline; text-underline-offset: 4px; }
+.fbde-likes-copy a:hover { color: #4e229c; }
+.fbde-likes-copy :where(a, summary):focus-visible { outline: 3px solid #6b2bd4; outline-offset: 5px; border-radius: 5px; }
+.fbde-likes-copy [id] { scroll-margin-top: 110px; }
+.fbde-likes-copy .fbdl-eyebrow { margin: 0 0 14px; font-size: .72rem; font-weight: 800; text-transform: uppercase; letter-spacing: .12em; color: #6530c4; line-height: 1.55; }
+.fbde-likes-copy .fbdl-hero { display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(230px, .85fr); gap: 34px; align-items: center; padding: clamp(22px, 4vw, 48px); border: 1px solid #e8dff8; border-radius: 28px; background: radial-gradient(ellipse at 0 0, #eae0ff 0, transparent 57%), #faf8ff; }
+.fbde-likes-copy .fbdl-hero h2 { font-size: clamp(2.15rem, 4.4vw, 3.1rem); margin-bottom: 22px; line-height: 1.13; }
+.fbde-likes-copy .fbdl-hero h2 span { color: #7134d1; }
+.fbde-likes-copy .fbdl-lead { font-size: 1.05rem; }
+.fbde-likes-copy .fbdl-actions { display: flex; gap: 17px; align-items: center; flex-wrap: wrap; margin-top: 25px; }
+.fbde-likes-copy a.fbdl-button { display: inline-flex; justify-content: center; align-items: center; gap: 16px; padding: 13px 21px; border-radius: 11px; background: var(--fbdl-purple); color: #fff; text-decoration: none; font-size: .91rem; line-height: 1.45; font-weight: 750; min-height: 48px; }
+.fbde-likes-copy a.fbdl-button:hover { background: #6427c8; }
+.fbde-likes-copy .fbdl-text-link { font-size: .85rem; }
+.fbde-likes-copy .fbdl-entry { position: relative; overflow: hidden; padding: 30px 24px 22px; border-radius: 22px; background: #fff; border: 1px solid #e7def5; box-shadow: 0 18px 44px #3d167810; }
+.fbde-likes-copy .fbdl-heart { position: absolute; top: 1px; right: 14px; color: #ede6fa; font-size: 110px; font-weight: 400; line-height: 1; pointer-events: none; }
+.fbde-likes-copy .fbdl-entry-label { position: relative; font-size: .75rem; text-transform: uppercase; letter-spacing: .11em; font-weight: 800; margin: 0 0 20px; color: var(--fbdl-muted); }
+.fbde-likes-copy .fbdl-entry-amount { position: relative; font-size: 3.8rem; font-weight: 800; line-height: 1; letter-spacing: -.06em; color: var(--fbdl-deep); margin: 0 0 8px; }
+.fbde-likes-copy .fbdl-entry-amount span { font-size: 1.2rem; letter-spacing: -.02em; }
+.fbde-likes-copy .fbdl-entry-price { font-size: 2rem; font-weight: 800; color: #6c30ca; margin: 0 0 18px; letter-spacing: -.04em; }
+.fbde-likes-copy .fbdl-entry-detail { font-size: .85rem; color: var(--fbdl-muted); margin: 0 0 22px; }
+.fbde-likes-copy .fbdl-entry a { font-size: .8rem; display: block; padding-top: 17px; border-top: 1px solid var(--fbdl-border); }
+.fbde-likes-copy .fbdl-jumpnav { display: flex; flex-wrap: wrap; gap: 10px 24px; padding: 21px 3px; border-bottom: 1px solid var(--fbdl-border); }
+.fbde-likes-copy .fbdl-jumpnav a { font-size: .8rem; color: var(--fbdl-muted); text-decoration: none; padding: 5px 0; }
+.fbde-likes-copy .fbdl-jumpnav a:hover { color: #6530c4; text-decoration: underline; }
+.fbde-likes-copy .fbdl-section { padding: 44px 0; border-bottom: 1px solid var(--fbdl-border); }
+.fbde-likes-copy .fbdl-section > p { max-width: 870px; }
+.fbde-likes-copy .fbdl-definition-grid, .fbde-likes-copy .fbdl-compare { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin: 26px 0; }
+.fbde-likes-copy .fbdl-definition { padding: 25px; border-radius: 17px; background: #f4edff; border: 1px solid #e3d6f9; }
+.fbde-likes-copy .fbdl-definition-muted { background: #f8f8fa; border-color: #e5e4e9; }
+.fbde-likes-copy .fbdl-small-label { display: block; font-size: .69rem; font-weight: 800; color: #66547f; margin-bottom: 13px; text-transform: uppercase; letter-spacing: .06em; }
+.fbde-likes-copy .fbdl-definition p, .fbde-likes-copy .fbdl-compare-card p { font-size: .94rem; }
+.fbde-likes-copy .fbdl-section-heading { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; }
+.fbde-likes-copy .fbdl-soft-tag { white-space: nowrap; font-size: .75rem; padding: 7px 13px; border-radius: 30px; background: #f2ebfc; color: #60339f; font-weight: 700; }
+.fbde-likes-copy .fbdl-packages { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; list-style: none; margin: 26px 0 16px; padding: 0; }
+.fbde-likes-copy .fbdl-package { padding: 23px; border: 1px solid var(--fbdl-border); border-radius: 16px; background: #fff; margin: 0; }
+.fbde-likes-copy .fbdl-package-amount { font-size: 1.5rem; font-weight: 800; color: var(--fbdl-deep); letter-spacing: -.03em; margin-bottom: 15px; }
+.fbde-likes-copy .fbdl-package-amount span { font-size: .82rem; font-weight: 600; color: var(--fbdl-muted); letter-spacing: 0; }
+.fbde-likes-copy .fbdl-package-price { font-size: 1.85rem; line-height: 1.15; color: #6b32bd; letter-spacing: -.04em; font-weight: 800; margin-bottom: 10px; }
+.fbde-likes-copy .fbdl-unit { font-size: .78rem; color: var(--fbdl-muted); }
+.fbde-likes-copy .fbdl-caption { font-size: .78rem; color: var(--fbdl-muted); }
+.fbde-likes-copy .fbdl-inline-note, .fbde-likes-copy .fbdl-link-check { padding: 18px 22px; background: var(--fbdl-wash); border-radius: 12px; font-size: .91rem; margin-top: 24px; }
+.fbde-likes-copy .fbdl-steps { list-style: none; margin: 26px 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 26px; }
+.fbde-likes-copy .fbdl-steps li { display: flex; align-items: flex-start; gap: 17px; margin: 0; }
+.fbde-likes-copy .fbdl-step-number { flex: 0 0 42px; height: 42px; display: grid; place-items: center; font-size: .8rem; font-weight: 800; color: #672bc2; background: #f1e9fe; border-radius: 12px; }
+.fbde-likes-copy .fbdl-steps li > div { min-width: 0; }
+.fbde-likes-copy .fbdl-steps p { font-size: .92rem; }
+.fbde-likes-copy .fbdl-compare-card { border: 1px solid var(--fbdl-border); border-radius: 16px; padding: 25px; }
+.fbde-likes-copy .fbdl-platform { margin-top: 27px; padding: 22px 24px; border: 1px solid #eddab7; background: #fffaf0; color: #6b4d21; border-radius: 16px; font-size: .9rem; }
+.fbde-likes-copy .fbdl-platform strong { display: block; color: #5d421d; margin-bottom: 8px; }
+.fbde-likes-copy .fbdl-platform a { color: #765012; }
+.fbde-likes-copy .fbdl-faq { display: grid; gap: 10px; margin-top: 27px; }
+.fbde-likes-copy .fbdl-faq details { border: 1px solid var(--fbdl-border); border-radius: 14px; background: #fff; }
+.fbde-likes-copy .fbdl-faq summary { cursor: pointer; padding: 19px 23px; color: var(--fbdl-deep); font-size: .96rem; font-weight: 700; line-height: 1.5; }
+.fbde-likes-copy .fbdl-faq summary::marker { color: #783ecf; }
+.fbde-likes-copy .fbdl-faq details[open] { background: #fcfaff; }
+.fbde-likes-copy .fbdl-faq details > div { padding: 0 23px 22px; font-size: .94rem; }
+.fbde-likes-copy .fbdl-help { margin-top: 22px; font-size: .92rem; }
+.fbde-likes-copy .fbdl-final { display: flex; align-items: center; gap: 30px; justify-content: space-between; margin-top: 42px; padding: 37px; border-radius: 24px; background: linear-gradient(115deg, #251d42, #48247e); color: #e9e1f6; }
+.fbde-likes-copy .fbdl-final > div { max-width: 640px; }
+.fbde-likes-copy .fbdl-final .fbdl-eyebrow { color: #cdb6f3; }
+.fbde-likes-copy .fbdl-final h2 { color: #fff; }
+.fbde-likes-copy .fbdl-final p { font-size: .94rem; }
+.fbde-likes-copy a.fbdl-button-light { flex-shrink: 0; background: #fff; color: #48247e; }
+.fbde-likes-copy a.fbdl-button-light:hover { background: #f2eaff; }
+.fbde-likes-copy .fbdl-final a:focus-visible { outline-color: #d4bbff; }
+@media (max-width: 820px) {
+  .fbde-likes-copy .fbdl-hero { grid-template-columns: minmax(0, 1fr); gap: 26px; }
+  .fbde-likes-copy .fbdl-entry { max-width: none; }
+  .fbde-likes-copy .fbdl-entry-amount { font-size: 3rem; }
+  .fbde-likes-copy .fbdl-entry-price { font-size: 1.75rem; }
+  .fbde-likes-copy .fbdl-steps { grid-template-columns: minmax(0, 1fr); }
+  .fbde-likes-copy .fbdl-final { align-items: flex-start; flex-direction: column; }
+}
+@media (max-width: 600px) {
+  .fbde-likes-copy { font-size: 16px; }
+  .fbde-likes-copy .fbdl-hero { border-radius: 20px; padding: 24px 20px; }
+  .fbde-likes-copy .fbdl-hero h2 { font-size: 2.1rem; }
+  .fbde-likes-copy .fbdl-actions { align-items: stretch; flex-direction: column; }
+  .fbde-likes-copy .fbdl-text-link { padding: 7px 0; text-align: center; }
+  .fbde-likes-copy .fbdl-section { padding: 34px 0; }
+  .fbde-likes-copy .fbdl-definition-grid, .fbde-likes-copy .fbdl-compare { grid-template-columns: minmax(0, 1fr); gap: 13px; }
+  .fbde-likes-copy .fbdl-packages { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .fbde-likes-copy .fbdl-package { padding: 17px 13px; }
+  .fbde-likes-copy .fbdl-package-amount { font-size: 1.25rem; }
+  .fbde-likes-copy .fbdl-package-price { font-size: 1.5rem; }
+  .fbde-likes-copy .fbdl-unit { font-size: .73rem; }
+  .fbde-likes-copy .fbdl-section-heading { display: block; }
+  .fbde-likes-copy .fbdl-soft-tag { display: inline-block; margin-bottom: 18px; }
+  .fbde-likes-copy .fbdl-final { padding: 27px 23px; border-radius: 19px; }
+  .fbde-likes-copy .fbdl-final .fbdl-button { width: 100%; }
+  .fbde-likes-copy .fbdl-faq summary { padding: 18px; }
+  .fbde-likes-copy .fbdl-faq details > div { padding: 0 18px 20px; }
+}
+@media (max-width: 359px) {
+  .fbde-likes-copy .fbdl-packages { grid-template-columns: minmax(0, 1fr); }
+  .fbde-likes-copy .fbdl-hero h2 { font-size: 1.9rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fbde-likes-copy *, .fbde-likes-copy *::before, .fbde-likes-copy *::after { scroll-behavior: auto; animation: none; transition: none; }
+}
+
+</style>
+<div class="fbde-likes-copy">
+<section aria-labelledby="fbdl-intro" class="fbdl-hero">
+<div class="fbdl-hero-text">
+<p class="fbdl-eyebrow">Instagram Likes · Deutschsprachige Profile</p>
+<h2 id="fbdl-intro">Dein Beitrag.<br/><span>Likes mit Sprachbezug.</span></h2>
+<p class="fbdl-lead">Bei Followerbase kannst du deutsche Instagram Likes kaufen: Gemeint sind Likes von Accounts mit deutschsprachigen Profilmerkmalen, etwa Namen und Profilgestaltung. Du wählst ein Paket und gibst den Link zu deinem öffentlichen Instagram-Beitrag an.</p>
+<p>Zur Auswahl stehen sechs Standardpakete von 50 bis 2.500 Likes. Die Bestellung bezieht sich auf den angegebenen Beitrag. Dein Instagram-Passwort wird dafür nicht benötigt.</p>
+<div class="fbdl-actions"><a class="fbdl-button" href="#produkt-auswahl">Zur Paketauswahl <span aria-hidden="true">↗</span></a><a class="fbdl-text-link" href="#fbdl-profilmerkmale">Was bedeutet „deutsch“?</a></div>
+</div>
+<aside aria-label="Kleinstes Standardpaket" class="fbdl-entry">
+<span aria-hidden="true" class="fbdl-heart">♡</span>
+<p class="fbdl-entry-label">Dein Einstieg</p>
+<p class="fbdl-entry-amount">50 <span>Likes</span></p>
+<p class="fbdl-entry-price" data-fbdl-price-for="50">3,90 €</p>
+<p class="fbdl-entry-detail">Für den verlinkten Beitrag<br/>Kein Instagram-Passwort</p>
+<a href="#fbdl-pakete">Alle sechs Pakete vergleichen <span aria-hidden="true">↓</span></a>
+</aside>
+</section>
+<nav aria-label="Inhalt der Produktbeschreibung" class="fbdl-jumpnav">
+<a href="#fbdl-profilmerkmale">Profilmerkmale</a><a href="#fbdl-pakete">Pakete &amp; Preise</a><a href="#fbdl-bestellung">Bestellung</a><a href="#fbdl-grenzen">Leistungsumfang</a><a href="#fbdl-fragen">Fragen</a>
+</nav>
+<section aria-labelledby="fbdl-profilmerkmale" class="fbdl-section">
+<p class="fbdl-eyebrow">Die Produktvariante verstehen</p>
+<h2 id="fbdl-profilmerkmale">Deutschsprachige Merkmale sind keine Herkunftsgarantie</h2>
+<p>Bei dieser Variante geht es um das Erscheinungsbild der beteiligten Accounts: deutschsprachige Namen und eine entsprechende Profilgestaltung. Wenn du gezielt diese Profilmerkmale suchst, ist das die Abgrenzung zur allgemeinen Likes-Variante.</p>
+<div class="fbdl-definition-grid">
+<div class="fbdl-definition"><span class="fbdl-small-label">Was „deutsch“ hier beschreibt</span><h3>Sprachlicher Profilbezug</h3><p>Die Produktkategorie richtet sich nach deutschsprachigen Profilmerkmalen. Entscheidend ist diese Ausrichtung, nicht ein nachgewiesener Aufenthaltsort.</p></div>
+<div class="fbdl-definition fbdl-definition-muted"><span class="fbdl-small-label">Was damit nicht zugesichert wird</span><h3>Geprüfte Herkunft</h3><p>Wohnort, Staatsangehörigkeit oder Standort in Deutschland werden nicht verifiziert. Auch ein bestimmter Anteil aus Deutschland, Österreich oder der Schweiz ist nicht zugesichert.</p></div>
+</div>
+<p>Ein deutschsprachiger Name belegt außerdem weder eine bestimmte Aktivität noch persönliches Interesse an deinem Inhalt. Wenn du tatsächlich Menschen in einer bestimmten Stadt oder Region erreichen möchtest, ist dieses Like-Paket kein Ersatz für eine gezielt ausgesteuerte Werbekampagne.</p>
+</section>
+<section aria-labelledby="fbdl-pakete" class="fbdl-section">
+<div class="fbdl-section-heading"><div><p class="fbdl-eyebrow">Sechs Standardpakete</p><h2 id="fbdl-pakete">Deutsche Instagram Likes: Mengen und Preise</h2></div><span class="fbdl-soft-tag">Ab 50 Likes</span></div>
+<p>Vergleiche den Gesamtpreis für deine gewünschte Menge. Der Preis je 100 Likes hilft dir beim Einordnen; er ist kein zusätzliches Paket und kein Aufpreis.</p>
+<ul aria-label="Standardpakete für deutsche Instagram Likes" class="fbdl-packages">
+<li class="fbdl-package"><p class="fbdl-package-amount">50 <span>Likes</span></p><p class="fbdl-package-price" data-fbdl-price-for="50">3,90 €</p><p class="fbdl-unit" data-fbdl-unit-for="50">7,80 € je 100 Likes</p></li>
+<li class="fbdl-package"><p class="fbdl-package-amount">100 <span>Likes</span></p><p class="fbdl-package-price" data-fbdl-price-for="100">6,90 €</p><p class="fbdl-unit" data-fbdl-unit-for="100">6,90 € je 100 Likes</p></li>
+<li class="fbdl-package"><p class="fbdl-package-amount">250 <span>Likes</span></p><p class="fbdl-package-price" data-fbdl-price-for="250">12,90 €</p><p class="fbdl-unit" data-fbdl-unit-for="250">5,16 € je 100 Likes</p></li>
+<li class="fbdl-package"><p class="fbdl-package-amount">500 <span>Likes</span></p><p class="fbdl-package-price" data-fbdl-price-for="500">21,90 €</p><p class="fbdl-unit" data-fbdl-unit-for="500">4,38 € je 100 Likes</p></li>
+<li class="fbdl-package"><p class="fbdl-package-amount">1.000 <span>Likes</span></p><p class="fbdl-package-price" data-fbdl-price-for="1000">38,90 €</p><p class="fbdl-unit" data-fbdl-unit-for="1000">3,89 € je 100 Likes</p></li>
+<li class="fbdl-package"><p class="fbdl-package-amount">2.500 <span>Likes</span></p><p class="fbdl-package-price" data-fbdl-price-for="2500">89,00 €</p><p class="fbdl-unit" data-fbdl-unit-for="2500">3,56 € je 100 Likes</p></li>
+</ul>
+<p class="fbdl-caption">Die Vergleichswerte je 100 Likes sind auf zwei Nachkommastellen gerundet. Maßgeblich für deine Bestellung ist der Preis in der Paketauswahl.</p>
+<div class="fbdl-inline-note"><strong>Die passende Menge ist deine Entscheidung.</strong> Ein größerer Auftrag bietet einen niedrigeren rechnerischen Stückpreis, kostet insgesamt aber mehr. Daraus ergibt sich keine bessere organische Reichweite oder zusätzliche Leistung.</div>
+</section>
+<section aria-labelledby="fbdl-bestellung" class="fbdl-section">
+<p class="fbdl-eyebrow">Vom Paket zum Beitrag</p>
+<h2 id="fbdl-bestellung">So bereitest du deine Bestellung vor</h2>
+<ol class="fbdl-steps">
+<li><span aria-hidden="true" class="fbdl-step-number">01</span><div><h3>Menge auswählen</h3><p>Wähle oben das gewünschte Paket. Prüfe vor dem nächsten Schritt, ob Menge und angezeigter Gesamtpreis deiner Auswahl entsprechen.</p></div></li>
+<li><span aria-hidden="true" class="fbdl-step-number">02</span><div><h3>Beitragslink kopieren</h3><p>Öffne den gewünschten Instagram-Beitrag und kopiere seinen Link. Benötigt wird die Adresse dieses Beitrags, nicht nur dein Benutzername oder der Link zur Profilübersicht.</p></div></li>
+<li><span aria-hidden="true" class="fbdl-step-number">03</span><div><h3>Erreichbarkeit und Angaben prüfen</h3><p>Der Beitrag muss öffentlich erreichbar sein. Kontrolliere den eingefügten Link und die Menge, bevor du das Paket in den Warenkorb legst. Ein Passwort oder Zugang zu deinem Instagram-Konto ist nicht nötig.</p></div></li>
+<li><span aria-hidden="true" class="fbdl-step-number">04</span><div><h3>Bestellung abschließen</h3><p>Prüfe die Bestellübersicht und wähle eine im Checkout angebotene Zahlungsart. Bewahre die Bestellnummer für Rückfragen auf und lasse den verlinkten Beitrag während der Bearbeitung erreichbar.</p></div></li>
+</ol>
+<div class="fbdl-link-check"><strong>Kurzer Linkcheck:</strong> Öffne den kopierten Link in einem zweiten Browserfenster und kontrolliere, ob er zum richtigen Inhalt führt. Eine Instagram-Anmeldemaske allein beweist allerdings nicht, dass ein Beitrag privat ist.</div>
+</section>
+<section aria-labelledby="fbdl-vergleich" class="fbdl-section">
+<p class="fbdl-eyebrow">Zwei unterschiedliche Auswahlkriterien</p>
+<h2 id="fbdl-vergleich">Deutsche oder allgemeine Instagram Likes?</h2>
+<div class="fbdl-compare">
+<div class="fbdl-compare-card"><h3>Deutschsprachige Profilmerkmale</h3><p>Diese Variante passt zu deiner Auswahl, wenn dir der sprachliche Bezug der Profile wichtig ist. Du bestellst Likes mit dieser Produktausrichtung, keine bestätigte deutsche Zielgruppe.</p></div>
+<div class="fbdl-compare-card"><h3>Allgemeine Likes-Variante</h3><p>Wenn du nicht gezielt nach deutschsprachigen Profilmerkmalen suchst, vergleiche die <a href="/product/instagram-likes-kaufen">allgemeinen Instagram Likes</a>. Dort findest du die dafür angebotenen Mengen und Preise.</p></div>
+</div>
+<p>Die Varianten unterscheiden sich in ihrem Angebot, nicht durch eine zugesicherte Wirkung auf den Instagram-Algorithmus. Weder ein Sprachbezug noch eine höhere Like-Zahl garantieren die Ausspielung an bestimmte Personen.</p>
+</section>
+<section aria-labelledby="fbdl-grenzen" class="fbdl-section">
+<p class="fbdl-eyebrow">Leistungsumfang klar einordnen</p>
+<h2 id="fbdl-grenzen">Likes für einen Beitrag, kein Rundum-Wachstum</h2>
+<p>Gegenstand dieses Produkts ist die bestellte Menge an Likes für den verlinkten Beitrag. Follower, Kommentare, gespeicherte Beiträge, Videoaufrufe und Nachrichten sind nicht Bestandteil des Like-Pakets.</p>
+<p>Eine höhere Like-Zahl belegt nicht, wie viele Menschen deinen Inhalt aufmerksam gelesen haben, sich für dein Angebot interessieren oder später zu Kunden werden. Wenn du deinen Content bewertest, betrachte zusätzliche Kennzahlen wie tatsächliche Reichweite, Profilbesuche und Anfragen getrennt von eingekauften Interaktionen.</p>
+<aside aria-label="Plattformregeln" class="fbdl-platform"><strong>Plattformregeln gehören zur Entscheidung.</strong><p>Instagram untersagt das künstliche Sammeln von Likes. Der Kauf ist daher nicht mit einer Freigabe durch Instagram gleichzusetzen. Ein dauerhafter Bestand der Interaktionen oder ein risikofreier Verlauf werden nicht zugesichert. Die Einordnung folgt den <a href="https://www.facebook.com/help/477434105621119?locale=en_GB">Instagram-Gemeinschaftsrichtlinien</a>.</p></aside>
+</section>
+<section aria-labelledby="fbdl-fragen" class="fbdl-section">
+<p class="fbdl-eyebrow">Vor der Auswahl</p>
+<h2 id="fbdl-fragen">Häufige Fragen zu deutschen Instagram Likes</h2>
+<div class="fbdl-faq">
+<details><summary>Stammen die Accounts nachweislich aus Deutschland?</summary><div><p>Nein, eine verifizierte Herkunft aus Deutschland ist nicht zugesichert. „Deutsch“ bezieht sich bei dieser Variante auf deutschsprachige Profilmerkmale, zum Beispiel Namen und Profilgestaltung. Daraus lässt sich kein sicherer Wohnort ableiten.</p></div></details>
+<details><summary>Was kostet das kleinste Paket?</summary><div><p>Das kleinste Standardpaket umfasst 50 Likes und kostet derzeit 3,90 €. Die weiteren Standardmengen sind 100, 250, 500, 1.000 und 2.500 Likes. Prüfe den aktuellen Preis in der Paketauswahl, bevor du bestellst.</p></div></details>
+<details><summary>Kann ich eine Bestellung auf mehrere Beiträge verteilen?</summary><div><p>Das Bestellformular sieht einen Beitragslink vor. Eine automatische Aufteilung auf mehrere Inhalte ist damit nicht zugesichert. Wenn du mehrere Beiträge berücksichtigen möchtest, kläre den passenden Bestellweg vor dem Kauf mit uns.</p></div></details>
+<details><summary>Wann startet die Lieferung?</summary><div><p>Der Start kann je nach aktuellem Bestellaufkommen variieren. Eine feste Minutenzahl oder vollständige Lieferung innerhalb von 24 Stunden wird hier nicht versprochen. Falls du einen festen Termin einplanst, frage vor der Bestellung nach der aktuellen Einschätzung.</p></div></details>
+<details><summary>Werden verlorene Likes automatisch nachgefüllt?</summary><div><p>Eine automatische Nachfüllung solltest du nicht voraussetzen. Ob für dein Paket eine Nachfüllung angeboten wird und welche Fristen oder Bedingungen dafür gelten, klärst du bitte vor der Bestellung. Aus dem Kauf allein lässt sich kein unbegrenzter Ersatz ableiten.</p></div></details>
+<details><summary>Was mache ich bei einem falschen Link oder Rückfragen?</summary><div><p>Kontaktiere uns mit deiner Bestellnummer und dem betroffenen Beitragslink. Sende kein Instagram-Passwort mit. Ob eine Änderung noch möglich ist, hängt vom Bearbeitungsstand ab; eine nachträgliche Korrektur ist nicht pauschal zugesichert.</p></div></details>
+</div>
+<p class="fbdl-help">Noch eine konkrete Frage zum Paket? <a href="/kontakt">Kontaktiere Followerbase</a>, bevor du deine Auswahl abschließt.</p>
+</section>
+<section aria-labelledby="fbdl-abschluss" class="fbdl-final">
+<div><p class="fbdl-eyebrow">Deine Auswahl bei Followerbase</p><h2 id="fbdl-abschluss">Paket auswählen.<br/>Beitragslink bereithalten.</h2><p>50 bis 2.500 Likes mit deutschsprachigen Profilmerkmalen. Wähle oben die gewünschte Menge und kontrolliere die Bestellangaben.</p></div>
+<a class="fbdl-button fbdl-button-light" href="#produkt-auswahl">Zur Paketauswahl <span aria-hidden="true">↗</span></a>
+</section>
+</div>

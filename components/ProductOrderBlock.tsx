@@ -61,6 +61,16 @@ type ProductOrderBlockProps = {
   targetInputId?: string;
   /** ID des Mengensliders, falls die Seite eine eigene braucht. */
   quantitySliderId?: string;
+  /** Slider-Minimum aus der kleinsten hinterlegten Paketmenge statt fest 100. */
+  sliderMinFromPackages?: boolean;
+  /** Nur katalogisierte Pakete; keine interpolierten Zwischenmengen. */
+  restrictToListedQuantities?: boolean;
+  /** Optionaler Hinweis unter dem Ziel-Feld. */
+  targetHint?: string;
+  /** Meldung bei leerem Ziel-Feld. */
+  emptyTargetError?: string;
+  /** Meldung bei ungültigem Instagram-Beitragslink. */
+  invalidTargetError?: string;
 };
 
 /**
@@ -70,6 +80,28 @@ type ProductOrderBlockProps = {
 function snapQuantity(value: number, min: number, max: number): number {
   const qty = Math.round(value / INDIVIDUAL_STEP) * INDIVIDUAL_STEP;
   return Math.min(max, Math.max(min, qty));
+}
+
+function listedQuantities(quantities: number[]): number[] {
+  return quantities
+    .filter((qty) => Number.isFinite(qty) && qty > 0)
+    .sort((a, b) => a - b);
+}
+
+/** Nächstes oder vorheriges Paket, damit Pfeiltasten nicht auf Lücken hängen bleiben. */
+function snapToListedQuantity(value: number, quantities: number[], previous: number): number {
+  const listed = listedQuantities(quantities);
+  if (listed.length === 0) return value;
+  if (listed.includes(value)) return value;
+  if (value > previous) {
+    return listed.find((qty) => qty >= value) ?? listed[listed.length - 1];
+  }
+  if (value < previous) {
+    return [...listed].reverse().find((qty) => qty <= value) ?? listed[0];
+  }
+  return listed.reduce((best, qty) =>
+    Math.abs(qty - value) < Math.abs(best - value) ? qty : best
+  );
 }
 
 /**
@@ -125,13 +157,20 @@ export function ProductOrderBlock({
   validateInstagramMediaUrl = false,
   targetInputId = "product-target",
   quantitySliderId = "product-quantity-slider",
+  sliderMinFromPackages = false,
+  restrictToListedQuantities = false,
+  targetHint,
+  emptyTargetError,
+  invalidTargetError,
 }: ProductOrderBlockProps) {
   const { addItem } = useCart();
 
   const [tierIndex, setTierIndex] = useState(0);
   const [useIndividual, setUseIndividual] = useState(false);
   const [standardIndex, setStandardIndex] = useState(0);
-  const [sliderQuantity, setSliderQuantity] = useState(INDIVIDUAL_MIN);
+  const [sliderQuantity, setSliderQuantity] = useState(() =>
+    sliderMinFromPackages && quantities[0] ? quantities[0] : INDIVIDUAL_MIN
+  );
   const [targetInput, setTargetInput] = useState("");
   const [targetError, setTargetError] = useState<string | null>(null);
   const [added, setAdded] = useState(false);
@@ -141,13 +180,25 @@ export function ProductOrderBlock({
   const currentTier = tiers && tiers.length > 0 ? tiers[tierIndex]! : null;
   const q = currentTier ? currentTier.quantities : quantities;
   const p = currentTier ? currentTier.pricesCents : pricesCents;
-  const maxForSlider = currentTier?.sliderMax ?? Math.max(INDIVIDUAL_MAX_DEFAULT, ...q);
+  const listed = listedQuantities(q);
+  const sliderMin =
+    sliderMinFromPackages || restrictToListedQuantities
+      ? listed[0] ?? INDIVIDUAL_MIN
+      : INDIVIDUAL_MIN;
+  const maxForSlider = restrictToListedQuantities
+    ? listed[listed.length - 1] ?? sliderMin
+    : currentTier?.sliderMax ?? Math.max(INDIVIDUAL_MAX_DEFAULT, ...q);
 
-  const standardQuantity = q[standardIndex] ?? 100;
+  const standardQuantity = q[standardIndex] ?? sliderMin;
   const standardPriceCents = p[standardIndex] ?? 100;
 
-  const individualQuantity = snapQuantity(sliderQuantity, INDIVIDUAL_MIN, maxForSlider);
-  const individualPriceCents = getIndividualPriceCents(individualQuantity, q, p);
+  const individualQuantity = restrictToListedQuantities
+    ? snapToListedQuantity(sliderQuantity, q, sliderQuantity)
+    : snapQuantity(sliderQuantity, sliderMin, maxForSlider);
+  const listedPriceIndex = q.indexOf(individualQuantity);
+  const individualPriceCents = restrictToListedQuantities
+    ? (typeof p[listedPriceIndex] === "number" ? p[listedPriceIndex] : 0)
+    : getIndividualPriceCents(individualQuantity, q, p);
 
   const quantity = useIndividual ? individualQuantity : standardQuantity;
   const priceCents = useIndividual ? individualPriceCents : standardPriceCents;
@@ -168,34 +219,41 @@ export function ProductOrderBlock({
 
   const handleSliderChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      setSliderQuantity(snapQuantity(Number(e.target.value), INDIVIDUAL_MIN, maxForSlider));
+      const raw = Number(e.target.value);
+      setSliderQuantity((prev) =>
+        restrictToListedQuantities
+          ? snapToListedQuantity(raw, q, prev)
+          : snapQuantity(raw, sliderMin, maxForSlider)
+      );
       setUseIndividual(true);
     },
-    [maxForSlider]
+    [maxForSlider, q, restrictToListedQuantities, sliderMin]
   );
 
   const handleStandardSelect = useCallback(
     (index: number) => {
       setStandardIndex(index);
       setUseIndividual(false);
-      setSliderQuantity(q[index] ?? INDIVIDUAL_MIN);
+      setSliderQuantity(q[index] ?? sliderMin);
     },
-    [q]
+    [q, sliderMin]
   );
 
   const handleAddToCart = useCallback(() => {
     const value = targetInput.trim();
     if (!value) {
       setTargetError(
-        validateInstagramMediaUrl
-          ? "Bitte den Link zu deinem Instagram-Beitrag, Reel oder Karussell einfügen."
-          : "Bitte hier noch einfügen – gib deinen Nutzernamen oder Profil-Link ein."
+        emptyTargetError ||
+          (validateInstagramMediaUrl
+            ? "Bitte den Link zu deinem Instagram-Beitrag, Reel oder Karussell einfügen."
+            : "Bitte hier noch einfügen – gib deinen Nutzernamen oder Profil-Link ein.")
       );
       return;
     }
     if (validateInstagramMediaUrl && !isInstagramMediaUrl(value)) {
       setTargetError(
-        "Bitte einen gültigen Instagram-Link zu einem Beitrag, Reel oder Karussell einfügen."
+        invalidTargetError ||
+          "Bitte einen gültigen Instagram-Link zu einem Beitrag, Reel oder Karussell einfügen."
       );
       return;
     }
@@ -217,11 +275,19 @@ export function ProductOrderBlock({
     quantity,
     priceCents,
     validateInstagramMediaUrl,
+    emptyTargetError,
+    invalidTargetError,
   ]);
 
   const effectiveSliderQuantity = useIndividual
     ? individualQuantity
-    : snapQuantity(standardQuantity, INDIVIDUAL_MIN, maxForSlider);
+    : restrictToListedQuantities
+      ? standardQuantity
+      : snapQuantity(standardQuantity, sliderMin, maxForSlider);
+
+  const sliderAriaLabel = restrictToListedQuantities
+    ? `Paketmenge zwischen ${formatQuantity(sliderMin)} und ${formatQuantity(maxForSlider)}. Nur hinterlegte Pakete sind bestellbar.`
+    : `Menge zwischen ${sliderMin} und ${maxForSlider} in ${INDIVIDUAL_STEP}er-Schritten`;
 
   /** Kaufleiste erst zeigen, wenn das Produktmodul aus dem Blickfeld gescrollt ist. */
   useEffect(() => {
@@ -312,15 +378,15 @@ export function ProductOrderBlock({
         <input
           id={quantitySliderId}
           type="range"
-          min={INDIVIDUAL_MIN}
+          min={sliderMin}
           max={maxForSlider}
           step={INDIVIDUAL_STEP}
           value={effectiveSliderQuantity}
           onChange={handleSliderChange}
           onPointerDown={() => setUseIndividual(true)}
           className="product-quantity-slider"
-          aria-label={`Menge zwischen ${INDIVIDUAL_MIN} und ${maxForSlider} in ${INDIVIDUAL_STEP}er-Schritten`}
-          aria-valuemin={INDIVIDUAL_MIN}
+          aria-label={sliderAriaLabel}
+          aria-valuemin={sliderMin}
           aria-valuemax={maxForSlider}
           aria-valuenow={quantity}
           aria-valuetext={`${formatQuantity(quantity)} ${productName}`}
@@ -359,7 +425,7 @@ export function ProductOrderBlock({
           </span>
         )}
         <span id={`${targetInputId}-hint`} className="product-input-hint">
-          {getTargetHint(productSlug)}
+          {targetHint || getTargetHint(productSlug)}
         </span>
       </div>
       <button
