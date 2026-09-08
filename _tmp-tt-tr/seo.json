@@ -1,0 +1,71 @@
+{
+  "target_url": "https://followerbase.de/product/tiktok-follower-tuerkisch-kaufen",
+  "product_slug": "tiktok-follower-tuerkisch-kaufen",
+  "product_sku": "FC-019",
+  "h1": "TikTok Follower Türkisch kaufen",
+  "seo_title": "Türkische TikTok Follower kaufen | Followerbase",
+  "meta_description": "Türkische TikTok Follower ab 2,85 € bestellen. Sechs Pakete von 100 bis 5.000 Followern. Profillink oder Nutzername genügt, kein TikTok-Passwort nötig.",
+  "canonical": "https://followerbase.de/product/tiktok-follower-tuerkisch-kaufen",
+  "robots_for_production": "index, follow",
+  "focus_keyword": "türkische tiktok follower kaufen",
+  "og_title": "Türkische TikTok Follower kaufen | Followerbase",
+  "og_description": "Türkische TikTok Follower ab 2,85 € bestellen. Sechs Pakete von 100 bis 5.000 Followern. Profillink oder Nutzername genügt, kein TikTok-Passwort nötig.",
+  "og_url": "https://followerbase.de/product/tiktok-follower-tuerkisch-kaufen",
+  "existing_og_image": "https://followerbase.de/icons/TikTok%20t%C3%BCrkische%20Follower%20kaufen.png",
+  "secondary_keywords": [
+    "tiktok follower türkisch kaufen",
+    "türkische tiktok follower",
+    "tiktok follower türkische profile"
+  ],
+  "packages_observed_not_a_new_price_database": [
+    {
+      "quantity": 100,
+      "price_eur": "2.85",
+      "unit_per_100_eur": "2.85",
+      "sku": "FC-019-100"
+    },
+    {
+      "quantity": 250,
+      "price_eur": "5.90",
+      "unit_per_100_eur": "2.36",
+      "sku": "FC-019-250"
+    },
+    {
+      "quantity": 500,
+      "price_eur": "9.90",
+      "unit_per_100_eur": "1.98",
+      "sku": "FC-019-500"
+    },
+    {
+      "quantity": 1000,
+      "price_eur": "17.90",
+      "unit_per_100_eur": "1.79",
+      "sku": "FC-019-1000"
+    },
+    {
+      "quantity": 2500,
+      "price_eur": "39.90",
+      "unit_per_100_eur": "1.60",
+      "sku": "FC-019-2500"
+    },
+    {
+      "quantity": 5000,
+      "price_eur": "74.90",
+      "unit_per_100_eur": "1.50",
+      "sku": "FC-019-5000"
+    }
+  ],
+  "price_evidence": {
+    "date_utc": "2026-09-08T11:23:43.451334+00:00",
+    "source": "public Product JSON-LD; default 100 / 2.85 also visible; backend and checkout untested"
+  },
+  "definition_status": "Provisional interpretation of existing page: Turkish profile/name/language characteristics. Owner confirmation for this TikTok product still pending. Do not infer from prior German Instagram product.",
+  "missing_product_confirmations": [
+    "Definition of Turkish profile characteristics",
+    "Verified source of any country claims",
+    "Delivery schedule",
+    "Refill duration, conditions and exclusions"
+  ],
+  "integration": "Route metadata input; NOT schema.org JSON-LD. Use existing authoritative product pricing and existing schema renderer.",
+  "live_published": false
+}

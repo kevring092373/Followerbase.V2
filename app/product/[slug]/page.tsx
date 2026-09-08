@@ -92,12 +92,26 @@ import { TiktokSavesAnchorScroll } from "@/components/TiktokSavesAnchorScroll";
 import { InstagramFollowerDeutschAnchorScroll } from "@/components/InstagramFollowerDeutschAnchorScroll";
 import { InstagramFollowerTuerkischAnchorScroll } from "@/components/InstagramFollowerTuerkischAnchorScroll";
 import { InstagramLikesDeutschAnchorScroll } from "@/components/InstagramLikesDeutschAnchorScroll";
+import { TiktokFollowerTuerkischAnchorScroll } from "@/components/TiktokFollowerTuerkischAnchorScroll";
+import {
+  TIKTOK_FOLLOWER_TUERKISCH_BULLETS,
+  TIKTOK_FOLLOWER_TUERKISCH_DESCRIPTION,
+  TIKTOK_FOLLOWER_TUERKISCH_EMPTY_TARGET_ERROR,
+  TIKTOK_FOLLOWER_TUERKISCH_H1,
+  TIKTOK_FOLLOWER_TUERKISCH_IMAGE_ALT,
+  TIKTOK_FOLLOWER_TUERKISCH_INVALID_TARGET_ERROR,
+  TIKTOK_FOLLOWER_TUERKISCH_TARGET_HINT,
+  TIKTOK_FOLLOWER_TUERKISCH_TITLE,
+  isTiktokFollowerTuerkischProduct,
+  prepareTiktokFollowerTuerkischDescriptionHtml,
+} from "@/lib/tiktok-follower-tuerkisch-seo";
 import likesStyles from "./instagram-likes.module.css";
 import savesStyles from "./instagram-saves.module.css";
 import tiktokSavesStyles from "./tiktok-saves.module.css";
 import deutschStyles from "./instagram-follower-deutsch.module.css";
 import tuerkischStyles from "./instagram-follower-tuerkisch.module.css";
 import likesDeutschStyles from "./instagram-likes-deutsch.module.css";
+import tiktokTuerkischStyles from "./tiktok-follower-tuerkisch.module.css";
 import type { Product } from "@/lib/products-data";
 
 type Props = { params: { slug: string } };
@@ -186,6 +200,16 @@ function instagramLikesDeutschProduct(product: Product): Product {
   };
 }
 
+function tiktokFollowerTuerkischProduct(product: Product): Product {
+  return {
+    ...product,
+    metaTitle: TIKTOK_FOLLOWER_TUERKISCH_TITLE,
+    metaDescription: TIKTOK_FOLLOWER_TUERKISCH_DESCRIPTION,
+    bullets: [...TIKTOK_FOLLOWER_TUERKISCH_BULLETS],
+    description: prepareTiktokFollowerTuerkischDescriptionHtml(product.description, product),
+  };
+}
+
 function withPageSeo(product: Product): Product {
   if (isYoutubeViewsProduct(product.slug)) return youtubeViewsProduct(product);
   if (isInstagramLikesProduct(product.slug)) return instagramLikesProduct(product);
@@ -194,6 +218,7 @@ function withPageSeo(product: Product): Product {
   if (isInstagramFollowerDeutschProduct(product.slug)) return instagramFollowerDeutschProduct(product);
   if (isInstagramFollowerTuerkischProduct(product.slug)) return instagramFollowerTuerkischProduct(product);
   if (isInstagramLikesDeutschProduct(product.slug)) return instagramLikesDeutschProduct(product);
+  if (isTiktokFollowerTuerkischProduct(product.slug)) return tiktokFollowerTuerkischProduct(product);
   return product;
 }
 
@@ -218,6 +243,7 @@ export async function generateMetadata({ params }: Props) {
   const deutschPage = isInstagramFollowerDeutschProduct(product.slug);
   const tuerkischPage = isInstagramFollowerTuerkischProduct(product.slug);
   const likesDeutschPage = isInstagramLikesDeutschProduct(product.slug);
+  const tiktokTuerkischPage = isTiktokFollowerTuerkischProduct(product.slug);
   const pinnedTitlePage =
     isYoutubeViewsProduct(product.slug) ||
     likesPage ||
@@ -225,7 +251,8 @@ export async function generateMetadata({ params }: Props) {
     tiktokSavesPage ||
     deutschPage ||
     tuerkischPage ||
-    likesDeutschPage;
+    likesDeutschPage ||
+    tiktokTuerkischPage;
   const title = isYoutubeViewsProduct(product.slug)
     ? YOUTUBE_VIEWS_TITLE
     : likesPage
@@ -240,6 +267,8 @@ export async function generateMetadata({ params }: Props) {
               ? INSTAGRAM_FOLLOWER_TUERKISCH_TITLE
               : likesDeutschPage
                 ? INSTAGRAM_LIKES_DEUTSCH_TITLE
+                : tiktokTuerkischPage
+                  ? TIKTOK_FOLLOWER_TUERKISCH_TITLE
     : product.metaTitle?.trim()
       ? product.metaTitle.trim()
       : truncateTitle(`${displayName} – Followerbase`);
@@ -259,6 +288,8 @@ export async function generateMetadata({ params }: Props) {
               ? INSTAGRAM_FOLLOWER_TUERKISCH_DESCRIPTION
               : likesDeutschPage
                 ? INSTAGRAM_LIKES_DEUTSCH_DESCRIPTION
+                : tiktokTuerkischPage
+                  ? TIKTOK_FOLLOWER_TUERKISCH_DESCRIPTION
     : truncateDescription(rawDesc);
   const url = productCanonicalUrl(product.slug);
   const imageUrl = product.image ? absoluteImageUrl(product.image) : absoluteImageUrl("/icons/Followerbase Logo.png");
@@ -279,6 +310,8 @@ export async function generateMetadata({ params }: Props) {
                   ? INSTAGRAM_FOLLOWER_TUERKISCH_IMAGE_ALT
                   : likesDeutschPage
                     ? INSTAGRAM_LIKES_DEUTSCH_IMAGE_ALT
+                    : tiktokTuerkischPage
+                      ? TIKTOK_FOLLOWER_TUERKISCH_IMAGE_ALT
               : displayName,
       }
     : { url: imageUrl, width: 1200, height: 630, alt: SITE_NAME };
@@ -318,7 +351,9 @@ export default async function ProductPage({ params }: Props) {
   const deutschPage = isInstagramFollowerDeutschProduct(product.slug);
   const tuerkischPage = isInstagramFollowerTuerkischProduct(product.slug);
   const likesDeutschPage = isInstagramLikesDeutschProduct(product.slug);
-  const structuredProductPage = likesPage || savesPage || deutschPage || tuerkischPage || likesDeutschPage;
+  const tiktokTuerkischPage = isTiktokFollowerTuerkischProduct(product.slug);
+  const structuredProductPage =
+    likesPage || savesPage || deutschPage || tuerkischPage || likesDeutschPage || tiktokTuerkischPage;
   const editorialBlockPage = structuredProductPage || tiktokSavesPage;
   const OrderSectionTag = structuredProductPage ? "section" : "div";
   const productImage = product.image;
@@ -334,6 +369,8 @@ export default async function ProductPage({ params }: Props) {
             ? INSTAGRAM_FOLLOWER_TUERKISCH_IMAGE_ALT
             : likesDeutschPage
               ? INSTAGRAM_LIKES_DEUTSCH_IMAGE_ALT
+              : tiktokTuerkischPage
+                ? TIKTOK_FOLLOWER_TUERKISCH_IMAGE_ALT
       : getProductImageAlt(productImage, product.name);
 
   let related = await getRelatedProducts(product.categoryId, product.slug, 12);
@@ -376,6 +413,7 @@ export default async function ProductPage({ params }: Props) {
     deutschPage ? `${deutschStyles.page} instagram-follower-deutsch-page` : "",
     tuerkischPage ? `${tuerkischStyles.page} instagram-follower-tuerkisch-page` : "",
     likesDeutschPage ? `${likesDeutschStyles.page} instagram-likes-deutsch-page` : "",
+    tiktokTuerkischPage ? `${tiktokTuerkischStyles.page} tiktok-follower-tuerkisch-page` : "",
   ]
     .filter(Boolean)
     .join(" ");
@@ -388,7 +426,14 @@ export default async function ProductPage({ params }: Props) {
       {deutschPage ? <InstagramFollowerDeutschAnchorScroll /> : null}
       {tuerkischPage ? <InstagramFollowerTuerkischAnchorScroll /> : null}
       {likesDeutschPage ? <InstagramLikesDeutschAnchorScroll /> : null}
-      <JsonLd data={buildProductSchema(product, category, likesDeutschPage ? { defaultPackageOffer: true } : undefined)} />
+      {tiktokTuerkischPage ? <TiktokFollowerTuerkischAnchorScroll /> : null}
+      <JsonLd
+        data={buildProductSchema(
+          product,
+          category,
+          likesDeutschPage || tiktokTuerkischPage ? { defaultPackageOffer: true } : undefined
+        )}
+      />
       <JsonLd data={breadcrumbSchema} />
       {faqSchema ? <JsonLd data={faqSchema} /> : null}
       <Link href="/products" className="product-back-link">
@@ -428,6 +473,8 @@ export default async function ProductPage({ params }: Props) {
                     ? "instagram-follower-tuerkisch-titel"
                     : likesDeutschPage
                       ? "instagram-likes-deutsch-titel"
+                      : tiktokTuerkischPage
+                        ? "tiktok-follower-tuerkisch-titel"
                 : undefined
           }
         >
@@ -437,6 +484,8 @@ export default async function ProductPage({ params }: Props) {
               ? INSTAGRAM_FOLLOWER_TUERKISCH_H1
               : likesDeutschPage
                 ? INSTAGRAM_LIKES_DEUTSCH_H1
+                : tiktokTuerkischPage
+                  ? TIKTOK_FOLLOWER_TUERKISCH_H1
               : getProductDisplayName(product.name)}
         </h1>
         {product.articleNumber && (
@@ -467,9 +516,11 @@ export default async function ProductPage({ params }: Props) {
                   ? { "aria-labelledby": "instagram-follower-tuerkisch-titel" }
                   : likesDeutschPage
                     ? { "aria-labelledby": "instagram-likes-deutsch-titel" }
+                    : tiktokTuerkischPage
+                      ? { "aria-labelledby": "tiktok-follower-tuerkisch-titel" }
               : {})}
         >
-          {viewsPage || likesPage || savesPage || deutschPage || tuerkischPage || likesDeutschPage ? (
+          {viewsPage || likesPage || savesPage || deutschPage || tuerkischPage || likesDeutschPage || tiktokTuerkischPage ? (
             <>
               <p className="product-availability">Verfügbar – Lieferung nach Bestellung</p>
               <noscript>
@@ -490,14 +541,36 @@ export default async function ProductPage({ params }: Props) {
             productName={product.name}
             bullets={[]}
             tiers={product.tiers}
-            showPackagePrices={viewsPage || likesPage || savesPage || deutschPage || tuerkischPage || likesDeutschPage}
+            showPackagePrices={
+              viewsPage || likesPage || savesPage || deutschPage || tuerkischPage || likesDeutschPage || tiktokTuerkischPage
+            }
             targetAsUrl={likesPage || savesPage || likesDeutschPage}
             validateInstagramMediaUrl={likesPage || savesPage || likesDeutschPage}
-            sliderMinFromPackages={likesDeutschPage}
-            restrictToListedQuantities={likesDeutschPage}
-            targetHint={likesDeutschPage ? INSTAGRAM_LIKES_DEUTSCH_TARGET_HINT : undefined}
-            emptyTargetError={likesDeutschPage ? INSTAGRAM_LIKES_DEUTSCH_EMPTY_TARGET_ERROR : undefined}
-            invalidTargetError={likesDeutschPage ? INSTAGRAM_LIKES_DEUTSCH_INVALID_TARGET_ERROR : undefined}
+            validateTikTokProfile={tiktokTuerkischPage}
+            neutralizeTikTokGrowthClaim={tiktokTuerkischPage}
+            sliderMinFromPackages={likesDeutschPage || tiktokTuerkischPage}
+            restrictToListedQuantities={likesDeutschPage || tiktokTuerkischPage}
+            targetHint={
+              likesDeutschPage
+                ? INSTAGRAM_LIKES_DEUTSCH_TARGET_HINT
+                : tiktokTuerkischPage
+                  ? TIKTOK_FOLLOWER_TUERKISCH_TARGET_HINT
+                  : undefined
+            }
+            emptyTargetError={
+              likesDeutschPage
+                ? INSTAGRAM_LIKES_DEUTSCH_EMPTY_TARGET_ERROR
+                : tiktokTuerkischPage
+                  ? TIKTOK_FOLLOWER_TUERKISCH_EMPTY_TARGET_ERROR
+                  : undefined
+            }
+            invalidTargetError={
+              likesDeutschPage
+                ? INSTAGRAM_LIKES_DEUTSCH_INVALID_TARGET_ERROR
+                : tiktokTuerkischPage
+                  ? TIKTOK_FOLLOWER_TUERKISCH_INVALID_TARGET_ERROR
+                  : undefined
+            }
             targetInputId={
               likesPage
                 ? "instagram-likes-beitragslink"
@@ -509,6 +582,8 @@ export default async function ProductPage({ params }: Props) {
                       ? "instagram-follower-tuerkisch-ziel"
                       : likesDeutschPage
                         ? "instagram-likes-deutsch-beitragslink"
+                        : tiktokTuerkischPage
+                          ? "tiktok-follower-tuerkisch-ziel"
                   : "product-target"
             }
             quantitySliderId={
@@ -522,6 +597,8 @@ export default async function ProductPage({ params }: Props) {
                       ? "instagram-follower-tuerkisch-quantity-slider"
                       : likesDeutschPage
                         ? "instagram-likes-deutsch-quantity-slider"
+                        : tiktokTuerkischPage
+                          ? "tiktok-follower-tuerkisch-quantity-slider"
                   : "product-quantity-slider"
             }
           />
@@ -580,7 +657,9 @@ export default async function ProductPage({ params }: Props) {
               ? "Weitere Instagram-Produkte: nächste"
               : undefined
           }
-          respectReducedMotion={likesPage || savesPage || deutschPage || tuerkischPage || likesDeutschPage}
+          respectReducedMotion={
+            likesPage || savesPage || deutschPage || tuerkischPage || likesDeutschPage || tiktokTuerkischPage
+          }
         />
       )}
 

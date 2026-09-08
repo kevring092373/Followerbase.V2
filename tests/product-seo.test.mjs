@@ -404,8 +404,8 @@ test("Instagram-Likes-Deutsch-Seite bereinigt Claims und nutzt Live-Pakete", () 
   assert.match(productPage, /INSTAGRAM_LIKES_DEUTSCH_H1/);
   assert.match(productPage, /isInstagramLikesDeutschProduct/);
   assert.match(productPage, /instagram-likes-deutsch-beitragslink/);
-  assert.match(productPage, /restrictToListedQuantities=\{likesDeutschPage\}/);
-  assert.match(productPage, /sliderMinFromPackages=\{likesDeutschPage\}/);
+  assert.match(productPage, /restrictToListedQuantities=\{likesDeutschPage \|\| tiktokTuerkischPage\}/);
+  assert.match(productPage, /sliderMinFromPackages=\{likesDeutschPage \|\| tiktokTuerkischPage\}/);
   assert.match(productPage, /defaultPackageOffer: true/);
   assert.match(structured, /defaultPackageOffer/);
   const seo = read("lib/instagram-likes-deutsch-seo.ts");
@@ -434,6 +434,66 @@ test("Instagram-Likes-Deutsch-Seite bereinigt Claims und nutzt Live-Pakete", () 
   assert.match(orderBlock, /snapToListedQuantity/);
   const paypal = read("app/api/paypal/create-order/route.ts");
   assert.match(paypal, /authorizeCheckoutPrices/);
+});
+
+test("TikTok-Follower-Türkisch-Seite nutzt File-Content, Offer-Paket und Profilziel", () => {
+  const product = products.find((p) => p.slug === "tiktok-follower-tuerkisch-kaufen");
+  assert.ok(product);
+  assert.equal(product.articleNumber, "FC-019");
+  assert.equal(product.metaTitle, "Türkische TikTok Follower kaufen | Followerbase");
+  assert.equal(
+    product.metaDescription,
+    "Türkische TikTok Follower ab 2,85 € bestellen. Sechs Pakete von 100 bis 5.000 Followern. Profillink oder Nutzername genügt, kein TikTok-Passwort nötig."
+  );
+  assert.ok(product.metaTitle.length <= 60);
+  assert.ok(product.metaDescription.length <= 160);
+  assert.deepEqual(product.quantities, [100, 250, 500, 1000, 2500, 5000]);
+  assert.deepEqual(product.pricesCents, [285, 590, 990, 1790, 3990, 7490]);
+  assert.equal(product.image, "/icons/TikTok türkische Follower kaufen.png");
+  assert.match(productPage, /TIKTOK_FOLLOWER_TUERKISCH_TITLE/);
+  assert.match(productPage, /TIKTOK_FOLLOWER_TUERKISCH_H1/);
+  assert.match(productPage, /isTiktokFollowerTuerkischProduct/);
+  assert.match(productPage, /tiktok-follower-tuerkisch-ziel/);
+  assert.match(productPage, /validateTikTokProfile=\{tiktokTuerkischPage\}/);
+  assert.match(productPage, /neutralizeTikTokGrowthClaim=\{tiktokTuerkischPage\}/);
+  assert.match(productPage, /restrictToListedQuantities=\{likesDeutschPage \|\| tiktokTuerkischPage\}/);
+  assert.match(
+    productPage,
+    /prevLabel=\{\s*likesPage \|\| savesPage \|\| deutschPage \|\| tuerkischPage \|\| likesDeutschPage\s*\n\s*\? "Weitere Instagram-Produkte: vorherige"/
+  );
+  assert.match(productPage, /tiktok-follower-tuerkisch-page/);
+  assert.match(structured, /defaultPackageOffer/);
+  const seo = read("lib/tiktok-follower-tuerkisch-seo.ts");
+  assert.match(seo, /data-fbtt-price/);
+  assert.match(seo, /data-fbtt-unit/);
+  assert.match(seo, /Keine Übernahme aus Instagram Likes Deutsch/);
+  const profile = read("lib/tiktok-profile.ts");
+  assert.match(profile, /tiktok\.com/);
+  assert.match(profile, /video\|music\|tag\|discover\|live/);
+  assert.doesNotMatch(profile, /vm\.tiktok\.com/);
+  const html = read("content/product-html/tiktok-follower-tuerkisch-kaufen.html");
+  assert.match(html, /fbtr-tiktok-copy/);
+  assert.match(html, /Türkischer Profilbezug ist kein Standortnachweis/);
+  assert.match(html, /href="#produkt-auswahl"/);
+  assert.match(html, /data-fbtt-price="100"/);
+  assert.match(html, /\/product\/tiktok-follower-kaufen/);
+  assert.match(html, /\/bestellung-verfolgen/);
+  assert.match(html, /\/kontakt/);
+  assert.doesNotMatch(html, /href=["']\/products["']/);
+  assert.equal((html.match(/<h1\b/gi) || []).length, 0);
+  assert.equal((html.match(/<!DOCTYPE|<html\b|<head\b|<body\b/gi) || []).length, 0);
+  assert.equal((html.match(/noindex|json-ld|application\/ld\+json/gi) || []).length, 0);
+  assert.equal((html.match(/<details>/g) || []).length, 6);
+  assert.equal(
+    (html.match(/Klarna|natürlich und echt|echte türkische Nutzer|30-Tage-Nachfüll|DACH-Reichweite|Herkunftsgarantie|Algorithmus-Push/gi) || []).length,
+    0
+  );
+  const orderBlock = read("components/ProductOrderBlock.tsx");
+  assert.match(orderBlock, /validateTikTokProfile/);
+  assert.match(orderBlock, /neutralizeTikTokGrowthClaim/);
+  assert.match(orderBlock, /damit das Wachstum natürlich und echt wirkt/);
+  const authorize = read("lib/authorize-checkout-prices.ts");
+  assert.match(authorize, /isTiktokFollowerTuerkischProduct/);
 });
 
 test("Sitemap und IndexNow-Key-Datei sind vorhanden", () => {

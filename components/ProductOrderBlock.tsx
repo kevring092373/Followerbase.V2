@@ -5,6 +5,7 @@ import { useCart } from "@/context/CartContext";
 import { formatEuroFromCents, formatQuantity } from "@/lib/format";
 import { PRODUCT_ORDER_ANCHOR_ID } from "@/lib/product-seo";
 import { isInstagramMediaUrl } from "@/lib/instagram-url";
+import { isTikTokProfileTarget } from "@/lib/tiktok-profile";
 import type { ProductTier } from "@/lib/products-data";
 
 const INDIVIDUAL_MIN = 100;
@@ -71,6 +72,10 @@ type ProductOrderBlockProps = {
   emptyTargetError?: string;
   /** Meldung bei ungültigem Instagram-Beitragslink. */
   invalidTargetError?: string;
+  /** TikTok-Profil oder @Nutzername prüfen (keine Video-/Hashtag-Links). */
+  validateTikTokProfile?: boolean;
+  /** Gestaffelte Lieferung ohne Wachstums-/Tarnformulierung (nur explizit gesetzte Seiten). */
+  neutralizeTikTokGrowthClaim?: boolean;
 };
 
 /**
@@ -162,6 +167,8 @@ export function ProductOrderBlock({
   targetHint,
   emptyTargetError,
   invalidTargetError,
+  validateTikTokProfile = false,
+  neutralizeTikTokGrowthClaim = false,
 }: ProductOrderBlockProps) {
   const { addItem } = useCart();
 
@@ -257,6 +264,13 @@ export function ProductOrderBlock({
       );
       return;
     }
+    if (validateTikTokProfile && !isTikTokProfileTarget(value)) {
+      setTargetError(
+        invalidTargetError ||
+          "Bitte einen TikTok-Nutzernamen oder Profillink angeben, kein Video- oder Hashtag-Link."
+      );
+      return;
+    }
     setTargetError(null);
     addItem({
       productSlug,
@@ -275,6 +289,7 @@ export function ProductOrderBlock({
     quantity,
     priceCents,
     validateInstagramMediaUrl,
+    validateTikTokProfile,
     emptyTargetError,
     invalidTargetError,
   ]);
@@ -442,9 +457,15 @@ export function ProductOrderBlock({
           <p>
             Je nach aktuellem Bestellaufkommen kann die Lieferung etwas später starten.
           </p>
-          {isTikTokFollowerProduct(productSlug) && (
+          {isTikTokFollowerProduct(productSlug) && !neutralizeTikTokGrowthClaim && (
             <p>
               TikTok Follower werden langsam und gestaffelt ausgeliefert, damit das Wachstum natürlich und echt wirkt.
+            </p>
+          )}
+          {neutralizeTikTokGrowthClaim && (
+            <p>
+              Die ausgewählte Menge kann gestaffelt ausgeliefert werden. Der Start richtet sich nach dem aktuellen
+              Bestellaufkommen. Daraus folgt keine bestimmte Wirkung auf den Algorithmus.
             </p>
           )}
         </div>

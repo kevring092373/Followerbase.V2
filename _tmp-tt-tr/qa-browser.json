@@ -1,0 +1,47 @@
+[
+  {
+    "width": 320,
+    "closedWidth": 320,
+    "expandedWidth": 320,
+    "keyboardWorks": true,
+    "anchorWorks": true,
+    "cssLeaks": [],
+    "pageErrors": []
+  },
+  {
+    "width": 360,
+    "closedWidth": 360,
+    "expandedWidth": 360,
+    "keyboardWorks": true,
+    "anchorWorks": true,
+    "cssLeaks": [],
+    "pageErrors": []
+  },
+  {
+    "width": 390,
+    "closedWidth": 390,
+    "expandedWidth": 390,
+    "keyboardWorks": true,
+    "anchorWorks": true,
+    "cssLeaks": [],
+    "pageErrors": []
+  },
+  {
+    "width": 768,
+    "closedWidth": 768,
+    "expandedWidth": 768,
+    "keyboardWorks": true,
+    "anchorWorks": true,
+    "cssLeaks": [],
+    "pageErrors": []
+  },
+  {
+    "width": 1280,
+    "closedWidth": 1280,
+    "expandedWidth": 1280,
+    "keyboardWorks": true,
+    "anchorWorks": true,
+    "cssLeaks": [],
+    "pageErrors": []
+  }
+]
