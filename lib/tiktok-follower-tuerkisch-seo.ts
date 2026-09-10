@@ -48,12 +48,43 @@ const SCOPE_ROOT = ".product-description-raw-html";
 const SCOPE = `${SCOPE_ROOT} .fbtr-tiktok-copy`;
 
 const EXTRA_CSS = `
-${SCOPE} { max-width: 100%; min-width: 0; overflow-wrap: anywhere; }
+${SCOPE} { max-width: 100%; min-width: 0; overflow-wrap: break-word; word-break: normal; }
+${SCOPE} h2,
+${SCOPE} h3 { overflow-wrap: break-word; word-break: normal; }
+${SCOPE} .fbtt-hero,
+${SCOPE} .fbtt-hero > *,
+${SCOPE} .fbtt-variant-section,
+${SCOPE} .fbtt-variant-section > * { min-width: 0; }
 ${SCOPE} .fbtt-button:focus-visible,
 ${SCOPE} .fbtt-nav a:focus-visible,
 ${SCOPE} .fbtt-faq-list summary:focus-visible {
   outline: 3px solid rgba(121, 57, 216, .5);
   outline-offset: 4px;
+}
+@media (min-width: 821px) {
+  ${SCOPE} .fbtt-hero {
+    grid-template-columns: minmax(0, 1.5fr) minmax(240px, 1fr);
+  }
+}
+@media (max-width: 820px) {
+  ${SCOPE} .fbtt-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  ${SCOPE} .fbtt-hero h2 {
+    font-size: clamp(1.55rem, 7vw, 2.15rem);
+  }
+  ${SCOPE} .fbtt-variant-section {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+}
+@media (max-width: 600px) {
+  ${SCOPE} .fbtt-hero-main { padding: 22px 16px; }
+  ${SCOPE} .fbtt-section h2 {
+    font-size: clamp(1.28rem, 6vw, 1.7rem);
+    text-wrap: balance;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   ${SCOPE} .fbtt-button { transition: none; }
