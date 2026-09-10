@@ -44,7 +44,11 @@ const SCOPE_ROOT = ".product-description-raw-html";
 const SCOPE = `${SCOPE_ROOT} .fbdef-copy`;
 
 const EXTRA_CSS = `
-${SCOPE} { max-width: 100%; min-width: 0; overflow-wrap: anywhere; }
+${SCOPE} { max-width: 100%; min-width: 0; overflow-wrap: break-word; word-break: normal; }
+${SCOPE} h2,
+${SCOPE} h3 { font-family: inherit; overflow-wrap: break-word; word-break: normal; }
+${SCOPE} .fbdef-definition,
+${SCOPE} .fbdef-definition > * { min-width: 0; }
 ${SCOPE} .fbdef-table-wrap {
   width: 100%;
   max-width: 100%;
@@ -70,6 +74,26 @@ ${SCOPE} .fbdef-mini-link:focus-visible,
 ${SCOPE} .fbdef-table-wrap:focus-visible {
   outline: 3px solid rgba(138, 85, 238, .42);
   outline-offset: 3px;
+}
+@media (max-width: 820px) {
+  ${SCOPE} .fbdef-definition {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+  ${SCOPE} .fbdef-definition h2 {
+    font-size: clamp(1.2rem, 5.4vw, 1.65rem);
+    line-height: 1.28;
+    text-wrap: balance;
+  }
+}
+@media (max-width: 560px) {
+  ${SCOPE} { padding-left: 0; padding-right: 0; }
+  ${SCOPE} .fbdef-definition {
+    padding: 16px 14px;
+    border-radius: 16px;
+  }
+  ${SCOPE} .fbdef-definition aside { padding: 16px; }
 }
 @media (prefers-reduced-motion: reduce) {
   ${SCOPE} .fbdef-button { transition: none; }
