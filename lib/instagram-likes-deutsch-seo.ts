@@ -58,13 +58,44 @@ const SCOPE_ROOT = ".product-description-raw-html";
 const SCOPE = `${SCOPE_ROOT} .fbde-likes-copy`;
 
 const EXTRA_CSS = `
-${SCOPE} { max-width: 100%; min-width: 0; overflow-wrap: anywhere; }
+${SCOPE} { max-width: 100%; min-width: 0; overflow-wrap: break-word; word-break: normal; }
+${SCOPE} h2,
+${SCOPE} h3 { overflow-wrap: break-word; word-break: normal; }
+${SCOPE} .fbdl-hero,
+${SCOPE} .fbdl-hero > *,
+${SCOPE} .fbdl-definition-grid,
+${SCOPE} .fbdl-definition-grid > * { min-width: 0; }
 ${SCOPE} .fbdl-button:focus-visible,
 ${SCOPE} .fbdl-text-link:focus-visible,
 ${SCOPE} .fbdl-jumpnav a:focus-visible,
 ${SCOPE} .fbdl-faq summary:focus-visible {
   outline: 3px solid rgba(107, 43, 212, .55);
   outline-offset: 4px;
+}
+@media (min-width: 821px) {
+  ${SCOPE} .fbdl-hero {
+    grid-template-columns: minmax(0, 1.65fr) minmax(230px, .85fr);
+    gap: 34px;
+    align-items: center;
+  }
+}
+@media (max-width: 820px) {
+  ${SCOPE} .fbdl-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 26px;
+  }
+  ${SCOPE} .fbdl-hero h2 {
+    font-size: clamp(1.55rem, 7vw, 2.15rem);
+  }
+}
+@media (max-width: 600px) {
+  ${SCOPE} .fbdl-soft-tag { white-space: normal; }
+  ${SCOPE} .fbdl-definition { padding: 18px 16px; }
+  ${SCOPE} .fbdl-section h2 {
+    font-size: clamp(1.28rem, 6vw, 1.7rem);
+    text-wrap: balance;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   ${SCOPE} .fbdl-button { transition: none; }
