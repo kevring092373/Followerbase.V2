@@ -57,7 +57,15 @@ export async function generateMetadata({ params }: Props) {
   const imageUrl = post.image ? absoluteImageUrl(post.image) : undefined;
   const robots = post.draft
     ? { index: false, follow: false }
-    : { index: true, follow: true };
+    : {
+        index: true,
+        follow: true,
+        googleBot: {
+          index: true,
+          follow: true,
+          "max-image-preview": "large" as const,
+        },
+      };
   return {
     title,
     description: description || undefined,

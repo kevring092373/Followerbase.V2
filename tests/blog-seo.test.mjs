@@ -77,17 +77,18 @@ test("Verlinkte Blog-Slugs existieren", () => {
   }
 });
 
-test("Profilbesucher-Beitrag ist als Entwurf vollständig vorbereitet", () => {
+test("Profilbesucher-Beitrag ist veröffentlicht und vollständig", () => {
   const post = posts.find((p) => p.slug === "instagram-profilbesucher-sehen");
   assert.ok(post, "Beitrag instagram-profilbesucher-sehen fehlt");
-  assert.equal(post.draft, true);
+  assert.notEqual(post.draft, true);
   assert.equal(post.metaTitle, "Instagram Profilbesucher sehen: Was wirklich möglich ist");
   assert.equal(post.metaTitle.length, 56);
   assert.equal(post.metaDescription.length, 160);
   assert.equal(post.title, "Instagram-Profilbesucher sehen: Wer war auf meinem Profil?");
   assert.equal(post.category, "Instagram");
   assert.equal(post.image, "/icons/instagram-profilbesucher-sehen-hero.webp");
-  assert.equal(post.date, undefined);
+  assert.equal(post.date, "2026-09-17");
+  assert.equal(post.dateModified, "2026-09-17");
   assert.equal(post.content.includes("application/ld+json"), false);
   assert.equal(post.content.includes("noindex"), false);
   assert.equal(/<h1[\s>]/i.test(post.content), false);
@@ -104,7 +105,7 @@ test("Profilbesucher-Beitrag ist als Entwurf vollständig vorbereitet", () => {
   assert.match(post.content, /src="\/icons\/instagram-profilbesucher-sehen-ueberblick\.webp"/);
   assert.equal((post.content.match(/<table\b/g) || []).length, 1);
   const page = readFileSync(join(root, "app", "blog", "[slug]", "page.tsx"), "utf8");
-  assert.match(page, /post\.draft/);
+  assert.match(page, /max-image-preview/);
   assert.match(page, /instagram-profilbesucher-sehen" \? null : buildFaqPageSchema/);
   const sitemap = readFileSync(join(root, "app", "sitemap.ts"), "utf8");
   assert.match(sitemap, /getPublishedPosts/);

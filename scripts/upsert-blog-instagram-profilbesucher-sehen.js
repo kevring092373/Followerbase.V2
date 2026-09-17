@@ -1,6 +1,5 @@
 /**
- * Baut den Shop-HTML-Artikel und schreibt ihn nach blog-posts.json.
- * Bleibt Entwurf: draft=true, keine IndexNow-Pings.
+ * Baut den veröffentlichten Shop-HTML-Artikel und schreibt ihn nach blog-posts.json.
  *
  *   node scripts/upsert-blog-instagram-profilbesucher-sehen.js
  */
@@ -76,7 +75,8 @@ const post = {
     "Instagram Profilbesucher sehen: Erfahre, was Insights und Story-Listen wirklich zeigen, welche Grenzen Besucher-Apps haben und wie du dein Konto sicher schützt.",
   image: `/icons/${heroFile}`,
   category: "Instagram",
-  draft: true,
+  date: "2026-09-17",
+  dateModified: "2026-09-17",
 };
 
 const jsonPath = path.join(root, "content", "blog-posts.json");
