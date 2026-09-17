@@ -10,6 +10,10 @@ import {
   getTiktokFollowerTuerkischPackagePriceCents,
   isTiktokFollowerTuerkischProduct,
 } from "@/lib/tiktok-follower-tuerkisch-seo";
+import {
+  getYoutubeAbonnentenPackagePriceCents,
+  isYoutubeAbonnentenProduct,
+} from "@/lib/youtube-abonnenten-seo";
 import { getProductBySlug } from "@/lib/products-data";
 import type { OrderItem } from "@/lib/orders";
 
@@ -18,7 +22,11 @@ export type AuthorizedCheckout =
   | { ok: false; error: string };
 
 function needsAuthoritativePrice(slug: string): boolean {
-  return isInstagramLikesDeutschProduct(slug) || isTiktokFollowerTuerkischProduct(slug);
+  return (
+    isInstagramLikesDeutschProduct(slug) ||
+    isTiktokFollowerTuerkischProduct(slug) ||
+    isYoutubeAbonnentenProduct(slug)
+  );
 }
 
 function packagePriceCents(
@@ -31,6 +39,9 @@ function packagePriceCents(
   }
   if (isTiktokFollowerTuerkischProduct(slug)) {
     return getTiktokFollowerTuerkischPackagePriceCents(quantity, product);
+  }
+  if (isYoutubeAbonnentenProduct(slug)) {
+    return getYoutubeAbonnentenPackagePriceCents(quantity, product);
   }
   return null;
 }

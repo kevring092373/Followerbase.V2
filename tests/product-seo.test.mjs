@@ -404,8 +404,8 @@ test("Instagram-Likes-Deutsch-Seite bereinigt Claims und nutzt Live-Pakete", () 
   assert.match(productPage, /INSTAGRAM_LIKES_DEUTSCH_H1/);
   assert.match(productPage, /isInstagramLikesDeutschProduct/);
   assert.match(productPage, /instagram-likes-deutsch-beitragslink/);
-  assert.match(productPage, /restrictToListedQuantities=\{likesDeutschPage \|\| tiktokTuerkischPage\}/);
-  assert.match(productPage, /sliderMinFromPackages=\{likesDeutschPage \|\| tiktokTuerkischPage\}/);
+  assert.match(productPage, /restrictToListedQuantities=\{likesDeutschPage \|\| tiktokTuerkischPage \|\| youtubeAbonnentenPage\}/);
+  assert.match(productPage, /sliderMinFromPackages=\{likesDeutschPage \|\| tiktokTuerkischPage \|\| youtubeAbonnentenPage\}/);
   assert.match(productPage, /defaultPackageOffer: true/);
   assert.match(structured, /defaultPackageOffer/);
   const seo = read("lib/instagram-likes-deutsch-seo.ts");
@@ -456,7 +456,7 @@ test("TikTok-Follower-Türkisch-Seite nutzt File-Content, Offer-Paket und Profil
   assert.match(productPage, /tiktok-follower-tuerkisch-ziel/);
   assert.match(productPage, /validateTikTokProfile=\{tiktokTuerkischPage\}/);
   assert.match(productPage, /neutralizeTikTokGrowthClaim=\{tiktokTuerkischPage\}/);
-  assert.match(productPage, /restrictToListedQuantities=\{likesDeutschPage \|\| tiktokTuerkischPage\}/);
+  assert.match(productPage, /restrictToListedQuantities=\{likesDeutschPage \|\| tiktokTuerkischPage \|\| youtubeAbonnentenPage\}/);
   assert.match(
     productPage,
     /prevLabel=\{\s*likesPage \|\| savesPage \|\| deutschPage \|\| tuerkischPage \|\| likesDeutschPage\s*\n\s*\? "Weitere Instagram-Produkte: vorherige"/
@@ -494,6 +494,75 @@ test("TikTok-Follower-Türkisch-Seite nutzt File-Content, Offer-Paket und Profil
   assert.match(orderBlock, /damit das Wachstum natürlich und echt wirkt/);
   const authorize = read("lib/authorize-checkout-prices.ts");
   assert.match(authorize, /isTiktokFollowerTuerkischProduct/);
+});
+
+test("YouTube-Abonnenten-Seite nutzt File-Content, Kanallink und Live-Pakete", () => {
+  const product = products.find((p) => p.slug === "youtube-follower-kaufen");
+  assert.ok(product);
+  assert.equal(product.articleNumber, "FC-027");
+  assert.equal(product.name, "YouTube Follower");
+  assert.equal(product.metaTitle, "YouTube Abonnenten kaufen ab 8,45 € | Followerbase");
+  assert.equal(
+    product.metaDescription,
+    "YouTube Abonnenten kaufen: Pakete von 50 bis 1.000 Abonnenten ab 8,45 €. Preise, Bestellung per Kanallink und Grenzen der Leistung bei Followerbase."
+  );
+  assert.ok(product.metaTitle.length <= 60);
+  assert.ok(product.metaDescription.length <= 160);
+  assert.deepEqual(product.quantities, [50, 100, 250, 500, 1000]);
+  assert.deepEqual(product.pricesCents, [845, 1490, 3290, 5900, 10900]);
+  assert.equal(product.image, "/icons/Youtube Follower kaufen.png");
+  assert.match(productPage, /YOUTUBE_ABONNENTEN_TITLE/);
+  assert.match(productPage, /YOUTUBE_ABONNENTEN_H1/);
+  assert.match(productPage, /isYoutubeAbonnentenProduct/);
+  assert.match(productPage, /youtube-abonnenten-ziel/);
+  assert.match(productPage, /validateYouTubeChannel=\{youtubeAbonnentenPage\}/);
+  assert.match(productPage, /restrictToListedQuantities=\{likesDeutschPage \|\| tiktokTuerkischPage \|\| youtubeAbonnentenPage\}/);
+  assert.match(productPage, /sliderMinFromPackages=\{likesDeutschPage \|\| tiktokTuerkischPage \|\| youtubeAbonnentenPage\}/);
+  assert.match(productPage, /youtube-follower-page/);
+  assert.match(productPage, /likesDeutschPage \|\| tiktokTuerkischPage \? \{ defaultPackageOffer: true \}/);
+  assert.doesNotMatch(productPage, /youtubeAbonnentenPage \|\| likesDeutschPage \|\| tiktokTuerkischPage \? \{ defaultPackageOffer/);
+  const seo = read("lib/youtube-abonnenten-seo.ts");
+  assert.match(seo, /data-fbys-price/);
+  assert.match(seo, /data-fbys-unit/);
+  assert.match(seo, /Keine Übernahme|Betreiberbestätigung/);
+  assert.match(seo, /youtube-follower-kaufen/);
+  assert.match(seo, /Alte Aussagen zu 24 Stunden/);
+  const channel = read("lib/youtube-channel.ts");
+  assert.match(channel, /youtube\.com/);
+  assert.match(channel, /watch\|shorts\|playlist\|embed/);
+  assert.match(channel, /channel\\\/UC/);
+  assert.doesNotMatch(channel, /youtu\.be/);
+  const html = read("content/product-html/youtube-follower-kaufen.html");
+  assert.match(html, /fbyt-subs-copy/);
+  assert.match(html, /Abonnenten sind keine Videoaufrufe/);
+  assert.match(html, /href="#produkt-auswahl"/);
+  assert.match(html, /data-fbys-price="50"/);
+  assert.match(html, /\/products\/youtube/);
+  assert.match(html, /\/kontakt/);
+  assert.match(html, /\/blog\/youtube-aufrufe-erhoehen/);
+  assert.doesNotMatch(html, /href=["']\/products["']/);
+  assert.doesNotMatch(html, /youtube-views-kaufen/);
+  assert.equal((html.match(/<h1\b/gi) || []).length, 0);
+  assert.equal((html.match(/<!DOCTYPE|<html\b|<head\b|<body\b/gi) || []).length, 0);
+  assert.equal((html.match(/noindex|json-ld|application\/ld\+json/gi) || []).length, 0);
+  assert.equal((html.match(/<details>/g) || []).length, 6);
+  assert.equal(
+    (html.match(/24 Stunden|3–7 Tage|30-Tage-Nachfüll|Partnerprogramm-Zusage|garantiert aus|echte Abonnenten|Algorithmus-Push/gi) || []).length,
+    0
+  );
+  const orderBlock = read("components/ProductOrderBlock.tsx");
+  assert.match(orderBlock, /validateYouTubeChannel/);
+  assert.match(orderBlock, /isYouTubeChannelTarget/);
+  const authorize = read("lib/authorize-checkout-prices.ts");
+  assert.match(authorize, /isYoutubeAbonnentenProduct/);
+  const viewsHtml = read("content/product-html/youtube-views-kaufen.html");
+  assert.match(viewsHtml, /yt-views-content/);
+  assert.doesNotMatch(viewsHtml, /fbyt-subs-copy/);
+  const tiktokFollower = products.find((p) => p.slug === "tiktok-follower-kaufen");
+  assert.ok(tiktokFollower);
+  assert.notEqual(tiktokFollower.metaTitle, product.metaTitle);
+  assert.doesNotMatch(seo, /tiktok-follower-kaufen/);
+  assert.doesNotMatch(seo, /youtube-views-kaufen/);
 });
 
 test("Sitemap und IndexNow-Key-Datei sind vorhanden", () => {

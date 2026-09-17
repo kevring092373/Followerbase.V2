@@ -6,6 +6,7 @@ import { formatEuroFromCents, formatQuantity } from "@/lib/format";
 import { PRODUCT_ORDER_ANCHOR_ID } from "@/lib/product-seo";
 import { isInstagramMediaUrl } from "@/lib/instagram-url";
 import { isTikTokProfileTarget } from "@/lib/tiktok-profile";
+import { isYouTubeChannelTarget } from "@/lib/youtube-channel";
 import type { ProductTier } from "@/lib/products-data";
 
 const INDIVIDUAL_MIN = 100;
@@ -70,10 +71,16 @@ type ProductOrderBlockProps = {
   targetHint?: string;
   /** Meldung bei leerem Ziel-Feld. */
   emptyTargetError?: string;
-  /** Meldung bei ungültigem Instagram-Beitragslink. */
+  /** Meldung bei ungültigem Ziel-Link. */
   invalidTargetError?: string;
   /** TikTok-Profil oder @Nutzername prüfen (keine Video-/Hashtag-Links). */
   validateTikTokProfile?: boolean;
+  /** YouTube-Kanallink oder @Handle prüfen (keine Video-/Shorts-/Playlist-Links). */
+  validateYouTubeChannel?: boolean;
+  /** Beschriftung des Ziel-Felds, falls die Seite eine eigene braucht. */
+  targetLabel?: string;
+  /** Platzhalter des Ziel-Felds, falls die Seite einen eigenen braucht. */
+  targetPlaceholder?: string;
   /** Gestaffelte Lieferung ohne Wachstums-/Tarnformulierung (nur explizit gesetzte Seiten). */
   neutralizeTikTokGrowthClaim?: boolean;
 };
@@ -168,6 +175,9 @@ export function ProductOrderBlock({
   emptyTargetError,
   invalidTargetError,
   validateTikTokProfile = false,
+  validateYouTubeChannel = false,
+  targetLabel,
+  targetPlaceholder,
   neutralizeTikTokGrowthClaim = false,
 }: ProductOrderBlockProps) {
   const { addItem } = useCart();
@@ -271,6 +281,13 @@ export function ProductOrderBlock({
       );
       return;
     }
+    if (validateYouTubeChannel && !isYouTubeChannelTarget(value)) {
+      setTargetError(
+        invalidTargetError ||
+          "Bitte einen YouTube-Kanallink oder ein @Handle angeben, keinen Video-, Shorts- oder Playlist-Link."
+      );
+      return;
+    }
     setTargetError(null);
     addItem({
       productSlug,
@@ -290,6 +307,7 @@ export function ProductOrderBlock({
     priceCents,
     validateInstagramMediaUrl,
     validateTikTokProfile,
+    validateYouTubeChannel,
     emptyTargetError,
     invalidTargetError,
   ]);
@@ -415,14 +433,14 @@ export function ProductOrderBlock({
 
       <div className="product-order-row">
         <label htmlFor={targetInputId} className="product-order-label">
-          {getTargetLabel(productSlug)}: <span className="product-input-required" aria-hidden>*</span>
+          {targetLabel || getTargetLabel(productSlug)}: <span className="product-input-required" aria-hidden>*</span>
         </label>
         <input
           id={targetInputId}
           type={targetAsUrl ? "url" : "text"}
           inputMode={targetAsUrl ? "url" : undefined}
           autoComplete={targetAsUrl ? "url" : undefined}
-          placeholder={getTargetPlaceholder(productSlug)}
+          placeholder={targetPlaceholder || getTargetPlaceholder(productSlug)}
           value={targetInput}
           required={targetAsUrl}
           onChange={(e) => {
