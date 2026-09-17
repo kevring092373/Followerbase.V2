@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { getAllPosts, findBlogCategoryName, blogCategoryPath } from "@/lib/blog-data";
+import { getPublishedPosts, findBlogCategoryName, blogCategoryPath } from "@/lib/blog-data";
 import { absoluteUrl, truncateDescription } from "@/lib/seo";
 import { BlogArticleList } from "@/components/BlogArticleList";
 import { JsonLd } from "@/components/JsonLd";
@@ -14,7 +14,7 @@ function resolveSlug(params: Props["params"]): string {
 }
 
 export async function generateMetadata({ params }: Props) {
-  const posts = await getAllPosts();
+  const posts = await getPublishedPosts();
   const category = findBlogCategoryName(posts, resolveSlug(params));
   if (!category) return { title: "Kategorie" };
   const title = `${category} – Blog | Followerbase`;
@@ -39,7 +39,7 @@ export async function generateMetadata({ params }: Props) {
 }
 
 export default async function BlogCategoryPage({ params }: Props) {
-  const posts = await getAllPosts();
+  const posts = await getPublishedPosts();
   const category = findBlogCategoryName(posts, resolveSlug(params));
   if (!category) notFound();
 

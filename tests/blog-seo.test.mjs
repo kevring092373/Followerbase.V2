@@ -69,7 +69,51 @@ test("Verlinkte Blog-Slugs existieren", () => {
     "fake-instagram-follower-erkennen",
     "instagram-reels-reichweite-erhoehen",
     "mehr-instagram-likes-guide",
+    "instagram-story-anonym-ansehen",
+    "instagram-likes-von-anderen-sehen",
+    "mehr-instagram-follower-bekommen",
   ]) {
     assert.ok(slugs.has(slug), `Fehlender Zielbeitrag: ${slug}`);
   }
+});
+
+test("Profilbesucher-Beitrag ist als Entwurf vollständig vorbereitet", () => {
+  const post = posts.find((p) => p.slug === "instagram-profilbesucher-sehen");
+  assert.ok(post, "Beitrag instagram-profilbesucher-sehen fehlt");
+  assert.equal(post.draft, true);
+  assert.equal(post.metaTitle, "Instagram Profilbesucher sehen: Was wirklich möglich ist");
+  assert.equal(post.metaTitle.length, 56);
+  assert.equal(post.metaDescription.length, 160);
+  assert.equal(post.title, "Instagram-Profilbesucher sehen: Wer war auf meinem Profil?");
+  assert.equal(post.category, "Instagram");
+  assert.equal(post.image, "/icons/instagram-profilbesucher-sehen-hero.webp");
+  assert.equal(post.date, undefined);
+  assert.equal(post.content.includes("application/ld+json"), false);
+  assert.equal(post.content.includes("noindex"), false);
+  assert.equal(/<h1[\s>]/i.test(post.content), false);
+  assert.match(post.content, /class="fb-profile-guide"/);
+  assert.match(post.content, /class="fb-toc"/);
+  assert.match(post.content, /id="profilbesucher-sehen"/);
+  assert.match(post.content, /id="kennzahlen-verstehen"/);
+  assert.match(post.content, /href="\/blog\/instagram-story-anonym-ansehen"/);
+  assert.match(post.content, /href="\/blog\/instagram-likes-von-anderen-sehen"/);
+  assert.match(post.content, /href="\/blog\/mehr-instagram-follower-bekommen"/);
+  assert.doesNotMatch(post.content, /href=["']https:\/\/followerbase\.de\/blog\//);
+  assert.equal((post.content.match(/class="fb-faq"/g) || []).length, 7);
+  assert.match(post.content, /src="\/icons\/instagram-profilbesucher-sehen-hero\.webp"/);
+  assert.match(post.content, /src="\/icons\/instagram-profilbesucher-sehen-ueberblick\.webp"/);
+  assert.equal((post.content.match(/<table\b/g) || []).length, 1);
+  const page = readFileSync(join(root, "app", "blog", "[slug]", "page.tsx"), "utf8");
+  assert.match(page, /post\.draft/);
+  assert.match(page, /instagram-profilbesucher-sehen" \? null : buildFaqPageSchema/);
+  const sitemap = readFileSync(join(root, "app", "sitemap.ts"), "utf8");
+  assert.match(sitemap, /getPublishedPosts/);
+});
+
+test("Profilbesucher-Bilder liegen unter public/icons", () => {
+  assert.equal(existsSync(join(root, "public", "icons", "instagram-profilbesucher-sehen-hero.webp")), true);
+  assert.equal(
+    existsSync(join(root, "public", "icons", "instagram-profilbesucher-sehen-ueberblick.webp")),
+    true
+  );
 });

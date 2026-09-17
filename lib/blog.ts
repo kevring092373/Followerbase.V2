@@ -23,4 +23,6 @@ export interface BlogPost {
   image?: string;
   /** Optionale Kategorie für Filter (z. B. „Instagram“, „TikTok“, „Tipps“) */
   category?: string;
+  /** Entwurf: nicht in Archiv/Sitemap, Route bleibt lokal prüfbar. */
+  draft?: boolean;
 }

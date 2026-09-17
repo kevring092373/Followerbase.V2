@@ -55,11 +55,14 @@ export async function generateMetadata({ params }: Props) {
   const description = truncateDescription(rawDesc);
   const url = absoluteUrl(`/blog/${post.slug}`);
   const imageUrl = post.image ? absoluteImageUrl(post.image) : undefined;
+  const robots = post.draft
+    ? { index: false, follow: false }
+    : { index: true, follow: true };
   return {
     title,
     description: description || undefined,
     keywords: [],
-    robots: { index: true, follow: true },
+    robots,
     openGraph: {
       title,
       description: description || undefined,
@@ -135,7 +138,8 @@ export default async function BlogPostPage({ params }: Props) {
     { name: postTitle, path: `/blog/${post.slug}` },
   ]);
 
-  const faqSchema = buildFaqPageSchema(prepared.faqs);
+  const faqSchema =
+    post.slug === "instagram-profilbesucher-sehen" ? null : buildFaqPageSchema(prepared.faqs);
 
   const showHero = Boolean(post.image) && !prepared.hasEmbeddedHero;
   const imageSrc =

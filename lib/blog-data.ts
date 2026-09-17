@@ -54,7 +54,12 @@ function normalizePost(p: Record<string, unknown>): BlogPost {
   const metaDescription = typeof p.metaDescription === "string" ? p.metaDescription : undefined;
   const image = typeof p.image === "string" ? p.image.trim() || undefined : undefined;
   const category = typeof p.category === "string" ? p.category.trim() || undefined : undefined;
-  return { slug, title, excerpt, content, date, dateModified, metaTitle, metaDescription, image, category };
+  const draft = p.draft === true;
+  return { slug, title, excerpt, content, date, dateModified, metaTitle, metaDescription, image, category, draft };
+}
+
+export function isPublishedBlogPost(post: BlogPost): boolean {
+  return post.draft !== true;
 }
 
 async function readPosts(): Promise<BlogPost[]> {
@@ -106,6 +111,10 @@ export async function getAllPosts(): Promise<BlogPost[]> {
   });
 }
 
+export async function getPublishedPosts(): Promise<BlogPost[]> {
+  return (await getAllPosts()).filter(isPublishedBlogPost);
+}
+
 export async function getPostBySlug(slug: string): Promise<BlogPost | undefined> {
   const clean = normalizeBlogSlug(slug) || slug.trim();
   const posts = await readPosts();
@@ -134,7 +143,7 @@ export async function createPost(input: BlogPost): Promise<BlogPost> {
   }
   posts.push(post);
   await writePosts(posts);
-  pingBlogIndexNow(post.slug);
+  if (post.draft !== true) pingBlogIndexNow(post.slug);
   return post;
 }
 
@@ -157,8 +166,10 @@ export async function updatePost(slug: string, input: Partial<BlogPost>): Promis
   };
   posts[index] = updated;
   await writePosts(posts);
-  pingBlogIndexNow(updated.slug);
-  if (previous.slug !== updated.slug) pingBlogIndexNow(previous.slug);
+  if (updated.draft !== true) {
+    pingBlogIndexNow(updated.slug);
+    if (previous.slug !== updated.slug) pingBlogIndexNow(previous.slug);
+  }
   return updated;
 }
 

@@ -1,7 +1,7 @@
 /**
  * Blog-Übersicht im Stil SEO München: Hero, Kategorie-Filter, Artikel-Karten.
  */
-import { getAllPosts } from "@/lib/blog-data";
+import { getPublishedPosts } from "@/lib/blog-data";
 import { absoluteUrl } from "@/lib/seo";
 import { BlogArticleList } from "@/components/BlogArticleList";
 
@@ -24,7 +24,7 @@ export const metadata = {
 };
 
 export default async function BlogPage() {
-  const posts = await getAllPosts();
+  const posts = await getPublishedPosts();
 
   return (
     <>

@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { getAllProducts } from "@/lib/products-data";
 import { categories } from "@/lib/categories";
-import { getAllPosts, blogCategoryPath, blogPostLastmod } from "@/lib/blog-data";
+import { getPublishedPosts, blogCategoryPath, blogPostLastmod } from "@/lib/blog-data";
 import { getAllPages } from "@/lib/pages-data";
 import { canonicalUrl } from "@/lib/seo";
 import { productCanonicalUrl } from "@/lib/product-seo";
@@ -65,7 +65,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }
 
   try {
-    const posts = await getAllPosts();
+    const posts = await getPublishedPosts();
     blogPages = posts
       .filter((post) => post.slug && !post.slug.includes("?"))
       .map((post) => ({

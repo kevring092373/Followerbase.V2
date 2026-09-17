@@ -82,6 +82,16 @@ function readFileNow(cwd, file) {
   }
 }
 
+function isDraftPost(cwd, slug) {
+  try {
+    const current = postsBySlug(readFileNow(cwd, "content/blog-posts.json"));
+    if (!current[slug]) return false;
+    return JSON.parse(current[slug]).draft === true;
+  } catch {
+    return false;
+  }
+}
+
 function canonical(pathname) {
   let p = pathname.split("?")[0].split("#")[0];
   if (!p.startsWith("/")) p = `/${p}`;
@@ -150,7 +160,15 @@ function fileToUrls(file, cwd, prevRef) {
     const prev = postsBySlug(readFileAt(cwd, prevRef, file));
     const next = postsBySlug(readFileNow(cwd, file));
     for (const slug of Object.keys(next)) {
-      if (prev[slug] !== next[slug]) add(`/blog/${slug}`);
+      if (prev[slug] !== next[slug]) {
+        try {
+          const post = JSON.parse(next[slug]);
+          if (post.draft === true) continue;
+        } catch {
+          /* unverändert aufnehmen */
+        }
+        add(`/blog/${slug}`);
+      }
     }
     for (const slug of Object.keys(prev)) {
       if (!(slug in next)) add(`/blog/${slug}`);
@@ -161,7 +179,7 @@ function fileToUrls(file, cwd, prevRef) {
 
   if (file.startsWith("content/blog-html/")) {
     const slug = path.basename(file, path.extname(file));
-    if (slug) add(`/blog/${slug}`);
+    if (slug && !isDraftPost(cwd, slug)) add(`/blog/${slug}`);
     add("/blog");
     return urls;
   }
