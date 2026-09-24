@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
-import { formatEuroFromCents } from "@/lib/format";
+import { formatEuroFromCents, formatQuantity } from "@/lib/format";
 import { useEffect, useRef } from "react";
 
 /**
@@ -95,7 +95,8 @@ export function CartDrawer() {
                         </Link>
                       </h3>
                       <p className="cart-item-detail">
-                        Menge: {item.quantity} · Ziel: {item.target}
+                        Menge: {formatQuantity(item.quantity)}
+                        {item.quantityUnit ? ` ${item.quantityUnit}` : ""} · Ziel: {item.target}
                       </p>
                     </div>
                     <div className="cart-item-side">

@@ -82,13 +82,23 @@ function buildOfferSku(articleNumber: string, quantity: number, variantName?: st
     : `${articleNumber}-${quantity}`;
 }
 
-function buildOfferList(product: Product, url: string): Record<string, unknown>[] {
-  const displayName = getProductDisplayName(product.name);
+function offerDisplayName(
+  product: Product,
+  quantity: number,
+  variantName?: string,
+  options?: ProductSchemaOptions
+): string {
+  const qtyLabel = quantity.toLocaleString("de-DE");
+  const productLabel = options?.offerProductName?.trim() || getProductDisplayName(product.name);
+  const withUnit = options?.quantityUnit?.trim()
+    ? `${qtyLabel} ${options.quantityUnit.trim()} ${productLabel}`
+    : `${qtyLabel} ${productLabel}`;
+  return variantName ? `${withUnit} (${variantName})` : withUnit;
+}
+
+function buildOfferList(product: Product, url: string, options?: ProductSchemaOptions): Record<string, unknown>[] {
   return getProductPackages(product).map((pkg) => {
-    const qtyLabel = pkg.quantity.toLocaleString("de-DE");
-    const name = pkg.variantName
-      ? `${qtyLabel} ${displayName} (${pkg.variantName})`
-      : `${qtyLabel} ${displayName}`;
+    const name = offerDisplayName(product, pkg.quantity, pkg.variantName, options);
     return {
       "@type": "Offer",
       name,
@@ -105,13 +115,13 @@ function buildOfferList(product: Product, url: string): Record<string, unknown>[
   });
 }
 
-function buildProductOffers(product: Product, url: string): Record<string, unknown> | undefined {
+function buildProductOffers(product: Product, url: string, options?: ProductSchemaOptions): Record<string, unknown> | undefined {
   const stats = getProductPriceStats(product);
   if (stats.offerCount === 0 || stats.lowCents === null || stats.highCents === null) {
     return undefined;
   }
 
-  const offerList = buildOfferList(product, url);
+  const offerList = buildOfferList(product, url, options);
   const base = {
     url,
     priceCurrency: "EUR",
@@ -166,16 +176,20 @@ export type ProductSchemaOptions = {
    * Nicht für Produktvarianten mit eigenen URLs verwenden; AggregateOffer bleibt der Default.
    */
   defaultPackageOffer?: boolean;
+  /** Einheit im Offer-Namen, z. B. „Stunden“. Nur setzen, wenn die Seite das braucht. */
+  quantityUnit?: string;
+  /** Produktname im Offer ohne automatisches „kaufen“. */
+  offerProductName?: string;
+  /** Sachliche Product.description, falls sie von metaDescription abweicht. */
+  schemaDescription?: string;
 };
 
-function buildDefaultPackageOffer(product: Product, url: string): Record<string, unknown> | undefined {
+function buildDefaultPackageOffer(product: Product, url: string, options?: ProductSchemaOptions): Record<string, unknown> | undefined {
   const pkg = getProductPackages(product)[0];
   if (!pkg) return undefined;
-  const displayName = getProductDisplayName(product.name);
-  const qtyLabel = pkg.quantity.toLocaleString("de-DE");
   return {
     "@type": "Offer",
-    name: `${qtyLabel} ${displayName}`,
+    name: offerDisplayName(product, pkg.quantity, pkg.variantName, options),
     url,
     price: formatSchemaPrice(pkg.priceCents),
     priceCurrency: "EUR",
@@ -195,14 +209,15 @@ export function buildProductSchema(
 ): Record<string, unknown> {
   const url = productCanonicalUrl(product.slug);
   const offers = options?.defaultPackageOffer
-    ? buildDefaultPackageOffer(product, url)
-    : buildProductOffers(product, url);
+    ? buildDefaultPackageOffer(product, url, options)
+    : buildProductOffers(product, url, options);
   const image = product.image ? absoluteImageUrl(product.image) : undefined;
   const dateModified = toIsoDateTime(product.updatedAt);
   const datePublished = toIsoDateTime(product.createdAt);
 
-  const description = product.metaDescription?.trim()
-    ? product.metaDescription.trim().replace(/\s+/g, " ")
+  const rawDescription = options?.schemaDescription?.trim() || product.metaDescription?.trim();
+  const description = rawDescription
+    ? rawDescription.replace(/\s+/g, " ")
     : `${getProductDisplayName(product.name)} bei ${SITE_NAME} – faire Preise, schnelle Lieferung und sicherer Checkout.`;
 
   return {

@@ -14,6 +14,11 @@ import {
   getYoutubeAbonnentenPackagePriceCents,
   isYoutubeAbonnentenProduct,
 } from "@/lib/youtube-abonnenten-seo";
+import {
+  getYoutubeWatchtimePackagePriceCents,
+  isYoutubeWatchtimeProduct,
+} from "@/lib/youtube-watchtime-seo";
+import { isYouTubeWatchVideoTarget } from "@/lib/youtube-watch-video";
 import { getProductBySlug } from "@/lib/products-data";
 import type { OrderItem } from "@/lib/orders";
 
@@ -25,7 +30,8 @@ function needsAuthoritativePrice(slug: string): boolean {
   return (
     isInstagramLikesDeutschProduct(slug) ||
     isTiktokFollowerTuerkischProduct(slug) ||
-    isYoutubeAbonnentenProduct(slug)
+    isYoutubeAbonnentenProduct(slug) ||
+    isYoutubeWatchtimeProduct(slug)
   );
 }
 
@@ -42,6 +48,9 @@ function packagePriceCents(
   }
   if (isYoutubeAbonnentenProduct(slug)) {
     return getYoutubeAbonnentenPackagePriceCents(quantity, product);
+  }
+  if (isYoutubeWatchtimeProduct(slug)) {
+    return getYoutubeWatchtimePackagePriceCents(quantity, product);
   }
   return null;
 }
@@ -76,6 +85,9 @@ export async function authorizeCheckoutPrices(
     const cents = packagePriceCents(item.productSlug, item.quantity, product);
     if (cents == null) {
       return { ok: false, error: "Die gewählte Menge ist für dieses Produkt nicht verfügbar." };
+    }
+    if (isYoutubeWatchtimeProduct(item.productSlug) && !isYouTubeWatchVideoTarget(item.target || "")) {
+      return { ok: false, error: "Bitte einen gültigen YouTube-Videolink angeben." };
     }
     next.push({ ...item, priceCents: cents });
   }

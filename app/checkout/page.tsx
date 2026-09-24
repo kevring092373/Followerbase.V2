@@ -4,7 +4,7 @@ import { useCallback, useMemo, useState, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCart } from "@/context/CartContext";
-import { formatEuroFromCents } from "@/lib/format";
+import { formatEuroFromCents, formatQuantity } from "@/lib/format";
 import { PayPalScriptProvider, PayPalButtons, FUNDING } from "@paypal/react-paypal-js";
 
 const PAYPAL_CLIENT_ID = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID ?? "";
@@ -353,7 +353,8 @@ function CheckoutContent() {
                 <li key={item.id} className="checkout-item">
                   <span className="checkout-item-name">{item.productName}</span>
                   <span className="checkout-item-detail">
-                    {item.quantity} · {item.target}
+                    {formatQuantity(item.quantity)}
+                    {item.quantityUnit ? ` ${item.quantityUnit}` : ""} · {item.target}
                   </span>
                   <span className="checkout-item-price">{formatEuroFromCents(item.priceCents)}</span>
                 </li>

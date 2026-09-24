@@ -94,6 +94,7 @@ import { InstagramFollowerTuerkischAnchorScroll } from "@/components/InstagramFo
 import { InstagramLikesDeutschAnchorScroll } from "@/components/InstagramLikesDeutschAnchorScroll";
 import { TiktokFollowerTuerkischAnchorScroll } from "@/components/TiktokFollowerTuerkischAnchorScroll";
 import { YoutubeAbonnentenAnchorScroll } from "@/components/YoutubeAbonnentenAnchorScroll";
+import { YoutubeWatchtimeAnchorScroll } from "@/components/YoutubeWatchtimeAnchorScroll";
 import {
   TIKTOK_FOLLOWER_TUERKISCH_BULLETS,
   TIKTOK_FOLLOWER_TUERKISCH_DESCRIPTION,
@@ -120,6 +121,26 @@ import {
   isYoutubeAbonnentenProduct,
   prepareYoutubeAbonnentenDescriptionHtml,
 } from "@/lib/youtube-abonnenten-seo";
+import {
+  YOUTUBE_WATCHTIME_BULLETS,
+  YOUTUBE_WATCHTIME_DELIVERY_NOTE,
+  YOUTUBE_WATCHTIME_DESCRIPTION,
+  YOUTUBE_WATCHTIME_EMPTY_TARGET_ERROR,
+  YOUTUBE_WATCHTIME_H1,
+  YOUTUBE_WATCHTIME_IMAGE_ALT,
+  YOUTUBE_WATCHTIME_INVALID_TARGET_ERROR,
+  YOUTUBE_WATCHTIME_MULTIPLE_TARGET_ERROR,
+  YOUTUBE_WATCHTIME_POLICY_NOTE,
+  YOUTUBE_WATCHTIME_PRODUCT_DESCRIPTION,
+  YOUTUBE_WATCHTIME_QUANTITY_UNIT,
+  YOUTUBE_WATCHTIME_TARGET_HINT,
+  YOUTUBE_WATCHTIME_TARGET_LABEL,
+  YOUTUBE_WATCHTIME_TARGET_PLACEHOLDER,
+  YOUTUBE_WATCHTIME_TITLE,
+  YOUTUBE_WATCHTIME_UPDATED_AT,
+  isYoutubeWatchtimeProduct,
+  prepareYoutubeWatchtimeDescriptionHtml,
+} from "@/lib/youtube-watchtime-seo";
 import likesStyles from "./instagram-likes.module.css";
 import savesStyles from "./instagram-saves.module.css";
 import tiktokSavesStyles from "./tiktok-saves.module.css";
@@ -128,6 +149,7 @@ import tuerkischStyles from "./instagram-follower-tuerkisch.module.css";
 import likesDeutschStyles from "./instagram-likes-deutsch.module.css";
 import tiktokTuerkischStyles from "./tiktok-follower-tuerkisch.module.css";
 import youtubeFollowerStyles from "./youtube-follower.module.css";
+import youtubeWatchtimeStyles from "./youtube-watchtime.module.css";
 import type { Product } from "@/lib/products-data";
 
 type Props = { params: { slug: string } };
@@ -237,9 +259,21 @@ function youtubeAbonnentenProduct(product: Product): Product {
   };
 }
 
+function youtubeWatchtimeProduct(product: Product): Product {
+  return {
+    ...product,
+    metaTitle: YOUTUBE_WATCHTIME_TITLE,
+    metaDescription: YOUTUBE_WATCHTIME_DESCRIPTION,
+    bullets: [...YOUTUBE_WATCHTIME_BULLETS],
+    updatedAt: YOUTUBE_WATCHTIME_UPDATED_AT,
+    description: prepareYoutubeWatchtimeDescriptionHtml(product.description, product),
+  };
+}
+
 function withPageSeo(product: Product): Product {
   if (isYoutubeViewsProduct(product.slug)) return youtubeViewsProduct(product);
   if (isYoutubeAbonnentenProduct(product.slug)) return youtubeAbonnentenProduct(product);
+  if (isYoutubeWatchtimeProduct(product.slug)) return youtubeWatchtimeProduct(product);
   if (isInstagramLikesProduct(product.slug)) return instagramLikesProduct(product);
   if (isInstagramSavesProduct(product.slug)) return instagramSavesProduct(product);
   if (isTiktokSavesProduct(product.slug)) return tiktokSavesProduct(product);
@@ -273,9 +307,11 @@ export async function generateMetadata({ params }: Props) {
   const likesDeutschPage = isInstagramLikesDeutschProduct(product.slug);
   const tiktokTuerkischPage = isTiktokFollowerTuerkischProduct(product.slug);
   const youtubeAbonnentenPage = isYoutubeAbonnentenProduct(product.slug);
+  const youtubeWatchtimePage = isYoutubeWatchtimeProduct(product.slug);
   const pinnedTitlePage =
     isYoutubeViewsProduct(product.slug) ||
     youtubeAbonnentenPage ||
+    youtubeWatchtimePage ||
     likesPage ||
     savesPage ||
     tiktokSavesPage ||
@@ -287,6 +323,8 @@ export async function generateMetadata({ params }: Props) {
     ? YOUTUBE_VIEWS_TITLE
     : youtubeAbonnentenPage
       ? YOUTUBE_ABONNENTEN_TITLE
+    : youtubeWatchtimePage
+      ? YOUTUBE_WATCHTIME_TITLE
     : likesPage
       ? INSTAGRAM_LIKES_TITLE
       : savesPage
@@ -310,6 +348,8 @@ export async function generateMetadata({ params }: Props) {
     ? YOUTUBE_VIEWS_DESCRIPTION
     : youtubeAbonnentenPage
       ? YOUTUBE_ABONNENTEN_DESCRIPTION
+    : youtubeWatchtimePage
+      ? YOUTUBE_WATCHTIME_DESCRIPTION
     : likesPage
       ? INSTAGRAM_LIKES_DESCRIPTION
       : savesPage
@@ -336,6 +376,8 @@ export async function generateMetadata({ params }: Props) {
           ? YOUTUBE_VIEWS_IMAGE_ALT
           : youtubeAbonnentenPage
             ? YOUTUBE_ABONNENTEN_IMAGE_ALT
+          : youtubeWatchtimePage
+            ? YOUTUBE_WATCHTIME_IMAGE_ALT
           : likesPage
             ? INSTAGRAM_LIKES_IMAGE_ALT
             : savesPage
@@ -389,6 +431,7 @@ export default async function ProductPage({ params }: Props) {
   const likesDeutschPage = isInstagramLikesDeutschProduct(product.slug);
   const tiktokTuerkischPage = isTiktokFollowerTuerkischProduct(product.slug);
   const youtubeAbonnentenPage = isYoutubeAbonnentenProduct(product.slug);
+  const youtubeWatchtimePage = isYoutubeWatchtimeProduct(product.slug);
   const structuredProductPage =
     likesPage ||
     savesPage ||
@@ -396,7 +439,8 @@ export default async function ProductPage({ params }: Props) {
     tuerkischPage ||
     likesDeutschPage ||
     tiktokTuerkischPage ||
-    youtubeAbonnentenPage;
+    youtubeAbonnentenPage ||
+    youtubeWatchtimePage;
   const editorialBlockPage = structuredProductPage || tiktokSavesPage;
   const OrderSectionTag = structuredProductPage ? "section" : "div";
   const productImage = product.image;
@@ -404,6 +448,8 @@ export default async function ProductPage({ params }: Props) {
     ? YOUTUBE_VIEWS_IMAGE_ALT
     : youtubeAbonnentenPage
       ? YOUTUBE_ABONNENTEN_IMAGE_ALT
+    : youtubeWatchtimePage
+      ? YOUTUBE_WATCHTIME_IMAGE_ALT
     : likesPage
       ? INSTAGRAM_LIKES_IMAGE_ALT
       : savesPage
@@ -460,6 +506,7 @@ export default async function ProductPage({ params }: Props) {
     likesDeutschPage ? `${likesDeutschStyles.page} instagram-likes-deutsch-page` : "",
     tiktokTuerkischPage ? `${tiktokTuerkischStyles.page} tiktok-follower-tuerkisch-page` : "",
     youtubeAbonnentenPage ? `${youtubeFollowerStyles.page} youtube-follower-page` : "",
+    youtubeWatchtimePage ? `${youtubeWatchtimeStyles.page} youtube-watchtime-page` : "",
   ]
     .filter(Boolean)
     .join(" ");
@@ -474,11 +521,20 @@ export default async function ProductPage({ params }: Props) {
       {likesDeutschPage ? <InstagramLikesDeutschAnchorScroll /> : null}
       {tiktokTuerkischPage ? <TiktokFollowerTuerkischAnchorScroll /> : null}
       {youtubeAbonnentenPage ? <YoutubeAbonnentenAnchorScroll /> : null}
+      {youtubeWatchtimePage ? <YoutubeWatchtimeAnchorScroll /> : null}
       <JsonLd
         data={buildProductSchema(
           product,
           category,
-          likesDeutschPage || tiktokTuerkischPage ? { defaultPackageOffer: true } : undefined
+          likesDeutschPage || tiktokTuerkischPage
+            ? { defaultPackageOffer: true }
+            : youtubeWatchtimePage
+              ? {
+                  quantityUnit: YOUTUBE_WATCHTIME_QUANTITY_UNIT,
+                  offerProductName: "YouTube Watchtime",
+                  schemaDescription: YOUTUBE_WATCHTIME_PRODUCT_DESCRIPTION,
+                }
+              : undefined
         )}
       />
       <JsonLd data={breadcrumbSchema} />
@@ -524,6 +580,8 @@ export default async function ProductPage({ params }: Props) {
                         ? "tiktok-follower-tuerkisch-titel"
                         : youtubeAbonnentenPage
                           ? "youtube-abonnenten-titel"
+                          : youtubeWatchtimePage
+                            ? "youtube-watchtime-titel"
                 : undefined
           }
         >
@@ -537,6 +595,8 @@ export default async function ProductPage({ params }: Props) {
                   ? TIKTOK_FOLLOWER_TUERKISCH_H1
                   : youtubeAbonnentenPage
                     ? YOUTUBE_ABONNENTEN_H1
+                    : youtubeWatchtimePage
+                      ? YOUTUBE_WATCHTIME_H1
               : getProductDisplayName(product.name)}
         </h1>
         {product.articleNumber && (
@@ -571,16 +631,21 @@ export default async function ProductPage({ params }: Props) {
                       ? { "aria-labelledby": "tiktok-follower-tuerkisch-titel" }
                       : youtubeAbonnentenPage
                         ? { "aria-labelledby": "youtube-abonnenten-titel" }
+                        : youtubeWatchtimePage
+                          ? { "aria-labelledby": "youtube-watchtime-titel" }
               : {})}
         >
-          {viewsPage || likesPage || savesPage || deutschPage || tuerkischPage || likesDeutschPage || tiktokTuerkischPage || youtubeAbonnentenPage ? (
+          {viewsPage || likesPage || savesPage || deutschPage || tuerkischPage || likesDeutschPage || tiktokTuerkischPage || youtubeAbonnentenPage || youtubeWatchtimePage ? (
             <>
               <p className="product-availability">Verfügbar – Lieferung nach Bestellung</p>
               <noscript>
                 <ul className="product-packages-ssr">
                   {product.quantities.map((qty, i) => (
                     <li key={qty}>
-                      {formatQuantity(qty)} – {formatEuroFromCents(product.pricesCents[i] ?? 0)}
+                      {youtubeWatchtimePage
+                        ? `${formatQuantity(qty)} Stunden`
+                        : formatQuantity(qty)}{" "}
+                      – {formatEuroFromCents(product.pricesCents[i] ?? 0)}
                     </li>
                   ))}
                 </ul>
@@ -595,15 +660,22 @@ export default async function ProductPage({ params }: Props) {
             bullets={[]}
             tiers={product.tiers}
             showPackagePrices={
-              viewsPage || likesPage || savesPage || deutschPage || tuerkischPage || likesDeutschPage || tiktokTuerkischPage || youtubeAbonnentenPage
+              viewsPage || likesPage || savesPage || deutschPage || tuerkischPage || likesDeutschPage || tiktokTuerkischPage || youtubeAbonnentenPage || youtubeWatchtimePage
             }
-            targetAsUrl={likesPage || savesPage || likesDeutschPage}
+            targetAsUrl={likesPage || savesPage || likesDeutschPage || youtubeWatchtimePage}
             validateInstagramMediaUrl={likesPage || savesPage || likesDeutschPage}
             validateTikTokProfile={tiktokTuerkischPage}
             validateYouTubeChannel={youtubeAbonnentenPage}
+            validateYouTubeWatchVideo={youtubeWatchtimePage}
             neutralizeTikTokGrowthClaim={tiktokTuerkischPage}
-            sliderMinFromPackages={likesDeutschPage || tiktokTuerkischPage || youtubeAbonnentenPage}
-            restrictToListedQuantities={likesDeutschPage || tiktokTuerkischPage || youtubeAbonnentenPage}
+            sliderMinFromPackages={likesDeutschPage || tiktokTuerkischPage || youtubeAbonnentenPage || youtubeWatchtimePage}
+            restrictToListedQuantities={likesDeutschPage || tiktokTuerkischPage || youtubeAbonnentenPage || youtubeWatchtimePage}
+            quantityUnit={youtubeWatchtimePage ? YOUTUBE_WATCHTIME_QUANTITY_UNIT : undefined}
+            packagesLabel={youtubeWatchtimePage ? "Standardpakete in Stunden" : undefined}
+            individualQuantityLabel={youtubeWatchtimePage ? "Gewünschte Wiedergabezeit:" : undefined}
+            quantityValueText={youtubeWatchtimePage ? "Stunden Wiedergabezeit" : undefined}
+            deliveryNote={youtubeWatchtimePage ? YOUTUBE_WATCHTIME_DELIVERY_NOTE : undefined}
+            policyNote={youtubeWatchtimePage ? YOUTUBE_WATCHTIME_POLICY_NOTE : undefined}
             targetHint={
               likesDeutschPage
                 ? INSTAGRAM_LIKES_DEUTSCH_TARGET_HINT
@@ -611,6 +683,8 @@ export default async function ProductPage({ params }: Props) {
                   ? TIKTOK_FOLLOWER_TUERKISCH_TARGET_HINT
                   : youtubeAbonnentenPage
                     ? YOUTUBE_ABONNENTEN_TARGET_HINT
+                    : youtubeWatchtimePage
+                      ? YOUTUBE_WATCHTIME_TARGET_HINT
                   : undefined
             }
             emptyTargetError={
@@ -620,6 +694,8 @@ export default async function ProductPage({ params }: Props) {
                   ? TIKTOK_FOLLOWER_TUERKISCH_EMPTY_TARGET_ERROR
                   : youtubeAbonnentenPage
                     ? YOUTUBE_ABONNENTEN_EMPTY_TARGET_ERROR
+                    : youtubeWatchtimePage
+                      ? YOUTUBE_WATCHTIME_EMPTY_TARGET_ERROR
                   : undefined
             }
             invalidTargetError={
@@ -629,10 +705,25 @@ export default async function ProductPage({ params }: Props) {
                   ? TIKTOK_FOLLOWER_TUERKISCH_INVALID_TARGET_ERROR
                   : youtubeAbonnentenPage
                     ? YOUTUBE_ABONNENTEN_INVALID_TARGET_ERROR
+                    : youtubeWatchtimePage
+                      ? YOUTUBE_WATCHTIME_INVALID_TARGET_ERROR
                   : undefined
             }
-            targetLabel={youtubeAbonnentenPage ? YOUTUBE_ABONNENTEN_TARGET_LABEL : undefined}
-            targetPlaceholder={youtubeAbonnentenPage ? YOUTUBE_ABONNENTEN_TARGET_PLACEHOLDER : undefined}
+            multipleTargetError={youtubeWatchtimePage ? YOUTUBE_WATCHTIME_MULTIPLE_TARGET_ERROR : undefined}
+            targetLabel={
+              youtubeWatchtimePage
+                ? YOUTUBE_WATCHTIME_TARGET_LABEL
+                : youtubeAbonnentenPage
+                  ? YOUTUBE_ABONNENTEN_TARGET_LABEL
+                  : undefined
+            }
+            targetPlaceholder={
+              youtubeWatchtimePage
+                ? YOUTUBE_WATCHTIME_TARGET_PLACEHOLDER
+                : youtubeAbonnentenPage
+                  ? YOUTUBE_ABONNENTEN_TARGET_PLACEHOLDER
+                  : undefined
+            }
             targetInputId={
               likesPage
                 ? "instagram-likes-beitragslink"
@@ -648,6 +739,8 @@ export default async function ProductPage({ params }: Props) {
                           ? "tiktok-follower-tuerkisch-ziel"
                           : youtubeAbonnentenPage
                             ? "youtube-abonnenten-ziel"
+                            : youtubeWatchtimePage
+                              ? "youtube-watchtime-ziel"
                   : "product-target"
             }
             quantitySliderId={
@@ -665,6 +758,8 @@ export default async function ProductPage({ params }: Props) {
                           ? "tiktok-follower-tuerkisch-quantity-slider"
                           : youtubeAbonnentenPage
                             ? "youtube-abonnenten-quantity-slider"
+                            : youtubeWatchtimePage
+                              ? "youtube-watchtime-quantity-slider"
                   : "product-quantity-slider"
             }
           />
@@ -724,7 +819,7 @@ export default async function ProductPage({ params }: Props) {
               : undefined
           }
           respectReducedMotion={
-            likesPage || savesPage || deutschPage || tuerkischPage || likesDeutschPage || tiktokTuerkischPage || youtubeAbonnentenPage
+            likesPage || savesPage || deutschPage || tuerkischPage || likesDeutschPage || tiktokTuerkischPage || youtubeAbonnentenPage || youtubeWatchtimePage
           }
         />
       )}

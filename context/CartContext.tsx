@@ -18,6 +18,8 @@ export interface CartItem {
   quantity: number;
   priceCents: number;
   target: string;
+  /** Optionale Einheit nur für die Anzeige, z. B. „Stunden“. */
+  quantityUnit?: string;
 }
 
 interface CartStorage {

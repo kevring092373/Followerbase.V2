@@ -7,6 +7,7 @@ import { PRODUCT_ORDER_ANCHOR_ID } from "@/lib/product-seo";
 import { isInstagramMediaUrl } from "@/lib/instagram-url";
 import { isTikTokProfileTarget } from "@/lib/tiktok-profile";
 import { isYouTubeChannelTarget } from "@/lib/youtube-channel";
+import { inspectYouTubeWatchVideoTarget } from "@/lib/youtube-watch-video";
 import type { ProductTier } from "@/lib/products-data";
 
 const INDIVIDUAL_MIN = 100;
@@ -77,12 +78,28 @@ type ProductOrderBlockProps = {
   validateTikTokProfile?: boolean;
   /** YouTube-Kanallink oder @Handle prüfen (keine Video-/Shorts-/Playlist-Links). */
   validateYouTubeChannel?: boolean;
+  /** YouTube-Videolink prüfen (watch / youtu.be, kein Kanal/Shorts/Live/Playlist). */
+  validateYouTubeWatchVideo?: boolean;
+  /** Meldung, wenn mehrere Ziel-URLs im Feld stehen. */
+  multipleTargetError?: string;
   /** Beschriftung des Ziel-Felds, falls die Seite eine eigene braucht. */
   targetLabel?: string;
   /** Platzhalter des Ziel-Felds, falls die Seite einen eigenen braucht. */
   targetPlaceholder?: string;
   /** Gestaffelte Lieferung ohne Wachstums-/Tarnformulierung (nur explizit gesetzte Seiten). */
   neutralizeTikTokGrowthClaim?: boolean;
+  /** Einheit der Menge, z. B. „Stunden“. Andere Produkte bleiben unverändert. */
+  quantityUnit?: string;
+  /** Überschrift der Paketauswahl. */
+  packagesLabel?: string;
+  /** Präfix der Sliderbeschriftung, z. B. „Gewünschte Wiedergabezeit“. */
+  individualQuantityLabel?: string;
+  /** Zusatz für aria-valuetext, z. B. „Stunden Wiedergabezeit“. */
+  quantityValueText?: string;
+  /** Ersetzt den Standard-Lieferhinweis. */
+  deliveryNote?: string;
+  /** Sachlicher Hinweis direkt bei den Produktbedingungen. */
+  policyNote?: string;
 };
 
 /**
@@ -176,9 +193,17 @@ export function ProductOrderBlock({
   invalidTargetError,
   validateTikTokProfile = false,
   validateYouTubeChannel = false,
+  validateYouTubeWatchVideo = false,
+  multipleTargetError,
   targetLabel,
   targetPlaceholder,
   neutralizeTikTokGrowthClaim = false,
+  quantityUnit,
+  packagesLabel,
+  individualQuantityLabel,
+  quantityValueText,
+  deliveryNote,
+  policyNote,
 }: ProductOrderBlockProps) {
   const { addItem } = useCart();
 
@@ -288,6 +313,23 @@ export function ProductOrderBlock({
       );
       return;
     }
+    if (validateYouTubeWatchVideo) {
+      const inspected = inspectYouTubeWatchVideoTarget(value);
+      if (!inspected.ok) {
+        if (inspected.reason === "multiple") {
+          setTargetError(
+            multipleTargetError ||
+              "Bitte nur einen Videolink einfügen. Mehrere URLs werden nicht auf die erste Adresse gekürzt."
+          );
+        } else {
+          setTargetError(
+            invalidTargetError ||
+              "Bitte einen YouTube-Videolink angeben (youtube.com/watch?v=… oder youtu.be/…)."
+          );
+        }
+        return;
+      }
+    }
     setTargetError(null);
     addItem({
       productSlug,
@@ -295,6 +337,7 @@ export function ProductOrderBlock({
       quantity,
       priceCents,
       target: value,
+      quantityUnit,
     });
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
@@ -308,8 +351,11 @@ export function ProductOrderBlock({
     validateInstagramMediaUrl,
     validateTikTokProfile,
     validateYouTubeChannel,
+    validateYouTubeWatchVideo,
     emptyTargetError,
     invalidTargetError,
+    multipleTargetError,
+    quantityUnit,
   ]);
 
   const effectiveSliderQuantity = useIndividual
@@ -318,9 +364,21 @@ export function ProductOrderBlock({
       ? standardQuantity
       : snapQuantity(standardQuantity, sliderMin, maxForSlider);
 
-  const sliderAriaLabel = restrictToListedQuantities
-    ? `Paketmenge zwischen ${formatQuantity(sliderMin)} und ${formatQuantity(maxForSlider)}. Nur hinterlegte Pakete sind bestellbar.`
-    : `Menge zwischen ${sliderMin} und ${maxForSlider} in ${INDIVIDUAL_STEP}er-Schritten`;
+  const quantityWithUnit = quantityUnit
+    ? `${formatQuantity(quantity)} ${quantityUnit}`
+    : formatQuantity(quantity);
+  const sliderAriaLabel = quantityUnit
+    ? restrictToListedQuantities
+      ? `Wiedergabezeit zwischen ${formatQuantity(sliderMin)} und ${formatQuantity(maxForSlider)} ${quantityUnit}. Nur hinterlegte Pakete sind bestellbar.`
+      : `${quantityUnit} zwischen ${sliderMin} und ${maxForSlider} in ${INDIVIDUAL_STEP}er-Schritten`
+    : restrictToListedQuantities
+      ? `Paketmenge zwischen ${formatQuantity(sliderMin)} und ${formatQuantity(maxForSlider)}. Nur hinterlegte Pakete sind bestellbar.`
+      : `Menge zwischen ${sliderMin} und ${maxForSlider} in ${INDIVIDUAL_STEP}er-Schritten`;
+  const sliderValueText = quantityValueText
+    ? `${formatQuantity(quantity)} ${quantityValueText}`
+    : quantityUnit
+      ? `${formatQuantity(quantity)} ${quantityUnit}`
+      : `${formatQuantity(quantity)} ${productName}`;
 
   /** Kaufleiste erst zeigen, wenn das Produktmodul aus dem Blickfeld gescrollt ist. */
   useEffect(() => {
@@ -380,8 +438,8 @@ export function ProductOrderBlock({
       )}
       {/* Bereich 1: Standardmengen */}
       <div className="product-order-row">
-        <span className="product-order-label">Standardmengen:</span>
-        <div className="product-quantity-options" role="group" aria-label="Standardmenge wählen">
+        <span className="product-order-label">{packagesLabel || "Standardmengen:"}</span>
+        <div className="product-quantity-options" role="group" aria-label={packagesLabel || "Standardmenge wählen"}>
           {q.map((qty, i) => (
             <label key={qty} className="product-quantity-option">
               <input
@@ -393,7 +451,9 @@ export function ProductOrderBlock({
                 className="product-quantity-radio"
               />
               <span className="product-quantity-label">
-                <span className="product-quantity-amount">{formatQuantity(qty)}</span>
+                <span className="product-quantity-amount">
+                  {quantityUnit ? `${formatQuantity(qty)} ${quantityUnit}` : formatQuantity(qty)}
+                </span>
                 {showPackagePrices && typeof p[i] === "number" ? (
                   <span className="product-quantity-price">{formatEuroFromCents(p[i])}</span>
                 ) : null}
@@ -406,7 +466,8 @@ export function ProductOrderBlock({
       {/* Bereich 2: Individuelle Menge (Slider) */}
       <div className="product-order-row product-order-row-individual">
         <label className="product-order-label" htmlFor={quantitySliderId}>
-          Individuelle Menge: <span className="product-quantity-value">{formatQuantity(quantity)}</span>
+          {individualQuantityLabel || "Individuelle Menge:"}{" "}
+          <span className="product-quantity-value">{quantityWithUnit}</span>
         </label>
         <input
           id={quantitySliderId}
@@ -422,7 +483,7 @@ export function ProductOrderBlock({
           aria-valuemin={sliderMin}
           aria-valuemax={maxForSlider}
           aria-valuenow={quantity}
-          aria-valuetext={`${formatQuantity(quantity)} ${productName}`}
+          aria-valuetext={sliderValueText}
         />
       </div>
 
@@ -473,7 +534,8 @@ export function ProductOrderBlock({
         <div className="product-delivery-note-text">
           <strong>Lieferung</strong>
           <p>
-            Je nach aktuellem Bestellaufkommen kann die Lieferung etwas später starten.
+            {deliveryNote ||
+              "Je nach aktuellem Bestellaufkommen kann die Lieferung etwas später starten."}
           </p>
           {isTikTokFollowerProduct(productSlug) && !neutralizeTikTokGrowthClaim && (
             <p>
@@ -486,6 +548,7 @@ export function ProductOrderBlock({
               Bestellaufkommen. Daraus folgt keine bestimmte Wirkung auf den Algorithmus.
             </p>
           )}
+          {policyNote ? <p className="product-policy-note">{policyNote}</p> : null}
         </div>
       </div>
       <div
@@ -494,7 +557,7 @@ export function ProductOrderBlock({
       >
         <div className="product-mobile-buy-bar-price">
           <span className="product-mobile-buy-bar-amount">{formatEuroFromCents(priceCents)}</span>
-          <span className="product-mobile-buy-bar-meta">{formatQuantity(quantity)}</span>
+          <span className="product-mobile-buy-bar-meta">{quantityWithUnit}</span>
         </div>
         <button
           type="button"
