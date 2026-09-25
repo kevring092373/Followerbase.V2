@@ -574,7 +574,7 @@ test("YouTube-Watchtime-Seite nutzt File-Content, Stundenpakete und Videolink", 
   assert.equal(product.metaTitle.length, 56);
   assert.equal(
     product.metaDescription,
-    "YouTube Watchtime kaufen für normale Videos ab 10 Minuten. Stundenpakete, Lieferzeiten und Nachfüllung im Überblick. Keine Monetarisierungsgarantie."
+    "YouTube Watchtime kaufen für normale Videos ab 30 Minuten. Stundenpakete, Lieferzeiten und Nachfüllung im Überblick. Keine Monetarisierungsgarantie."
   );
   assert.equal(product.metaDescription.length, 148);
   assert.deepEqual(product.quantities, [100, 500, 1000, 2000, 4000]);
@@ -613,6 +613,9 @@ test("YouTube-Watchtime-Seite nutzt File-Content, Stundenpakete und Videolink", 
   assert.match(html, /href="#fbwt-pakete"/);
   assert.match(html, /data-fbwt-price="100"/);
   assert.match(html, /data-fbwt-price="4000"/);
+  assert.match(html, /Mindestens 30 Minuten/);
+  assert.match(html, /mindestens 30 Minuten/);
+  assert.doesNotMatch(html, /10 Minuten|zehn Minuten/);
   assert.match(html, /Keine zugesicherte Anrechnung für das Partnerprogramm/);
   assert.match(html, /href="\/kontakt"/);
   assert.match(html, /href="\/blog\/youtube-aufrufe-erhoehen"/);

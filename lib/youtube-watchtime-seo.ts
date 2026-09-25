@@ -3,7 +3,7 @@
  *
  * PRODUKTDEFINITION FC-031 (Langtext aus Komplettpaket 2026-09-24)
  * Bestätigt: Verkaufseinheit Stunden; Pakete 100 / 500 / 1.000 / 2.000 / 4.000;
- * Ziel ein normales YouTube-Video ab 10 Minuten; keine Verteilung auf mehrere Videos;
+ * Ziel ein normales YouTube-Video ab 30 Minuten; keine Verteilung auf mehrere Videos;
  * Lieferbeginn 1–10 Stunden; Gesamtdauer mehrere Stunden bis Tage; Nachfüllung bis 30 Tage.
  * Preise: content/products.json. Keine Monetarisierungs- oder YPP-Anrechnungszusage.
  *
@@ -22,10 +22,10 @@ export const YOUTUBE_WATCHTIME_SLUG = "youtube-watchtime-kaufen";
 export const YOUTUBE_WATCHTIME_TITLE = "YouTube Watchtime kaufen: Pakete & Ablauf | Followerbase";
 
 export const YOUTUBE_WATCHTIME_DESCRIPTION =
-  "YouTube Watchtime kaufen für normale Videos ab 10 Minuten. Stundenpakete, Lieferzeiten und Nachfüllung im Überblick. Keine Monetarisierungsgarantie.";
+  "YouTube Watchtime kaufen für normale Videos ab 30 Minuten. Stundenpakete, Lieferzeiten und Nachfüllung im Überblick. Keine Monetarisierungsgarantie.";
 
 export const YOUTUBE_WATCHTIME_PRODUCT_DESCRIPTION =
-  "YouTube Watchtime in Stundenpaketen für ein normales Video ab 10 Minuten. Ein Video pro Bestellung, Lieferbeginn 1 bis 10 Stunden, Gesamtdauer mehrere Stunden bis Tage. Keine zugesicherte Anrechnung für das YouTube-Partnerprogramm.";
+  "YouTube Watchtime in Stundenpaketen für ein normales Video ab 30 Minuten. Ein Video pro Bestellung, Lieferbeginn 1 bis 10 Stunden, Gesamtdauer mehrere Stunden bis Tage. Keine zugesicherte Anrechnung für das YouTube-Partnerprogramm.";
 
 export const YOUTUBE_WATCHTIME_H1 = "YouTube Watchtime kaufen";
 
@@ -50,7 +50,7 @@ export const YOUTUBE_WATCHTIME_TARGET_LABEL = "Link zu deinem YouTube-Video";
 export const YOUTUBE_WATCHTIME_TARGET_PLACEHOLDER = "z. B. https://www.youtube.com/watch?v=…";
 
 export const YOUTUBE_WATCHTIME_TARGET_HINT =
-  "Für ein normales YouTube-Video ab 10 Minuten. Keine Verteilung auf mehrere Videos. Öffentlich und ohne Altersbeschränkung. Die Prüfung erkennt das Linkformat, nicht die Videolänge.";
+  "Für ein normales YouTube-Video ab 30 Minuten. Keine Verteilung auf mehrere Videos. Öffentlich und ohne Altersbeschränkung. Die Prüfung erkennt das Linkformat, nicht die Videolänge.";
 
 export const YOUTUBE_WATCHTIME_EMPTY_TARGET_ERROR =
   "Bitte den Link zu deinem YouTube-Video einfügen.";
