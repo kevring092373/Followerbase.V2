@@ -148,12 +148,18 @@ test("Offer-SKUs sind je Variante eindeutig", () => {
       skus.push(`${product.articleNumber}-${quantity}-${tier.name.toUpperCase()}`);
     }
   }
-  assert.equal(skus.length, 15);
+  assert.equal(skus.length, 12);
   assert.equal(new Set(skus).size, skus.length);
   assert.ok(skus.includes("FC-001-100-NORMAL"));
   assert.ok(skus.includes("FC-001-100-PREMIUM"));
-  assert.ok(skus.includes("FC-001-25000-NORMAL"));
-  assert.equal(skus.includes("FC-001-25000-PREMIUM"), false);
+  assert.ok(skus.includes("FC-001-5000-NORMAL"));
+  assert.ok(skus.includes("FC-001-5000-PREMIUM"));
+  assert.equal(skus.includes("FC-001-10000-NORMAL"), false);
+  assert.equal(skus.includes("FC-001-25000-NORMAL"), false);
+  assert.equal(product.tiers[0].sliderMax, 5000);
+  assert.equal(product.tiers[1].sliderMax, 5000);
+  assert.deepEqual(product.quantities, [100, 250, 500, 1000, 2500, 5000]);
+  assert.doesNotMatch(product.description, /10\.000|25\.000/);
 });
 
 test("Sichtbare Preise nutzen deutsches Format, Schema-Preise den Dezimalpunkt", () => {
