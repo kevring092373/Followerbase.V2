@@ -127,6 +127,14 @@ test("TikTok-Follower- und Instagram-Likes-Preise sind vorhanden", () => {
     assert.ok(prices.length >= 1);
     assert.ok(Math.min(...prices) >= 0);
   }
+  const follower = products.find((p) => p.slug === "tiktok-follower-kaufen");
+  assert.deepEqual(follower.quantities, [100, 250, 500, 1000, 2500, 5000]);
+  assert.deepEqual(follower.pricesCents, [129, 290, 545, 990, 2290, 3995]);
+  assert.equal(Math.max(...follower.quantities), 5000);
+  const views = products.find((p) => p.slug === "tiktok-views-kaufen");
+  assert.deepEqual(views.quantities, [1000, 5000, 10000, 50000, 100000, 500000, 1000000]);
+  assert.deepEqual(views.pricesCents, [45, 110, 219, 949, 1749, 7490, 12490]);
+  assert.equal(views.pricesCents[0], 45);
 });
 
 test("Produktseite hat genau eine H1-Vorlage und Canonical-Metadaten", () => {
