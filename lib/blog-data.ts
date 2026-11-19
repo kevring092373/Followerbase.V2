@@ -27,6 +27,19 @@ export function blogCategoryPath(name: string): string {
   return `/blog/kategorie/${blogCategorySlug(name)}`;
 }
 
+/**
+ * Ab wann eine Kategorieseite wieder indexiert werden darf.
+ * `INDEX_BLOG_CATEGORIES` bleibt vorerst false (Thin Content, alle Kategorien noindex).
+ * Zum Reaktivieren: Flag auf true — dann gilt die 4-Artikel-Schwelle.
+ */
+export const INDEX_BLOG_CATEGORIES = false;
+export const BLOG_CATEGORY_INDEX_MIN_POSTS = 4;
+
+export function shouldIndexBlogCategory(postCount: number): boolean {
+  if (!INDEX_BLOG_CATEGORIES) return false;
+  return postCount >= BLOG_CATEGORY_INDEX_MIN_POSTS;
+}
+
 export function findBlogCategoryName(posts: BlogPost[], slug: string): string | undefined {
   const clean = normalizeBlogSlug(slug);
   const names = Array.from(

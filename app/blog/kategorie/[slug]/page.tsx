@@ -1,5 +1,10 @@
 import { notFound } from "next/navigation";
-import { getPublishedPosts, findBlogCategoryName, blogCategoryPath } from "@/lib/blog-data";
+import {
+  getPublishedPosts,
+  findBlogCategoryName,
+  blogCategoryPath,
+  shouldIndexBlogCategory,
+} from "@/lib/blog-data";
 import { absoluteUrl, truncateDescription } from "@/lib/seo";
 import { BlogArticleList } from "@/components/BlogArticleList";
 import { JsonLd } from "@/components/JsonLd";
@@ -22,11 +27,19 @@ export async function generateMetadata({ params }: Props) {
     `Artikel der Kategorie ${category}: Tipps und Anleitungen zu Reichweite und Social Media.`
   );
   const url = absoluteUrl(blogCategoryPath(category));
+  const postCount = posts.filter((post) => (post.category ?? "").trim() === category).length;
   return {
     title,
     description,
     keywords: [],
-    robots: { index: true, follow: true },
+    robots: {
+      index: shouldIndexBlogCategory(postCount),
+      follow: true,
+      googleBot: {
+        index: shouldIndexBlogCategory(postCount),
+        follow: true,
+      },
+    },
     openGraph: {
       title,
       description,

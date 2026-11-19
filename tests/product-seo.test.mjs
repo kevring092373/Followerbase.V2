@@ -677,3 +677,14 @@ test("Sitemap und IndexNow-Key-Datei sind vorhanden", () => {
   const key = read("public/a8c39dc9f6e64c79b59409b682c15d4c.txt").trim();
   assert.equal(key, "a8c39dc9f6e64c79b59409b682c15d4c");
 });
+
+test("Blog-Kategorieseiten sind noindex, follow und nicht in der Sitemap", () => {
+  const page = read("app/blog/kategorie/[slug]/page.tsx");
+  assert.match(page, /shouldIndexBlogCategory\(postCount\)/);
+  assert.match(page, /follow:\s*true/);
+  const blogData = read("lib/blog-data.ts");
+  assert.match(blogData, /INDEX_BLOG_CATEGORIES = false/);
+  assert.match(blogData, /BLOG_CATEGORY_INDEX_MIN_POSTS = 4/);
+  assert.match(blogData, /export function shouldIndexBlogCategory/);
+  assert.doesNotMatch(read("app/sitemap.ts"), /blogCategoryPath/);
+});
