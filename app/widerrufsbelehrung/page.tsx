@@ -1,8 +1,9 @@
 import { absoluteUrl } from "@/lib/seo";
+import { pageMetaDescription } from "@/lib/page-meta-descriptions";
 
 export const metadata = {
   title: "Widerrufsbelehrung – Followerbase",
-  description: "Informationen zu deinem Widerrufsrecht.",
+  description: pageMetaDescription("/widerrufsbelehrung"),
   robots: { index: true, follow: true },
   alternates: { canonical: absoluteUrl("/widerrufsbelehrung") },
 };

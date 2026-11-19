@@ -19,14 +19,16 @@
  * ausdrücklich ohne Wohnort-, Sprach- oder Aktivitätsgarantie.
  */
 import { formatEuroFromCents, formatQuantity } from "@/lib/format";
+import { pageMetaDescription } from "@/lib/page-meta-descriptions";
 import { htmlToPlainText, PRODUCT_ORDER_ANCHOR_ID } from "@/lib/product-seo";
 
 export const INSTAGRAM_FOLLOWER_DEUTSCH_SLUG = "instagram-follower-deutsch-kaufen";
 
 export const INSTAGRAM_FOLLOWER_DEUTSCH_TITLE = "Deutsche Instagram Follower kaufen ab 7,90 € | Followerbase";
 
-export const INSTAGRAM_FOLLOWER_DEUTSCH_DESCRIPTION =
-  "Deutsche Instagram Follower ab 7,90 € bestellen. Sechs Pakete, kein Passwort und klare Produktdetails bei Followerbase.";
+export const INSTAGRAM_FOLLOWER_DEUTSCH_DESCRIPTION = pageMetaDescription(
+  "/product/instagram-follower-deutsch-kaufen"
+);
 
 export const INSTAGRAM_FOLLOWER_DEUTSCH_H1 = "Instagram Follower Deutsch kaufen";
 

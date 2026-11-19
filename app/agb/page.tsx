@@ -1,8 +1,9 @@
 import { absoluteUrl } from "@/lib/seo";
+import { pageMetaDescription } from "@/lib/page-meta-descriptions";
 
 export const metadata = {
   title: "AGB – Followerbase",
-  description: "Allgemeine Geschäftsbedingungen des Shops.",
+  description: pageMetaDescription("/agb"),
   robots: { index: true, follow: true },
   alternates: { canonical: absoluteUrl("/agb") },
 };

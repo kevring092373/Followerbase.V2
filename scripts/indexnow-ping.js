@@ -2,7 +2,7 @@
  * Meldet gezielt geänderte URLs an IndexNow (Bing).
  * Aufruf: node scripts/indexnow-ping.js
  */
-const INDEXNOW_KEY = process.env.INDEXNOW_KEY?.trim() || "a8c39dc9f6e64c79b59409b682c15d4c";
+const INDEXNOW_KEY = process.env.INDEXNOW_KEY?.trim() || "0630b9df6ed55b429cf7c66f88d12407";
 const HOST = "followerbase.de";
 const SITE = `https://${HOST}`;
 const ENDPOINT = "https://api.indexnow.org/indexnow";

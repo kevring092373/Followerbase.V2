@@ -3,23 +3,25 @@
  */
 import { getPublishedPosts } from "@/lib/blog-data";
 import { absoluteUrl } from "@/lib/seo";
+import { pageMetaDescription } from "@/lib/page-meta-descriptions";
 import { BlogArticleList } from "@/components/BlogArticleList";
 
 export const revalidate = 3600;
 
+const description = pageMetaDescription("/blog");
+
 export const metadata = {
   title: "Blog – Followerbase",
-  description:
-    "Tipps, Anleitungen und News zu Followern, Likes und Reichweite für Instagram, TikTok & mehr.",
+  description,
   keywords: [],
   robots: { index: true, follow: true },
   openGraph: {
     title: "Blog – Followerbase",
-    description: "Tipps und Anleitungen zu Reichweite und Social Media.",
+    description,
     url: absoluteUrl("/blog"),
     type: "website" as const,
   },
-  twitter: { card: "summary" as const, title: "Blog – Followerbase", description: "Tipps zu Followern und Reichweite." },
+  twitter: { card: "summary" as const, title: "Blog – Followerbase", description },
   alternates: { canonical: absoluteUrl("/blog") },
 };
 

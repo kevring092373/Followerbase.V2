@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
 import { absoluteUrl } from "@/lib/seo";
+import { pageMetaDescription } from "@/lib/page-meta-descriptions";
+
+const description = pageMetaDescription("/instagram-profilbild");
 
 export const metadata: Metadata = {
   title: "Instagram-Profilbild anzeigen – Followerbase",
-  description:
-    "Instagram-Profilbild zu einem Nutzernamen oder Profillink anzeigen und herunterladen. Kostenlos und ohne Anmeldung.",
+  description,
   openGraph: {
     title: "Instagram-Profilbild anzeigen – Followerbase" as const,
-    description: "Profilbild zu Instagram-Nutzernamen anzeigen und herunterladen.",
+    description,
     url: absoluteUrl("/instagram-profilbild"),
     type: "website",
   },

@@ -225,7 +225,7 @@ async function submit(urls, key) {
 module.exports = {
   async onSuccess({ constants }) {
     try {
-      const key = (process.env.INDEXNOW_KEY || "").trim() || "a8c39dc9f6e64c79b59409b682c15d4c";
+      const key = (process.env.INDEXNOW_KEY || "").trim() || "0630b9df6ed55b429cf7c66f88d12407";
       const cwd = constants.PUBLISH_DIR ? path.resolve(constants.PUBLISH_DIR, "..") : process.cwd();
       const repo = fs.existsSync(path.join(process.cwd(), "content", "products.json"))
         ? process.cwd()

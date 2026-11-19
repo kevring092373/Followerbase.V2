@@ -11,7 +11,7 @@ Nach einem erfolgreichen Deploy werden geänderte öffentliche Canonical-URLs an
 
 Den öffentlichen Key nicht als Secret behandeln: die Datei `/<INDEXNOW_KEY>.txt` muss erreichbar sein, damit IndexNow die Domain prüfen kann. `INDEXNOW_SECRET` niemals ins Repository schreiben.
 
-Aktuelle Key-Datei: `public/a8c39dc9f6e64c79b59409b682c15d4c.txt`
+Aktuelle Key-Datei: `public/0630b9df6ed55b429cf7c66f88d12407.txt`
 
 ## Wann wird gesendet?
 

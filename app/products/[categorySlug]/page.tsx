@@ -7,6 +7,7 @@ import { notFound } from "next/navigation";
 import { categories } from "@/lib/categories";
 import { getProductsByCategoryId, getProductImageAlt } from "@/lib/products-data";
 import { absoluteUrl, truncateDescription } from "@/lib/seo";
+import { PAGE_META_DESCRIPTIONS } from "@/lib/page-meta-descriptions";
 import { formatFromPriceFromCents } from "@/lib/format";
 
 type Props = { params: { categorySlug: string } };
@@ -22,9 +23,12 @@ export function generateMetadata({ params }: Props) {
   const category = categories.find((c) => c.slug === params.categorySlug);
   if (!category) return { title: "Kategorie" };
   const title = `${category.name} – Follower, Likes & Views kaufen – Followerbase`;
-  const description = truncateDescription(
-    `${category.name} – Follower, Likes und Views kaufen. Faire Preise, schnelle Lieferung bei Followerbase. Jetzt bestellen.`
-  );
+  const path = `/products/${category.slug}` as keyof typeof PAGE_META_DESCRIPTIONS;
+  const description =
+    PAGE_META_DESCRIPTIONS[path] ??
+    truncateDescription(
+      `${category.name} – Follower, Likes und Views kaufen. Faire Preise, schnelle Lieferung bei Followerbase. Jetzt bestellen.`
+    );
   const url = absoluteUrl(`/products/${category.slug}`);
   return {
     title,

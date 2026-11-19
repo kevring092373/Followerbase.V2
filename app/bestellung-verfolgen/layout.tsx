@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
 
 import { absoluteUrl } from "@/lib/seo";
+import { pageMetaDescription } from "@/lib/page-meta-descriptions";
+
+const description = pageMetaDescription("/bestellung-verfolgen");
 
 export const metadata: Metadata = {
   title: "Bestellung verfolgen – Followerbase",
-  description:
-    "Bestellstatus prüfen: Gib deine Bestellnummer ein und sieh den aktuellen Stand deiner Lieferung.",
+  description,
   openGraph: {
     title: "Bestellung verfolgen – Followerbase" as const,
-    description: "Status deiner Bestellung mit Bestellnummer prüfen.",
+    description,
     url: absoluteUrl("/bestellung-verfolgen"),
     type: "website",
   },

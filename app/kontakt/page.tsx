@@ -1,14 +1,16 @@
 import { ContactForm } from "@/components/ContactForm";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { absoluteUrl } from "@/lib/seo";
+import { pageMetaDescription } from "@/lib/page-meta-descriptions";
+
+const description = pageMetaDescription("/kontakt");
 
 export const metadata = {
   title: "Kontakt – Followerbase",
-  description:
-    "Fragen zu Bestellungen oder Produkten? Schreib uns per WhatsApp oder Kontaktformular – wir antworten schnell.",
+  description,
   openGraph: {
     title: "Kontakt – Followerbase",
-    description: "Kontakt per WhatsApp oder Formular.",
+    description,
     url: absoluteUrl("/kontakt"),
     type: "website" as const,
   },

@@ -1,8 +1,9 @@
 import { absoluteUrl } from "@/lib/seo";
+import { pageMetaDescription } from "@/lib/page-meta-descriptions";
 
 export const metadata = {
   title: "Impressum – Followerbase",
-  description: "Impressum und Angaben gemäß § 5 TMG.",
+  description: pageMetaDescription("/impressum"),
   robots: { index: true, follow: true },
   alternates: { canonical: absoluteUrl("/impressum") },
 };
