@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { absoluteUrl } from "@/lib/seo";
+import { absoluteUrl, brandOgImage } from "@/lib/seo";
 import { pageMetaDescription } from "@/lib/page-meta-descriptions";
 
 const description = pageMetaDescription("/instagram-profilbild");
@@ -12,6 +12,7 @@ export const metadata: Metadata = {
     description,
     url: absoluteUrl("/instagram-profilbild"),
     type: "website",
+    images: [brandOgImage()],
   },
   alternates: { canonical: absoluteUrl("/instagram-profilbild") },
 };

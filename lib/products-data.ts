@@ -98,13 +98,27 @@ export async function getAllProducts(): Promise<Product[]> {
   return products.sort((a, b) => a.name.localeCompare(b.name));
 }
 
+function productSlugCandidates(slug: string): string[] {
+  if (slug === "instagram-views-kaufen") return ["instagram-views-kaufen", "instagram-reel-views-kaufen"];
+  if (slug === "instagram-reel-views-kaufen") return ["instagram-reel-views-kaufen", "instagram-views-kaufen"];
+  return [slug];
+}
+
 export async function getProductBySlug(slug: string): Promise<Product | undefined> {
+  const candidates = productSlugCandidates(slug);
   if (isSupabaseConfigured()) {
-    const p = await getProductBySlugSupabase(slug);
-    return p ?? undefined;
+    for (const candidate of candidates) {
+      const p = await getProductBySlugSupabase(candidate);
+      if (p) return p;
+    }
+    return undefined;
   }
   const products = await readProducts();
-  return products.find((p) => p.slug === slug);
+  for (const candidate of candidates) {
+    const found = products.find((p) => p.slug === candidate);
+    if (found) return found;
+  }
+  return undefined;
 }
 
 export async function getProductsByCategoryId(categoryId: string): Promise<Product[]> {

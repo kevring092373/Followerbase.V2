@@ -1,6 +1,6 @@
 import { ContactForm } from "@/components/ContactForm";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
-import { absoluteUrl } from "@/lib/seo";
+import { absoluteUrl, brandOgImage } from "@/lib/seo";
 import { pageMetaDescription } from "@/lib/page-meta-descriptions";
 
 const description = pageMetaDescription("/kontakt");
@@ -13,6 +13,7 @@ export const metadata = {
     description,
     url: absoluteUrl("/kontakt"),
     type: "website" as const,
+    images: [brandOgImage()],
   },
   alternates: { canonical: absoluteUrl("/kontakt") },
 };

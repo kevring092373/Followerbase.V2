@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { absoluteUrl } from "@/lib/seo";
+import { absoluteUrl, brandOgImage } from "@/lib/seo";
 import { JsonLd } from "@/components/JsonLd";
 import {
   buildAboutPageSchema,
@@ -15,8 +15,19 @@ export const metadata = {
   title,
   description,
   robots: { index: true, follow: true },
-  openGraph: { title, description, url: absoluteUrl("/ueber-uns"), type: "website" as const },
-  twitter: { card: "summary" as const, title, description },
+  openGraph: {
+    title,
+    description,
+    url: absoluteUrl("/ueber-uns"),
+    type: "website" as const,
+    images: [brandOgImage()],
+  },
+  twitter: {
+    card: "summary_large_image" as const,
+    title,
+    description,
+    images: [brandOgImage().url],
+  },
   alternates: { canonical: absoluteUrl("/ueber-uns") },
 };
 

@@ -15,10 +15,10 @@ import { htmlToPlainText, PRODUCT_ORDER_ANCHOR_ID } from "@/lib/product-seo";
 
 export const YOUTUBE_ABONNENTEN_SLUG = "youtube-follower-kaufen";
 
-export const YOUTUBE_ABONNENTEN_TITLE = "YouTube Abonnenten kaufen ab 8,45 € | Followerbase";
+export const YOUTUBE_ABONNENTEN_TITLE = "YouTube Abonnenten kaufen ab 8,45 € | Followerbase.de";
 
 export const YOUTUBE_ABONNENTEN_DESCRIPTION =
-  "YouTube Abonnenten kaufen: Pakete von 50 bis 1.000 Abonnenten ab 8,45 €. Preise, Bestellung per Kanallink und Grenzen der Leistung bei Followerbase.";
+  "YouTube Abonnenten kaufen ab 8,45 € bei Followerbase. Fünf Pakete bis 1.000 Abos, nur dein öffentlicher Kanallink, kein Passwort, gestaffelte Lieferung.";
 
 export const YOUTUBE_ABONNENTEN_H1 = "YouTube Abonnenten kaufen";
 

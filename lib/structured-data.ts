@@ -315,6 +315,31 @@ export function buildAboutPageSchema(opts: {
   };
 }
 
+export function buildCollectionPageSchema(opts: {
+  name: string;
+  description: string;
+  path: string;
+  items: { name: string; path: string }[];
+}): Record<string, unknown> {
+  const url = absoluteUrl(opts.path);
+  return {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: opts.name,
+    description: opts.description,
+    url,
+    mainEntity: {
+      "@type": "ItemList",
+      itemListElement: opts.items.map((item, index) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        name: item.name,
+        url: absoluteUrl(item.path),
+      })),
+    },
+  };
+}
+
 /** FAQPage aus sichtbaren Frage/Antwort-Paaren (z. B. Blog-FAQ). */
 export function buildFaqPageSchema(
   faqs: { question: string; answer: string }[]

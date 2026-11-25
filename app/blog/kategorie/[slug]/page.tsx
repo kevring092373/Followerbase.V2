@@ -5,7 +5,7 @@ import {
   blogCategoryPath,
   shouldIndexBlogCategory,
 } from "@/lib/blog-data";
-import { absoluteUrl, truncateDescription } from "@/lib/seo";
+import { absoluteUrl, brandOgImage, truncateDescription } from "@/lib/seo";
 import { BlogArticleList } from "@/components/BlogArticleList";
 import { JsonLd } from "@/components/JsonLd";
 import { buildBreadcrumbSchema } from "@/lib/structured-data";
@@ -31,7 +31,6 @@ export async function generateMetadata({ params }: Props) {
   return {
     title,
     description,
-    keywords: [],
     robots: {
       index: shouldIndexBlogCategory(postCount),
       follow: true,
@@ -45,8 +44,14 @@ export async function generateMetadata({ params }: Props) {
       description,
       url,
       type: "website" as const,
+      images: [brandOgImage()],
     },
-    twitter: { card: "summary" as const, title, description },
+    twitter: {
+      card: "summary_large_image" as const,
+      title,
+      description,
+      images: [brandOgImage().url],
+    },
     alternates: { canonical: url },
   };
 }

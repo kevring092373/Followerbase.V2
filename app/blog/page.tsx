@@ -2,7 +2,7 @@
  * Blog-Übersicht im Stil SEO München: Hero, Kategorie-Filter, Artikel-Karten.
  */
 import { getPublishedPosts } from "@/lib/blog-data";
-import { absoluteUrl } from "@/lib/seo";
+import { absoluteUrl, brandOgImage } from "@/lib/seo";
 import { pageMetaDescription } from "@/lib/page-meta-descriptions";
 import { BlogArticleList } from "@/components/BlogArticleList";
 
@@ -13,15 +13,20 @@ const description = pageMetaDescription("/blog");
 export const metadata = {
   title: "Blog – Followerbase",
   description,
-  keywords: [],
   robots: { index: true, follow: true },
   openGraph: {
     title: "Blog – Followerbase",
     description,
     url: absoluteUrl("/blog"),
     type: "website" as const,
+    images: [brandOgImage()],
   },
-  twitter: { card: "summary" as const, title: "Blog – Followerbase", description },
+  twitter: {
+    card: "summary_large_image" as const,
+    title: "Blog – Followerbase",
+    description,
+    images: [brandOgImage().url],
+  },
   alternates: { canonical: absoluteUrl("/blog") },
 };
 

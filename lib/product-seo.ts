@@ -137,7 +137,8 @@ export function splitProductDescription(
 
 export function productCanonicalUrl(slug: string): string {
   const clean = slug.trim().replace(/^\/+/, "").split("?")[0].split("#")[0];
-  return canonicalUrl(`/product/${clean}`);
+  const publicSlug = clean === "instagram-reel-views-kaufen" ? "instagram-views-kaufen" : clean;
+  return canonicalUrl(`/product/${publicSlug}`);
 }
 
 export function htmlToPlainText(html: string): string {

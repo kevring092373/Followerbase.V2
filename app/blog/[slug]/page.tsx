@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { blogCategoryPath, getAllPosts, getPostBySlug, blogPostLastmod } from "@/lib/blog-data";
-import { absoluteUrl, truncateDescription } from "@/lib/seo";
+import { absoluteUrl, brandOgImage, truncateDescription } from "@/lib/seo";
 import { BLOG_AUTHOR, getAuthorPagePath } from "@/lib/blog-author";
 import {
   prepareBlogArticleHtml,
@@ -69,22 +69,21 @@ export async function generateMetadata({ params }: Props) {
   return {
     title,
     description: description || undefined,
-    keywords: [],
     robots,
     openGraph: {
       title,
       description: description || undefined,
       url,
       type: "article",
-      ...(imageUrl
-        ? { images: [{ url: imageUrl, width: 1200, height: 630, alt: post.title || title }] }
-        : {}),
+      images: imageUrl
+        ? [{ url: imageUrl, width: 1200, height: 630, alt: post.title || title }]
+        : [brandOgImage()],
     },
     twitter: {
-      card: imageUrl ? "summary_large_image" : "summary",
+      card: "summary_large_image",
       title,
       description: description || undefined,
-      ...(imageUrl ? { images: [imageUrl] } : {}),
+      images: [imageUrl || brandOgImage().url],
     },
     alternates: { canonical: url },
   };
@@ -120,7 +119,14 @@ export default async function BlogPostPage({ params }: Props) {
     author: {
       "@type": "Person",
       name: BLOG_AUTHOR.name,
+      jobTitle: BLOG_AUTHOR.role,
       url: authorUrl,
+      image: absoluteUrl(BLOG_AUTHOR.image),
+      worksFor: {
+        "@type": "Organization",
+        name: "Followerbase",
+        url: absoluteUrl("/"),
+      },
     },
     publisher: buildPublisherSchema(),
     mainEntityOfPage: {
@@ -137,6 +143,11 @@ export default async function BlogPostPage({ params }: Props) {
     description: BLOG_AUTHOR.bio,
     url: authorUrl,
     image: absoluteUrl(BLOG_AUTHOR.image),
+    worksFor: {
+      "@type": "Organization",
+      name: "Followerbase",
+      url: absoluteUrl("/"),
+    },
   };
 
   const breadcrumbSchema = buildBreadcrumbSchema([
@@ -227,21 +238,31 @@ export default async function BlogPostPage({ params }: Props) {
             </div>
           ) : null}
 
+          {!/<h1[\s>]/i.test(prepared.htmlContent) ? (
+            <h1 className="blog-article-title">{postTitle}</h1>
+          ) : null}
+
           <div className="blog-article-author-bar">
-            <Link href={authorPath} className="blog-article-author-avatar" aria-hidden>
+            <Link href={authorPath} className="blog-article-author-avatar">
               <Image
                 src={BLOG_AUTHOR.image}
-                alt=""
+                alt={BLOG_AUTHOR.name}
                 width={44}
                 height={44}
                 sizes="44px"
               />
             </Link>
             <div className="blog-article-author-meta">
-              <span className="blog-article-author-label">Autor</span>
               <Link href={authorPath} className="blog-article-author-name">
                 {BLOG_AUTHOR.name}
               </Link>
+              <span className="blog-article-author-role">
+                {BLOG_AUTHOR.role} bei Followerbase
+              </span>
+              <details className="blog-article-author-bio-toggle">
+                <summary>Mehr zum Autor</summary>
+                <p>{BLOG_AUTHOR.bio}</p>
+              </details>
             </div>
             <div className="blog-article-readtime" title="Geschätzte Lesezeit">
               <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden fill="none" stroke="currentColor" strokeWidth="2">
@@ -251,10 +272,6 @@ export default async function BlogPostPage({ params }: Props) {
               <span>{readingMinutes} Min. Lesezeit</span>
             </div>
           </div>
-
-          {!/<h1[\s>]/i.test(prepared.htmlContent) ? (
-            <h1 className="blog-article-title">{postTitle}</h1>
-          ) : null}
 
           {post.slug === "youtube-abonnenten-bekommen" ? (
             <p className="blog-inline-related">

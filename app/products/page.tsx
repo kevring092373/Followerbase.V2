@@ -6,23 +6,29 @@ import Link from "next/link";
 import { categories } from "@/lib/categories";
 import { getProductsByCategoryId } from "@/lib/products-data";
 import { CategoryIcon } from "@/components/CategoryIcon";
-import { absoluteUrl } from "@/lib/seo";
+import { absoluteUrl, brandOgImage } from "@/lib/seo";
+import { PRODUCTS_HUB_COPY } from "@/lib/hub-page-copy";
+import { JsonLd } from "@/components/JsonLd";
+import { buildCollectionPageSchema } from "@/lib/structured-data";
+
+const description = PRODUCTS_HUB_COPY.intro;
+const title = PRODUCTS_HUB_COPY.title;
 
 export const metadata = {
-  title: "Produkte – Followerbase",
-  description:
-    "Follower, Likes und Views für Instagram, TikTok, YouTube, Snapchat, Telegram & mehr. Nach Plattform wählen – faire Preise, schnelle Lieferung.",
+  title,
+  description,
   openGraph: {
-    title: "Produkte – Followerbase" as const,
-    description:
-      "Follower, Likes und Views für Instagram, TikTok, YouTube und mehr. Nach Plattform wählen.",
+    title,
+    description,
     url: absoluteUrl("/products"),
     type: "website" as const,
+    images: [brandOgImage()],
   },
   twitter: {
-    card: "summary" as const,
-    title: "Produkte – Followerbase",
-    description: "Follower, Likes und Views für alle großen Plattformen – Followerbase Shop.",
+    card: "summary_large_image" as const,
+    title,
+    description,
+    images: [brandOgImage().url],
   },
   alternates: { canonical: absoluteUrl("/products") },
 };
@@ -59,11 +65,20 @@ export default async function ProductsPage() {
 
   return (
     <div className="products-page">
+      <JsonLd
+        data={buildCollectionPageSchema({
+          name: PRODUCTS_HUB_COPY.h1,
+          description,
+          path: "/products",
+          items: categories.map((cat) => ({
+            name: cat.name,
+            path: `/products/${cat.slug}`,
+          })),
+        })}
+      />
       <header className="products-header">
-        <h1 className="products-title">Produkte</h1>
-        <p className="products-intro">
-          Wähle eine Kategorie und dein gewünschtes Produkt – Follower, Likes und Views für alle großen Plattformen.
-        </p>
+        <h1 className="products-title">{PRODUCTS_HUB_COPY.h1}</h1>
+        <p className="products-intro hub-intro">{PRODUCTS_HUB_COPY.intro}</p>
       </header>
 
       <div className="products-category-grid">

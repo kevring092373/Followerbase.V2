@@ -43,7 +43,16 @@ const QUICK_COPY: Record<string, { badge?: string; text: string; price: string }
     text: "Unterstützung für deine TikToks. Likes für mehr Algorithmus-Push.",
     price: "ab 0,99 €",
   },
+  "instagram-views-kaufen": {
+    text: "Mehr Reichweite für Reels und Videos. Drip-Feed, ohne Passwort.",
+    price: "ab 0,45 €",
+  },
 };
+
+const HOME_PRODUCT_CARDS = [
+  ...headerQuickLinks,
+  { label: "Instagram Views kaufen", productSlug: "instagram-views-kaufen" },
+];
 
 const MARQUEE = [
   "📸 Instagram",
@@ -81,7 +90,7 @@ export default async function HomePage() {
             <div>
               <span className="eyebrow-pill">✦ Follower, Likes &amp; Views</span>
               <h1>
-                Instagram &amp; TikTok <span className="grad">Follower kaufen</span>
+                Follower, Likes &amp; <span className="grad">Views kaufen</span>
               </h1>
               <p className="hero-sub">
                 Instagram, TikTok, YouTube und mehr. Schnell, unkompliziert und zum fairen Preis.
@@ -170,7 +179,7 @@ export default async function HomePage() {
             <p>Schnell bestellt, schnell geliefert.</p>
           </div>
           <div className="products-grid">
-            {headerQuickLinks.map(({ label, productSlug }) => {
+            {HOME_PRODUCT_CARDS.map(({ label, productSlug }) => {
               const copy = QUICK_COPY[productSlug];
               const icon =
                 productSlug.startsWith("instagram-")

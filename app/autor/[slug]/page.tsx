@@ -6,7 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { getAllPosts } from "@/lib/blog-data";
 import { BLOG_AUTHOR, getAuthorPagePath, AUTHOR_SLUG } from "@/lib/blog-author";
-import { absoluteUrl } from "@/lib/seo";
+import { absoluteUrl, brandOgImage } from "@/lib/seo";
 
 type Props = { params: { slug: string } };
 
@@ -18,8 +18,13 @@ export async function generateMetadata({ params }: Props) {
   return {
     title,
     description,
-    openGraph: { title, description, url, type: "profile" as const },
-    twitter: { card: "summary" as const, title, description },
+    openGraph: { title, description, url, type: "profile" as const, images: [brandOgImage()] },
+    twitter: {
+      card: "summary_large_image" as const,
+      title,
+      description,
+      images: [brandOgImage().url],
+    },
     alternates: { canonical: url },
   };
 }
@@ -38,6 +43,11 @@ function buildPersonSchema() {
     description: BLOG_AUTHOR.bio,
     url,
     image: absoluteUrl(BLOG_AUTHOR.image),
+    worksFor: {
+      "@type": "Organization",
+      name: "Followerbase",
+      url: absoluteUrl("/"),
+    },
   };
 }
 

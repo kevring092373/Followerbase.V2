@@ -57,6 +57,16 @@ const nextConfig = {
         destination: "/product/instagram-follower-kaufen",
         permanent: true,
       },
+      {
+        source: "/product/instagram-reel-views-kaufen",
+        destination: "/product/instagram-views-kaufen",
+        permanent: true,
+      },
+      {
+        source: "/product/instagram-reel-views-kaufen/",
+        destination: "/product/instagram-views-kaufen",
+        permanent: true,
+      },
     ];
   },
 };

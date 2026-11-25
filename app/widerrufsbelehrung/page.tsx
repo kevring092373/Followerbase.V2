@@ -1,10 +1,20 @@
-import { absoluteUrl } from "@/lib/seo";
+import { absoluteUrl, brandOgImage } from "@/lib/seo";
 import { pageMetaDescription } from "@/lib/page-meta-descriptions";
 
+const description = pageMetaDescription("/widerrufsbelehrung");
+const title = "Widerrufsbelehrung – Followerbase";
+
 export const metadata = {
-  title: "Widerrufsbelehrung – Followerbase",
-  description: pageMetaDescription("/widerrufsbelehrung"),
+  title,
+  description,
   robots: { index: true, follow: true },
+  openGraph: {
+    title,
+    description,
+    url: absoluteUrl("/widerrufsbelehrung"),
+    type: "website" as const,
+    images: [brandOgImage()],
+  },
   alternates: { canonical: absoluteUrl("/widerrufsbelehrung") },
 };
 

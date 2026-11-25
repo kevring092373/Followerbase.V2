@@ -111,6 +111,30 @@ test("Profilbesucher-Beitrag ist veröffentlicht und vollständig", () => {
   assert.match(sitemap, /getPublishedPosts/);
 });
 
+test("Instagram-Follower-Ratgeber ist informational und verlinkt einmal zur Produktseite", () => {
+  const post = posts.find((p) => p.slug === "instagram-follower-kaufen-ratgeber");
+  assert.ok(post, "Beitrag instagram-follower-kaufen-ratgeber fehlt");
+  assert.equal(post.metaTitle, "Instagram Follower kaufen 2026: Risiken & seriöse Anbieter");
+  assert.equal(post.metaTitle.length, 58);
+  assert.equal(post.metaDescription.length, 159);
+  assert.equal(
+    post.title,
+    "Instagram Follower kaufen: Risiken, Kosten und woran du seriöse Anbieter erkennst (Ratgeber 2026)"
+  );
+  assert.equal(post.dateModified, "2026-11-25");
+  assert.equal(/<h1[\s>]/i.test(post.content), false);
+  assert.equal(post.content.includes("application/ld+json"), false);
+  assert.match(post.content, /href="\/product\/instagram-follower-kaufen">Instagram Follower kaufen/);
+  assert.equal((post.content.match(/\/product\/instagram-follower-kaufen/g) || []).length, 1);
+  assert.equal((post.content.match(/class="faq-item"/g) || []).length, 6);
+  assert.match(post.content, /src="\/icons\/instagram-follower-kaufen-gruende-follower-kauf\.webp"/);
+  assert.match(post.content, /src="\/icons\/instagram-follower-kaufen-preisvergleich\.webp"/);
+  const page = readFileSync(join(root, "app", "blog", "[slug]", "page.tsx"), "utf8");
+  assert.match(page, /jobTitle: BLOG_AUTHOR.role/);
+  assert.match(page, /worksFor:/);
+  assert.match(page, /blog-article-author-bio-toggle/);
+});
+
 test("Profilbesucher-Bilder liegen unter public/icons", () => {
   assert.equal(existsSync(join(root, "public", "icons", "instagram-profilbesucher-sehen-hero.webp")), true);
   assert.equal(

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { absoluteUrl } from "@/lib/seo";
+import { absoluteUrl, brandOgImage } from "@/lib/seo";
 import { pageMetaDescription } from "@/lib/page-meta-descriptions";
 
 const description = pageMetaDescription("/bestellung-verfolgen");
@@ -13,6 +13,7 @@ export const metadata: Metadata = {
     description,
     url: absoluteUrl("/bestellung-verfolgen"),
     type: "website",
+    images: [brandOgImage()],
   },
   alternates: { canonical: absoluteUrl("/bestellung-verfolgen") },
 };

@@ -40,15 +40,6 @@ export const metadata: Metadata = {
   metadataBase: new URL(getBaseUrl()),
   title: defaultTitle,
   description: defaultDescription,
-  keywords: [
-    "Follower kaufen",
-    "Likes kaufen",
-    "Instagram Follower",
-    "TikTok Follower",
-    "YouTube Views",
-    "Reichweite",
-    "Social Media",
-  ],
   openGraph: {
     type: "website",
     locale: "de_DE",
@@ -62,6 +53,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: defaultTitle,
     description: defaultDescription,
+    images: [absoluteUrl("/icons/Followerbase%20Logo.png")],
   },
   robots: {
     index: true,

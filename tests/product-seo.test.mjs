@@ -250,7 +250,7 @@ test("Instagram-Likes-Seite nutzt feste SEO-Felder und Paketpreise", () => {
   assert.match(productPage, /id=\{PRODUCT_ORDER_ANCHOR_ID\}/);
   assert.match(productPage, /instagram-likes-beitragslink/);
   assert.match(productPage, /instagram-likes-quantity-slider/);
-  assert.match(productPage, /validateInstagramMediaUrl=\{likesPage \|\| savesPage \|\| likesDeutschPage\}/);
+  assert.match(productPage, /validateInstagramMediaUrl=\{likesPage \|\| savesPage \|\| likesDeutschPage \|\| viewsIgPage\}/);
   assert.match(productPage, /structuredProductPage \? "section" : "div"/);
   const likesSeo = read("lib/instagram-likes-seo.ts");
   assert.match(likesSeo, /data-fblikes-packages/);
@@ -265,6 +265,7 @@ test("Instagram-Likes-Seite nutzt feste SEO-Felder und Paketpreise", () => {
   assert.match(html, /href="#produkt-auswahl"/);
   assert.match(html, /\/product\/instagram-likes-deutsch-kaufen/);
   assert.match(html, /\/blog\/mehr-instagram-likes-guide/);
+  assert.match(html, /href="\/product\/instagram-views-kaufen">Instagram Views kaufen/);
   assert.equal((html.match(/<details>/g) || []).length, 6);
   assert.equal((html.match(/DATEN VOR VERÖFFENTLICHUNG|data-editorial-placeholder|fblikes-editorial/gi) || []).length, 0);
   assert.doesNotMatch(html, /Vor Veröffentlichung/);
@@ -314,7 +315,7 @@ test("TikTok-Saves-Seite nutzt konservativen Contentblock und Live-Preise", () =
   assert.deepEqual(product.pricesCents, [90, 285, 490, 1090, 1890, 3490]);
   assert.match(productPage, /TIKTOK_SAVES_TITLE/);
   assert.match(productPage, /isTiktokSavesProduct/);
-  assert.match(productPage, /validateInstagramMediaUrl=\{likesPage \|\| savesPage \|\| likesDeutschPage\}/);
+  assert.match(productPage, /validateInstagramMediaUrl=\{likesPage \|\| savesPage \|\| likesDeutschPage \|\| viewsIgPage\}/);
   assert.doesNotMatch(productPage, /validateInstagramMediaUrl=\{likesPage \|\| savesPage \|\| tiktokSavesPage\}/);
   const seo = read("lib/tiktok-saves-seo.ts");
   assert.match(seo, /data-fbtsaves-packages/);
@@ -515,10 +516,10 @@ test("YouTube-Abonnenten-Seite nutzt File-Content, Kanallink und Live-Pakete", (
   assert.ok(product);
   assert.equal(product.articleNumber, "FC-027");
   assert.equal(product.name, "YouTube Follower");
-  assert.equal(product.metaTitle, "YouTube Abonnenten kaufen ab 8,45 € | Followerbase");
+  assert.equal(product.metaTitle, "YouTube Abonnenten kaufen ab 8,45 € | Followerbase.de");
   assert.equal(
     product.metaDescription,
-    "YouTube Abonnenten kaufen: Pakete von 50 bis 1.000 Abonnenten ab 8,45 €. Preise, Bestellung per Kanallink und Grenzen der Leistung bei Followerbase."
+    "YouTube Abonnenten kaufen ab 8,45 € bei Followerbase. Fünf Pakete bis 1.000 Abos, nur dein öffentlicher Kanallink, kein Passwort, gestaffelte Lieferung."
   );
   assert.ok(product.metaTitle.length <= 60);
   assert.ok(product.metaDescription.length <= 160);
@@ -559,7 +560,7 @@ test("YouTube-Abonnenten-Seite nutzt File-Content, Kanallink und Live-Pakete", (
   assert.equal((html.match(/<h1\b/gi) || []).length, 0);
   assert.equal((html.match(/<!DOCTYPE|<html\b|<head\b|<body\b/gi) || []).length, 0);
   assert.equal((html.match(/noindex|json-ld|application\/ld\+json/gi) || []).length, 0);
-  assert.equal((html.match(/<details>/g) || []).length, 6);
+  assert.equal((html.match(/<details>/g) || []).length, 12);
   assert.equal(
     (html.match(/24 Stunden|3–7 Tage|30-Tage-Nachfüll|Partnerprogramm-Zusage|garantiert aus|echte Abonnenten|Algorithmus-Push/gi) || []).length,
     0
@@ -727,6 +728,57 @@ test("17 Zielseiten haben Meta-Descriptions mit mindestens 120 Zeichen", () => {
   assert.match(read("app/blog/page.tsx"), /pageMetaDescription\("\/blog"\)/);
   assert.match(read("app/impressum/page.tsx"), /pageMetaDescription\("\/impressum"\)/);
   assert.match(read("lib/instagram-follower-deutsch-seo.ts"), /pageMetaDescription\(/);
+});
+
+test("Produkt-Titles aus Task 3 bleiben unter 60 Zeichen", () => {
+  const titles = read("lib/product-page-titles.ts");
+  const pinned = [
+    "Facebook Post Likes kaufen ab 2,45 €: Mehr Engagement",
+    "Instagram Impressionen kaufen: Mehr Sichtbarkeit",
+    "Instagram Views kaufen ab 0,45 € | Followerbase",
+    "Reddit Follower kaufen: Social Proof ab 3,45 €",
+    "Snapchat Follower kaufen: schnell, seriös & diskret",
+    "Telegram Gruppenmitglieder kaufen: seriös & schnell",
+    "Telegram Post Views kaufen ab 1,99 €: Mehr Sichtbarkeit",
+    "Threads Follower kaufen: schnell, sicher & diskret",
+    "Threads Likes kaufen ab 2,99 €: Mehr Reichweite",
+    "TikTok Follower kaufen ab 1,29 €: seriös & diskret",
+    "TikTok Likes kaufen: Mehr Reichweite für deine Videos",
+    "TikTok Shares kaufen: Mehr Reichweite & Viralität",
+    "YouTube Likes kaufen ab 3,45 €: Mehr Engagement",
+    "Instagram Follower kaufen ab 0,99 €: seriös & diskret",
+  ];
+  for (const title of pinned) {
+    assert.ok(title.length <= 60, `${title} ist ${title.length} Zeichen`);
+    assert.ok(titles.includes(title), `Title fehlt in product-page-titles.ts: ${title}`);
+  }
+});
+
+test("Instagram Views nutzen die neue Canonical-URL und 301", () => {
+  const product = products.find((p) => p.slug === "instagram-views-kaufen");
+  assert.ok(product);
+  assert.equal(product.name, "Instagram Views");
+  assert.equal(product.metaTitle, "Instagram Views kaufen ab 0,45 € | Followerbase");
+  assert.match(read("next.config.js"), /source: "\/product\/instagram-reel-views-kaufen"/);
+  assert.match(read("next.config.js"), /destination: "\/product\/instagram-views-kaufen"/);
+  assert.match(read("lib/product-seo.ts"), /instagram-views-kaufen/);
+  assert.match(read("app/page.tsx"), /Instagram Views kaufen/);
+  assert.match(read("app/products/[categorySlug]/page.tsx"), /Instagram Views kaufen/);
+  const html = read("content/product-html/instagram-views-kaufen.html");
+  assert.equal((html.match(/<h1\b/gi) || []).length, 0);
+  assert.equal((html.match(/<details>/g) || []).length, 6);
+});
+
+test("Hub-Seiten haben CollectionPage-Copy und Brand-OG", () => {
+  const hub = read("lib/hub-page-copy.ts");
+  assert.match(hub, /Follower, Likes & Views kaufen/);
+  assert.match(hub, /Instagram Follower, Likes & Views kaufen/);
+  assert.match(read("app/products/page.tsx"), /buildCollectionPageSchema/);
+  assert.match(read("app/products/page.tsx"), /brandOgImage/);
+  assert.match(read("app/products/[categorySlug]/page.tsx"), /PLATFORM_HUB_COPY/);
+  assert.match(read("app/page.tsx"), /Follower, Likes &amp; <span className="grad">Views kaufen/);
+  assert.doesNotMatch(read("app/layout.tsx"), /keywords:/);
+  assert.doesNotMatch(read("app/blog/[slug]/page.tsx"), /keywords:/);
 });
 
 test("Blog-Kategorieseiten sind noindex, follow und nicht in der Sitemap", () => {

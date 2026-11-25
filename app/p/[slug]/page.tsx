@@ -3,7 +3,7 @@
  */
 import { notFound } from "next/navigation";
 import { getPageBySlug, getAllPages } from "@/lib/pages-data";
-import { absoluteUrl, truncateDescription, stripEmbeddedDuplicateSeoFromHtml } from "@/lib/seo";
+import { absoluteUrl, brandOgImage, truncateDescription, stripEmbeddedDuplicateSeoFromHtml } from "@/lib/seo";
 
 type Props = { params: { slug: string } };
 
@@ -25,8 +25,14 @@ export async function generateMetadata({ params }: Props) {
       description: description || undefined,
       url,
       type: "website",
+      images: [brandOgImage()],
     },
-    twitter: { card: "summary", title, description: description || undefined },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description: description || undefined,
+      images: [brandOgImage().url],
+    },
     alternates: { canonical: url },
   };
 }

@@ -41,7 +41,7 @@ export const categories: Category[] = [
       prod("instagram-likes-deutsch-kaufen", "Instagram Likes Deutsch"),
       prod("instagram-impressionen-kaufen", "Instagram Impressionen"),
       prod("instagram-saves-kaufen", "Instagram Saves"),
-      prod("instagram-reel-views-kaufen", "Instagram Reel Views"),
+      prod("instagram-views-kaufen", "Instagram Views"),
     ],
   },
   {

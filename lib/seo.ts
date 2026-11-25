@@ -56,6 +56,31 @@ export function truncateDescription(text: string | undefined, max = DESCRIPTION_
 export const SITE_NAME = "Followerbase";
 /** Optional: z. B. /opengraph.png (1200×630) für Social-Sharing. */
 export const DEFAULT_OG_IMAGE_PATH = "/opengraph.png";
+/** Brand-OG, das die Homepage bereits setzt. */
+export const BRAND_OG_IMAGE_PATH = "/icons/Followerbase%20Logo.png";
+
+export function brandOgImage() {
+  return {
+    url: absoluteUrl(BRAND_OG_IMAGE_PATH),
+    width: 1200,
+    height: 630,
+    alt: SITE_NAME,
+  };
+}
+
+export function formatContentStand(iso?: string, fallback = "November 2026"): string {
+  const raw = iso?.trim();
+  if (!raw) return fallback;
+  const dateOnly = /^\d{4}-\d{2}-\d{2}$/.test(raw);
+  const parsed = new Date(dateOnly ? `${raw}T00:00:00Z` : raw);
+  if (Number.isNaN(parsed.getTime())) return fallback;
+  const formatted = new Intl.DateTimeFormat("de-DE", {
+    month: "long",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(parsed);
+  return formatted.charAt(0).toUpperCase() + formatted.slice(1);
+}
 
 /**
  * Entfernt nur Viewport-Meta-Tags aus HTML (z. B. Blog-Inhalt aus Supabase),

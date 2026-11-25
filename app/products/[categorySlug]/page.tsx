@@ -6,9 +6,13 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { categories } from "@/lib/categories";
 import { getProductsByCategoryId, getProductImageAlt } from "@/lib/products-data";
-import { absoluteUrl, truncateDescription } from "@/lib/seo";
+import { absoluteUrl, brandOgImage, truncateDescription } from "@/lib/seo";
 import { PAGE_META_DESCRIPTIONS } from "@/lib/page-meta-descriptions";
+import { PLATFORM_HUB_COPY } from "@/lib/hub-page-copy";
 import { formatFromPriceFromCents } from "@/lib/format";
+import { JsonLd } from "@/components/JsonLd";
+import { buildCollectionPageSchema } from "@/lib/structured-data";
+import { publicProductSlug } from "@/lib/product-page-titles";
 
 type Props = { params: { categorySlug: string } };
 
@@ -22,10 +26,12 @@ export const revalidate = 3600;
 export function generateMetadata({ params }: Props) {
   const category = categories.find((c) => c.slug === params.categorySlug);
   if (!category) return { title: "Kategorie" };
-  const title = `${category.name} – Follower, Likes & Views kaufen – Followerbase`;
+  const hub = PLATFORM_HUB_COPY[category.slug];
+  const title = hub?.h1 ? `${hub.h1} | Followerbase` : `${category.name} – Follower, Likes & Views kaufen – Followerbase`;
   const path = `/products/${category.slug}` as keyof typeof PAGE_META_DESCRIPTIONS;
   const description =
     PAGE_META_DESCRIPTIONS[path] ??
+    hub?.intro ??
     truncateDescription(
       `${category.name} – Follower, Likes und Views kaufen. Faire Preise, schnelle Lieferung bei Followerbase. Jetzt bestellen.`
     );
@@ -33,8 +39,8 @@ export function generateMetadata({ params }: Props) {
   return {
     title,
     description,
-    openGraph: { title, description, url, type: "website" as const },
-    twitter: { card: "summary" as const, title, description },
+    openGraph: { title, description, url, type: "website" as const, images: [brandOgImage()] },
+    twitter: { card: "summary_large_image" as const, title, description, images: [brandOgImage().url] },
     alternates: { canonical: url },
   };
 }
@@ -49,17 +55,37 @@ export default async function CategoryPage({ params }: Props) {
 
   const products = await getProductsByCategoryId(category.id);
 
+  const hub = PLATFORM_HUB_COPY[category.slug];
+
   return (
     <div className="category-page">
+      <JsonLd
+        data={buildCollectionPageSchema({
+          name: hub?.h1 ?? category.name,
+          description: hub?.intro ?? "",
+          path: `/products/${category.slug}`,
+          items: products.map((product) => ({
+            name: product.name,
+            path: `/product/${publicProductSlug(product.slug)}`,
+          })),
+        })}
+      />
       <Link href="/products" className="category-back">
         ← Alle Produkte
       </Link>
 
       <header className="category-header">
-        <h1 className="category-title">{category.name}</h1>
+        <h1 className="category-title">{hub?.h1 ?? category.name}</h1>
+        {hub?.intro ? <p className="hub-intro">{hub.intro}</p> : null}
         <p className="category-subtitle">
           {products.length} {products.length === 1 ? "Produkt" : "Produkte"} – wähle dein gewünschtes Paket.
         </p>
+        {category.slug === "instagram" ? (
+          <p className="category-intro">
+            Für Reels und Videos findest du hier auch{" "}
+            <Link href="/product/instagram-views-kaufen">Instagram Views kaufen</Link>.
+          </p>
+        ) : null}
         {category.slug === "youtube" ? (
           <p className="category-intro">
             Neben Abonnenten, Likes und Watchtime findest du hier auch{" "}
@@ -74,7 +100,7 @@ export default async function CategoryPage({ params }: Props) {
           return (
             <Link
               key={product.slug}
-              href={`/product/${product.slug}`}
+              href={`/product/${publicProductSlug(product.slug)}`}
               className="category-card card"
             >
               <div className="category-card-thumb-wrap">
@@ -95,7 +121,11 @@ export default async function CategoryPage({ params }: Props) {
                 )}
               </div>
               <div className="category-card-body">
-                <span className="category-card-name">{product.name}</span>
+                <span className="category-card-name">
+                  {publicProductSlug(product.slug) === "instagram-views-kaufen"
+                    ? "Instagram Views kaufen"
+                    : product.name}
+                </span>
                 <span className="category-card-price">{formatAbPrice(minPriceCents)}</span>
               </div>
               <span className="category-card-arrow">→</span>

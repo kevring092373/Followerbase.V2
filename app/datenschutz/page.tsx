@@ -1,10 +1,20 @@
-import { absoluteUrl } from "@/lib/seo";
+import { absoluteUrl, brandOgImage } from "@/lib/seo";
 import { pageMetaDescription } from "@/lib/page-meta-descriptions";
 
+const description = pageMetaDescription("/datenschutz");
+const title = "Datenschutz – Followerbase";
+
 export const metadata = {
-  title: "Datenschutz – Followerbase",
-  description: pageMetaDescription("/datenschutz"),
+  title,
+  description,
   robots: { index: true, follow: true },
+  openGraph: {
+    title,
+    description,
+    url: absoluteUrl("/datenschutz"),
+    type: "website" as const,
+    images: [brandOgImage()],
+  },
   alternates: { canonical: absoluteUrl("/datenschutz") },
 };
 

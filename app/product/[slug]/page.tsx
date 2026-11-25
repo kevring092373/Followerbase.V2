@@ -12,7 +12,9 @@ import { ShareButtons } from "@/components/ShareButtons";
 import { ProductDescriptionSection } from "@/components/ProductDescriptionSection";
 import { ProductPaymentIcons } from "@/components/ProductPaymentIcons";
 import { ProductContextualLinks } from "@/components/ProductContextualLinks";
-import { truncateDescription, truncateTitle, SITE_NAME } from "@/lib/seo";
+import { truncateDescription, truncateTitle, SITE_NAME, formatContentStand, brandOgImage } from "@/lib/seo";
+import { productPageTitle } from "@/lib/product-page-titles";
+import { BLOG_AUTHOR } from "@/lib/blog-author";
 import { categories } from "@/lib/categories";
 import { JsonLd } from "@/components/JsonLd";
 import {
@@ -141,6 +143,14 @@ import {
   isYoutubeWatchtimeProduct,
   prepareYoutubeWatchtimeDescriptionHtml,
 } from "@/lib/youtube-watchtime-seo";
+import {
+  INSTAGRAM_VIEWS_DESCRIPTION,
+  INSTAGRAM_VIEWS_H1,
+  INSTAGRAM_VIEWS_SUBLINE,
+  INSTAGRAM_VIEWS_TITLE,
+  isInstagramViewsProduct,
+  prepareInstagramViewsDescriptionHtml,
+} from "@/lib/instagram-views-seo";
 import likesStyles from "./instagram-likes.module.css";
 import savesStyles from "./instagram-saves.module.css";
 import tiktokSavesStyles from "./tiktok-saves.module.css";
@@ -270,7 +280,43 @@ function youtubeWatchtimeProduct(product: Product): Product {
   };
 }
 
+function instagramViewsProduct(product: Product): Product {
+  return {
+    ...product,
+    name: "Instagram Views",
+    metaTitle: INSTAGRAM_VIEWS_TITLE,
+    metaDescription: INSTAGRAM_VIEWS_DESCRIPTION,
+    description: prepareInstagramViewsDescriptionHtml(product.description),
+  };
+}
+
+function applyPinnedProductTitle(product: Product): Product {
+  const title = productPageTitle(product.slug);
+  return title ? { ...product, metaTitle: title } : product;
+}
+
+function patchSharedProductCopy(product: Product): Product {
+  let html = product.description ?? "";
+  if (product.slug === "tiktok-follower-kaufen" && html) {
+    html = html.replace(
+      /Unsere Pakete starten ab 2,99\s*€/g,
+      "Das kleinste Paket gibt es ab 1,29 €, größere Pakete starten ab 2,99 €"
+    );
+    html = html.replace(
+      /Pakete starten ab 2,99\s*€/g,
+      "Das kleinste Paket gibt es ab 1,29 €, größere Pakete starten ab 2,99 €"
+    );
+  }
+  html = html.replace(
+    /(<h2 class="hero-title" id="ig-followers-intro">)Instagram Follower kaufen(<\/h2>)/,
+    "$1Warum Instagram Follower von Followerbase$2"
+  );
+  const next = html !== (product.description ?? "") ? { ...product, description: html } : product;
+  return applyPinnedProductTitle(next);
+}
+
 function withPageSeo(product: Product): Product {
+  if (isInstagramViewsProduct(product.slug)) return instagramViewsProduct(product);
   if (isYoutubeViewsProduct(product.slug)) return youtubeViewsProduct(product);
   if (isYoutubeAbonnentenProduct(product.slug)) return youtubeAbonnentenProduct(product);
   if (isYoutubeWatchtimeProduct(product.slug)) return youtubeWatchtimeProduct(product);
@@ -281,7 +327,7 @@ function withPageSeo(product: Product): Product {
   if (isInstagramFollowerTuerkischProduct(product.slug)) return instagramFollowerTuerkischProduct(product);
   if (isInstagramLikesDeutschProduct(product.slug)) return instagramLikesDeutschProduct(product);
   if (isTiktokFollowerTuerkischProduct(product.slug)) return tiktokFollowerTuerkischProduct(product);
-  return product;
+  return patchSharedProductCopy(product);
 }
 
 const indexFollowRobots = {
@@ -308,6 +354,7 @@ export async function generateMetadata({ params }: Props) {
   const tiktokTuerkischPage = isTiktokFollowerTuerkischProduct(product.slug);
   const youtubeAbonnentenPage = isYoutubeAbonnentenProduct(product.slug);
   const youtubeWatchtimePage = isYoutubeWatchtimeProduct(product.slug);
+  const viewsIgPage = isInstagramViewsProduct(product.slug);
   const pinnedTitlePage =
     isYoutubeViewsProduct(product.slug) ||
     youtubeAbonnentenPage ||
@@ -318,9 +365,13 @@ export async function generateMetadata({ params }: Props) {
     deutschPage ||
     tuerkischPage ||
     likesDeutschPage ||
-    tiktokTuerkischPage;
+    tiktokTuerkischPage ||
+    viewsIgPage ||
+    Boolean(productPageTitle(product.slug));
   const title = isYoutubeViewsProduct(product.slug)
     ? YOUTUBE_VIEWS_TITLE
+    : viewsIgPage
+      ? INSTAGRAM_VIEWS_TITLE
     : youtubeAbonnentenPage
       ? YOUTUBE_ABONNENTEN_TITLE
     : youtubeWatchtimePage
@@ -339,13 +390,16 @@ export async function generateMetadata({ params }: Props) {
                 ? INSTAGRAM_LIKES_DEUTSCH_TITLE
                 : tiktokTuerkischPage
                   ? TIKTOK_FOLLOWER_TUERKISCH_TITLE
-    : product.metaTitle?.trim()
+    : productPageTitle(product.slug) ||
+      (product.metaTitle?.trim()
       ? product.metaTitle.trim()
-      : truncateTitle(`${displayName} – Followerbase`);
+      : truncateTitle(`${displayName} – Followerbase`));
   const defaultDesc = `${displayName} bei Followerbase – faire Preise, schnelle Lieferung. Qualitätsgarantie & sicherer Checkout.`;
   const rawDesc = product.metaDescription?.trim() || defaultDesc;
   const description = isYoutubeViewsProduct(product.slug)
     ? YOUTUBE_VIEWS_DESCRIPTION
+    : viewsIgPage
+      ? INSTAGRAM_VIEWS_DESCRIPTION
     : youtubeAbonnentenPage
       ? YOUTUBE_ABONNENTEN_DESCRIPTION
     : youtubeWatchtimePage
@@ -402,7 +456,7 @@ export async function generateMetadata({ params }: Props) {
       description,
       url,
       type: "website",
-      images: [ogImage],
+      images: [ogImage ?? brandOgImage()],
     },
     twitter: {
       card: "summary_large_image",
@@ -432,6 +486,8 @@ export default async function ProductPage({ params }: Props) {
   const tiktokTuerkischPage = isTiktokFollowerTuerkischProduct(product.slug);
   const youtubeAbonnentenPage = isYoutubeAbonnentenProduct(product.slug);
   const youtubeWatchtimePage = isYoutubeWatchtimeProduct(product.slug);
+  const viewsIgPage = isInstagramViewsProduct(product.slug);
+  const standLabel = formatContentStand(product.updatedAt);
   const structuredProductPage =
     likesPage ||
     savesPage ||
@@ -441,7 +497,7 @@ export default async function ProductPage({ params }: Props) {
     tiktokTuerkischPage ||
     youtubeAbonnentenPage ||
     youtubeWatchtimePage;
-  const editorialBlockPage = structuredProductPage || tiktokSavesPage;
+  const editorialBlockPage = structuredProductPage || tiktokSavesPage || viewsIgPage;
   const OrderSectionTag = structuredProductPage ? "section" : "div";
   const productImage = product.image;
   const productImageAlt = viewsPage
@@ -597,8 +653,12 @@ export default async function ProductPage({ params }: Props) {
                     ? YOUTUBE_ABONNENTEN_H1
                     : youtubeWatchtimePage
                       ? YOUTUBE_WATCHTIME_H1
+                      : viewsIgPage
+                        ? INSTAGRAM_VIEWS_H1
               : getProductDisplayName(product.name)}
         </h1>
+        {viewsIgPage ? <p className="product-lead">{INSTAGRAM_VIEWS_SUBLINE}</p> : null}
+        <p className="product-stand-line">Stand: {standLabel} · Preise und Lieferzeiten aktuell</p>
         {product.articleNumber && (
           <p className="product-article-number" aria-label="Artikelnummer">
             Artikelnummer: {product.articleNumber}
@@ -662,8 +722,8 @@ export default async function ProductPage({ params }: Props) {
             showPackagePrices={
               viewsPage || likesPage || savesPage || deutschPage || tuerkischPage || likesDeutschPage || tiktokTuerkischPage || youtubeAbonnentenPage || youtubeWatchtimePage
             }
-            targetAsUrl={likesPage || savesPage || likesDeutschPage || youtubeWatchtimePage}
-            validateInstagramMediaUrl={likesPage || savesPage || likesDeutschPage}
+            targetAsUrl={likesPage || savesPage || likesDeutschPage || youtubeWatchtimePage || viewsIgPage}
+            validateInstagramMediaUrl={likesPage || savesPage || likesDeutschPage || viewsIgPage}
             validateTikTokProfile={tiktokTuerkischPage}
             validateYouTubeChannel={youtubeAbonnentenPage}
             validateYouTubeWatchVideo={youtubeWatchtimePage}
@@ -829,6 +889,10 @@ export default async function ProductPage({ params }: Props) {
       ) : product.description ? (
         <ProductDescriptionSection html={product.description} mode={descriptionMode} />
       ) : null}
+
+      <p className="product-reviewed-by">
+        Fachlich geprüft von {BLOG_AUTHOR.name}, {BLOG_AUTHOR.role} bei Followerbase · {standLabel}
+      </p>
 
       <ShareButtons
         url={productUrl}
