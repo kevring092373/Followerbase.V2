@@ -555,6 +555,7 @@ test("YouTube-Abonnenten-Seite nutzt File-Content, Kanallink und Live-Pakete", (
   assert.match(html, /\/products\/youtube/);
   assert.match(html, /\/kontakt/);
   assert.match(html, /\/blog\/youtube-aufrufe-erhoehen/);
+  assert.match(html, /\/blog\/youtube-abonnenten-kaufen-ratgeber/);
   assert.doesNotMatch(html, /href=["']\/products["']/);
   assert.doesNotMatch(html, /youtube-views-kaufen/);
   assert.equal((html.match(/<h1\b/gi) || []).length, 0);

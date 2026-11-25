@@ -76,7 +76,21 @@ export default async function CategoryPage({ params }: Props) {
 
       <header className="category-header">
         <h1 className="category-title">{hub?.h1 ?? category.name}</h1>
-        {hub?.intro ? <p className="hub-intro">{hub.intro}</p> : null}
+        {hub?.intro ? (
+          <p className="hub-intro">
+            {hub.intro}
+            {category.slug === "youtube" ? (
+              <>
+                {" "}
+                Noch unsicher? Hier entlang:{" "}
+                <Link href="/blog/youtube-abonnenten-kaufen-ratgeber">
+                  Ratgeber: YouTube Abonnenten kaufen
+                </Link>
+                .
+              </>
+            ) : null}
+          </p>
+        ) : null}
         <p className="category-subtitle">
           {products.length} {products.length === 1 ? "Produkt" : "Produkte"} – wähle dein gewünschtes Paket.
         </p>

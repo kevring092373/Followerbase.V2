@@ -160,7 +160,10 @@ export default async function BlogPostPage({ params }: Props) {
   const faqSchema =
     post.slug === "instagram-profilbesucher-sehen" ? null : buildFaqPageSchema(prepared.faqs);
 
-  const showHero = Boolean(post.image) && !prepared.hasEmbeddedHero;
+  const showHero =
+    Boolean(post.image) &&
+    !prepared.hasEmbeddedHero &&
+    !(post.image && prepared.htmlContent.includes(post.image));
   const imageSrc =
     post.image && !post.image.startsWith("/") && !post.image.startsWith("http")
       ? `/icons/${post.image}`

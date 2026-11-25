@@ -135,6 +135,43 @@ test("Instagram-Follower-Ratgeber ist informational und verlinkt einmal zur Prod
   assert.match(page, /blog-article-author-bio-toggle/);
 });
 
+test("YouTube-Abonnenten-Ratgeber ist vollständig und intern verlinkt", () => {
+  const post = posts.find((p) => p.slug === "youtube-abonnenten-kaufen-ratgeber");
+  assert.ok(post, "Beitrag youtube-abonnenten-kaufen-ratgeber fehlt");
+  assert.equal(post.metaTitle, "YouTube Abonnenten kaufen: Risiken & Kosten (2026)");
+  assert.equal(post.metaTitle.length, 50);
+  assert.equal(post.metaDescription.length, 156);
+  assert.equal(
+    post.title,
+    "YouTube Abonnenten kaufen: Risiken, Kosten und seriöse Anbieter (Ratgeber 2026)"
+  );
+  assert.equal(post.date, "2026-11-25");
+  assert.equal(post.dateModified, "2026-11-25");
+  assert.equal(post.category, "YouTube");
+  assert.equal(post.image, "/icons/youtube-abonnenten-kaufen-hero.webp");
+  assert.equal(/<h1[\s>]/i.test(post.content), false);
+  assert.equal(post.content.includes("application/ld+json"), false);
+  assert.equal((post.content.match(/class="faq-item"/g) || []).length, 6);
+  assert.match(post.content, /src="\/icons\/youtube-abonnenten-kaufen-hero\.webp"/);
+  assert.match(post.content, /src="\/icons\/youtube-abonnenten-kaufen-schwelle\.webp"/);
+  assert.match(post.content, /href="\/blog\/youtube-abonnenten-bekommen"/);
+  assert.match(post.content, /href="\/product\/youtube-follower-kaufen">YouTube Abonnenten kaufen bei Followerbase/);
+  assert.equal(existsSync(join(root, "public", "icons", "youtube-abonnenten-kaufen-hero.webp")), true);
+  assert.equal(existsSync(join(root, "public", "icons", "youtube-abonnenten-kaufen-schwelle.webp")), true);
+  const bekommen = posts.find((p) => p.slug === "youtube-abonnenten-bekommen");
+  const preise = posts.find((p) => p.slug === "was-kosten-follower");
+  assert.match(bekommen.content, /href="\/blog\/youtube-abonnenten-kaufen-ratgeber">YouTube Abonnenten kaufen Ratgeber/);
+  assert.match(preise.content, /href="\/blog\/youtube-abonnenten-kaufen-ratgeber">im großen YouTube-Ratgeber/);
+  assert.match(
+    readFileSync(join(root, "content", "product-html", "youtube-follower-kaufen.html"), "utf8"),
+    /href="\/blog\/youtube-abonnenten-kaufen-ratgeber">Ratgeber zu Risiken und Kosten beim Abonnenten-Kauf/
+  );
+  assert.match(
+    readFileSync(join(root, "app", "products", "[categorySlug]", "page.tsx"), "utf8"),
+    /Ratgeber: YouTube Abonnenten kaufen/
+  );
+});
+
 test("Profilbesucher-Bilder liegen unter public/icons", () => {
   assert.equal(existsSync(join(root, "public", "icons", "instagram-profilbesucher-sehen-hero.webp")), true);
   assert.equal(
