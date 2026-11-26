@@ -11,8 +11,9 @@ import {
   removeVivaPendingByOrderCodeSupabase,
 } from "./viva-pending-supabase";
 import { asVivaOrderCode } from "./viva-server";
-import type { OrderItem } from "./orders";
+import type { OrderItem, OrderAttribution } from "./orders";
 import type { PendingCheckoutCustomer } from "./orders-data";
+import { parseOrderAttribution } from "./attribution";
 
 const VIVA_PENDING_FILE = path.join(process.cwd(), "content", "viva-pending.json");
 
@@ -23,6 +24,7 @@ export interface VivaPendingCheckout {
   sellerNote?: string;
   customer?: PendingCheckoutCustomer;
   createdAt: string;
+  attribution?: OrderAttribution;
 }
 
 function normalizePending(p: unknown): VivaPendingCheckout | null {
@@ -37,6 +39,7 @@ function normalizePending(p: unknown): VivaPendingCheckout | null {
     sellerNote: typeof row.sellerNote === "string" ? row.sellerNote : undefined,
     customer: row.customer as PendingCheckoutCustomer | undefined,
     createdAt: typeof row.createdAt === "string" ? row.createdAt : new Date().toISOString(),
+    attribution: parseOrderAttribution(row.attribution),
   };
 }
 
@@ -67,12 +70,13 @@ export async function addVivaPending(
   items: OrderItem[],
   totalCents: number,
   sellerNote?: string,
-  customer?: PendingCheckoutCustomer
+  customer?: PendingCheckoutCustomer,
+  attribution?: OrderAttribution
 ): Promise<boolean> {
   const code = asVivaOrderCode(vivaOrderCode);
   if (!code) return false;
   if (isSupabaseConfigured()) {
-    return addVivaPendingSupabase(code, items, totalCents, sellerNote, customer);
+    return addVivaPendingSupabase(code, items, totalCents, sellerNote, customer, attribution);
   }
   const list = await readVivaPending();
   list.push({
@@ -82,6 +86,7 @@ export async function addVivaPending(
     sellerNote,
     customer,
     createdAt: new Date().toISOString(),
+    attribution,
   });
   await writeVivaPending(list);
   return true;

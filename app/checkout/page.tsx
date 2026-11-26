@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useCart } from "@/context/CartContext";
 import { formatEuroFromCents, formatQuantity } from "@/lib/format";
 import { PayPalScriptProvider, PayPalButtons, FUNDING } from "@paypal/react-paypal-js";
+import { getStoredAttribution } from "@/lib/attribution";
 
 const PAYPAL_CLIENT_ID = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID ?? "";
 
@@ -87,6 +88,7 @@ function CheckoutContent() {
           items: orderItems,
           sellerNote: sellerNote || undefined,
           customer: customerPayload,
+          attribution: getStoredAttribution(),
         }),
       });
       const data = await res.json().catch(() => ({}));
@@ -158,6 +160,7 @@ function CheckoutContent() {
           items: orderItems,
           sellerNote: sellerNote || undefined,
           customer: customerPayload,
+          attribution: getStoredAttribution(),
         }),
       });
       const data = await res.json().catch(() => ({}));

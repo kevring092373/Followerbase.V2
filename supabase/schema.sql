@@ -29,6 +29,7 @@ CREATE TABLE IF NOT EXISTS orders (
   paypal_order_id TEXT,
   seller_note TEXT,
   total_cents INT,
+  attribution JSONB,
   customer_id UUID REFERENCES customers(id) ON DELETE SET NULL,
   customer_email TEXT,
   customer_name TEXT,

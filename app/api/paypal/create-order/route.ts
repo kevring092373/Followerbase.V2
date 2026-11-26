@@ -4,6 +4,7 @@ import { addPendingCheckout } from "@/lib/orders-data";
 import { authorizeCheckoutPrices } from "@/lib/authorize-checkout-prices";
 import type { OrderItem } from "@/lib/orders";
 import type { PendingCheckoutCustomer } from "@/lib/orders-data";
+import { attributionFromRequestBody } from "@/lib/attribution";
 
 export async function POST(request: NextRequest) {
   try {
@@ -12,6 +13,7 @@ export async function POST(request: NextRequest) {
     const items = Array.isArray(body.items) ? (body.items as OrderItem[]) : [];
     const sellerNote = typeof body.sellerNote === "string" ? body.sellerNote : undefined;
     const customer = body.customer as PendingCheckoutCustomer | undefined;
+    const attribution = attributionFromRequestBody(body);
 
     if (customer?.email?.trim() && !customer.email.trim().includes("@")) {
       return NextResponse.json(
@@ -38,7 +40,14 @@ export async function POST(request: NextRequest) {
       sku: i.productSlug,
     }));
     const paypalOrderId = await createPayPalOrder(amountEur, paypalItems);
-    await addPendingCheckout(paypalOrderId, pricedItems, totalCents, sellerNote, customer);
+    await addPendingCheckout(
+      paypalOrderId,
+      pricedItems,
+      totalCents,
+      sellerNote,
+      customer,
+      attribution
+    );
 
     return NextResponse.json({ paypalOrderId });
   } catch (e) {

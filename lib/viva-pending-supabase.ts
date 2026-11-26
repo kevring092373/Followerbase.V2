@@ -2,9 +2,10 @@
  * Viva-Pending-Checkouts in Supabase (für Netlify read-only Dateisystem).
  */
 import { supabaseServerFresh, isSupabaseConfigured } from "@/lib/supabase/server";
-import type { OrderItem } from "./orders";
+import type { OrderItem, OrderAttribution } from "./orders";
 import type { PendingCheckoutCustomer } from "./orders-data";
 import { asVivaOrderCode } from "./viva-server";
+import { isMissingAttributionColumnError, parseOrderAttribution } from "./attribution";
 
 function parseItems(val: unknown): OrderItem[] {
   if (!Array.isArray(val)) return [];
@@ -50,19 +51,30 @@ export async function addVivaPendingSupabase(
   items: OrderItem[],
   totalCents: number,
   sellerNote?: string,
-  customer?: PendingCheckoutCustomer
+  customer?: PendingCheckoutCustomer,
+  attribution?: OrderAttribution
 ): Promise<boolean> {
   if (!isSupabaseConfigured()) return false;
   const code = asVivaOrderCode(vivaOrderCode);
   if (!code) return false;
 
-  const { error } = await supabaseServerFresh.from("viva_pending_checkouts").insert({
+  const row = {
     viva_order_code: code,
     items,
     total_cents: totalCents,
     seller_note: sellerNote ?? null,
     customer: customer ?? null,
-  });
+    attribution: attribution ?? null,
+  };
+
+  let { error } = await supabaseServerFresh.from("viva_pending_checkouts").insert(row);
+
+  if (error && isMissingAttributionColumnError(error.message)) {
+    const { attribution: _attribution, ...rowWithoutAttribution } = row;
+    void _attribution;
+    const retry = await supabaseServerFresh.from("viva_pending_checkouts").insert(rowWithoutAttribution);
+    error = retry.error;
+  }
 
   if (error) {
     console.error("Supabase addVivaPending:", error.message);
@@ -80,6 +92,7 @@ export async function getVivaPendingByOrderCodeSupabase(
   sellerNote?: string;
   customer?: PendingCheckoutCustomer;
   createdAt: string;
+  attribution?: OrderAttribution;
 } | null> {
   if (!isSupabaseConfigured()) return null;
   const code = asVivaOrderCode(vivaOrderCode);
@@ -99,6 +112,7 @@ export async function getVivaPendingByOrderCodeSupabase(
     total_cents: number;
     seller_note: string | null;
     customer: unknown;
+    attribution: unknown;
     created_at: string;
   };
   const storedCode = asVivaOrderCode(row.viva_order_code);
@@ -110,6 +124,7 @@ export async function getVivaPendingByOrderCodeSupabase(
     sellerNote: row.seller_note ?? undefined,
     customer: parseCustomer(row.customer),
     createdAt: row.created_at,
+    attribution: parseOrderAttribution(row.attribution),
   };
 }
 

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getOrderByNumber } from "@/lib/orders-data";
 import { getStatusLabel, getOrderTotalCents, getPaymentMethodLabel } from "@/lib/orders";
+import { getAttributionListLabel } from "@/lib/attribution";
 import { OrderStatusForm } from "../OrderStatusForm";
 
 /** Nie cachen: Status und Ziel-Angaben müssen den aktuellen DB-Stand zeigen. */
@@ -86,6 +87,54 @@ export default async function AdminOrderDetailPage({ params }: Props) {
               </span>
             </li>
           </ul>
+        </section>
+
+        {/* Herkunft */}
+        <section className="admin-order-detail-section">
+          <h2 className="admin-order-detail-heading">Herkunft</h2>
+          <dl className="admin-order-customer-dl">
+            <dt>Quelle</dt>
+            <dd>
+              <span
+                className={`admin-order-source-badge admin-order-source--${order.attribution?.source ?? "unknown"}`}
+              >
+                {getAttributionListLabel(order.attribution)}
+              </span>
+            </dd>
+            {order.attribution?.utmCampaign && (
+              <>
+                <dt>Kampagne</dt>
+                <dd>{order.attribution.utmCampaign}</dd>
+              </>
+            )}
+            {order.attribution?.utmSource && (
+              <>
+                <dt>UTM-Source</dt>
+                <dd>
+                  {order.attribution.utmSource}
+                  {order.attribution.utmMedium ? ` / ${order.attribution.utmMedium}` : ""}
+                </dd>
+              </>
+            )}
+            {order.attribution?.landingPath && (
+              <>
+                <dt>Landing</dt>
+                <dd>{order.attribution.landingPath}</dd>
+              </>
+            )}
+            {order.attribution?.referrerHost && (
+              <>
+                <dt>Referrer</dt>
+                <dd>{order.attribution.referrerHost}</dd>
+              </>
+            )}
+            {order.attribution?.capturedAt && (
+              <>
+                <dt>Erfasst</dt>
+                <dd>{formatDate(order.attribution.capturedAt)}</dd>
+              </>
+            )}
+          </dl>
         </section>
 
         {/* Zahlungsart & Summe */}

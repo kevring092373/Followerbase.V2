@@ -10,6 +10,7 @@ import { addVivaPending } from "@/lib/viva-pending-data";
 import { authorizeCheckoutPrices } from "@/lib/authorize-checkout-prices";
 import type { OrderItem } from "@/lib/orders";
 import type { PendingCheckoutCustomer } from "@/lib/orders-data";
+import { attributionFromRequestBody } from "@/lib/attribution";
 
 export async function POST(request: NextRequest) {
   try {
@@ -18,6 +19,7 @@ export async function POST(request: NextRequest) {
     const items = Array.isArray(body.items) ? (body.items as OrderItem[]) : [];
     const sellerNote = typeof body.sellerNote === "string" ? body.sellerNote : undefined;
     const customer = body.customer as PendingCheckoutCustomer | undefined;
+    const attribution = attributionFromRequestBody(body);
 
     if (!customer?.email?.trim()) {
       return NextResponse.json(
@@ -75,7 +77,8 @@ export async function POST(request: NextRequest) {
         city: customer.city ?? undefined,
         postalCode: customer.postalCode ?? undefined,
         country: customer.country ?? undefined,
-      }
+      },
+      attribution
     );
     if (!pendingSaved) {
       console.error("Viva: Pending-Checkout konnte nicht gespeichert werden (z. B. Supabase-Tabelle viva_pending_checkouts prüfen).");

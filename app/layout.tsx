@@ -19,6 +19,14 @@ const CookieBanner = dynamic(
   { ssr: false }
 );
 
+const AttributionCapture = dynamic(
+  () =>
+    import("@/components/AttributionCapture").then((m) => ({
+      default: m.AttributionCapture,
+    })),
+  { ssr: false }
+);
+
 const dmSans = DM_Sans({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700", "800"],
@@ -88,6 +96,7 @@ export default function RootLayout({
             </div>
           </div>
           <CartDrawer />
+          <AttributionCapture />
           <CookieBanner />
         </CartProvider>
       </body>

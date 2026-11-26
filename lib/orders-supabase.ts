@@ -5,6 +5,7 @@
 import { supabaseServerFresh, isSupabaseConfigured } from "@/lib/supabase/server";
 import type { Order, OrderItem, OrderStatus, PaymentMethod } from "./orders";
 import { ORDER_STATUSES, getOrderTotalCents } from "./orders";
+import { isMissingAttributionColumnError, parseOrderAttribution } from "./attribution";
 
 type OrderRow = {
   id: string;
@@ -23,6 +24,7 @@ type OrderRow = {
   customer_city: string | null;
   customer_postal_code: string | null;
   customer_country: string | null;
+  attribution?: unknown;
   created_at: string;
   updated_at: string;
 };
@@ -65,6 +67,7 @@ function rowToOrder(row: OrderRow, items: OrderItem[]): Order {
     customerCity: row.customer_city ?? undefined,
     customerPostalCode: row.customer_postal_code ?? undefined,
     customerCountry: row.customer_country ?? undefined,
+    attribution: parseOrderAttribution(row.attribution),
     items: items.length ? items : undefined,
   };
 }
@@ -252,27 +255,42 @@ export async function insertOrderSupabase(order: Order): Promise<boolean> {
         ? getOrderTotalCents(order)
         : null;
 
-  const { data: inserted, error: orderError } = await supabaseServerFresh
+  const orderRow = {
+    order_number: order.orderNumber,
+    status: order.status,
+    remarks: order.remarks ?? null,
+    payment_method: order.paymentMethod ?? null,
+    paypal_order_id: order.paypalOrderId ?? null,
+    seller_note: order.sellerNote ?? null,
+    total_cents: totalCents,
+    customer_email: order.customerEmail ?? null,
+    customer_name: order.customerName ?? null,
+    customer_phone: order.customerPhone ?? null,
+    customer_address_line1: order.customerAddressLine1 ?? null,
+    customer_address_line2: order.customerAddressLine2 ?? null,
+    customer_city: order.customerCity ?? null,
+    customer_postal_code: order.customerPostalCode ?? null,
+    customer_country: order.customerCountry ?? null,
+    attribution: order.attribution ?? null,
+  };
+
+  let { data: inserted, error: orderError } = await supabaseServerFresh
     .from("orders")
-    .insert({
-      order_number: order.orderNumber,
-      status: order.status,
-      remarks: order.remarks ?? null,
-      payment_method: order.paymentMethod ?? null,
-      paypal_order_id: order.paypalOrderId ?? null,
-      seller_note: order.sellerNote ?? null,
-      total_cents: totalCents,
-      customer_email: order.customerEmail ?? null,
-      customer_name: order.customerName ?? null,
-      customer_phone: order.customerPhone ?? null,
-      customer_address_line1: order.customerAddressLine1 ?? null,
-      customer_address_line2: order.customerAddressLine2 ?? null,
-      customer_city: order.customerCity ?? null,
-      customer_postal_code: order.customerPostalCode ?? null,
-      customer_country: order.customerCountry ?? null,
-    })
+    .insert(orderRow)
     .select("id")
     .single();
+
+  if (orderError && isMissingAttributionColumnError(orderError.message)) {
+    const { attribution: _attribution, ...orderRowWithoutAttribution } = orderRow;
+    void _attribution;
+    const retry = await supabaseServerFresh
+      .from("orders")
+      .insert(orderRowWithoutAttribution)
+      .select("id")
+      .single();
+    inserted = retry.data;
+    orderError = retry.error;
+  }
 
   if (orderError || !inserted) {
     console.error("Supabase insertOrder:", orderError?.message);

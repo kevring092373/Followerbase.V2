@@ -18,8 +18,9 @@ import {
   removePendingByPaypalOrderIdSupabase,
   getPendingCheckoutsSupabase,
 } from "./pending-checkouts-supabase";
-import type { Order, OrderItem, OrderStatus, PaymentMethod } from "./orders";
+import type { Order, OrderItem, OrderStatus, PaymentMethod, OrderAttribution } from "./orders";
 import { ORDER_STATUSES } from "./orders";
+import { parseOrderAttribution } from "./attribution";
 
 export type { Order, OrderStatus, PaymentMethod } from "./orders";
 
@@ -54,6 +55,7 @@ export interface PendingCheckout {
   sellerNote?: string;
   customer?: PendingCheckoutCustomer;
   createdAt: string;
+  attribution?: OrderAttribution;
 }
 
 function normalizeItem(i: unknown): OrderItem | null {
@@ -99,6 +101,7 @@ function normalizeOrder(o: Record<string, unknown>): Order {
   const customerCity = typeof o.customerCity === "string" ? o.customerCity : undefined;
   const customerPostalCode = typeof o.customerPostalCode === "string" ? o.customerPostalCode : undefined;
   const customerCountry = typeof o.customerCountry === "string" ? o.customerCountry : undefined;
+  const attribution = parseOrderAttribution(o.attribution);
   return {
     orderNumber,
     status,
@@ -117,6 +120,7 @@ function normalizeOrder(o: Record<string, unknown>): Order {
     customerCity,
     customerPostalCode,
     customerCountry,
+    attribution,
     items: items.length ? items : undefined,
   };
 }
@@ -247,7 +251,8 @@ function normalizePendingCheckout(p: unknown): PendingCheckout {
   const customer = normalizePendingCheckoutCustomer(r.customer);
   const createdAt =
     typeof r.createdAt === "string" ? r.createdAt : new Date().toISOString();
-  return { paypalOrderId, items, totalCents, sellerNote, customer, createdAt };
+  const attribution = parseOrderAttribution(r.attribution);
+  return { paypalOrderId, items, totalCents, sellerNote, customer, createdAt, attribution };
 }
 
 async function writePendingCheckouts(pending: PendingCheckout[]): Promise<void> {
@@ -266,10 +271,18 @@ export async function addPendingCheckout(
   items: OrderItem[],
   totalCents: number,
   sellerNote?: string,
-  customer?: PendingCheckoutCustomer
+  customer?: PendingCheckoutCustomer,
+  attribution?: OrderAttribution
 ): Promise<void> {
   if (isSupabaseConfigured()) {
-    await addPendingCheckoutSupabase(paypalOrderId, items, totalCents, sellerNote, customer);
+    await addPendingCheckoutSupabase(
+      paypalOrderId,
+      items,
+      totalCents,
+      sellerNote,
+      customer,
+      attribution
+    );
     return;
   }
   const list = await readPendingCheckouts();
@@ -280,6 +293,7 @@ export async function addPendingCheckout(
     sellerNote,
     customer,
     createdAt: new Date().toISOString(),
+    attribution,
   });
   await writePendingCheckouts(list);
 }
@@ -346,6 +360,7 @@ export async function createOrderFromPendingAndRemovePending(
     customerCity: c?.city ?? undefined,
     customerPostalCode: c?.postalCode ?? undefined,
     customerCountry: c?.country ?? undefined,
+    attribution: pending.attribution,
   };
 
   let order: Order;
@@ -414,6 +429,7 @@ export async function createOrderFromVivaPendingAndRemove(
     customerCity: c?.city ?? undefined,
     customerPostalCode: c?.postalCode ?? undefined,
     customerCountry: c?.country ?? undefined,
+    attribution: pending.attribution,
   };
 
   let order: Order;
@@ -438,7 +454,8 @@ export async function createOrderForUeberweisung(
   customer: PendingCheckoutCustomer,
   items: OrderItem[],
   totalCents: number,
-  sellerNote?: string
+  sellerNote?: string,
+  attribution?: OrderAttribution
 ): Promise<Order> {
   if (customer.email.trim()) {
     const { createOrGetCustomer } = await import("@/lib/customers-data");
@@ -471,6 +488,7 @@ export async function createOrderForUeberweisung(
     customerCity: customer.city ?? undefined,
     customerPostalCode: customer.postalCode ?? undefined,
     customerCountry: customer.country ?? undefined,
+    attribution,
   };
 
   if (isSupabaseConfigured()) {

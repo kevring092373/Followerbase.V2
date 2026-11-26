@@ -2,6 +2,10 @@
  * Bestell-Status und Labels – client- und server-seitig nutzbar.
  */
 
+import type { OrderAttribution } from "./attribution";
+
+export type { OrderAttribution } from "./attribution";
+
 export type OrderStatus =
   | "pending_payment"
   | "eingegangen"
@@ -45,13 +49,15 @@ export interface Order {
   customerCity?: string;
   customerPostalCode?: string;
   customerCountry?: string;
+  /** First-Touch-Herkunft (Google, Bing, Direkt, …) – nur Admin, nicht Tracking */
+  attribution?: OrderAttribution;
 }
 
 /**
  * Was die öffentliche Bestellverfolgung erfahren darf.
  *
  * Bewusst minimal: die Abfrage verlangt nur die Bestellnummer, kein zweites Merkmal.
- * Interne Bemerkungen und Kundendaten (Name, Anschrift, Telefon, E-Mail, Ziel-Angaben)
+ * Interne Bemerkungen, Herkunft (Attribution) und Kundendaten (Name, Anschrift, Telefon, E-Mail, Ziel-Angaben)
  * dürfen deshalb nicht an den Browser gehen – auch nicht ungenutzt im Netzwerk-Response.
  */
 export interface OrderTrackingInfo {

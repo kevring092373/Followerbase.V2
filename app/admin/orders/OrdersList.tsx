@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { getStatusLabel, ORDER_STATUSES, type Order } from "@/lib/orders";
+import { getAttributionListLabel } from "@/lib/attribution";
 
 const STATUS_FILTER_ALL = "__all__";
 
@@ -80,6 +81,12 @@ export function OrdersList({ orders }: Props) {
               >
                 <span className="admin-order-row-number">{order.orderNumber}</span>
                 <span className="admin-order-row-date">{formatDateShort(order.createdAt)}</span>
+                <span
+                  className={`admin-order-source-badge admin-order-source--${order.attribution?.source ?? "unknown"}`}
+                  title={order.attribution?.landingPath || order.attribution?.referrerHost || "Herkunft unbekannt"}
+                >
+                  {getAttributionListLabel(order.attribution)}
+                </span>
                 {order.customerEmail && (
                   <span className="admin-order-row-email" title={order.customerEmail}>
                     {order.customerEmail}

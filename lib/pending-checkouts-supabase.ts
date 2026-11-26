@@ -3,8 +3,9 @@
  * Ermöglicht Checkout auf Netlify (read-only Dateisystem).
  */
 import { supabaseServerFresh, isSupabaseConfigured } from "@/lib/supabase/server";
-import type { OrderItem } from "./orders";
+import type { OrderItem, OrderAttribution } from "./orders";
 import type { PendingCheckout, PendingCheckoutCustomer } from "./orders-data";
+import { isMissingAttributionColumnError, parseOrderAttribution } from "./attribution";
 
 type PendingRow = {
   id: string;
@@ -13,6 +14,7 @@ type PendingRow = {
   total_cents: number;
   seller_note: string | null;
   customer: unknown;
+  attribution?: unknown;
   created_at: string;
 };
 
@@ -63,6 +65,7 @@ function rowToPending(r: PendingRow): PendingCheckout {
     sellerNote: r.seller_note ?? undefined,
     customer: parseCustomer(r.customer),
     createdAt: r.created_at,
+    attribution: parseOrderAttribution(r.attribution),
   };
 }
 
@@ -71,17 +74,28 @@ export async function addPendingCheckoutSupabase(
   items: OrderItem[],
   totalCents: number,
   sellerNote?: string,
-  customer?: PendingCheckoutCustomer
+  customer?: PendingCheckoutCustomer,
+  attribution?: OrderAttribution
 ): Promise<void> {
   if (!isSupabaseConfigured()) return;
 
-  const { error } = await supabaseServerFresh.from("pending_checkouts").insert({
+  const row = {
     paypal_order_id: paypalOrderId,
     items: items,
     total_cents: totalCents,
     seller_note: sellerNote ?? null,
     customer: customer ?? null,
-  });
+    attribution: attribution ?? null,
+  };
+
+  let { error } = await supabaseServerFresh.from("pending_checkouts").insert(row);
+
+  if (error && isMissingAttributionColumnError(error.message)) {
+    const { attribution: _attribution, ...rowWithoutAttribution } = row;
+    void _attribution;
+    const retry = await supabaseServerFresh.from("pending_checkouts").insert(rowWithoutAttribution);
+    error = retry.error;
+  }
 
   if (error) {
     console.error("Supabase addPendingCheckout:", error.message);

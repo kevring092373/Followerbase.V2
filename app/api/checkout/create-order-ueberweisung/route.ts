@@ -4,6 +4,7 @@ import { authorizeCheckoutPrices } from "@/lib/authorize-checkout-prices";
 import type { OrderItem } from "@/lib/orders";
 import type { PendingCheckoutCustomer } from "@/lib/orders-data";
 import { sendOrderConfirmationEmail, sendOrderNotificationToOwner } from "@/lib/email-order-confirmation";
+import { attributionFromRequestBody } from "@/lib/attribution";
 
 /**
  * Bestellung per Überweisung anlegen. Gibt Bestellnummer zurück.
@@ -16,6 +17,7 @@ export async function POST(request: NextRequest) {
     const items = Array.isArray(body.items) ? (body.items as OrderItem[]) : [];
     const sellerNote = typeof body.sellerNote === "string" ? body.sellerNote : undefined;
     const customer = body.customer as PendingCheckoutCustomer | undefined;
+    const attribution = attributionFromRequestBody(body);
 
     if (!customer?.email?.trim()) {
       return NextResponse.json({ error: "E-Mail ist erforderlich." }, { status: 400 });
@@ -50,7 +52,8 @@ export async function POST(request: NextRequest) {
       },
       pricedItems,
       totalCents,
-      sellerNote
+      sellerNote,
+      attribution
     );
 
     const customerOk = await sendOrderConfirmationEmail(order);
